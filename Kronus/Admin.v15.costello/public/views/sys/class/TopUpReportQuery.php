@@ -19,7 +19,7 @@ class TopUpReportQuery extends DBHandler{
     public function confirmation($startdate, $enddate) {
         $query = "SELECT ghc.GrossHoldConfirmationID, a.UserName, s.SiteCode, ghc.DateCreated, ghc.DateCredited, ghc.SiteRepresentative, ghc.AmountConfirmed, s.POSAccountNo " . 
                 "FROM grossholdconfirmation ghc INNER JOIN accounts a ON ghc.PostedByAID = a.AID " . 
-                "INNER JOIN sites s ON ghc.SiteID = s.SiteID WHERE ghc.DateCreated BETWEEN '$startdate' AND '$enddate' ORDER BY ghc.GrossHoldConfirmationID  ASC ";
+                "INNER JOIN sites s ON ghc.SiteID = s.SiteID WHERE ghc.DateCreated >= '$startdate' AND  ghc.DateCreated < '$enddate' ORDER BY ghc.GrossHoldConfirmationID  ASC ";
         $this->prepare($query);
         $this->execute();
         return $this->fetchAllData();
@@ -108,7 +108,7 @@ class TopUpReportQuery extends DBHandler{
         if($zsiteID == '')
         {
             $query = "SELECT td.TransactionDetailsID, td.TransactionReferenceID, td.TransactionSummaryID, td.SiteID, 
-                      s.SiteName, td.TerminalID, s.POSAccountNo, td.TransactionType, COALESCE(td.Amount,0) AS Amount, 
+                      s.SiteName, td.TerminalID, td.TransactionType, COALESCE(td.Amount,0) AS Amount, 
                       td.DateCreated, s.SiteCode, s.POSAccountNo, td.ServiceID, td.CreatedByAID, a.UserName, sb.Balance 
                       FROM transactiondetails td FORCE INDEX(IX_transactiondetails_DateCreated)
                       INNER JOIN sitebalance sb ON sb.SiteID = td.SiteID 
@@ -123,8 +123,8 @@ class TopUpReportQuery extends DBHandler{
         {
             $query = "SELECT td.TransactionDetailsID, td.TransactionReferenceID, td.TransactionSummaryID, td.SiteID, 
                       s.SiteName, td.TerminalID, s.POSAccountNo, td.TransactionType, COALESCE(td.Amount,0) AS Amount, 
-                     td.DateCreated, s.SiteCode, s.POSAccountNo, td.ServiceID, td.CreatedByAID, a.UserName, sb.Balance
-                     FROM transactiondetails td td FORCE INDEX(IX_transactiondetails_DateCreated)
+                     td.DateCreated, s.SiteCode, td.ServiceID, td.CreatedByAID, a.UserName, sb.Balance
+                     FROM transactiondetails td FORCE INDEX(IX_transactiondetails_DateCreated)
                      INNER JOIN sitebalance sb ON sb.SiteID = td.SiteID  
                      INNER JOIN accounts a ON a.AID = td.CreatedByAID 
                      INNER JOIN sites s ON s.SiteID = td.SiteID 
@@ -255,7 +255,7 @@ class TopUpReportQuery extends DBHandler{
                 LEFT JOIN ref_remittancetype rt ON sr.RemittanceTypeID = rt.RemittanceTypeID 
                 LEFT JOIN ref_banks bk ON sr.BankID = bk.BankID 
                 LEFT JOIN accounts ats ON sr.VerifiedBy = ats.CreatedByAID 
-                WHERE sr.DateCreated BETWEEN '$startdate' AND '$enddate' AND sr.Status = 3 
+                WHERE sr.DateCreated >= '$startdate' AND sr.DateCreated < '$enddate' AND sr.Status = 3 
                 ORDER BY sr.DateCreated ASC";
          $this->prepare($query);
          $this->execute();
@@ -266,11 +266,11 @@ class TopUpReportQuery extends DBHandler{
           $query = "SELECT b.SiteName, b.POSAccountNo, 
                     a.Amount, a.Reason, d.Name as ApprovedBy, 
                     c.Name AS CreatedBy, a.DateCreated
-                    FROM npos.cohadjustment a
-                    LEFT JOIN npos.sites b ON a.SiteID = b.SiteID
-                    LEFT JOIN npos.accountdetails c ON a.CreatedByAID = c.AID
-                    LEFT JOIN npos.accountdetails d ON a.ApprovedByAID = d.AID
-                WHERE a.DateCreated BETWEEN '$startdate' AND '$enddate' ORDER BY a.DateCreated ASC";
+                    FROM cohadjustment a
+                    LEFT JOIN sites b ON a.SiteID = b.SiteID
+                    LEFT JOIN accountdetails c ON a.CreatedByAID = c.AID
+                    LEFT JOIN accountdetails d ON a.ApprovedByAID = d.AID
+                WHERE a.DateCreated >= '$startdate' AND a.DateCreated < '$enddate' ORDER BY a.DateCreated ASC";
          $this->prepare($query);
          $this->execute();
          return $this->fetchAllData();
@@ -365,7 +365,7 @@ class TopUpReportQuery extends DBHandler{
               "FROM topuptransactionhistory as th " .
               "inner join accounts as acc on acc.AID = th.CreatedByAID " .
               "inner join sites on sites.SiteID = th.SiteID " . 
-              "where th.DateCreated Between '$startdate' and '$enddate' and th.TopupTransactionType = 2 " . 
+              "where th.DateCreated >= '$startdate' and th.DateCreated < '$enddate' and th.TopupTransactionType = 2 " . 
               "ORDER BY th.TopupHistoryID ASC ";
           $this->prepare($query);
           $this->execute();
@@ -397,128 +397,7 @@ class TopUpReportQuery extends DBHandler{
             $this->prepare($query);
             $this->execute();
             return $this->fetchAllData();         
-    }
-    
-    //added on 11/18/2011, for gross hold monitoring per cut off
-    public function getGrossHoldCutoff($startdate, $enddate, $zsitecode) 
-    {
-        //if site was selected All
-        if($zsitecode == '') {
-            // to get beginning balance
-            $query1 = "SELECT srb.SiteID, srb.PrevBalance, ad.Name, sd.SiteDescription, s.SiteCode, s.POSAccountNo FROM siterunningbalance srb " . 
-                    "INNER JOIN sites s ON s.SiteID = srb.SiteID " . 
-                    "INNER JOIN accountdetails ad ON ad.AID = s.OwnerAID " .
-                    "INNER JOIN sitedetails sd ON sd.SiteID = srb.SiteID  where TransactionDate >= '$startdate' and " . 
-                    "TransactionDate < '$enddate' order by srb.TransactionDate  ";
-            
-            // to get sum of dep,reload and withdrawal
-            $query2 = "SELECT SiteID, COALESCE(sum(Deposit),0) as InitialDeposit,sum(Reload) as Reload,sum(Withdrawal) as Redemption FROM siterunningbalance " . 
-                    "where TransactionDate >= '$startdate' and TransactionDate < '$enddate' GROUP BY SiteID";  
-            
-            // to get collection 
-            $query3 = "select SiteID, COALESCE(Sum(Amount),0) as Collection from siteremittance where StatusUpdateDate >= '$startdate' and " . 
-                    "StatusUpdateDate < '$enddate' GROUP BY SiteID";
-    
-            // to get replenishment
-            $query4 = "select SiteID, COALESCE(Sum(Amount),0) as Replenishment from replenishments where DateCredited >= '$startdate' and " . 
-                    "DateCredited < '$enddate' GROUP BY SiteID";    
-            
-            //to get manual redemption
-            $query5 = "SELECT SiteID, SUM(ActualAmount) AS ActualAmount FROM manualredemptions " . 
-                    "WHERE TransactionDate >= '$startdate' AND TransactionDate < '$enddate' GROUP BY SiteID";
-            
-        } else {
-            // to get beginning balance
-            $query1 = "SELECT srb.SiteID, srb.PrevBalance, ad.Name, sd.SiteDescription, s.SiteCode, s.POSAccountNo FROM siterunningbalance srb " . 
-                    "INNER JOIN sites s ON s.SiteID = srb.SiteID " . 
-                    "INNER JOIN accountdetails ad ON ad.AID = s.OwnerAID " .
-                    "INNER JOIN sitedetails sd ON sd.SiteID = srb.SiteID  where TransactionDate >= '$startdate' and " . 
-                    "TransactionDate < '$enddate' AND srb.SiteID = '" . $zsitecode . "'  order by srb.TransactionDate  ";
-            
-            // to get sum of dep,reload and withdrawal
-            $query2 = "SELECT SiteID, COALESCE(sum(Deposit),0) as InitialDeposit,sum(Reload) as Reload,sum(Withdrawal) as Redemption FROM siterunningbalance " . 
-                    "where TransactionDate >= '$startdate' and TransactionDate < '$enddate' and SiteID = " . $zsitecode;
-
-            // to get collection 
-            $query3 = "SELECT SiteID, COALESCE(Sum(Amount),0) as Collection from siteremittance where StatusUpdateDate >= '$startdate' and " . 
-                    "StatusUpdateDate < '$enddate' and SiteID = " . $zsitecode;
-
-            // to get replenishment
-            $query4 = "SELECT SiteID, COALESCE(Sum(Amount),0) as Replenishment from replenishments where DateCredited >= '$startdate' and " . 
-                    "DateCredited < '$enddate' and SiteID = " . $zsitecode;
-            
-             //to get manual redemption
-            $query5 = "SELECT SiteID, SUM(ActualAmount) AS ActualAmount FROM manualredemptions " . 
-                    "WHERE SiteID = '".$_GET['site']."' AND TransactionDate >= '$startdate' AND TransactionDate < '$enddate' GROUP BY SiteID";
-        }
-
-        // to get beginning balance, sitecode, sitename
-        $this->prepare($query1);
-        $this->execute(); 
-        $rows1 = $this->fetchAllData();
-        $qr1 = array();
-        foreach($rows1 as $row1) {
-            $qr1[$row1['SiteID']] = array('begbal'=>$row1['PrevBalance'],
-                'sitecode'=>$row1['SiteCode'],'sitename'=>($row1['Name'] . ' ' . $row1['SiteDescription']), 'POSAccountNo' => $row1['POSAccountNo']);
-            break;
-        }
-        
-        // to get sum of dep,reload and withdrawal
-        $this->prepare($query2);
-        $this->execute();
-        $rows2 = $this->fetchAllData();
-        $qr2 = array();
-        foreach($rows2 as $row2) {
-            $qr2[$row2['SiteID']] = array('initialdeposit'=>$row2['InitialDeposit'],'reload'=>$row2['Reload'],'redemption'=>$row2['Redemption']);
-        }
-        
-        // to get collection 
-        $this->prepare($query3);
-        $this->execute();
-        $rows3 = $this->fetchAllData();
-        $qr3 = array();
-        foreach($rows3 as $row3) {
-            $qr3[$row3['SiteID']] = $row3['Collection'];
-        }
-        
-        $this->prepare($query4);
-        $this->execute();
-        $rows4 = $this->fetchAllData();
-        $qr4 = array();
-        foreach($rows4 as $row4) {
-            $qr4[$row4['SiteID']] = $row4['Replenishment'];
-        }
-        
-        $this->prepare($query5);
-        $this->execute();
-        $rows5 = $this->fetchAllData();
-        $qr5 = array();
-        foreach($rows5 as $row5)
-        {
-            $qr5[$row5['SiteID']] = $row5['ActualAmount'];
-        }
-        
-        $consolidate = array();
-        
-        foreach($qr1 as $key => $q) {
-            $collection = 0;
-            if(isset($qr3[$key]))
-                $collection = $qr3[$key];
-            $replenishment = 0;
-            if(isset($qr4[$key]))
-                $replenishment = $qr4[$key];
-            $vmanualredeem = 0;
-            if(isset($qr5[$key]))
-                $vmanualredeem = $qr5[$key];        
-            $consolidate[] = array('siteid'=>$key,'sitename'=>$q['sitename'],'sitecode'=>$q['sitecode'],
-                'begbal'=>$q['begbal'],'initialdep'=>$qr2[$key]['initialdeposit'],
-                'reload'=>$qr2[$key]['reload'],'redemption'=>$qr2[$key]['redemption'],
-                'collection'=>$collection,'replenishment'=>$replenishment, 'POSAccountNo' => $q['POSAccountNo'],
-                'manualredemption'=>$vmanualredeem);
-        }
-        return $consolidate;
-    }
-    
+    }   
     /*
      * Get old gross hold balance if queried date is not today
      */
@@ -536,7 +415,7 @@ class TopUpReportQuery extends DBHandler{
                             INNER JOIN sites s ON s.SiteID = sgc.SiteID
                             INNER JOIN accountdetails ad ON ad.AID = s.OwnerAID
                             INNER JOIN sitedetails sd ON sd.SiteID = sgc.SiteID
-                            WHERE sgc.DateCutOff > ? AND sgc.DateCutOff <= ?
+                            WHERE sgc.DateCutOff >= ? AND sgc.DateCutOff < ?
                             ORDER BY s.SiteCode, sgc.DateCutOff";          
 
                //Query for Replenishments
@@ -690,10 +569,10 @@ class TopUpReportQuery extends DBHandler{
                                 END As RedemptionGenesis,
 
                                 tr.DateCreated, tr.SiteID
-                                FROM npos.transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)
-                                INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
-                                INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
-                                INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
+                                FROM transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)
+                                INNER JOIN transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
+                                INNER JOIN terminals t ON t.TerminalID = tr.TerminalID
+                                INNER JOIN accounts a ON tr.CreatedByAID = a.AID
                                 WHERE tr.DateCreated >= ? AND tr.DateCreated < ?
                                   AND tr.Status IN(1,4)
                                 GROUP By tr.TransactionType, tr.TransactionSummaryID
@@ -705,8 +584,8 @@ class TopUpReportQuery extends DBHandler{
                        WHERE DateCreated >= :startdate               -- Get Printed Tickets for the day 
                        AND DateCreated < :enddate  
                        AND TicketCode NOT IN (SELECT TicketCode FROM ((SELECT stckr.TicketCode FROM stackermanagement.stackersummary stckr -- Cancelled Tickets in Stacker 
-                                INNER JOIN npos.accounts acct ON stckr.CreatedByAID = acct.AID
-                                INNER JOIN npos.siteaccounts sa ON acct.AID = sa.AID
+                                INNER JOIN accounts acct ON stckr.CreatedByAID = acct.AID
+                                INNER JOIN siteaccounts sa ON acct.AID = sa.AID
                                 WHERE stckr.DateCancelledOn >= :startdate AND stckr.DateCancelledOn < :enddate
                                 AND acct.AccountTypeID IN (4, 15))
                        UNION
@@ -715,17 +594,17 @@ class TopUpReportQuery extends DBHandler{
                             UNION
                             (SELECT TicketCode FROM vouchermanagement.tickets tckt  -- Encashed Tickets
                             WHERE tckt.DateEncashed >= :startdate AND tckt.DateEncashed < :enddate 
-                            AND tckt.EncashedByAID IN (SELECT acct.AID FROM npos.accounts acct WHERE acct.AccountTypeID = 4
-                            AND acct.AID IN (SELECT sacct.AID FROM npos.siteaccounts sacct))))
+                            AND tckt.EncashedByAID IN (SELECT acct.AID FROM accounts acct WHERE acct.AccountTypeID = 4
+                            AND acct.AID IN (SELECT sacct.AID FROM siteaccounts sacct))))
                             AS GetLessTicketCode
                             ) GROUP BY SiteID";
                 
                 //Query for Printed Tickets of the pick date (per site/per cutoff)
                 $query8 = "SELECT SiteID, SUM(PrintedTickets) AS PrintedTickets, DateCreated FROM (
-                    SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets, tr.DateCreated FROM npos.transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)  -- Printed Tickets through W
-                            INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
-                            INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
-                            INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
+                    SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets, tr.DateCreated FROM transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)  -- Printed Tickets through W
+                            INNER JOIN transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
+                            INNER JOIN terminals t ON t.TerminalID = tr.TerminalID
+                            INNER JOIN accounts a ON ts.CreatedByAID = a.AID
                             LEFT JOIN stackermanagement.stackersummary stckr ON stckr.StackerSummaryID = tr.StackerSummaryID
                             WHERE tr.DateCreated >= :startdate AND tr.DateCreated < :enddate 
                               AND tr.Status IN(1,4)
@@ -807,21 +686,20 @@ class TopUpReportQuery extends DBHandler{
                                         ELSE 0 -- if not deposit
                                 END) AS EwalletTicketDeposit 
 
-                            FROM npos.ewallettrans et
+                            FROM ewallettrans et
                             WHERE et.StartDate >= ? AND et.StartDate <= ?
                             AND et.Status IN (1,3)
                             GROUP BY et.SiteID";
                 
                 $query11 = "SELECT IFNULL(SUM(Amount), 0) AS EncashedTicketsV2, t.DateEncashed, t.UpdatedByAID, t.SiteID, ad.Name   
                    FROM vouchermanagement.tickets t 
-                   LEFT JOIN npos.accountdetails ad ON t.UpdatedByAID = ad.AID
+                   LEFT JOIN accountdetails ad ON t.UpdatedByAID = ad.AID
                    WHERE t.DateEncashed >= ? AND t.DateEncashed < ?  
                    AND TicketCode NOT IN (
                            SELECT IFNULL(ss.TicketCode, '') FROM stackermanagement.stackersummary ss 
-                           INNER JOIN npos.ewallettrans ewt ON ewt.StackerSummaryID = ss.StackerSummaryID 
+                           INNER JOIN ewallettrans ewt ON ewt.StackerSummaryID = ss.StackerSummaryID 
                            WHERE ewt.TransType = 'W' 
                            GROUP BY ewt.SiteID 
-                           ORDER BY ss.StackerSummaryID DESC
                    )
                    GROUP BY t.SiteID";
 
@@ -1105,8 +983,8 @@ class TopUpReportQuery extends DBHandler{
                             INNER JOIN sites s ON s.SiteID = sgc.SiteID
                             INNER JOIN accountdetails ad ON ad.AID = s.OwnerAID
                             INNER JOIN sitedetails sd ON sd.SiteID = sgc.SiteID
-                            WHERE sgc.DateCutOff > ?
-                            AND sgc.DateCutOff <= ? AND sgc.SiteID = ?
+                            WHERE sgc.DateCutOff >= ?
+                            AND sgc.DateCutOff < ? AND sgc.SiteID = ?
                             ORDER BY s.SiteCode, sgc.DateCutOff";          
 
                //Query for Replenishments
@@ -1260,10 +1138,10 @@ class TopUpReportQuery extends DBHandler{
                                 END As RedemptionGenesis,
 
                                 tr.DateCreated,  tr.SiteID
-                                FROM npos.transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)
-                                INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
-                                INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
-                                INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
+                                FROM transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)
+                                INNER JOIN transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
+                                INNER JOIN terminals t ON t.TerminalID = tr.TerminalID
+                                INNER JOIN accounts a ON tr.CreatedByAID = a.AID
                                 WHERE tr.DateCreated >= ? AND tr.DateCreated < ?
                                   AND tr.SiteID = ?
                                   AND tr.Status IN(1,4)
@@ -1277,8 +1155,8 @@ class TopUpReportQuery extends DBHandler{
                             AND DateCreated < :enddate  
                             AND SiteID = :siteid
                             AND TicketCode NOT IN (SELECT TicketCode FROM ((SELECT stckr.TicketCode FROM stackermanagement.stackersummary stckr -- Cancelled Tickets in Stacker 
-                                     INNER JOIN npos.accounts acct ON stckr.CreatedByAID = acct.AID
-                                     INNER JOIN npos.siteaccounts sa ON acct.AID = sa.AID
+                                     INNER JOIN accounts acct ON stckr.CreatedByAID = acct.AID
+                                     INNER JOIN siteaccounts sa ON acct.AID = sa.AID
                                      WHERE stckr.DateCancelledOn >= :startdate AND stckr.DateCancelledOn < :enddate
                                      AND acct.AccountTypeID IN (4, 15))
                             UNION
@@ -1287,17 +1165,17 @@ class TopUpReportQuery extends DBHandler{
                                  UNION
                                  (SELECT TicketCode FROM vouchermanagement.tickets tckt  -- Encashed Tickets
                                  WHERE tckt.DateEncashed >= :startdate AND tckt.DateEncashed < :enddate 
-                                 AND tckt.EncashedByAID IN (SELECT acct.AID FROM npos.accounts acct WHERE acct.AccountTypeID = 4
-                                 AND acct.AID IN (SELECT sacct.AID FROM npos.siteaccounts sacct))))
+                                 AND tckt.EncashedByAID IN (SELECT acct.AID FROM accounts acct WHERE acct.AccountTypeID = 4
+                                 AND acct.AID IN (SELECT sacct.AID FROM siteaccounts sacct))))
                                  AS GetLessTicketCode
                                  ) GROUP BY SiteID";
                 
                 //Query for Printed Tickets of the pick date (per site/per cutoff)
                 $query8 = "SELECT SiteID, SUM(PrintedTickets) AS PrintedTickets, DateCreated FROM (
-                    SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets, tr.DateCreated FROM npos.transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)  -- Printed Tickets through W
-                            INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
-                            INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
-                            INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
+                    SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets, tr.DateCreated FROM transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)  -- Printed Tickets through W
+                            INNER JOIN transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
+                            INNER JOIN terminals t ON t.TerminalID = tr.TerminalID
+                            INNER JOIN accounts a ON ts.CreatedByAID = a.AID
                             LEFT JOIN stackermanagement.stackersummary stckr ON stckr.StackerSummaryID = tr.StackerSummaryID
                             WHERE tr.DateCreated >= :startdate AND tr.DateCreated < :enddate 
                               AND tr.SiteID = :siteid 
@@ -1380,19 +1258,19 @@ class TopUpReportQuery extends DBHandler{
                                         ELSE 0 -- if not deposit
                                 END) AS EwalletTicketDeposit 
 
-                            FROM npos.ewallettrans et
+                            FROM ewallettrans et
                             WHERE et.StartDate >= ?  AND et.StartDate <= ?
                             AND et.SiteID IN (?) AND et.Status IN (1,3)
                             GROUP BY et.SiteID";
 
                 $query11 = "SELECT IFNULL(SUM(Amount), 0) AS EncashedTicketsV2, t.DateEncashed, t.UpdatedByAID, t.SiteID, ad.Name   
                    FROM vouchermanagement.tickets t 
-                   LEFT JOIN npos.accountdetails ad ON t.UpdatedByAID = ad.AID
+                   LEFT JOIN accountdetails ad ON t.UpdatedByAID = ad.AID
                    WHERE t.DateEncashed >= ? AND t.DateEncashed < ? 
                    AND t.SiteID = ?
                    AND TicketCode NOT IN (
                            SELECT IFNULL(ss.TicketCode, '') FROM stackermanagement.stackersummary ss 
-                           INNER JOIN npos.ewallettrans ewt ON ewt.StackerSummaryID = ss.StackerSummaryID 
+                           INNER JOIN ewallettrans ewt ON ewt.StackerSummaryID = ss.StackerSummaryID 
                            WHERE ewt.TransType = 'W' 
                            GROUP BY ewt.SiteID 
                            ORDER BY ss.StackerSummaryID DESC
@@ -1813,14 +1691,16 @@ class TopUpReportQuery extends DBHandler{
               
           if(isset($_GET['siteid']) && $_GET['siteid'] != '') {
               $query3 = "SELECT td.Amount, td.SiteID                 
-                FROM transactiondetails td                
+                FROM transactiondetails td 
+                FORCE INDEX (IX_transactiondetails_DateCreated)
                 WHERE td.DateCreated >= ? AND td.DateCreated < ? AND td.Status IN (1,4) AND td.SiteID = ?
                 ORDER BY s.$sort $dir";
               
               
           } else {
                $query3 = "SELECT td.TransactionDetailsID, td.Amount,td.TransactionType, td.SiteID                 
-                FROM transactiondetails td                
+                FROM transactiondetails td
+                FORCE INDEX (IX_transactiondetails_DateCreated)
                 WHERE td.DateCreated >= ? AND td.DateCreated < ? -- AND td.Status IN (1,4) 
                 ORDER BY td.$sort $dir";
           }
@@ -1965,8 +1845,8 @@ class TopUpReportQuery extends DBHandler{
                                   WHEN 3 THEN 'Fulfillment Approved'
                                   WHEN 4 THEN 'Fulfillment Denied'
                             END AS Status, b.Name, c.TerminalCode"
-                        ." FROM npos.ewallettrans a"
-                        ." INNER JOIN npos.accountdetails b ON b.AID = a.CreatedByAID"
+                        ." FROM ewallettrans a"
+                        ." INNER JOIN accountdetails b ON b.AID = a.CreatedByAID"
                         ." LEFT JOIN terminals c ON c.TerminalID=a.TerminalID ".$where;     
           
           $this->prepare($stmt);
@@ -2020,8 +1900,8 @@ class TopUpReportQuery extends DBHandler{
                             WHEN 3 THEN 'Fulfillment Approved'
                             WHEN 4 THEN 'Fulfillment Denied'
                       END AS Status, b.Name "
-                  ." FROM npos.ewallettrans a"
-                  ." INNER JOIN npos.accountdetails b ON b.AID = a.CreatedByAID ".$where;     
+                  ." FROM ewallettrans a"
+                  ." INNER JOIN accountdetails b ON b.AID = a.CreatedByAID ".$where;     
           
           $this->prepare($stmt);
           $this->execute();
@@ -2037,7 +1917,7 @@ class TopUpReportQuery extends DBHandler{
                 "INNER JOIN sites s ON s.SiteID = r.SiteID " .
                 "INNER JOIN ref_replenishmenttype ref ON r.ReplenishmentTypeID = ref.ReplenishmentTypeID " .
                 "INNER JOIN accounts a ON a.AID = r.CreatedByAID " .
-                "INNER JOIN accountdetails ad ON a.AID = ad.AID WHERE r.DateCreated BETWEEN '$startdate' AND '$enddate' ORDER BY r.DateCreated ASC";
+                "INNER JOIN accountdetails ad ON a.AID = ad.AID WHERE r.DateCreated >= $startdate' AND r.DateCreated <'$enddate' ORDER BY r.DateCreated ASC";
         $this->prepare($query);
         $this->execute();
         return $this->fetchAllData();

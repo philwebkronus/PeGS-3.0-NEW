@@ -164,7 +164,7 @@ class CSManagement extends DBHandler{
          */
         public function getTransSummary($terminalid)
         {
-            $stmt = "SELECT max(TransactionsSummaryID) as summaryID, MAX(LoyaltyCardNumber) as loyaltyCard FROM transactionsummary
+            $stmt = "SELECT max(TransactionsSummaryID) as summaryID, (LoyaltyCardNumber) as loyaltyCard FROM transactionsummary
                 WHERE TerminalID = ? AND DateEnded <> 0";
             $this->prepare($stmt);
             $this->bindparameter(1, $terminalid);

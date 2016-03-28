@@ -606,7 +606,10 @@ if ($connected) {
                                     } else {
                                         $isVIP = 0;
                                     }
-                                    break;
+                                    $MGID = $_CasinoGamingPlayerAPI->validateCasinoAccount($login, $serverId, $url, $capiusername, $capipassword, $capiplayername, $capiserverID, $password);
+                                    $PID = $MGID['AccountInfo']['UserExists'];
+                                    $vaccountExist=$PID;
+                                     break;
                                 case strstr($vprovidername, "RTG2"):
                                     $url = $_PlayerAPI[$serverId - 1];
                                     $cashierurl = $_ServiceAPI[$serverId - 1];
@@ -640,6 +643,7 @@ if ($connected) {
                                     } else {
                                         $isVIP = 0;
                                     }
+                                    $PID = $_RealtimeGamingCashierAPI->GetPIDFromLogin($login);
                                     break;
                                 case strstr($vprovidername, "v15"):
                                     $hashedpass = sha1($password);
@@ -704,8 +708,7 @@ if ($connected) {
                             }
 
                             if ($usermode == 0) {
-                                $PID = $_RealtimeGamingCashierAPI->GetPIDFromLogin($login);
-                                if (count($PID['GetPIDFromLoginResult'])<=0)
+                                if (count($PID['GetPIDFromLoginResult'])<=0 || $vaccountExist<=0)
                                     {
                                     $vapiResult = $_CasinoGamingPlayerAPI->createTerminalAccount($vprovidername, $serverId, $url, $login, $password, $aid, $currency, $email, $fname, $lname, $dayphone, $evephone, $addr1, $addr2, $city, $country, $state, $zip, $userID, $birthdate, $fax, $occupation, $sex, $alias, $casinoID, $ip, $mac, $downloadID, $clientID, $putInAffPID, $calledFromCasino, $hashedPassword, $agentID, $currentPosition, $thirdPartyPID, $capiusername, $capipassword, $capiplayername, $capiserverID, $isVIP, $usermode);
                                     if($vapiResult == NULL) { // proceeed if certificate does not match

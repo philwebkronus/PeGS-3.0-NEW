@@ -46,13 +46,12 @@ class RptOperator extends DBHandler
                         sum(tr.Amount) AS amount,
                         a.UserName 
                 from transactiondetails tr
-                inner join transactionrequestlogs trl on tr.TransactionReferenceID = trl.TransactionReferenceID
                 inner join transactionsummary ts on ts.TransactionsSummaryID = tr.TransactionSummaryID
                 inner join terminals t on t.TerminalID = tr.TerminalID
                 inner join accounts a on a.AID = tr.CreatedByAID
                 where tr.SiteID IN(".$site.") AND
                 ts.DateStarted >= ? and ts.DateStarted < ? AND tr.Status IN(1,4)
-                and trl.Status IN(1,3) and (tr.StackerSummaryID IS NULL OR trim(tr.StackerSummaryID) <> '')
+                and (tr.StackerSummaryID IS NULL OR trim(tr.StackerSummaryID) <> '')
                 group by tr.TransactionType,tr.TransactionSummaryID 
                 order by t.TerminalCode,ts.DateStarted Desc ";
         $this->prepare($stmt);
@@ -187,11 +186,10 @@ class RptOperator extends DBHandler
                   SELECT  
                     count(t.TerminalID) as ActiveSession
                   FROM 
-                    terminalsessions as ts, 
-                    terminals as t
+                    terminalsessions ts
+                        INNER JOIN terminals t
+                        ON t.terminalID=ts.TerminalID
                   WHERE
-                    t.TerminalID = ts.TerminalID
-                    AND
                     ts.LoyaltyCardNumber = :cardnumber";
         
         $this->prepare($query);
@@ -203,11 +201,10 @@ class RptOperator extends DBHandler
                   SELECT  
                     count(t.TerminalID) as ActiveSession
                   FROM 
-                    terminalsessions as ts, 
-                    terminals as t
+                    terminalsessions ts
+                        INNER JOIN terminals t
+                        ON t.terminalID=ts.TerminalID
                   WHERE
-                    t.TerminalID = ts.TerminalID
-                    AND
                     t.SiteID = :siteID";
         
         $this->prepare($query);
@@ -236,11 +233,10 @@ class RptOperator extends DBHandler
                   SELECT  
                     count(t.TerminalID) as ActiveSession
                   FROM 
-                    terminalsessions as ts, 
-                    terminals as t
+                    terminalsessions ts
+                        INNER JOIN terminals t
+                        ON t.terminalID=ts.TerminalID
                   WHERE
-                    t.TerminalID = ts.TerminalID
-                    AND
                     ts.LoyaltyCardNumber = :cardnumber
                     AND ts.UserMode = :usermode";
         
@@ -255,11 +251,10 @@ class RptOperator extends DBHandler
                   SELECT  
                     count(t.TerminalID) as ActiveSession
                   FROM 
-                    terminalsessions as ts, 
-                    terminals as t
+                    terminalsessions ts
+                        INNER JOIN terminals t
+                        ON t.terminalID=ts.TerminalID
                   WHERE
-                    t.TerminalID = ts.TerminalID
-                    AND
                     t.SiteID = :siteID
                     AND ts.UserMode = :usermode";
         
@@ -341,14 +336,13 @@ class RptOperator extends DBHandler
                     ts.UserMode, 
                     ts.LoyaltyCardNumber
                   FROM 
-                    terminalsessions as ts, 
-                    terminals as t,
-                    ref_services as rs
+                  FROM 
+                    terminalsessions ts 
+                    INNER JOIN terminals t 
+                        ON t.TerminalID = ts.TerminalID
+                    INNER JOIN ref_services rs 
+                        ON rs.ServiceID = ts.ServiceID
                   WHERE
-                    t.TerminalID = ts.TerminalID
-                    AND
-                    ts.ServiceID = rs.ServiceID
-                    AND
                     t.SiteID = :siteID
                  
                   ORDER BY
@@ -517,14 +511,12 @@ class RptOperator extends DBHandler
                 ts.UserMode,
                 ts.LoyaltyCardNumber
                 FROM 
-                terminalsessions as ts, 
-                terminals as t,
-                ref_services as rs
+                    terminalsessions ts 
+                    INNER JOIN terminals t 
+                        ON t.TerminalID = ts.TerminalID
+                    INNER JOIN ref_services rs 
+                        ON rs.ServiceID = ts.ServiceID
                 WHERE
-                t.TerminalID = ts.TerminalID
-                AND
-                ts.ServiceID = rs.ServiceID
-                AND
                 t.SiteID = :siteID
                 ORDER BY
                 t.TerminalID ASC";
@@ -691,14 +683,12 @@ class RptOperator extends DBHandler
                     ts.UBServiceLogin,
                     ts.UserMode
                   FROM 
-                    terminalsessions as ts, 
-                    terminals as t,
-                    ref_services as rs
+                    terminalsessions ts 
+                    INNER JOIN terminals t 
+                        ON t.TerminalID = ts.TerminalID
+                    INNER JOIN ref_services rs 
+                        ON rs.ServiceID = ts.ServiceID
                   WHERE
-                    t.TerminalID = ts.TerminalID
-                    AND
-                    ts.ServiceID = rs.ServiceID
-                    AND
                     ts.LoyaltyCardNumber = :cardnum
                   ORDER BY
                     t.TerminalID ASC";
@@ -862,14 +852,12 @@ class RptOperator extends DBHandler
                     ts.UBServiceLogin,
                     ts.UserMode
                   FROM 
-                    terminalsessions as ts, 
-                    terminals as t,
-                    ref_services as rs
+                    terminalsessions ts 
+                    INNER JOIN terminals t 
+                        ON t.TerminalID = ts.TerminalID
+                    INNER JOIN ref_services rs 
+                        ON rs.ServiceID = ts.ServiceID
                   WHERE
-                    t.TerminalID = ts.TerminalID
-                    AND
-                    ts.ServiceID = rs.ServiceID
-                    AND
                     ts.LoyaltyCardNumber = :cardnum
                   ORDER BY
                     t.TerminalID ASC";
@@ -1119,8 +1107,8 @@ class RptOperator extends DBHandler
                                        ELSE -- Not Coupon
                                          CASE IFNULL(tr.StackerSummaryID, '')
                                            WHEN '' THEN 
-                                                CASE (SELECT COUNT(*) as IsBancnet FROM npos.banktransactionlogs btl
-                                                            INNER JOIN npos.transactionrequestlogs trl ON btl.TransactionRequestLogID = trl.TransactionRequestLogID
+                                                CASE (SELECT COUNT(btl.BankTransactionLogID) as IsBancnet FROM banktransactionlogs btl
+                                                            INNER JOIN transactionrequestlogs trl ON btl.TransactionRequestLogID = trl.TransactionRequestLogID
                                                       WHERE trl.TransactionReferenceID = tr.TransactionReferenceID)
                                                 WHEN 0 THEN tr.Amount -- Cash
                                                 ELSE 0 END 
@@ -1143,8 +1131,8 @@ class RptOperator extends DBHandler
                                        ELSE -- Not Coupon
                                          CASE IFNULL(tr.StackerSummaryID, '')
                                            WHEN '' THEN 
-                                                CASE (SELECT COUNT(*) as IsBancnet FROM npos.banktransactionlogs btl
-                                                            INNER JOIN npos.transactionrequestlogs trl ON btl.TransactionRequestLogID = trl.TransactionRequestLogID
+                                                CASE (SELECT COUNT(btl.BankTransactionLogID) as IsBancnet FROM banktransactionlogs btl
+                                                            INNER JOIN transactionrequestlogs trl ON btl.TransactionRequestLogID = trl.TransactionRequestLogID
                                                       WHERE trl.TransactionReferenceID = tr.TransactionReferenceID)
                                                 WHEN 0 THEN tr.Amount -- Reload, Cash
                                                 ELSE 0 END 
@@ -1226,8 +1214,8 @@ class RptOperator extends DBHandler
                                        ELSE -- Not Coupon
                                          CASE IFNULL(tr.StackerSummaryID, '')
                                             WHEN '' THEN 
-                                                CASE (SELECT COUNT(*) as IsBancnet FROM npos.banktransactionlogs btl
-                                                            INNER JOIN npos.transactionrequestlogs trl ON btl.TransactionRequestLogID = trl.TransactionRequestLogID
+                                                CASE (SELECT COUNT(btl.BankTransactionLogID) as IsBancnet FROM banktransactionlogs btl
+                                                            INNER JOIN transactionrequestlogs trl ON btl.TransactionRequestLogID = trl.TransactionRequestLogID
                                                       WHERE trl.TransactionReferenceID = tr.TransactionReferenceID)
                                                 WHEN 1 THEN tr.Amount -- Bancnet
                                                 ELSE 0 END 
@@ -1244,8 +1232,8 @@ class RptOperator extends DBHandler
                                        ELSE -- Not Coupon
                                          CASE IFNULL(tr.StackerSummaryID, '')
                                             WHEN '' THEN 
-                                                CASE (SELECT COUNT(*) as IsBancnet FROM npos.banktransactionlogs btl
-                                                            INNER JOIN npos.transactionrequestlogs trl ON btl.TransactionRequestLogID = trl.TransactionRequestLogID
+                                                CASE (SELECT COUNT(btl.BankTransactionLogID) as IsBancnet FROM banktransactionlogs btl
+                                                            INNER JOIN transactionrequestlogs trl ON btl.TransactionRequestLogID = trl.TransactionRequestLogID
                                         WHERE trl.TransactionReferenceID = tr.TransactionReferenceID)
                                                 WHEN 1 THEN tr.Amount -- Reload, Bancnet
                                                 ELSE 0 END 
@@ -1485,9 +1473,9 @@ class RptOperator extends DBHandler
         return $totalencashedtickets;
     }
     public function getSiteByAID($aid) {
-        $sql = "SELECT DISTINCT s.SiteID, s.SiteCode FROM npos.siteaccounts sa 
-                INNER JOIN npos.accounts a ON a.AID = sa.AID 
-                INNER JOIN npos.sites s ON s.SiteID = sa.SiteID 
+        $sql = "SELECT DISTINCT s.SiteID, s.SiteCode FROM siteaccounts sa 
+                INNER JOIN accounts a ON a.AID = sa.AID 
+                INNER JOIN sites s ON s.SiteID = sa.SiteID 
                 WHERE a.AID = ? AND sa.Status = 1 AND s.Status = 1";
         $this->prepare($sql);
         $this->bindparameter(1, $aid);
@@ -1560,8 +1548,7 @@ class RptOperator extends DBHandler
     public function getGrossHoldeSAFE($siteID, $datefrom, $dateto) {
         $sql = "SELECT TransactionDate, s.SiteCode Login, SUM(ts.StartBalance)
                 StartBalance,
-                SUM(ts.WalletReloads) WalletReloads, SUM(ts.EndBalance) EndBalance, SUM(IFNULL(tl.GenesisWithdrawal,0)) GenesisWithdrawal,
-                SUM(ts.StartBalance) + SUM(ts.WalletReloads) - SUM(ts.EndBalance) - SUM(IFNULL(tl.GenesisWithdrawal,0)) GrossHold
+                SUM(ts.WalletReloads) WalletReloads, SUM(ts.EndBalance) EndBalance, SUM(IFNULL(tl.GenesisWithdrawal,0)) GenesisWithdrawal
                 FROM transactionsummary ts
                 INNER JOIN sites s		
                 ON ts.SiteID = s.SiteID
@@ -1594,15 +1581,14 @@ class RptOperator extends DBHandler
         for ($i = 0; $i < count($listsite); $i++) {
             $query = "SELECT IFNULL(SUM(Amount), 0) AS EncashedTicketsV2, t.UpdatedByAID, t.SiteID, ad.Name   
                         FROM vouchermanagement.tickets t 
-                        LEFT JOIN npos.accountdetails ad ON t.UpdatedByAID = ad.AID 
+                        LEFT JOIN accountdetails ad ON t.UpdatedByAID = ad.AID 
                         WHERE t.DateEncashed >= :startdate AND t.DateEncashed < :enddate
-                        AND t.UpdatedByAID IN (SELECT sacct.AID FROM npos.siteaccounts sacct WHERE sacct.SiteID IN (".$listsite[$i]."))
+                        AND t.UpdatedByAID IN (SELECT sacct.AID FROM siteaccounts sacct WHERE sacct.SiteID IN (".$listsite[$i]."))
                         AND t.SiteID = ".$listsite[$i]."
                         AND TicketCode NOT IN (
                                 SELECT IFNULL(ss.TicketCode, '') FROM stackermanagement.stackersummary ss 
-                                INNER JOIN npos.ewallettrans ewt ON ewt.StackerSummaryID = ss.StackerSummaryID 
-                                WHERE ewt.SiteID = ".$listsite[$i]." AND ewt.TransType = 'W' 
-                                ORDER BY ss.StackerSummaryID DESC
+                                INNER JOIN ewallettrans ewt ON ewt.StackerSummaryID = ss.StackerSummaryID 
+                                WHERE ewt.SiteID = ".$listsite[$i]." AND ewt.TransType = 'W'
                         )";
             
              $this->prepare($query);

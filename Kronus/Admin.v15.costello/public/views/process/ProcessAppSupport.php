@@ -451,6 +451,7 @@ if ($connected && $connected2 && $connected3) {
                 $sapiWrapper = new SAPIWrapper();
                 $login = $_POST['login'];
                 $terminal = $_POST['terminal'];
+                $SAPIterminal = rtrim($terminal, 'VIP');
                 $cardnumber = $_POST['cardnumber'];
                 $serviceID = $_POST['serviceid'];
                 $call = 2;
@@ -481,7 +482,7 @@ if ($connected && $connected2 && $connected3) {
                         if ($result['ErrorCode'] == 0) {
                             if ($isEGM > 0) {
                                 $sapiURL = $SAPI['endsession'];
-                                $sapiWrapper->endSession($terminal, $sapiURL); //call sapi endsession
+                                $sapiWrapper->endSession($SAPIterminal, $sapiURL); //call sapi endsession
                             }
                             $call = 0;
                             $response = array('ErrorCode' => 0,

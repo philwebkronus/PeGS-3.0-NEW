@@ -131,7 +131,7 @@ class RptPegsOps extends DBHandler{
       {
           if($zall > 0)
           {
-              $stmt = "SELECT COUNT(*) as count FROM sites a INNER JOIN sitedetails b on a.SiteID = b.SiteID 
+              $stmt = "SELECT COUNT(a.SiteID) as count FROM sites a INNER JOIN sitedetails b on a.SiteID = b.SiteID 
                    INNER JOIN ref_islands c on b.IslandID = c.IslandID 
                    INNER JOIN ref_regions d on b.RegionID = d.RegionID 
                    INNER JOIN ref_provinces e on b.ProvinceID = e.ProvinceID 
@@ -146,7 +146,7 @@ class RptPegsOps extends DBHandler{
           }
           else
           {
-              $stmt = "SELECT COUNT(*) as count FROM sites a INNER JOIN sitedetails b on a.SiteID = b.SiteID 
+              $stmt = "SELECT COUNT(a.SiteID) as count FROM sites a INNER JOIN sitedetails b on a.SiteID = b.SiteID 
                    INNER JOIN ref_islands c on b.IslandID = c.IslandID 
                    INNER JOIN ref_regions d on b.RegionID = d.RegionID 
                    INNER JOIN ref_provinces e on b.ProvinceID = e.ProvinceID 
@@ -267,12 +267,13 @@ class RptPegsOps extends DBHandler{
       }
       function countterminallisting($zsiteID)
       {
-          $stmt = "select count(*) as ctrterminal from (select distinct tid,tname,tcode,tsiteid,Service,ServiceTerminalID,ServiceTerminalAcct from
-                   (((select TerminalID as tid, TerminalName as tname,TerminalCode as tcode,SiteID as tsiteid from terminals) as t 
-                   inner join terminalservices ts on t.tid = ts.TerminalID ) 
-                   left join (select ts.TerminalId as termid,ts.ServiceID as Service,ts.Status as stat,IF(ts.ServiceID = 9,tm.ServiceTerminalID,null) as ServiceTerminalID,IF(ts.ServiceID = 9,st.ServiceTerminalAccount,null) as ServiceTerminalAcct from terminalservices ts 
-                   left join terminalmapping tm on ts.TerminalID = tm.TerminalID 
-                   left join serviceterminals st on tm.ServiceTerminalID= st.ServiceTerminalID ) as mg on tid = termid ) where  stat = 1 and tsiteid = ? order by tid ) as ctr";
+          $stmt = "SELECT COUNT(*) AS ctrterminal
+                    FROM
+                     (
+                    SELECT DISTINCT t.TerminalID, t.TerminalName, t.TerminalCode, t.SiteID, ts.ServiceID
+                    FROM terminalservices ts INNER JOIN terminals t ON ts.TerminalID = t.TerminalID
+                    WHERE ts.Status = 1 AND t.SiteID = ?
+                      ) AS ctr";
           $this->prepare($stmt);
           $this->bindparameter(1, $zsiteID);
           $this->execute();
@@ -285,27 +286,20 @@ class RptPegsOps extends DBHandler{
           //check if exporting (excel / pdf)
           if($zstart == null && $zlimit == null)
           {
-              $stmt = "select distinct tid, tcode, tstat, c.ServiceName, ServiceTerminalAcct,TerminalType from
-                    (((select TerminalID as tid,TerminalName as tname,TerminalCode as tcode,SiteID as tsiteid, Status as tstat, TerminalType as TerminalType from terminals) as t 
-                    inner join terminalservices ts on t.tid = ts.TerminalID ) 
-                    left join (select ts.TerminalId as termid,ts.ServiceID as Service,ts.Status as stat,IF(ts.ServiceID = 9,tm.ServiceTerminalID,null) as ServiceTerminalID,IF(ts.ServiceID = 9,st.ServiceTerminalAccount,null) as ServiceTerminalAcct from terminalservices ts 
-                    left join terminalmapping tm on ts.TerminalID = tm.TerminalID 
-                    left join serviceterminals st on tm.ServiceTerminalID= st.ServiceTerminalID ) as mg on tid = termid ) 
-                    left join ref_services c ON Service= c.ServiceID
-                    where  stat = 1 and tsiteid = ? ORDER BY TerminalID ASC";
+              $stmt = "SELECT DISTINCT t.TerminalID AS tid, t.TerminalCode AS tcode, t.Status AS tstat, rsrv.ServiceName, t.TerminalType 
+                        FROM terminalservices ts INNER JOIN terminals t ON ts.TerminalID = t.TerminalID
+                        LEFT JOIN ref_services rsrv ON ts.ServiceID = rsrv.ServiceID
+                        WHERE ts.Status = 1 AND t.SiteID = ?
+                        ORDER BY t.TerminalID ASC";
           }
           //jqgrid pagination
           else
           {
-              $stmt = "select distinct tid, tcode, tstat, c.ServiceName, ServiceTerminalAcct, TerminalType from
-                    (((select TerminalID as tid,TerminalName as tname,TerminalCode as tcode,SiteID as tsiteid, Status as tstat, TerminalType as TerminalType from terminals) as t 
-                    inner join terminalservices ts on t.tid = ts.TerminalID ) 
-                    left join (select ts.TerminalId as termid,ts.ServiceID as Service,ts.Status as stat,IF(ts.ServiceID = 9,tm.ServiceTerminalID,null) as ServiceTerminalID,IF(ts.ServiceID = 9,st.ServiceTerminalAccount,null) as ServiceTerminalAcct from terminalservices ts 
-                    left join terminalmapping tm on ts.TerminalID = tm.TerminalID 
-                    left join serviceterminals st on tm.ServiceTerminalID= st.ServiceTerminalID ) as mg on tid = termid ) 
-                    left join ref_services c ON Service= c.ServiceID
-                    where  stat = 1 and tsiteid = ? ORDER BY ".$zsort." ".$zdirection."
-                    LIMIT ".$zstart.",".$zlimit."";
+              $stmt = "SELECT DISTINCT  t.TerminalID AS tid, t.TerminalCode As tcode, t.Status As tstat, rsrv.ServiceName, t.TerminalType
+                        FROM terminals t INNER JOIN terminalservices ts ON t.TerminalID = ts.TerminalID
+                        LEFT JOIN ref_services rsrv ON ts.ServiceID = rsrv.ServiceID
+                        WHERE ts.Status = 1 AND t.SiteID = ? ORDER BY ".$zsort." ".$zdirection."
+                        LIMIT ".$zstart.",".$zlimit."";
           }
           
           $this->prepare($stmt);

@@ -49,7 +49,7 @@ class ManualAPIFulfillment extends DBHandler
      * Description: get referenceid, loyaltycardnumber, RequestSource
      */
       function getTransactionReferenceIDterminal($terminal){
-            $stmt = "SELECT TransactionReferenceID, LoyaltyCardNumber, RequestSource, ServiceID 
+            $stmt = "SELECT TransactionRequestLogID, TransactionReferenceID, LoyaltyCardNumber, RequestSource, ServiceID 
                 FROM pendingterminaltransactions WHERE TerminalID = ?";
             $this->prepare($stmt);
             $this->bindparameter(1,$terminal);
@@ -79,8 +79,8 @@ class ManualAPIFulfillment extends DBHandler
     * Description: count number of pending user based transaction
     */
       function gettransactionRequestlogs($trefid){
-            $stmt = "SELECT Amount, TransactionReferenceID, TransactionType, ServiceID, UserMode 
-                FROM transactionrequestlogs WHERE TransactionReferenceID = ?";
+            $stmt = "SELECT TransactionRequestLogID,Amount, TransactionReferenceID, TransactionType, ServiceID, UserMode 
+                FROM transactionrequestlogs WHERE TransactionRequestLogID = ?";
             $this->prepare($stmt);
             $this->bindparameter(1,$trefid);
             $this->execute();
@@ -93,14 +93,14 @@ class ManualAPIFulfillment extends DBHandler
      * @return array
      * Description: get the amount, referenceid, transatction type, serviceid usermode, and transactionsummaryid
      */
-      function gettransactionRequestlogslp($trefid){
-            $stmt = "SELECT Amount, TransactionReferenceID, TransactionType, ServiceID, 
-                UserMode, TransactionSummaryID FROM transactionrequestlogslp WHERE TransactionReferenceID = ?";
-            $this->prepare($stmt);
-            $this->bindparameter(1,$trefid);
-            $this->execute();
-            return $this->fetchAllData();      
-      }
+//      function gettransactionRequestlogslp($trefid){
+//            $stmt = "SELECT Amount, TransactionReferenceID, TransactionType, ServiceID, 
+//                UserMode, TransactionSummaryID FROM transactionrequestlogslp WHERE TransactionReferenceID = ?";
+//            $this->prepare($stmt);
+//            $this->bindparameter(1,$trefid);
+//            $this->execute();
+//            return $this->fetchAllData();      
+//      }
       
       /**
      * @author Gerardo V. Jagolino Jr.
@@ -160,7 +160,7 @@ class ManualAPIFulfillment extends DBHandler
      */
       function uptransactionreqlogs($status, $transrefid, $servicetransid, $sevicestatus)
       {
-        $stmt = "UPDATE transactionrequestlogs SET Status = ?, EndDate = NOW(6), ServiceTransactionID = ?, ServiceStatus = ? WHERE TransactionReferenceID = ?";
+        $stmt = "UPDATE transactionrequestlogs SET Status = ?, EndDate = NOW(6), ServiceTransactionID = ?, ServiceStatus = ? WHERE TransactionRequestLogID = ?";
         $this->prepare($stmt);
         $this->bindparameter(1,$status);
         $this->bindparameter(2,$servicetransid);
@@ -258,7 +258,7 @@ class ManualAPIFulfillment extends DBHandler
      */
       function getServiceTransactionID($transrefid)
       {
-        $stmt = "SELECT ServiceTransactionID FROM transactionrequestlogs WHERE TransactionReferenceID = ?";
+        $stmt = "SELECT ServiceTransactionID FROM transactionrequestlogs WHERE TransactionRequestLogID = ?";
         $this->prepare($stmt);
         $this->bindparameter(1,$transrefid);
         $this->execute();
@@ -272,14 +272,14 @@ class ManualAPIFulfillment extends DBHandler
      * @return array
      * Description: get ServiceTransactionID for transctionid in transSerachInfo in launchpad
      */
-      function getServiceTransactionIDLP($transrefid)
-      {
-        $stmt = "SELECT ServiceTransactionID FROM transactionrequestlogslp WHERE TransactionReferenceID = ?";
-        $this->prepare($stmt);
-        $this->bindparameter(1,$transrefid);
-        $this->execute();
-        return $this->fetchData();
-      }
+//      function getServiceTransactionIDLP($transrefid)
+//      {
+//        $stmt = "SELECT ServiceTransactionID FROM transactionrequestlogslp WHERE TransactionReferenceID = ?";
+//        $this->prepare($stmt);
+//        $this->bindparameter(1,$transrefid);
+//        $this->execute();
+//        return $this->fetchData();
+//      }
       
       
       /**
@@ -289,16 +289,16 @@ class ManualAPIFulfillment extends DBHandler
      * Description: update transaction request logs lp status for launchpad source
      * Used in Launchpad Disapproved Withdraw and Deposit/Redeposit Approved 
      */
-      function uptransactionreqlogslp($status, $servciestatus, $transrefid)
-      {
-        $stmt = "UPDATE transactionrequestlogslp SET Status = ?, ServiceStatus = ?, EndDate = now_usec() WHERE TransactionReferenceID = ?";
-        $this->prepare($stmt);
-        $this->bindparameter(1,$status);
-        $this->bindparameter(2,$servciestatus);
-        $this->bindparameter(3,$transrefid);
-        $this->execute();
-        return $this->rowCount();
-      }
+//      function uptransactionreqlogslp($status, $servciestatus, $transrefid)
+//      {
+//        $stmt = "UPDATE transactionrequestlogslp SET Status = ?, ServiceStatus = ?, EndDate = now_usec() WHERE TransactionReferenceID = ?";
+//        $this->prepare($stmt);
+//        $this->bindparameter(1,$status);
+//        $this->bindparameter(2,$servciestatus);
+//        $this->bindparameter(3,$transrefid);
+//        $this->execute();
+//        return $this->rowCount();
+//      }
       
        /**
      * @author Gerardo V. Jagolino Jr.
@@ -307,18 +307,18 @@ class ManualAPIFulfillment extends DBHandler
      * Description: update transaction request logs lp status for launchpad source
      * Used in Launchpad Approved Withdraw and Deposit/Redeposit Disaproved 
      */
-      function uptransactionreqlogslp2($status, $servciestatus, $transrefid, $servicetransid)
-      {
-        $stmt = "UPDATE transactionrequestlogslp SET Status = ?, ServiceStatus = ?, 
-            EndDate = now_usec(), ServiceTransactionID= ? WHERE TransactionReferenceID = ?";
-        $this->prepare($stmt);
-        $this->bindparameter(1,$status);
-        $this->bindparameter(2,$servciestatus);
-        $this->bindparameter(3,$servicetransid);
-        $this->bindparameter(4,$transrefid);
-        $this->execute();
-        return $this->rowCount();
-      }
+//      function uptransactionreqlogslp2($status, $servciestatus, $transrefid, $servicetransid)
+//      {
+//        $stmt = "UPDATE transactionrequestlogslp SET Status = ?, ServiceStatus = ?, 
+//            EndDate = now_usec(), ServiceTransactionID= ? WHERE TransactionReferenceID = ?";
+//        $this->prepare($stmt);
+//        $this->bindparameter(1,$status);
+//        $this->bindparameter(2,$servciestatus);
+//        $this->bindparameter(3,$servicetransid);
+//        $this->bindparameter(4,$transrefid);
+//        $this->execute();
+//        return $this->rowCount();
+//      }
       
       
         /**

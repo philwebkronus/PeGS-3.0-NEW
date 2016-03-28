@@ -137,25 +137,25 @@ class RptSupervisor extends DBHandler
         
         
         $query2 = "SELECT tr.StackerSummaryID, tr.SiteID, tr.CreatedByAID, a.UserName, ad.Name,
-
+ 
                                 -- TOTAL DEPOSIT --
                                 SUM(CASE tr.TransactionType
                                   WHEN 'D' THEN tr.Amount
                                   ELSE 0
-                                END) As TotalDeposit, 
-
+                                END) As TotalDeposit,
+ 
                                 -- TOTAL RELOAD --
                                 SUM(CASE tr.TransactionType
                                   WHEN 'R' THEN tr.Amount
                                   ELSE 0 -- Not Reload
                                 END) As TotalReload,
-
+ 
                                  -- TOTAL REDEMPTION --
                                 SUM(CASE tr.TransactionType
                                   WHEN 'W' THEN tr.Amount
                                   ELSE 0
-                                END) As TotalRedemption, 
-
+                                END) As TotalRedemption,
+ 
                                 -- DEPOSIT CASH --
                                 SUM(CASE tr.TransactionType
                                    WHEN 'D' THEN
@@ -174,7 +174,7 @@ class RptSupervisor extends DBHandler
                                     END
                                    ELSE 0 -- Not Deposit
                                 END) As DepositCash,
-
+ 
                                 -- RELOAD CASH --
                                 SUM(CASE tr.TransactionType
                                    WHEN 'R' THEN
@@ -195,7 +195,7 @@ class RptSupervisor extends DBHandler
                                      END
                                    ELSE 0 -- Not Reload
                                 END) As ReloadCash,
-                                
+                               
                                 -- REDEMPTION CASHIER --
                                 SUM(CASE tr.TransactionType
                                   WHEN 'W' THEN
@@ -204,8 +204,8 @@ class RptSupervisor extends DBHandler
                                           ELSE 0
                                         END -- Genesis
                                   ELSE 0 --  Not Redemption
-                                END) As RedemptionCashier, 
-                                
+                                END) As RedemptionCashier,
+                               
                                 -- REDEMPTION GENESIS --
                                 SUM(CASE tr.TransactionType
                                   WHEN 'W' THEN
@@ -214,8 +214,8 @@ class RptSupervisor extends DBHandler
                                           ELSE 0
                                         END -- Genesis
                                   ELSE 0 --  Not Redemption
-                                END) As RedemptionGenesis, 
-                                
+                                END) As RedemptionGenesis,
+                               
                                 -- DEPOSIT TICKET --
                                 SUM(CASE tr.TransactionType
                                   WHEN 'D' THEN
@@ -234,7 +234,7 @@ class RptSupervisor extends DBHandler
                                     END
                                   ELSE 0 -- Not Deposit
                                 END) As DepositTicket,
-                                
+                               
                                 -- RELOAD TICKET --
                                 SUM(CASE tr.TransactionType
                                   WHEN 'R' THEN
@@ -253,23 +253,25 @@ class RptSupervisor extends DBHandler
                                         END
                                     END
                                   ELSE 0 -- Not Reload
-                                END) As ReloadTicket, 
-
+                                END) As ReloadTicket,
+ 
                                 tr.DateCreated
-                                FROM npos.transactiondetails tr INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
-                                INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
-                                INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
-                                INNER JOIN npos.accountdetails ad ON ad.AID = tr.CreatedByAID
-                                INNER JOIN npos.sites s ON tr.SiteID = s.SiteID
-                                WHERE tr.SiteID IN (".$zsiteID.")
-                                  AND tr.DateCreated >= ? AND tr.DateCreated < ?
+                                FROM transactiondetails tr FORCE INDEX (IX_transactiondetails_DateCreated) 
+                                INNER JOIN transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
+                                INNER JOIN terminals t ON t.TerminalID = tr.TerminalID
+                                INNER JOIN accounts a ON ts.CreatedByAID = a.AID
+                                INNER JOIN accountdetails ad ON ad.AID = tr.CreatedByAID
+                                INNER JOIN sites s ON tr.SiteID = s.SiteID
+                                WHERE tr.DateCreated >= ? AND tr.DateCreated < ?
+                                  AND tr.SiteID IN (".$zsiteID.")
                                   AND tr.Status IN(1,4) AND a.AccountTypeID NOT IN (17)
                                 GROUP By tr.CreatedByAID ORDER BY tr.CreatedByAID"; 
         
-        $query3 = "SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets FROM npos.transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)  -- Printed Tickets through W
-                                INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
-                                INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
-                                INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
+        $query3 = "SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets 
+                                FROM transactiondetails tr FORCE INDEX (IX_transactiondetails_DateCreated)  -- Printed Tickets through W
+                                INNER JOIN transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
+                                INNER JOIN terminals t ON t.TerminalID = tr.TerminalID
+                                INNER JOIN accounts a ON ts.CreatedByAID = a.AID
                                 LEFT JOIN stackermanagement.stackersummary stckr ON stckr.StackerSummaryID = tr.StackerSummaryID
                                 WHERE tr.DateCreated >= ? AND tr.DateCreated < ?
                                   AND tr.Status IN(1,4)
@@ -289,20 +291,20 @@ class RptSupervisor extends DBHandler
                                         WHEN 'D' THEN et.Amount -- if deposit
                                         ELSE 0 -- if not deposit
                                 END) AS EwalletDeposits,
-
+ 
                                 -- Total e-SAFE Withdrawal
                                 SUM(CASE et.TransType
                                         WHEN 'W' THEN et.Amount -- if redemption
                                         ELSE 0 -- if not redemption
-                                END) AS EwalletRedemption, 
-                                
+                                END) AS EwalletRedemption,
+                               
                                 SUM(CASE IFNULL(et.TraceNumber,'')
-                                        WHEN '' THEN  
+                                        WHEN '' THEN 
                                                 CASE IFNULL(et.ReferenceNumber, '')
                                                 WHEN '' THEN -- if not bancnet
                                                         CASE et.TransType
                                                         WHEN 'D' THEN -- if deposit
-                                                                CASE et.PaymentType 
+                                                                CASE et.PaymentType
                                                                 WHEN 1 THEN et.Amount -- if Cash
                                                                 ELSE 0 -- if not Cash
                                                                 END
@@ -312,7 +314,7 @@ class RptSupervisor extends DBHandler
                                                 END
                                         ELSE 0
                                 END) AS EwalletCashDeposit,
-                                
+                               
                                 SUM(CASE IFNULL(et.TraceNumber,'')
                                         WHEN '' THEN 0
                                         ELSE CASE IFNULL(et.ReferenceNumber, '')
@@ -322,31 +324,31 @@ class RptSupervisor extends DBHandler
                                                         ELSE 0 -- if not deposit
                                                         END
                                                 END
-                                END) AS EwalletBancnetDeposit,  
-                                
-                                SUM(CASE TransType  
-                                    WHEN 'D' THEN 
-                                        CASE PaymentType 
-                                            WHEN 2 THEN Amount 
+                                END) AS EwalletBancnetDeposit, 
+                               
+                                SUM(CASE TransType 
+                                    WHEN 'D' THEN
+                                        CASE PaymentType
+                                            WHEN 2 THEN Amount
                                             ELSE 0
-                                        END 
-                                    ELSE 0 
+                                        END
+                                    ELSE 0
                                 END) AS EwalletVoucherDeposit
-
-                            FROM npos.ewallettrans et
-                            LEFT JOIN npos.accountdetails ad ON et.CreatedByAID = ad.AID
+ 
+                            FROM ewallettrans et
+                            LEFT JOIN accountdetails ad ON et.CreatedByAID = ad.AID
                             WHERE et.StartDate >= ? AND et.StartDate < ?
                             AND et.SiteID IN (".$zsiteID.") AND et.Status IN (1,3)
                             GROUP BY et.CreatedByAID";
         
         $query6 = "SELECT IFNULL(SUM(Amount), 0) AS EncashedTicketsV2, t.UpdatedByAID, t.SiteID, ad.Name   
                    FROM vouchermanagement.tickets t 
-                   LEFT JOIN npos.accountdetails ad ON t.UpdatedByAID = ad.AID
+                   LEFT JOIN accountdetails ad ON t.UpdatedByAID = ad.AID
                    WHERE t.DateEncashed >= ? AND t.DateEncashed < ?
-                   AND t.UpdatedByAID IN (SELECT sacct.AID FROM npos.siteaccounts sacct WHERE sacct.SiteID IN (".$zsiteID."))
+                   AND t.UpdatedByAID IN (SELECT sacct.AID FROM siteaccounts sacct WHERE sacct.SiteID IN (".$zsiteID."))
                    AND TicketCode NOT IN (
                            SELECT IFNULL(ss.TicketCode, '') FROM stackermanagement.stackersummary ss 
-                           INNER JOIN npos.ewallettrans ewt ON ewt.StackerSummaryID = ss.StackerSummaryID 
+                           INNER JOIN ewallettrans ewt ON ewt.StackerSummaryID = ss.StackerSummaryID 
                            WHERE ewt.SiteID IN (".$zsiteID.") AND ewt.TransType = 'W' 
                            ORDER BY ss.StackerSummaryID DESC
                    )
@@ -479,17 +481,16 @@ class RptSupervisor extends DBHandler
         $query1 = "SELECT s.SiteID, IFNULL(SUM(mr.ActualAmount), 0) AS ManualRedemption,
                                 CASE sd.RegionID WHEN 17 THEN 'Metro Manila' ELSE 'Provincial' END AS Location,
                                 sb.MinBalance
-                                FROM sites s 
+                                FROM sites s
                                 LEFT JOIN  sitebalance sb ON s.SiteID = sb.SiteID
                                 LEFT JOIN  sitedetails sd ON s.SiteID = sd.SiteID
                                 LEFT JOIN manualredemptions mr FORCE INDEX(IX_manualredemptions_TransactionDate) ON s.SiteID = mr.SiteID
-                                  AND mr.TransactionDate >= ? AND mr.TransactionDate < ?
-                                WHERE s.SiteID NOT IN (1, 235)
+                                WHERE mr.TransactionDate >= ? AND mr.TransactionDate < ?
                                 AND s.SiteID IN (".$zsiteID.")
                                 ORDER BY s.SiteCode";
 
         $query2 = "SELECT tr.SiteID,
-
+ 
                                 -- DEPOSIT COUPON --
                                 SUM(CASE tr.TransactionType
                                   WHEN 'D' THEN
@@ -498,7 +499,7 @@ class RptSupervisor extends DBHandler
                                       ELSE 0
                                      END
                                   ELSE 0 END) As DepositCoupon,
-                                 
+                                
                                 -- REDEMPTION CASHIER --
                                 SUM(CASE tr.TransactionType
                                   WHEN 'W' THEN
@@ -507,15 +508,15 @@ class RptSupervisor extends DBHandler
                                           ELSE 0
                                         END -- Genesis
                                   ELSE 0 --  Not Redemption
-                                END) As RedemptionCashier, 
-                                    
+                                END) As RedemptionCashier,
+                                   
                                 -- Total Redemption --
                                SUM(CASE tr.TransactionType
                                     WHEN 'W' THEN
                                     tr.Amount -- Redemption
                                 ELSE 0 --  Not Redemption
-                              END) As TotalRedemption, 
-                                
+                              END) As TotalRedemption,
+                               
                                 -- DEPOSIT CASH --
                                 SUM(CASE tr.TransactionType
                                    WHEN 'D' THEN
@@ -523,12 +524,12 @@ class RptSupervisor extends DBHandler
                                        WHEN 2 THEN 0 -- Coupon
                                        ELSE -- Not Coupon
                                          CASE IFNULL(tr.StackerSummaryID, '')
-                                           WHEN '' THEN 
-                                                CASE (SELECT COUNT(*) as IsBancnet FROM npos.banktransactionlogs btl
-                                                            INNER JOIN npos.transactionrequestlogs trl ON btl.TransactionRequestLogID = trl.TransactionRequestLogID
+                                           WHEN '' THEN
+                                                CASE (SELECT COUNT(*) as IsBancnet FROM banktransactionlogs btl
+                                                            INNER JOIN transactionrequestlogs trl ON btl.TransactionRequestLogID = trl.TransactionRequestLogID
                                                       WHERE trl.TransactionReferenceID = tr.TransactionReferenceID)
                                                 WHEN 0 THEN tr.Amount -- Cash
-                                                ELSE 0 END 
+                                                ELSE 0 END
                                            ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
                                              (SELECT IFNULL(SUM(Amount), 0)
                                              FROM stackermanagement.stackerdetails sdtls
@@ -539,7 +540,7 @@ class RptSupervisor extends DBHandler
                                     END
                                    ELSE 0 -- Not Deposit
                                 END) As DepositCash,
-                              
+                             
                                 -- DEPOSIT Bancnet --
                                 SUM(CASE tr.TransactionType
                                    WHEN 'D' THEN
@@ -547,17 +548,17 @@ class RptSupervisor extends DBHandler
                                        WHEN 2 THEN 0 -- Coupon
                                        ELSE -- Not Coupon
                                          CASE IFNULL(tr.StackerSummaryID, '')
-                                            WHEN '' THEN 
-                                                CASE (SELECT COUNT(*) as IsBancnet FROM npos.banktransactionlogs btl
-                                                            INNER JOIN npos.transactionrequestlogs trl ON btl.TransactionRequestLogID = trl.TransactionRequestLogID
+                                            WHEN '' THEN
+                                                CASE (SELECT COUNT(*) as IsBancnet FROM banktransactionlogs btl
+                                                            INNER JOIN transactionrequestlogs trl ON btl.TransactionRequestLogID = trl.TransactionRequestLogID
                                                       WHERE trl.TransactionReferenceID = tr.TransactionReferenceID)
                                                 WHEN 1 THEN tr.Amount -- Bancnet
-                                                ELSE 0 END 
+                                                ELSE 0 END
                                             ELSE 0 END
                                     END
                                    ELSE 0 -- Not Deposit
                                 END) As DepositBancnet,
-
+ 
                                 -- DEPOSIT TICKET --
                                 SUM(CASE tr.TransactionType
                                   WHEN 'D' THEN
@@ -576,7 +577,7 @@ class RptSupervisor extends DBHandler
                                     END
                                   ELSE 0 -- Not Deposit
                                 END) As DepositTicket,
-
+ 
                                 -- RELOAD COUPON --
                                 SUM(CASE tr.TransactionType
                                   WHEN 'R' THEN
@@ -585,7 +586,7 @@ class RptSupervisor extends DBHandler
                                       ELSE 0
                                      END
                                   ELSE 0 END) As ReloadCoupon,
-
+ 
                                 -- RELOAD CASH --
                                 SUM(CASE tr.TransactionType
                                    WHEN 'R' THEN
@@ -593,12 +594,12 @@ class RptSupervisor extends DBHandler
                                        WHEN 2 THEN 0 -- Coupon
                                        ELSE -- Not Coupon
                                          CASE IFNULL(tr.StackerSummaryID, '')
-                                           WHEN '' THEN 
-                                                CASE (SELECT COUNT(*) as IsBancnet FROM npos.banktransactionlogs btl
-                                                            INNER JOIN npos.transactionrequestlogs trl ON btl.TransactionRequestLogID = trl.TransactionRequestLogID
+                                           WHEN '' THEN
+                                                CASE (SELECT COUNT(*) as IsBancnet FROM banktransactionlogs btl
+                                                            INNER JOIN transactionrequestlogs trl ON btl.TransactionRequestLogID = trl.TransactionRequestLogID
                                                       WHERE trl.TransactionReferenceID = tr.TransactionReferenceID)
                                                 WHEN 0 THEN tr.Amount -- Reload, Cash
-                                                ELSE 0 END 
+                                                ELSE 0 END
                                            ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
                                               (SELECT IFNULL(SUM(Amount), 0)
                                 --              (SELECT IFNULL(Amount, 0)
@@ -610,8 +611,8 @@ class RptSupervisor extends DBHandler
                                          END
                                      END
                                    ELSE 0 -- Not Reload
-                                END) As ReloadCash, 
-
+                                END) As ReloadCash,
+ 
                                 -- RELOAD BANCNET --
                                 SUM(CASE tr.TransactionType
                                    WHEN 'R' THEN
@@ -619,17 +620,17 @@ class RptSupervisor extends DBHandler
                                        WHEN 2 THEN 0 -- Coupon
                                        ELSE -- Not Coupon
                                          CASE IFNULL(tr.StackerSummaryID, '')
-                                            WHEN '' THEN 
-                                                CASE (SELECT COUNT(*) as IsBancnet FROM npos.banktransactionlogs btl
-                                                            INNER JOIN npos.transactionrequestlogs trl ON btl.TransactionRequestLogID = trl.TransactionRequestLogID
+                                            WHEN '' THEN
+                                                CASE (SELECT COUNT(*) as IsBancnet FROM banktransactionlogs btl
+                                                            INNER JOIN transactionrequestlogs trl ON btl.TransactionRequestLogID = trl.TransactionRequestLogID
                                         WHERE trl.TransactionReferenceID = tr.TransactionReferenceID)
                                                 WHEN 1 THEN tr.Amount -- Reload, Bancnet
-                                                ELSE 0 END 
+                                                ELSE 0 END
                                             ELSE 0 END
                                      END
                                    ELSE 0 -- Not Reload
                                 END) As ReloadBancnet,
-
+ 
                                 -- RELOAD TICKET --
                                 SUM(CASE tr.TransactionType
                                   WHEN 'R' THEN
@@ -649,46 +650,26 @@ class RptSupervisor extends DBHandler
                                     END
                                   ELSE 0 -- Not Reload
                                 END) As ReloadTicket,
-
+ 
                                 tr.DateCreated
-                                FROM npos.transactiondetails tr INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
-                                INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
-                                INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
-                                INNER JOIN npos.sites s ON tr.SiteID = s.SiteID
-                                WHERE tr.SiteID IN (".$zsiteID.")
-                                  AND tr.DateCreated >= ? AND tr.DateCreated < ?
+                                FROM transactiondetails tr FORCE INDEX (IX_transactiondetails_DateCreated)  INNER JOIN
+				transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
+                                INNER JOIN terminals t ON t.TerminalID = tr.TerminalID
+                                INNER JOIN accounts a ON tr.CreatedByAID = a.AID
+                                INNER JOIN sites s ON tr.SiteID = s.SiteID
+                                WHERE tr.DateCreated >= '2016-02-02 06:00:00' AND tr.DateCreated < '2016-02-03 06:00:00'
+                                  AND tr.SiteID IN (167)
                                   AND tr.Status IN(1,4) AND a.AccountTypeID NOT IN (17)
                                 GROUP By tr.CreatedByAID ORDER BY tr.CreatedByAID";
         
-        $query3 = "SELECT SiteID, SUM(PrintedTickets) AS PrintedTickets FROM (SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets FROM npos.transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)  -- Printed Tickets through W
-                            INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
-                            INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
-                            INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
-                            LEFT JOIN stackermanagement.stackersummary stckr ON stckr.StackerSummaryID = tr.StackerSummaryID
-                            WHERE tr.DateCreated >= :startdate AND tr.DateCreated < :enddate 
-                              AND tr.SiteID IN (".$zsiteID.")
-                              AND tr.Status IN(1,4)
-                              AND tr.TransactionType = 'W'
-                              AND tr.StackerSummaryID IS NOT NULL
-                              GROUP BY tr.SiteID 
-                        UNION ALL
-                        SELECT SiteID, SUM(Amount) as PrintedTickets FROM ewallettrans WHERE StartDate >= :startdate
-                            AND StartDate < :enddate AND Status IN (1,3) AND SiteID IN (".$zsiteID.") AND TransType='W' AND Source = 1 GROUP BY SiteID) 
-                        AS sum GROUP BY SiteID";
-
-        $query4 = "SELECT tckt.SiteID, IFNULL(SUM(tckt.Amount), 0) AS EncashedTickets FROM vouchermanagement.tickets tckt  -- Encashed Tickets
-                                WHERE tckt.DateEncashed >= ? AND tckt.DateEncashed < ?
-                                AND tckt.SiteID IN (".$zsiteID.")
-                                GROUP BY tckt.SiteID";
-        
-        $query5 ="SELECT et.SiteID, et.CreatedByAID, ad.Name,
+        $query3 = "SELECT et.SiteID, et.CreatedByAID, ad.Name,
                                 SUM(CASE IFNULL(et.TraceNumber,'')
-                                        WHEN '' THEN  
+                                        WHEN '' THEN 
                                                 CASE IFNULL(et.ReferenceNumber, '')
                                                 WHEN '' THEN -- if not bancnet
                                                         CASE et.TransType
                                                         WHEN 'D' THEN -- if deposit
-                                                                CASE et.PaymentType 
+                                                                CASE et.PaymentType
                                                                 WHEN 1 THEN et.Amount -- if Cash
                                                                 ELSE 0 -- if not Cash
                                                                 END
@@ -698,7 +679,7 @@ class RptSupervisor extends DBHandler
                                                 END
                                         ELSE 0
                                 END) AS EwalletCashDeposit,
-
+ 
                                 SUM(CASE IFNULL(et.TraceNumber,'')
                                         WHEN '' THEN 0
                                         ELSE CASE IFNULL(et.ReferenceNumber, '')
@@ -709,7 +690,7 @@ class RptSupervisor extends DBHandler
                                                         END
                                                 END
                                 END) AS EwalletBancnetDeposit,
-                                
+                               
                                 SUM(CASE et.TransType
                                         WHEN 'D' THEN -- if deposit
                                                 CASE et.PaymentType
@@ -718,7 +699,7 @@ class RptSupervisor extends DBHandler
                                                 END
                                         ELSE 0 -- if not deposit
                                 END) AS EwalletVoucherDeposit,
-                                
+                               
                                 SUM(CASE et.TransType
                                         WHEN 'D' THEN -- if deposit
                                                 CASE et.PaymentType
@@ -727,37 +708,37 @@ class RptSupervisor extends DBHandler
                                                 END
                                         ELSE 0 -- if not deposit
                                 END) AS EwalletTicketLoad,
-                                
+                               
                                 SUM(CASE et.TransType
                                         WHEN 'W' THEN -- if withdrawal
                                         et.Amount  -- if Withdraw by Cashier
                                         ELSE 0 -- if not withdrawal
                                 END) AS EwalletWithdrawal,
-                                
+                               
                                 SUM(CASE et.TransType
                                         WHEN 'W' THEN -- if withdrawal
-						CASE et.Source
-						WHEN 1 THEN et.Amount  -- if Withdraw by Cashier
-						ELSE 0 
-						END -- if Withdraw by Genesis
+                                        CASE et.Source
+                                        WHEN 1 THEN et.Amount  -- if Withdraw by Cashier
+                                        ELSE 0
+                                        END -- if Withdraw by Genesis
                                         ELSE 0 -- if not withdrawal
                                 END) AS EwalletGenWithdrawal
-
-                            FROM npos.ewallettrans et
-                            LEFT JOIN npos.accountdetails ad ON et.CreatedByAID = ad.AID
+ 
+                            FROM ewallettrans et
+                            LEFT JOIN accountdetails ad ON et.CreatedByAID = ad.AID
                             WHERE et.StartDate >= ? AND et.StartDate < ?
                             AND et.SiteID IN (".$zsiteID.") AND et.Status IN (1,3)
                             GROUP BY et.CreatedByAID";
         
-        $query6 = "SELECT IFNULL(SUM(Amount), 0) AS EncashedTicketsV2, t.UpdatedByAID, t.SiteID, ad.Name   
-                   FROM vouchermanagement.tickets t 
-                   LEFT JOIN npos.accountdetails ad ON t.UpdatedByAID = ad.AID
+        $query6 = "SELECT IFNULL(SUM(Amount), 0) AS EncashedTicketsV2, t.UpdatedByAID, t.SiteID, ad.Name  
+                   FROM vouchermanagement.tickets t
+                   LEFT JOIN accountdetails ad ON t.UpdatedByAID = ad.AID
                    WHERE t.DateEncashed >= ? AND t.DateEncashed < ?
-                   AND t.UpdatedByAID IN (SELECT sacct.AID FROM npos.siteaccounts sacct WHERE sacct.SiteID IN (".$zsiteID."))
+                   AND t.UpdatedByAID IN (SELECT sacct.AID FROM siteaccounts sacct WHERE sacct.SiteID IN (".$zsiteID."))
                    AND TicketCode NOT IN (
-                           SELECT IFNULL(ss.TicketCode, '') FROM stackermanagement.stackersummary ss 
-                           INNER JOIN npos.ewallettrans ewt ON ewt.StackerSummaryID = ss.StackerSummaryID 
-                           WHERE ewt.SiteID IN (".$zsiteID.") AND ewt.TransType = 'W' 
+                           SELECT IFNULL(ss.TicketCode, '') FROM stackermanagement.stackersummary ss
+                           INNER JOIN ewallettrans ewt ON ewt.StackerSummaryID = ss.StackerSummaryID
+                           WHERE ewt.SiteID IN (".$zsiteID.") AND ewt.TransType = 'W'
                            ORDER BY ss.StackerSummaryID DESC
                    )
                    GROUP BY t.SiteID";

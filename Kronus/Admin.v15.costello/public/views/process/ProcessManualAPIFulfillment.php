@@ -84,6 +84,7 @@ if ($connected && $connected2) {
 
                 foreach ($trlc as $value) {
                     $transactionrefid = $value['TransactionReferenceID'];
+                    $transactionreqid = $value['TransactionRequestLogID'];
                     $cardnumber = $value['LoyaltyCardNumber'];
                     $source = $value['RequestSource'];
                 }
@@ -91,13 +92,13 @@ if ($connected && $connected2) {
                 //
                 switch ($source) {
                     case 0://cashier
-                        $transreqlog = $maf->gettransactionRequestlogs($transactionrefid);
+                        $transreqlog = $maf->gettransactionRequestlogs($transactionreqid);
                         if (empty($transreqlog)) {
                             $newarray = null;
                         } else {
                             foreach ($transreqlog as $row) {
                                 $amount = $row['Amount'];
-                                $transrefid = $row['TransactionReferenceID'];
+                                $transrefid = $row['TransactionRequestLogID'];
                                 $transtype = $row['TransactionType'];
                                 $serviceid = $row['ServiceID'];
                                 $usermode = $row['UserMode'];
@@ -107,22 +108,22 @@ if ($connected && $connected2) {
 
                         break;
 
-                    case 1://launchpad
-                        $transreqlog = $maf->gettransactionRequestlogslp($transactionrefid);
-
-                        if (empty($transreqlog)) {
-                            $newarray = null;
-                        } else {
-                            foreach ($transreqlog as $row) {
-                                $amount = $row['Amount'];
-                                $transrefid = $row['TransactionReferenceID'];
-                                $transtype = $row['TransactionType'];
-                                $serviceid = $row['ServiceID'];
-                                $usermode = $row['UserMode'];
-                                $transsummaryid = $row['TransactionSummaryID'];
-                            }
-                        }
-                        break;
+//                    case 1://launchpad
+//                        $transreqlog = $maf->gettransactionRequestlogslp($transactionrefid);
+//
+//                        if (empty($transreqlog)) {
+//                            $newarray = null;
+//                        } else {
+//                            foreach ($transreqlog as $row) {
+//                                $amount = $row['Amount'];
+//                                $transrefid = $row['TransactionReferenceID'];
+//                                $transtype = $row['TransactionType'];
+//                                $serviceid = $row['ServiceID'];
+//                                $usermode = $row['UserMode'];
+//                                $transsummaryid = $row['TransactionSummaryID'];
+//                            }
+//                        }
+//                        break;
                 }
 
                 //check if transactionrequestlog result
@@ -174,7 +175,7 @@ if ($connected && $connected2) {
                         'UserName' => "$login",
                         "CardNumber" => "$cardnumber",
                         "ServiceID" => "$serviceid",
-                        "TransRefID" => "$transactionrefid",
+                        "TransRefID" => "$transrefid",
                         "Login" => "$txtusername",
                         "UserMode" => "$usermode",
                         "TransType" => "$transtype",
@@ -274,7 +275,8 @@ if ($connected && $connected2) {
                         $serviceids = '';
                         $serviceusername = '';
                         $casinoz = array();
-                        if ($serviceid == "21") { // if e-Bingo Terminal
+                        $usermodeid = $maf->getusermode($serviceid);
+                        if ($usermodeid == 2) { // if e-Bingo Terminal
                             $casinoinfo = array(
                                 array(
                                     'UserName' => "",
@@ -417,11 +419,12 @@ if ($connected && $connected2) {
                         if ($source == 'Cashier') {
                             $transactionid = $maf->getTransactionID($serviceID, $cmbterm);
                             $tracking1 = $transactionid['TransactionRequestLogID'];
-                        } elseif ($source == 'Launchpad') {
-                            $transactionid = $maf->getTransactionIDLP($serviceID, $cmbterm);
-                            $tracking1 = $transactionid['TransactionRequestLogLPID'];
-                            $tracking1 = "LP" . $tracking1;
-                        }
+                        } 
+//                        elseif ($source == 'Launchpad') {
+//                            $transactionid = $maf->getTransactionIDLP($serviceID, $cmbterm);
+//                            $tracking1 = $transactionid['TransactionRequestLogLPID'];
+//                            $tracking1 = "LP" . $tracking1;
+//                        }
 
                         $url = $_ServiceAPI[$serviceID - 1];
                         $capiusername = $_CAPIUsername;
@@ -446,11 +449,12 @@ if ($connected && $connected2) {
                         if ($source == 'Cashier') {
                             $transactionid = $maf->getTransactionID($serviceID, $cmbterm);
                             $tracking1 = $transactionid['TransactionRequestLogID'];
-                        } elseif ($source == 'Launchpad') {
-                            $transactionid = $maf->getTransactionIDLP($serviceID, $cmbterm);
-                            $tracking1 = $transactionid['TransactionRequestLogLPID'];
-                            $tracking1 = "LP" . $tracking1;
-                        }
+                        } 
+//                        elseif ($source == 'Launchpad') {
+//                            $transactionid = $maf->getTransactionIDLP($serviceID, $cmbterm);
+//                            $tracking1 = $transactionid['TransactionRequestLogLPID'];
+//                            $tracking1 = "LP" . $tracking1;
+//                        }
 
                         $url = $_ServiceAPI[$serviceID - 1];
                         $capiusername = $_CAPIUsername;
@@ -465,10 +469,11 @@ if ($connected && $connected2) {
                         if ($source == 'Cashier') {
                             $transactionid = $maf->getServiceTransactionID($transrefid);
                             $tracking4 = $transactionid['ServiceTransactionID'];
-                        } elseif ($source == 'Launchpad') {
-                            $transactionid = $maf->getServiceTransactionIDLP($transrefid);
-                            $tracking4 = $transactionid['ServiceTransactionID'];
-                        }
+                        } 
+//                        elseif ($source == 'Launchpad') {
+//                            $transactionid = $maf->getServiceTransactionIDLP($transrefid);
+//                            $tracking4 = $transactionid['ServiceTransactionID'];
+//                        }
 
                         $_MGCredentials = $_ServiceAPI[$serviceID - 1];
                         list($mgurl, $mgserverID) = $_MGCredentials;
@@ -487,11 +492,12 @@ if ($connected && $connected2) {
                         if ($source == 'Cashier') {
                             $transactionid = $maf->getTransactionID($serviceID, $cmbterm);
                             $tracking1 = $transactionid['TransactionRequestLogID'];
-                        } elseif ($source == 'Launchpad') {
-                            $transactionid = $maf->getTransactionIDLP($serviceID, $cmbterm);
-                            $tracking1 = $transactionid['TransactionRequestLogLPID'];
-                            $tracking1 = "LP" . $tracking1;
-                        }
+                        } 
+//                        elseif ($source == 'Launchpad') {
+//                            $transactionid = $maf->getTransactionIDLP($serviceID, $cmbterm);
+//                            $tracking1 = $transactionid['TransactionRequestLogLPID'];
+//                            $tracking1 = "LP" . $tracking1;
+//                        }
 
                         $url = $_ServiceAPI[$serviceID - 1];
                         $capiusername = $_ptcasinoname;
@@ -844,270 +850,271 @@ if ($connected && $connected2) {
                         } else {
                             $msg = 'Manual Casino Fulfillment: Failed to Update Transaction Status';
                         }
-                    } elseif ($txtsource == 'Launchpad') {
-                        //for Launchpad, update transaction status
-                        if ($txttranstype == 'Withdraw') {
-                            switch ($txttranstype) {
-                                case 'Deposit':
-                                    $transtype = 'D';
-                                    break;
-
-                                case 'Reload':
-                                    $transtype = 'R';
-                                    break;
-
-                                case 'Withdraw':
-                                    $transtype = 'W';
-                                    break;
-
-                                case 'ReDeposit':
-                                    $transtype = 'RD';
-                                    break;
-                            }
-
-                            $transactionid = $maf->getTransactionIDLP($serviceid, $cmbterm);
-                            $tracking1 = $transactionid['TransactionRequestLogLPID'];
-
-                            $tracking2 = $transtype;
-                            $tracking3 = $cmbterm;
-                            $tracking4 = $cmbsite;
-
-
-                            switch (true) {
-                                case (strstr($txtcasino, "RTG2")):
-                                    $url = $_ServiceAPI[$serviceid - 1];
-                                    $capiusername = $_CAPIUsername;
-                                    $capipassword = $_CAPIPassword;
-                                    $capiplayername = $_CAPIPlayerName;
-                                    $capiserverID = '';
-                                    $deposit = $CasinoGamingCAPI->Deposit($txtcasino, $serviceid, $url, $txtusername, $capiusername, $capipassword, $capiplayername, $capiserverID, $amount, $tracking1, $tracking2, $tracking3, $tracking4);
-
-                                    break;
-                                case (strstr($txtcasino, "RTG")):
-                                    $url = $_ServiceAPI[$serviceid - 1];
-                                    $capiusername = $_CAPIUsername;
-                                    $capipassword = $_CAPIPassword;
-                                    $capiplayername = $_CAPIPlayerName;
-                                    $capiserverID = '';
-                                    if ($usermode == 2) {
-                                        $deposit = $CasinoGamingCAPI->Deposit($txtcasino, $serviceid, $url, $txtusername, $capiusername, $capipassword, $capiplayername, $capiserverID, $amount, $tracking1, $tracking2, $tracking3, $tracking4, $usermode);
-                                    } 
-                                    
-                                    if ($usermode == 0) {
-                                        $deposit = $CasinoGamingCAPI->Deposit($txtcasino, $serviceid, $url, $txtusername, $capiusername, $capipassword, $capiplayername, $capiserverID, $amount, $tracking1, $tracking2, $tracking3, $tracking4, $usermode);
-                                        if ($deposit == NULL) { // proceeed if certificate does not match
-                                            $deposit = $CasinoGamingCAPI->Deposit($txtcasino, $serviceid, $url, $txtusername, $capiusername, $capipassword, $capiplayername, $capiserverID, $amount, $tracking1, $tracking2, $tracking3, $tracking4);
-                                        }
-                                        
-                                    }
-
-                                    break;
-                                case (strstr($txtcasino, "MG")):
-                                    $tracking3 = $_CAPIEventID;
-
-                                    $tracking4 = $maf->insertServiceTransRef($serviceid, 2);
-                                    $tracking2 = $tracking4;
-
-
-                                    //get terminal password
-                                    if ($usermode == 0 || $usermode == 2) {
-                                        $terminal_pwd_res = $maf->getTerminalPassword($cmbterm, $serviceid);
-                                        $terminal_pwd = $terminal_pwd_res['ServicePassword'];
-                                        $tracking1 = $terminal_pwd;
-                                    } else {
-                                        $tracking1 = $ubservicepassword;
-                                    }
-
-                                    $_MGCredentials = $_ServiceAPI[$serviceid - 1];
-                                    list($mgurl, $mgserverID) = $_MGCredentials;
-                                    $url = $mgurl;
-                                    $capiusername = $_CAPIUsername;
-                                    $capipassword = $_CAPIPassword;
-                                    $capiplayername = $_CAPIPlayerName;
-                                    $capiserverID = $mgserverID;
-                                    $deposit = $CasinoGamingCAPI->Deposit($txtcasino, $serviceid, $url, $txtusername, $capiusername, $capipassword, $capiplayername, $capiserverID, $amount, $tracking1, $tracking2, $tracking3, $tracking4);
-
-                                    break;
-                                case (strstr($txtcasino, "PT")):
-                                    $tracking3 = $_CAPIEventID;
-
-                                    $transactionid = $maf->getTransactionIDLP($serviceid, $cmbterm);
-                                    $tracking2 = $transactionid['TransactionRequestLogLPID'];
-
-                                    $transactionid = $maf->getServiceTransactionIDLP($txttransrefid);
-                                    $tracking4 = $transactionid['ServiceTransactionID'];
-
-                                    //get terminal password
-                                    if ($usermode == 0 || $usermode == 2) {
-                                        $terminal_pwd_res = $maf->getTerminalPassword($cmbterm, $serviceid);
-                                        $terminal_pwd = $terminal_pwd_res['ServicePassword'];
-                                        $tracking1 = $terminal_pwd;
-                                    } else {
-                                        $tracking1 = $ubservicepassword;
-                                    }
-
-                                    $url = $_ServiceAPI[$serviceid - 1];
-                                    $capiusername = $_ptcasinoname;
-                                    $capipassword = $_ptsecretkey;
-                                    $capiplayername = $_CAPIPlayerName;
-                                    $capiserverID = '';
-
-                                    //unfreeze first casino
-                                    $unfreeze = $CasinoGamingCAPI->unfreeze($txtusername, $url, $capiusername, $capipassword, 0);
-                                    //check if casino is successfuly unfreezed
-                                    if ($unfreeze['IsSucceed'] == true) {
-                                        $deposit = $CasinoGamingCAPI->Deposit($txtcasino, $serviceid, $url, $txtusername, $capiusername, $capipassword, $capiplayername, $capiserverID, $amount, $tracking1, $tracking2, $tracking3, $tracking4);
-                                    } else {
-                                        $deposit['IsSucceed'] = false;
-                                    }
-                                    break;
-                            }
-
-                            //check if deposit api method fails
-                            if (isset($deposit['IsSucceed']) && $deposit['IsSucceed'] == true) {
-
-                                $transloglpid = $maf->getmaxtranslogs($transtype, $cmbterm, $serviceid);
-
-                                $data = $maf->gettranslogslpdetails($transtype, $cmbterm, $serviceid, $transloglpid);
-                                foreach ($data as $value) {
-                                    $servicetransferhisid = $value['ServiceTransferHistoryID'];
-                                    $transsummaryid = $value['TransactionSummaryID'];
-                                }
-
-                                $transreferid = $maf->udate('YmdHisu');
-                                $transtype = 'RD';
-                                $status = 0;
-
-
-
-                                if (isset($deposit['TransactionInfo'])) {
-                                    //RTG / Magic Macau
-                                    if (isset($deposit['TransactionInfo']['DepositGenericResult'])) {
-                                        $transrefid = $deposit['TransactionInfo']['DepositGenericResult']['transactionID'];
-                                        $apiresult2 = $deposit['TransactionInfo']['DepositGenericResult']['transactionStatus'];
-                                        $apierrmsg = $deposit['TransactionInfo']['DepositGenericResult']['errorMsg'];
-                                    }
-                                    //MG / Vibrant Vegas
-                                    else if (isset($deposit['TransactionInfo'])) {
-                                        $transrefid = $deposit['TransactionInfo']['TransactionId'];
-                                        $apiresult2 = "true";
-                                        $apierrmsg = $deposit['ErrorMessage'];
-                                    }
-                                    //Rockin Reno
-                                    else if (isset($deposit['TransactionInfo']['PT'])) {
-                                        $transrefid = $deposit['TransactionInfo']['PT']['TransactionId'];
-                                        $apiresult2 = $deposit['TransactionInfo']['PT']['TransactionStatus'];
-                                        $apierrmsg = $deposit['TransactionInfo']['PT']['TransactionStatus'];
-                                    }
-                                }
-                                $statuz = 4;
-                                switch (true) {
-                                    case (strstr($txtcasino, "MG")):
-                                        $apiresult = ($apiresult) ? 'true' : 'false';
-                                        break;
-                                    case (strstr($txtcasino, "PT")):
-                                        $apiresult = $apiresult;
-                                        break;
-                                    case (strstr($txtcasino, "RTG")):
-                                        $apiresult = $apiresult;
-                                        break;
-                                }
-                                //update transactionrequestlogslp status to denied
-                                $uptrans = $maf->uptransactionreqlogslp2($statuz, $apiresult, $txttransrefid, $transrefid);
-
-                                if ($uptrans > 0) {
-                                    $paymenttype = 1;
-
-                                    switch (true) {
-                                        case (strstr($txtcasino, "MG")):
-                                            $apiresult = ($apiresult) ? 'true' : 'false';
-                                            break;
-                                        case (strstr($txtcasino, "PT")):
-                                            $apiresult = $apiresult;
-                                            break;
-                                        case (strstr($txtcasino, "RTG")):
-                                            $apiresult = $apiresult;
-                                            break;
-                                    }
-                                    //insert in transactionrequestlogslp
-                                    $inserttranslogs = $maf->insertTransactionreqlogslp($transreferid, $amount, $transtype, $cmbterm, $status, $cmbsite, $transrefid, $apiresult, $serviceid, $servicetransferhisid, $txtcardnumber, $mid, $usermode, $transsummaryid, $paymenttype);
-
-                                    //check if insert in transactionrequestlogslp is successful   
-                                    if ($inserttranslogs > 0) {
-                                        $upterminalsessions = $maf->upTerminalSessServcID($serviceid, $amount, $cmbterm);
-
-                                        //if update terminalsessions is successful
-                                        if ($upterminalsessions == true) {
-                                            $zaid = $aid;
-                                            $zdate = $vdate;
-                                            $ztransdetails = 'Casino Service = ' . "$serviceid" . ' Status = ' . "$status" . ' TerminalID = ' . "$cmbterm" . ' UserMode = ' . "$usermode";
-                                            $zauditfunctionID = 73;
-                                            $maf->logtoaudit($new_sessionid, $zaid, $ztransdetails, $zdate, $vipaddress, $zauditfunctionID);
-
-                                            $msg = 'Manual Casino Fulfillment: Transaction Successful';
-                                        } else {
-                                            $msg = 'Manual Casino Fulfillment: Failed to Update Terminal Sessions';
-                                        }
-                                    } else {
-                                        $msg = 'Manual Casino Fulfillment: Failed to Insert/Update Transactional Tables';
-                                    }
-                                } else {
-                                    $msg = 'Manual Casino Fulfillment: Failed to Update Transactional Tables';
-                                }
-                            } else {
-                                //check casino if RTG, MG, or PT, get api error message
-                                switch (true) {
-                                    case (strstr($txtcasino, "RTG")):
-                                        $apierrmsg = $deposit['TransactionInfo']['DepositGenericResult']['errorMsg'];
-                                        break;
-                                    case (strstr($txtcasino, "MG")):
-                                        $apierrmsg = $deposit['ErrorMessage'];
-                                        break;
-                                    case (strstr($txtcasino, "PT")):
-                                        $apierrmsg = $deposit['TransactionInfo']['PT']['TransactionStatus'];
-                                        break;
-                                }
-                                $msg = "$apierrmsg";
-                            }
-                        } elseif ($txttranstype == 'Deposit' || $txttranstype == 'ReDeposit') {
-                            $status = 3;
-
-                            switch (true) {
-                                case (strstr($txtcasino, "MG")):
-                                    $apiresult = ($apiresult) ? 'true' : 'false';
-                                    break;
-                                case (strstr($txtcasino, "PT")):
-                                    $apiresult = $apiresult;
-                                    break;
-                                case (strstr($txtcasino, "RTG")):
-                                    $apiresult = $apiresult;
-                                    break;
-                            }
-                            $uptrans = $maf->uptransactionreqlogslp($status, $apiresult, $txttransrefid);
-
-                            //check if update transactionrequestlogslp is successfully updated
-                            if ($uptrans > 0) {
-                                $upterminalsessions = $maf->upTerminalSessServcID($serviceid, $amount, $cmbterm);
-
-                                //check if update terminalsessions is successfully updated
-                                if ($upterminalsessions == true) {
-                                    $zaid = $aid;
-                                    $zdate = $vdate;
-                                    $ztransdetails = 'Casino Service = ' . "$serviceid" . ' Status = ' . "$status" . ' TerminalID = ' . "$cmbterm" . ' UserMode = ' . "$usermode";
-                                    $zauditfunctionID = 73;
-                                    $maf->logtoaudit($new_sessionid, $zaid, $ztransdetails, $zdate, $vipaddress, $zauditfunctionID);
-
-                                    $msg = 'Manual Casino Fulfillment: Transaction Successful';
-                                } else {
-                                    $msg = 'Manual Casino Fulfillment: Failed to Update Terminal Sessions';
-                                }
-                            } else {
-                                $msg = 'Manual Casino Fulfillment: Failed to Update Transaction Status';
-                            }
-                        } else {
-                            $msg = 'Manual Casino Fulfillment: Invalid transaction type';
-                        }
-                    }
+                    } 
+//                    elseif ($txtsource == 'Launchpad') {
+//                        //for Launchpad, update transaction status
+//                        if ($txttranstype == 'Withdraw') {
+//                            switch ($txttranstype) {
+//                                case 'Deposit':
+//                                    $transtype = 'D';
+//                                    break;
+//
+//                                case 'Reload':
+//                                    $transtype = 'R';
+//                                    break;
+//
+//                                case 'Withdraw':
+//                                    $transtype = 'W';
+//                                    break;
+//
+//                                case 'ReDeposit':
+//                                    $transtype = 'RD';
+//                                    break;
+//                            }
+//
+//                            $transactionid = $maf->getTransactionIDLP($serviceid, $cmbterm);
+//                            $tracking1 = $transactionid['TransactionRequestLogLPID'];
+//
+//                            $tracking2 = $transtype;
+//                            $tracking3 = $cmbterm;
+//                            $tracking4 = $cmbsite;
+//
+//
+//                            switch (true) {
+//                                case (strstr($txtcasino, "RTG2")):
+//                                    $url = $_ServiceAPI[$serviceid - 1];
+//                                    $capiusername = $_CAPIUsername;
+//                                    $capipassword = $_CAPIPassword;
+//                                    $capiplayername = $_CAPIPlayerName;
+//                                    $capiserverID = '';
+//                                    $deposit = $CasinoGamingCAPI->Deposit($txtcasino, $serviceid, $url, $txtusername, $capiusername, $capipassword, $capiplayername, $capiserverID, $amount, $tracking1, $tracking2, $tracking3, $tracking4);
+//
+//                                    break;
+//                                case (strstr($txtcasino, "RTG")):
+//                                    $url = $_ServiceAPI[$serviceid - 1];
+//                                    $capiusername = $_CAPIUsername;
+//                                    $capipassword = $_CAPIPassword;
+//                                    $capiplayername = $_CAPIPlayerName;
+//                                    $capiserverID = '';
+//                                    if ($usermode == 2) {
+//                                        $deposit = $CasinoGamingCAPI->Deposit($txtcasino, $serviceid, $url, $txtusername, $capiusername, $capipassword, $capiplayername, $capiserverID, $amount, $tracking1, $tracking2, $tracking3, $tracking4, $usermode);
+//                                    } 
+//                                    
+//                                    if ($usermode == 0) {
+//                                        $deposit = $CasinoGamingCAPI->Deposit($txtcasino, $serviceid, $url, $txtusername, $capiusername, $capipassword, $capiplayername, $capiserverID, $amount, $tracking1, $tracking2, $tracking3, $tracking4, $usermode);
+//                                        if ($deposit == NULL) { // proceeed if certificate does not match
+//                                            $deposit = $CasinoGamingCAPI->Deposit($txtcasino, $serviceid, $url, $txtusername, $capiusername, $capipassword, $capiplayername, $capiserverID, $amount, $tracking1, $tracking2, $tracking3, $tracking4);
+//                                        }
+//                                        
+//                                    }
+//
+//                                    break;
+//                                case (strstr($txtcasino, "MG")):
+//                                    $tracking3 = $_CAPIEventID;
+//
+//                                    $tracking4 = $maf->insertServiceTransRef($serviceid, 2);
+//                                    $tracking2 = $tracking4;
+//
+//
+//                                    //get terminal password
+//                                    if ($usermode == 0 || $usermode == 2) {
+//                                        $terminal_pwd_res = $maf->getTerminalPassword($cmbterm, $serviceid);
+//                                        $terminal_pwd = $terminal_pwd_res['ServicePassword'];
+//                                        $tracking1 = $terminal_pwd;
+//                                    } else {
+//                                        $tracking1 = $ubservicepassword;
+//                                    }
+//
+//                                    $_MGCredentials = $_ServiceAPI[$serviceid - 1];
+//                                    list($mgurl, $mgserverID) = $_MGCredentials;
+//                                    $url = $mgurl;
+//                                    $capiusername = $_CAPIUsername;
+//                                    $capipassword = $_CAPIPassword;
+//                                    $capiplayername = $_CAPIPlayerName;
+//                                    $capiserverID = $mgserverID;
+//                                    $deposit = $CasinoGamingCAPI->Deposit($txtcasino, $serviceid, $url, $txtusername, $capiusername, $capipassword, $capiplayername, $capiserverID, $amount, $tracking1, $tracking2, $tracking3, $tracking4);
+//
+//                                    break;
+//                                case (strstr($txtcasino, "PT")):
+//                                    $tracking3 = $_CAPIEventID;
+//
+//                                    $transactionid = $maf->getTransactionIDLP($serviceid, $cmbterm);
+//                                    $tracking2 = $transactionid['TransactionRequestLogLPID'];
+//
+//                                    $transactionid = $maf->getServiceTransactionIDLP($txttransrefid);
+//                                    $tracking4 = $transactionid['ServiceTransactionID'];
+//
+//                                    //get terminal password
+//                                    if ($usermode == 0 || $usermode == 2) {
+//                                        $terminal_pwd_res = $maf->getTerminalPassword($cmbterm, $serviceid);
+//                                        $terminal_pwd = $terminal_pwd_res['ServicePassword'];
+//                                        $tracking1 = $terminal_pwd;
+//                                    } else {
+//                                        $tracking1 = $ubservicepassword;
+//                                    }
+//
+//                                    $url = $_ServiceAPI[$serviceid - 1];
+//                                    $capiusername = $_ptcasinoname;
+//                                    $capipassword = $_ptsecretkey;
+//                                    $capiplayername = $_CAPIPlayerName;
+//                                    $capiserverID = '';
+//
+//                                    //unfreeze first casino
+//                                    $unfreeze = $CasinoGamingCAPI->unfreeze($txtusername, $url, $capiusername, $capipassword, 0);
+//                                    //check if casino is successfuly unfreezed
+//                                    if ($unfreeze['IsSucceed'] == true) {
+//                                        $deposit = $CasinoGamingCAPI->Deposit($txtcasino, $serviceid, $url, $txtusername, $capiusername, $capipassword, $capiplayername, $capiserverID, $amount, $tracking1, $tracking2, $tracking3, $tracking4);
+//                                    } else {
+//                                        $deposit['IsSucceed'] = false;
+//                                    }
+//                                    break;
+//                            }
+//
+//                            //check if deposit api method fails
+//                            if (isset($deposit['IsSucceed']) && $deposit['IsSucceed'] == true) {
+//
+//                                $transloglpid = $maf->getmaxtranslogs($transtype, $cmbterm, $serviceid);
+//
+//                                $data = $maf->gettranslogslpdetails($transtype, $cmbterm, $serviceid, $transloglpid);
+//                                foreach ($data as $value) {
+//                                    $servicetransferhisid = $value['ServiceTransferHistoryID'];
+//                                    $transsummaryid = $value['TransactionSummaryID'];
+//                                }
+//
+//                                $transreferid = $maf->udate('YmdHisu');
+//                                $transtype = 'RD';
+//                                $status = 0;
+//
+//
+//
+//                                if (isset($deposit['TransactionInfo'])) {
+//                                    //RTG / Magic Macau
+//                                    if (isset($deposit['TransactionInfo']['DepositGenericResult'])) {
+//                                        $transrefid = $deposit['TransactionInfo']['DepositGenericResult']['transactionID'];
+//                                        $apiresult2 = $deposit['TransactionInfo']['DepositGenericResult']['transactionStatus'];
+//                                        $apierrmsg = $deposit['TransactionInfo']['DepositGenericResult']['errorMsg'];
+//                                    }
+//                                    //MG / Vibrant Vegas
+//                                    else if (isset($deposit['TransactionInfo'])) {
+//                                        $transrefid = $deposit['TransactionInfo']['TransactionId'];
+//                                        $apiresult2 = "true";
+//                                        $apierrmsg = $deposit['ErrorMessage'];
+//                                    }
+//                                    //Rockin Reno
+//                                    else if (isset($deposit['TransactionInfo']['PT'])) {
+//                                        $transrefid = $deposit['TransactionInfo']['PT']['TransactionId'];
+//                                        $apiresult2 = $deposit['TransactionInfo']['PT']['TransactionStatus'];
+//                                        $apierrmsg = $deposit['TransactionInfo']['PT']['TransactionStatus'];
+//                                    }
+//                                }
+//                                $statuz = 4;
+//                                switch (true) {
+//                                    case (strstr($txtcasino, "MG")):
+//                                        $apiresult = ($apiresult) ? 'true' : 'false';
+//                                        break;
+//                                    case (strstr($txtcasino, "PT")):
+//                                        $apiresult = $apiresult;
+//                                        break;
+//                                    case (strstr($txtcasino, "RTG")):
+//                                        $apiresult = $apiresult;
+//                                        break;
+//                                }
+//                                //update transactionrequestlogslp status to denied
+//                                $uptrans = $maf->uptransactionreqlogslp2($statuz, $apiresult, $txttransrefid, $transrefid);
+//
+//                                if ($uptrans > 0) {
+//                                    $paymenttype = 1;
+//
+//                                    switch (true) {
+//                                        case (strstr($txtcasino, "MG")):
+//                                            $apiresult = ($apiresult) ? 'true' : 'false';
+//                                            break;
+//                                        case (strstr($txtcasino, "PT")):
+//                                            $apiresult = $apiresult;
+//                                            break;
+//                                        case (strstr($txtcasino, "RTG")):
+//                                            $apiresult = $apiresult;
+//                                            break;
+//                                    }
+//                                    //insert in transactionrequestlogslp
+//                                    $inserttranslogs = $maf->insertTransactionreqlogslp($transreferid, $amount, $transtype, $cmbterm, $status, $cmbsite, $transrefid, $apiresult, $serviceid, $servicetransferhisid, $txtcardnumber, $mid, $usermode, $transsummaryid, $paymenttype);
+//
+//                                    //check if insert in transactionrequestlogslp is successful   
+//                                    if ($inserttranslogs > 0) {
+//                                        $upterminalsessions = $maf->upTerminalSessServcID($serviceid, $amount, $cmbterm);
+//
+//                                        //if update terminalsessions is successful
+//                                        if ($upterminalsessions == true) {
+//                                            $zaid = $aid;
+//                                            $zdate = $vdate;
+//                                            $ztransdetails = 'Casino Service = ' . "$serviceid" . ' Status = ' . "$status" . ' TerminalID = ' . "$cmbterm" . ' UserMode = ' . "$usermode";
+//                                            $zauditfunctionID = 73;
+//                                            $maf->logtoaudit($new_sessionid, $zaid, $ztransdetails, $zdate, $vipaddress, $zauditfunctionID);
+//
+//                                            $msg = 'Manual Casino Fulfillment: Transaction Successful';
+//                                        } else {
+//                                            $msg = 'Manual Casino Fulfillment: Failed to Update Terminal Sessions';
+//                                        }
+//                                    } else {
+//                                        $msg = 'Manual Casino Fulfillment: Failed to Insert/Update Transactional Tables';
+//                                    }
+//                                } else {
+//                                    $msg = 'Manual Casino Fulfillment: Failed to Update Transactional Tables';
+//                                }
+//                            } else {
+//                                //check casino if RTG, MG, or PT, get api error message
+//                                switch (true) {
+//                                    case (strstr($txtcasino, "RTG")):
+//                                        $apierrmsg = $deposit['TransactionInfo']['DepositGenericResult']['errorMsg'];
+//                                        break;
+//                                    case (strstr($txtcasino, "MG")):
+//                                        $apierrmsg = $deposit['ErrorMessage'];
+//                                        break;
+//                                    case (strstr($txtcasino, "PT")):
+//                                        $apierrmsg = $deposit['TransactionInfo']['PT']['TransactionStatus'];
+//                                        break;
+//                                }
+//                                $msg = "$apierrmsg";
+//                            }
+//                        } elseif ($txttranstype == 'Deposit' || $txttranstype == 'ReDeposit') {
+//                            $status = 3;
+//
+//                            switch (true) {
+//                                case (strstr($txtcasino, "MG")):
+//                                    $apiresult = ($apiresult) ? 'true' : 'false';
+//                                    break;
+//                                case (strstr($txtcasino, "PT")):
+//                                    $apiresult = $apiresult;
+//                                    break;
+//                                case (strstr($txtcasino, "RTG")):
+//                                    $apiresult = $apiresult;
+//                                    break;
+//                            }
+//                            $uptrans = $maf->uptransactionreqlogslp($status, $apiresult, $txttransrefid);
+//
+//                            //check if update transactionrequestlogslp is successfully updated
+//                            if ($uptrans > 0) {
+//                                $upterminalsessions = $maf->upTerminalSessServcID($serviceid, $amount, $cmbterm);
+//
+//                                //check if update terminalsessions is successfully updated
+//                                if ($upterminalsessions == true) {
+//                                    $zaid = $aid;
+//                                    $zdate = $vdate;
+//                                    $ztransdetails = 'Casino Service = ' . "$serviceid" . ' Status = ' . "$status" . ' TerminalID = ' . "$cmbterm" . ' UserMode = ' . "$usermode";
+//                                    $zauditfunctionID = 73;
+//                                    $maf->logtoaudit($new_sessionid, $zaid, $ztransdetails, $zdate, $vipaddress, $zauditfunctionID);
+//
+//                                    $msg = 'Manual Casino Fulfillment: Transaction Successful';
+//                                } else {
+//                                    $msg = 'Manual Casino Fulfillment: Failed to Update Terminal Sessions';
+//                                }
+//                            } else {
+//                                $msg = 'Manual Casino Fulfillment: Failed to Update Transaction Status';
+//                            }
+//                        } else {
+//                            $msg = 'Manual Casino Fulfillment: Invalid transaction type';
+//                        }
+//                    }
                 }
                 //if transaction status is Denied
                 else {
@@ -1151,265 +1158,266 @@ if ($connected && $connected2) {
                         } else {
                             $msg = 'Manual Casino Fulfillment: Failed to Update Transaction Status';
                         }
-                    } elseif ($txtsource == 'Launchpad') {
-                        //check if Transaction type is Withdraw or W
-                        if ($txttranstype == 'Withdraw') {
-                            //launchpad source, tag as failed
-                            $status = 4;
-                            switch (true) {
-                                case (strstr($txtcasino, "MG")):
-                                    $apiresult = ($apiresult) ? 'true' : 'false';
-                                    break;
-                                case (strstr($txtcasino, "PT")):
-                                    $apiresult = $apiresult;
-                                    break;
-                                case (strstr($txtcasino, "RTG")):
-                                    $apiresult = $apiresult;
-                                    break;
-                            }
-                            $uptrans = $maf->uptransactionreqlogslp($status, $apiresult, $txttransrefid);
-
-                            //check if update transaction request logs lp is successfully updated
-                            if ($uptrans > 0) {
-                                $upterminalsessions = $maf->upTerminalSessServcID($serviceid, $amount, $cmbterm);
-
-                                if ($upterminalsessions == true) {
-                                    $zaid = $aid;
-                                    $zdate = $vdate;
-                                    $ztransdetails = 'Casino Service = ' . "$serviceid" . ' Status = ' . "$status" . ' TerminalID = ' . "$cmbterm" . ' UserMode = ' . "$usermode";
-                                    $zauditfunctionID = 73;
-                                    $maf->logtoaudit($new_sessionid, $zaid, $ztransdetails, $zdate, $vipaddress, $zauditfunctionID);
-
-                                    $msg = 'Manual Casino Fulfillment: Successfully Updated. Transaction Tag as Failed';
-                                } else {
-                                    $msg = 'Manual Casino Fulfillment: Failed to Update Terminal Sessions';
-                                }
-                            } else {
-                                $msg = 'Failed to Update Transaction Status';
-                            }
-                        }
-                        //check if Transaction type is Deposit / D or Redeposit / RD
-                        elseif ($txttranstype == 'Deposit' || $txttranstype == 'ReDeposit') {
-                            //check transaction type
-                            switch ($txttranstype) {
-                                case 'Deposit':
-                                    $transtype = 'D';
-                                    break;
-
-                                case 'Reload':
-                                    $transtype = 'R';
-                                    break;
-
-                                case 'Withdraw':
-                                    $transtype = 'W';
-                                    break;
-
-                                case 'ReDeposit':
-                                    $transtype = 'RD';
-                                    break;
-                            }
-
-                            $transactionid = $maf->getTransactionID($serviceid, $cmbterm);
-                            $tracking1 = $transactionid['TransactionRequestLogID'];
-
-                            $tracking2 = $transtype;
-                            $tracking3 = $cmbterm;
-                            $tracking4 = $cmbsite;
-
-                            switch (true) {
-                                //check casino if RTG, MG, or PT
-                                case (strstr($txtcasino, "RTG2")):
-
-                                    $url = $_ServiceAPI[$serviceid - 1];
-                                    $capiusername = $_CAPIUsername;
-                                    $capipassword = $_CAPIPassword;
-                                    $capiplayername = $_CAPIPlayerName;
-                                    $capiserverID = '';
-                                    $deposit = $CasinoGamingCAPI->Deposit($txtcasino, $serviceid, $url, $txtusername, $capiusername, $capipassword, $capiplayername, $capiserverID, $amount, $tracking1, $tracking2, $tracking3, $tracking4);
-                                    break;
-                                case (strstr($txtcasino, "RTG")):
-
-                                    $url = $_ServiceAPI[$serviceid - 1];
-                                    $capiusername = $_CAPIUsername;
-                                    $capipassword = $_CAPIPassword;
-                                    $capiplayername = $_CAPIPlayerName;
-                                    $capiserverID = '';
-                                    if ($usermode == 2) {
-                                        $deposit = $CasinoGamingCAPI->Deposit($txtcasino, $serviceid, $url, $txtusername, $capiusername, $capipassword, $capiplayername, $capiserverID, $amount, $tracking1, $tracking2, $tracking3, $tracking4, $usermode);
-                                    } 
-                                    
-                                    if ($usermode == 0) {
-                                        $deposit = $CasinoGamingCAPI->Deposit($txtcasino, $serviceid, $url, $txtusername, $capiusername, $capipassword, $capiplayername, $capiserverID, $amount, $tracking1, $tracking2, $tracking3, $tracking4, $usermode);
-                                        if ($deposit == NULL) { // proceeed if certificate does not match
-                                            $deposit = $CasinoGamingCAPI->Deposit($txtcasino, $serviceid, $url, $txtusername, $capiusername, $capipassword, $capiplayername, $capiserverID, $amount, $tracking1, $tracking2, $tracking3, $tracking4);  
-                                        }
-                                    }
-                                    break;
-                                case (strstr($txtcasino, "MG")):
-
-                                    $tracking3 = $_CAPIEventID;
-
-                                    $transactionid = $maf->getTransactionIDLP($serviceid, $cmbterm);
-                                    $tracking2 = $transactionid['TransactionRequestLogLPID'];
-
-                                    $tracking4 = $maf->insertServiceTransRef($serviceid, 2);
-
-                                    //get terminal password
-                                    if ($usermode == 0 || $usermode == 2) {
-                                        $terminal_pwd_res = $maf->getTerminalPassword($cmbterm, $serviceid);
-                                        $terminal_pwd = $terminal_pwd_res['ServicePassword'];
-                                        $tracking1 = $terminal_pwd;
-                                    } else {
-                                        $tracking1 = $ubservicepassword;
-                                    }
-
-                                    $_MGCredentials = $_ServiceAPI[$serviceid - 1];
-                                    list($mgurl, $mgserverID) = $_MGCredentials;
-                                    $url = $mgurl;
-                                    $capiusername = $_CAPIUsername;
-                                    $capipassword = $_CAPIPassword;
-                                    $capiplayername = $_CAPIPlayerName;
-                                    $capiserverID = $mgserverID;
-                                    $deposit = $CasinoGamingCAPI->Deposit($txtcasino, $serviceid, $url, $txtusername, $capiusername, $capipassword, $capiplayername, $capiserverID, $amount, $tracking1, $tracking2, $tracking3, $tracking4);
-
-                                    break;
-                                case (strstr($txtcasino, "PT")):
-
-                                    $tracking3 = $_CAPIEventID;
-
-                                    $transactionid = $maf->getTransactionIDLP($serviceid, $cmbterm);
-                                    $tracking4 = $transactionid['TransactionRequestLogLPID'];
-
-                                    //get terminal password
-                                    if ($usermode == 0 || $usermode == 2) {
-                                        $terminal_pwd_res = $maf->getTerminalPassword($cmbterm, $serviceid);
-                                        $terminal_pwd = $terminal_pwd_res['ServicePassword'];
-                                        $tracking1 = $terminal_pwd;
-                                    } else {
-                                        $tracking1 = $ubservicepassword;
-                                    }
-
-                                    $url = $_ServiceAPI[$serviceid - 1];
-                                    $capiusername = $_ptcasinoname;
-                                    $capipassword = $_ptsecretkey;
-                                    $capiplayername = $_CAPIPlayerName;
-                                    $capiserverID = '';
-
-                                    //unfreeze first casino
-                                    $unfreeze = $CasinoGamingCAPI->unfreeze($txtusername, $url, $capiusername, $capipassword, 0);
-                                    if ($unfreeze['IsSucceed'] == true) {
-                                        $deposit = $CasinoGamingCAPI->Deposit($txtcasino, $serviceid, $url, $txtusername, $capiusername, $capipassword, $capiplayername, $capiserverID, $amount, $tracking1, $tracking2, $tracking3, $tracking4);
-                                    } else {
-                                        $deposit['IsSucceed'] = false;
-                                    }
-                                    break;
-                            }
-
-                            //if deposit is successful 
-                            if (isset($deposit['IsSucceed']) && $deposit['IsSucceed'] == true) {
-                                $transloglpid = $maf->getmaxtranslogs($transtype, $cmbterm, $serviceid);
-
-                                $data = $maf->gettranslogslpdetails($transtype, $cmbterm, $serviceid, $transloglpid);
-                                foreach ($data as $value) {
-                                    $servicetransferhisid = $value['ServiceTransferHistoryID'];
-                                    $transsummaryid = $value['TransactionSummaryID'];
-                                }
-
-                                $transreferid = $maf->udate('YmdHisu');
-                                $transtype = 'RD';
-                                $status = 0;
-
-                                if (isset($deposit['TransactionInfo'])) {
-                                    //RTG / Magic Macau
-                                    if (isset($deposit['TransactionInfo']['DepositGenericResult'])) {
-                                        $transrefid = $deposit['TransactionInfo']['DepositGenericResult']['transactionID'];
-                                        $apiresult2 = $deposit['TransactionInfo']['DepositGenericResult']['transactionStatus'];
-                                        $apierrmsg = $deposit['TransactionInfo']['DepositGenericResult']['errorMsg'];
-                                    }
-                                    //MG / Vibrant Vegas
-                                    else if (isset($deposit['TransactionInfo'])) {
-                                        $transrefid = $deposit['TransactionInfo']['TransactionId'];
-                                        $apiresult2 = "true";
-                                        $apierrmsg = $deposit['ErrorMessage'];
-                                    }
-                                    //Rockin Reno
-                                    else if (isset($deposit['TransactionInfo']['PT'])) {
-                                        $transrefid = $deposit['TransactionInfo']['PT']['TransactionId'];
-                                        $apiresult2 = $deposit['TransactionInfo']['PT']['TransactionStatus'];
-                                        $apierrmsg = $deposit['TransactionInfo']['PT']['TransactionStatus'];
-                                    }
-                                }
-                                $statuz = 4;
-                                switch (true) {
-                                    case (strstr($txtcasino, "MG")):
-                                        $apiresult = ($apiresult) ? 'true' : 'false';
-                                        break;
-                                    case (strstr($txtcasino, "PT")):
-                                        $apiresult = $apiresult;
-                                        break;
-                                    case (strstr($txtcasino, "RTG")):
-                                        $apiresult = $apiresult;
-                                        break;
-                                }
-                                //update transactionrequestlogslp status to denied
-                                $uptrans = $maf->uptransactionreqlogslp2($statuz, $apiresult, $txttransrefid, $transrefid);
-
-                                if ($uptrans > 0) {
-                                    $paymenttype = 1;
-
-                                    switch (true) {
-                                        case (strstr($txtcasino, "MG")):
-                                            $apiresult = ($apiresult) ? 'true' : 'false';
-                                            break;
-                                        case (strstr($txtcasino, "PT")):
-                                            $apiresult = $apiresult;
-                                            break;
-                                        case (strstr($txtcasino, "RTG")):
-                                            $apiresult = $apiresult;
-                                            break;
-                                    }
-                                    //insert in transactionrequestlogslp
-                                    $inserttranslogs = $maf->insertTransactionreqlogslp($transreferid, $amount, $transtype, $cmbterm, $status, $cmbsite, $transrefid, $apiresult2, $serviceid, $servicetransferhisid, $txtcardnumber, $mid, $usermode, $transsummaryid, $paymenttype);
-                                    //check if insert in transactionrequestlogslp is successful   
-                                    if ($inserttranslogs > 0) {
-                                        $upterminalsessions = $maf->upTerminalSessServcID($serviceid, $amount, $cmbterm);
-
-                                        if ($upterminalsessions == true) {
-                                            $zaid = $aid;
-                                            $zdate = $vdate;
-                                            $ztransdetails = 'Casino Service = ' . "$serviceid" . ' Status = ' . "$status" . ' TerminalID = ' . "$cmbterm" . ' UserMode = ' . "$usermode";
-                                            $zauditfunctionID = 73;
-                                            $maf->logtoaudit($new_sessionid, $zaid, $ztransdetails, $zdate, $vipaddress, $zauditfunctionID);
-
-                                            $msg = 'Manual Casino Fulfillment: Successfully Updated Tag As Success';
-                                        } else {
-                                            $msg = 'Manual Casino Fulfillment: Failed to Update Terminal Sessions';
-                                        }
-                                    } else {
-                                        $msg = 'Manual Casino Fulfillment: Failed to Insert/Update Transactional Tables';
-                                    }
-                                } else {
-                                    $msg = 'Manual Casino Fulfillment: Failed to Update Transactional Tables';
-                                }
-                            } else {
-                                //check casino if RTG, MG, or PT, get Transaction Information
-                                switch (true) {
-                                    case (strstr($txtcasino, "RTG")):
-                                        $apierrmsg = $deposit['TransactionInfo']['DepositGenericResult']['errorMsg'];
-                                        break;
-                                    case (strstr($txtcasino, "MG")):
-                                        $apierrmsg = $deposit['ErrorMessage'];
-                                        break;
-                                    case (strstr($txtcasino, "PT")):
-                                        $apierrmsg = $deposit['ErrorMessage'];
-                                        break;
-                                }
-                                $msg = "$apierrmsg";
-                            }
-                        } else {
-                            $msg = 'Manual Casino Fulfillment: Invalid transaction type';
-                        }
-                    }
+                    } 
+//                    elseif ($txtsource == 'Launchpad') {
+//                        //check if Transaction type is Withdraw or W
+//                        if ($txttranstype == 'Withdraw') {
+//                            //launchpad source, tag as failed
+//                            $status = 4;
+//                            switch (true) {
+//                                case (strstr($txtcasino, "MG")):
+//                                    $apiresult = ($apiresult) ? 'true' : 'false';
+//                                    break;
+//                                case (strstr($txtcasino, "PT")):
+//                                    $apiresult = $apiresult;
+//                                    break;
+//                                case (strstr($txtcasino, "RTG")):
+//                                    $apiresult = $apiresult;
+//                                    break;
+//                            }
+//                            $uptrans = $maf->uptransactionreqlogslp($status, $apiresult, $txttransrefid);
+//
+//                            //check if update transaction request logs lp is successfully updated
+//                            if ($uptrans > 0) {
+//                                $upterminalsessions = $maf->upTerminalSessServcID($serviceid, $amount, $cmbterm);
+//
+//                                if ($upterminalsessions == true) {
+//                                    $zaid = $aid;
+//                                    $zdate = $vdate;
+//                                    $ztransdetails = 'Casino Service = ' . "$serviceid" . ' Status = ' . "$status" . ' TerminalID = ' . "$cmbterm" . ' UserMode = ' . "$usermode";
+//                                    $zauditfunctionID = 73;
+//                                    $maf->logtoaudit($new_sessionid, $zaid, $ztransdetails, $zdate, $vipaddress, $zauditfunctionID);
+//
+//                                    $msg = 'Manual Casino Fulfillment: Successfully Updated. Transaction Tag as Failed';
+//                                } else {
+//                                    $msg = 'Manual Casino Fulfillment: Failed to Update Terminal Sessions';
+//                                }
+//                            } else {
+//                                $msg = 'Failed to Update Transaction Status';
+//                            }
+//                        }
+//                        //check if Transaction type is Deposit / D or Redeposit / RD
+//                        elseif ($txttranstype == 'Deposit' || $txttranstype == 'ReDeposit') {
+//                            //check transaction type
+//                            switch ($txttranstype) {
+//                                case 'Deposit':
+//                                    $transtype = 'D';
+//                                    break;
+//
+//                                case 'Reload':
+//                                    $transtype = 'R';
+//                                    break;
+//
+//                                case 'Withdraw':
+//                                    $transtype = 'W';
+//                                    break;
+//
+//                                case 'ReDeposit':
+//                                    $transtype = 'RD';
+//                                    break;
+//                            }
+//
+//                            $transactionid = $maf->getTransactionID($serviceid, $cmbterm);
+//                            $tracking1 = $transactionid['TransactionRequestLogID'];
+//
+//                            $tracking2 = $transtype;
+//                            $tracking3 = $cmbterm;
+//                            $tracking4 = $cmbsite;
+//
+//                            switch (true) {
+//                                //check casino if RTG, MG, or PT
+//                                case (strstr($txtcasino, "RTG2")):
+//
+//                                    $url = $_ServiceAPI[$serviceid - 1];
+//                                    $capiusername = $_CAPIUsername;
+//                                    $capipassword = $_CAPIPassword;
+//                                    $capiplayername = $_CAPIPlayerName;
+//                                    $capiserverID = '';
+//                                    $deposit = $CasinoGamingCAPI->Deposit($txtcasino, $serviceid, $url, $txtusername, $capiusername, $capipassword, $capiplayername, $capiserverID, $amount, $tracking1, $tracking2, $tracking3, $tracking4);
+//                                    break;
+//                                case (strstr($txtcasino, "RTG")):
+//
+//                                    $url = $_ServiceAPI[$serviceid - 1];
+//                                    $capiusername = $_CAPIUsername;
+//                                    $capipassword = $_CAPIPassword;
+//                                    $capiplayername = $_CAPIPlayerName;
+//                                    $capiserverID = '';
+//                                    if ($usermode == 2) {
+//                                        $deposit = $CasinoGamingCAPI->Deposit($txtcasino, $serviceid, $url, $txtusername, $capiusername, $capipassword, $capiplayername, $capiserverID, $amount, $tracking1, $tracking2, $tracking3, $tracking4, $usermode);
+//                                    } 
+//                                    
+//                                    if ($usermode == 0) {
+//                                        $deposit = $CasinoGamingCAPI->Deposit($txtcasino, $serviceid, $url, $txtusername, $capiusername, $capipassword, $capiplayername, $capiserverID, $amount, $tracking1, $tracking2, $tracking3, $tracking4, $usermode);
+//                                        if ($deposit == NULL) { // proceeed if certificate does not match
+//                                            $deposit = $CasinoGamingCAPI->Deposit($txtcasino, $serviceid, $url, $txtusername, $capiusername, $capipassword, $capiplayername, $capiserverID, $amount, $tracking1, $tracking2, $tracking3, $tracking4);  
+//                                        }
+//                                    }
+//                                    break;
+//                                case (strstr($txtcasino, "MG")):
+//
+//                                    $tracking3 = $_CAPIEventID;
+//
+//                                    $transactionid = $maf->getTransactionIDLP($serviceid, $cmbterm);
+//                                    $tracking2 = $transactionid['TransactionRequestLogLPID'];
+//
+//                                    $tracking4 = $maf->insertServiceTransRef($serviceid, 2);
+//
+//                                    //get terminal password
+//                                    if ($usermode == 0 || $usermode == 2) {
+//                                        $terminal_pwd_res = $maf->getTerminalPassword($cmbterm, $serviceid);
+//                                        $terminal_pwd = $terminal_pwd_res['ServicePassword'];
+//                                        $tracking1 = $terminal_pwd;
+//                                    } else {
+//                                        $tracking1 = $ubservicepassword;
+//                                    }
+//
+//                                    $_MGCredentials = $_ServiceAPI[$serviceid - 1];
+//                                    list($mgurl, $mgserverID) = $_MGCredentials;
+//                                    $url = $mgurl;
+//                                    $capiusername = $_CAPIUsername;
+//                                    $capipassword = $_CAPIPassword;
+//                                    $capiplayername = $_CAPIPlayerName;
+//                                    $capiserverID = $mgserverID;
+//                                    $deposit = $CasinoGamingCAPI->Deposit($txtcasino, $serviceid, $url, $txtusername, $capiusername, $capipassword, $capiplayername, $capiserverID, $amount, $tracking1, $tracking2, $tracking3, $tracking4);
+//
+//                                    break;
+//                                case (strstr($txtcasino, "PT")):
+//
+//                                    $tracking3 = $_CAPIEventID;
+//
+//                                    $transactionid = $maf->getTransactionIDLP($serviceid, $cmbterm);
+//                                    $tracking4 = $transactionid['TransactionRequestLogLPID'];
+//
+//                                    //get terminal password
+//                                    if ($usermode == 0 || $usermode == 2) {
+//                                        $terminal_pwd_res = $maf->getTerminalPassword($cmbterm, $serviceid);
+//                                        $terminal_pwd = $terminal_pwd_res['ServicePassword'];
+//                                        $tracking1 = $terminal_pwd;
+//                                    } else {
+//                                        $tracking1 = $ubservicepassword;
+//                                    }
+//
+//                                    $url = $_ServiceAPI[$serviceid - 1];
+//                                    $capiusername = $_ptcasinoname;
+//                                    $capipassword = $_ptsecretkey;
+//                                    $capiplayername = $_CAPIPlayerName;
+//                                    $capiserverID = '';
+//
+//                                    //unfreeze first casino
+//                                    $unfreeze = $CasinoGamingCAPI->unfreeze($txtusername, $url, $capiusername, $capipassword, 0);
+//                                    if ($unfreeze['IsSucceed'] == true) {
+//                                        $deposit = $CasinoGamingCAPI->Deposit($txtcasino, $serviceid, $url, $txtusername, $capiusername, $capipassword, $capiplayername, $capiserverID, $amount, $tracking1, $tracking2, $tracking3, $tracking4);
+//                                    } else {
+//                                        $deposit['IsSucceed'] = false;
+//                                    }
+//                                    break;
+//                            }
+//
+//                            //if deposit is successful 
+//                            if (isset($deposit['IsSucceed']) && $deposit['IsSucceed'] == true) {
+//                                $transloglpid = $maf->getmaxtranslogs($transtype, $cmbterm, $serviceid);
+//
+//                                $data = $maf->gettranslogslpdetails($transtype, $cmbterm, $serviceid, $transloglpid);
+//                                foreach ($data as $value) {
+//                                    $servicetransferhisid = $value['ServiceTransferHistoryID'];
+//                                    $transsummaryid = $value['TransactionSummaryID'];
+//                                }
+//
+//                                $transreferid = $maf->udate('YmdHisu');
+//                                $transtype = 'RD';
+//                                $status = 0;
+//
+//                                if (isset($deposit['TransactionInfo'])) {
+//                                    //RTG / Magic Macau
+//                                    if (isset($deposit['TransactionInfo']['DepositGenericResult'])) {
+//                                        $transrefid = $deposit['TransactionInfo']['DepositGenericResult']['transactionID'];
+//                                        $apiresult2 = $deposit['TransactionInfo']['DepositGenericResult']['transactionStatus'];
+//                                        $apierrmsg = $deposit['TransactionInfo']['DepositGenericResult']['errorMsg'];
+//                                    }
+//                                    //MG / Vibrant Vegas
+//                                    else if (isset($deposit['TransactionInfo'])) {
+//                                        $transrefid = $deposit['TransactionInfo']['TransactionId'];
+//                                        $apiresult2 = "true";
+//                                        $apierrmsg = $deposit['ErrorMessage'];
+//                                    }
+//                                    //Rockin Reno
+//                                    else if (isset($deposit['TransactionInfo']['PT'])) {
+//                                        $transrefid = $deposit['TransactionInfo']['PT']['TransactionId'];
+//                                        $apiresult2 = $deposit['TransactionInfo']['PT']['TransactionStatus'];
+//                                        $apierrmsg = $deposit['TransactionInfo']['PT']['TransactionStatus'];
+//                                    }
+//                                }
+//                                $statuz = 4;
+//                                switch (true) {
+//                                    case (strstr($txtcasino, "MG")):
+//                                        $apiresult = ($apiresult) ? 'true' : 'false';
+//                                        break;
+//                                    case (strstr($txtcasino, "PT")):
+//                                        $apiresult = $apiresult;
+//                                        break;
+//                                    case (strstr($txtcasino, "RTG")):
+//                                        $apiresult = $apiresult;
+//                                        break;
+//                                }
+//                                //update transactionrequestlogslp status to denied
+//                                $uptrans = $maf->uptransactionreqlogslp2($statuz, $apiresult, $txttransrefid, $transrefid);
+//
+//                                if ($uptrans > 0) {
+//                                    $paymenttype = 1;
+//
+//                                    switch (true) {
+//                                        case (strstr($txtcasino, "MG")):
+//                                            $apiresult = ($apiresult) ? 'true' : 'false';
+//                                            break;
+//                                        case (strstr($txtcasino, "PT")):
+//                                            $apiresult = $apiresult;
+//                                            break;
+//                                        case (strstr($txtcasino, "RTG")):
+//                                            $apiresult = $apiresult;
+//                                            break;
+//                                    }
+//                                    //insert in transactionrequestlogslp
+//                                    $inserttranslogs = $maf->insertTransactionreqlogslp($transreferid, $amount, $transtype, $cmbterm, $status, $cmbsite, $transrefid, $apiresult2, $serviceid, $servicetransferhisid, $txtcardnumber, $mid, $usermode, $transsummaryid, $paymenttype);
+//                                    //check if insert in transactionrequestlogslp is successful   
+//                                    if ($inserttranslogs > 0) {
+//                                        $upterminalsessions = $maf->upTerminalSessServcID($serviceid, $amount, $cmbterm);
+//
+//                                        if ($upterminalsessions == true) {
+//                                            $zaid = $aid;
+//                                            $zdate = $vdate;
+//                                            $ztransdetails = 'Casino Service = ' . "$serviceid" . ' Status = ' . "$status" . ' TerminalID = ' . "$cmbterm" . ' UserMode = ' . "$usermode";
+//                                            $zauditfunctionID = 73;
+//                                            $maf->logtoaudit($new_sessionid, $zaid, $ztransdetails, $zdate, $vipaddress, $zauditfunctionID);
+//
+//                                            $msg = 'Manual Casino Fulfillment: Successfully Updated Tag As Success';
+//                                        } else {
+//                                            $msg = 'Manual Casino Fulfillment: Failed to Update Terminal Sessions';
+//                                        }
+//                                    } else {
+//                                        $msg = 'Manual Casino Fulfillment: Failed to Insert/Update Transactional Tables';
+//                                    }
+//                                } else {
+//                                    $msg = 'Manual Casino Fulfillment: Failed to Update Transactional Tables';
+//                                }
+//                            } else {
+//                                //check casino if RTG, MG, or PT, get Transaction Information
+//                                switch (true) {
+//                                    case (strstr($txtcasino, "RTG")):
+//                                        $apierrmsg = $deposit['TransactionInfo']['DepositGenericResult']['errorMsg'];
+//                                        break;
+//                                    case (strstr($txtcasino, "MG")):
+//                                        $apierrmsg = $deposit['ErrorMessage'];
+//                                        break;
+//                                    case (strstr($txtcasino, "PT")):
+//                                        $apierrmsg = $deposit['ErrorMessage'];
+//                                        break;
+//                                }
+//                                $msg = "$apierrmsg";
+//                            }
+//                        } else {
+//                            $msg = 'Manual Casino Fulfillment: Invalid transaction type';
+//                        }
+//                    }
                 }
                 echo json_encode($msg);
                 unset($uptrans, $txttranstype, $balance, $terminal_balance, $total_terminal_balance, $amount, $trans_summary_id, $bcf, $deposit, $msg);

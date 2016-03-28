@@ -20,10 +20,10 @@ class RptCashierNodeLogins extends DBHandler
     function countCashierNodeLogins($zdatefrom, $zdateto)
     {
      $stmt = "SELECT Count(DISTINCT (adt.TransDetails), (s.SiteID)) as cashierLoginCount
-                    FROM npos.audittrail adt INNER JOIN npos.siteaccounts sa ON adt.AID = sa.AID
-                        INNER JOIN npos.sites s ON sa.SiteID = s.SiteID
+                    FROM audittrail adt INNER JOIN siteaccounts sa ON adt.AID = sa.AID
+                        INNER JOIN sites s ON sa.SiteID = s.SiteID
                     WHERE adt.TransDateTime >= '".$zdatefrom."' AND adt.TransDateTime <= '".$zdateto."' AND sa.Status
-                        AND adt.AID IN (SELECT AID FROM npos.accounts WHERE AccountTypeID = 4) 
+                        AND adt.AID IN (SELECT AID FROM accounts WHERE AccountTypeID = 4) 
                         AND adt.AuditTrailFunctionID IN (1)"; 
         $this->prepare($stmt);
         $this->bindparameter(1, $zdatefrom);
@@ -43,7 +43,7 @@ class RptCashierNodeLogins extends DBHandler
                     FROM audittrail adt INNER JOIN siteaccounts sa ON adt.AID = sa.AID
                         INNER JOIN sites s ON sa.SiteID = s.SiteID
                     WHERE adt.TransDateTime >= '".$zdatefrom."' AND adt.TransDateTime <= '".$zdateto."' AND sa.Status
-                        AND adt.AID IN (SELECT AID FROM npos.accounts WHERE AccountTypeID = 4) 
+                        AND adt.AID IN (SELECT AID FROM accounts WHERE AccountTypeID = 4) 
                         AND adt.AuditTrailFunctionID IN (1) GROUP By adt.TransDetails, s.SiteCode";   
         }
         else
@@ -54,7 +54,7 @@ class RptCashierNodeLogins extends DBHandler
                         INNER JOIN sites s ON sa.SiteID = s.SiteID
                     WHERE adt.TransDateTime >= '".$zdatefrom."' AND adt.TransDateTime <= '".$zdateto."' 
                         AND sa.Status AND adt.AID IN 
-                        (SELECT AID FROM npos.accounts WHERE AccountTypeID = 4) AND adt.AuditTrailFunctionID IN (1)
+                        (SELECT AID FROM accounts WHERE AccountTypeID = 4) AND adt.AuditTrailFunctionID IN (1)
                     GROUP By adt.TransDetails, s.SiteCode
                     ORDER BY ".$zsort." ".$zdirection." "
                     . "LIMIT ".$zstart.",".$zlimit."";

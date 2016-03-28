@@ -410,7 +410,8 @@ class SiteManagement extends DBHandler{
                    INNER JOIN ref_provinces e on b.ProvinceID = e.ProvinceID
                    INNER JOIN ref_cities f on b.CityID = f.CityID
                    INNER JOIN ref_barangay g on b.BarangayID = g.BarangayID
-                   INNER JOIN accounts i on a.OwnerAID = i.AID AND a.SiteID =  '".$zsiteID."'ORDER BY a.SiteName";
+                   INNER JOIN accounts i on a.OwnerAID = i.AID 
+                   WHERE a.SiteID =  '".$zsiteID."'";
               $this->executeQuery($stmt);
               $this->_row = $this->fetchAllData();
               if(count($this->_row == 0))
@@ -423,7 +424,7 @@ class SiteManagement extends DBHandler{
                    INNER JOIN ref_provinces e on b.ProvinceID = e.ProvinceID
                    INNER JOIN ref_cities f on b.CityID = f.CityID
                    INNER JOIN ref_barangay g on b.BarangayID = g.BarangayID
-                   WHERE a.SiteID =  '".$zsiteID."' ORDER BY a.SiteName";
+                   WHERE a.SiteID =  '".$zsiteID."'";
                  $this->executeQuery($stmt);
                  $this->_row = $this->fetchAllData();
               }
@@ -459,12 +460,13 @@ class SiteManagement extends DBHandler{
                    b.BarangayID,c.IslandName,d.RegionName,e.ProvinceName,f.CityName,g.BarangayName,h.SiteGroupID,i.UserName, a.SiteClassificationID FROM sites a
                    INNER JOIN sitedetails b  on a.SiteID = b.SiteID INNER JOIN ref_islands c on b.IslandID = c.IslandID INNER JOIN ref_regions d on b.RegionID = d.RegionID
                    INNER JOIN ref_provinces e on b.ProvinceID = e.ProvinceID INNER JOIN ref_cities f on b.CityID = f.CityID INNER JOIN ref_barangay g on b.BarangayID = g.BarangayID
-                   INNER JOIN sitegroups h on a.SiteGroupID = h.SiteGroupID INNER JOIN accounts i on a.OwnerAID = i.AID AND a.SiteID =  '".$zsiteID."' ORDER BY a.SiteID ASC";
+                   INNER JOIN sitegroups h on a.SiteGroupID = h.SiteGroupID INNER JOIN accounts i on a.OwnerAID = i.AID 
+                   WHERE a.SiteID =  '".$zsiteID."'";
         }
         else
         {
             $stmt = "SELECT a.SiteID,a.SiteName,a.SiteCode,a.OwnerAID,a.Status, if(isnull(a.POSAccountNo), '0000000000', a.POSAccountNo) as POS, b.SiteDescription,b.SiteAlias,b.SiteAddress,b.IslandID,b.RegionID,b.ProvinceID,b.CityID,b.BarangayID, a.SiteClassificationID 
-                FROM sites a INNER JOIN sitedetails b WHERE a.SiteID = b.SiteID AND a.SiteID <> 1 ORDER BY ".$zsort." ".$zdirection." LIMIT ".$zstart.", ".$zlimit."";
+                FROM sites a INNER JOIN sitedetails b ON a.SiteID = b.SiteID WHERE a.SiteID <> 1 ORDER BY ".$zsort." ".$zdirection." LIMIT ".$zstart.", ".$zlimit."";
         }
         $this->executeQuery($stmt);
         $this->_row = $this->fetchAllData();
@@ -587,7 +589,7 @@ class SiteManagement extends DBHandler{
     {
         $stmt = "SELECT DISTINCT(a.AccountTypeID) FROM siteaccounts sa
             INNER JOIN accounts a ON a.AID = sa.AID
-            WHERE a.AccountTypeID IN (15,17) AND sa.SiteID = ?";
+            WHERE a.AccountTypeID IN (15,17) AND sa.SiteID = ? AND sa.Status=1 and a.Status=1";
         $this->prepare($stmt);
         $this->bindparameter(1, $zsiteID);
         $this->execute();
@@ -689,7 +691,7 @@ class SiteManagement extends DBHandler{
       {
           $stmt = "Select a.UserName, b.Name, b.Email, b.LandLine, b.MobileNumber from accounts as a
                    INNER JOIN accountdetails as b ON a.AID = b.AID
-                   WHERE a.AID = '".$zaid."' GROUP BY a.UserName ORDER BY a.UserName ";
+                   WHERE a.AID = '".$zaid."'";
           $this->executeQuery($stmt);
           return  $this->fetchAllData();
       }

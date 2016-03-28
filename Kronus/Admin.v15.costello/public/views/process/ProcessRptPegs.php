@@ -314,18 +314,18 @@ if($connected)
                               $vorigstatus = $row['tstat'];
                               $vprovider = $row['ServiceName'];
                               $terminalType = $ttype;
-                              $vocaccount = $row['ServiceTerminalAcct'];
+                              //$vocaccount = $row['ServiceTerminalAcct'];
                               //remove the "icsa-[SiteCode]"
                                 $rterminalCode = substr($rterminalCode, strlen($rsitecode['SiteCode']));
                             
-                              if(trim(strlen($vocaccount) > 0)) 
-                              {
-                                $vocval =   $vocaccount; 
-                              }
-                              else
-                              {
-                                $vocval = 'na';
-                              }        
+//                              if(trim(strlen($vocaccount) > 0)) 
+//                              {
+//                                $vocval =   $vocaccount; 
+//                              }
+//                              else
+//                              {
+//                                $vocval = 'na';
+//                              }        
 
                               if($vorigstatus == 1)
                               {
@@ -620,20 +620,20 @@ if($connected)
                             $vorigstatus = $vview['tstat'];
                             $vprovider = $vview['ServiceName'];
                             $terminalType = $ttype;
-                            $vocaccount = $vview['ServiceTerminalAcct'];
+                            //$vocaccount = $vview['ServiceTerminalAcct'];
 
                             //remove the "icsa-[SiteCode]"
                                $rterminalCode = substr($rterminalCode, strlen($rsitecode['SiteCode']));
 
 
-                            if(trim(strlen($vocaccount) > 0)) 
-                            {
-                               $vocval =   $vocaccount; 
-                            }
-                            else
-                            {
-                               $vocval = 'na';
-                            }        
+//                            if(trim(strlen($vocaccount) > 0)) 
+//                            {
+//                               $vocval =   $vocaccount; 
+//                            }
+//                            else
+//                            {
+//                               $vocval = 'na';
+//                            }        
 
                             if($vorigstatus == 1)
                             {
@@ -1042,20 +1042,20 @@ if($connected)
                             $vorigstatus = $vview['tstat'];
                             $vprovider = $vview['ServiceName'];
                             $terminalType = $ttype;
-                            $vocaccount = $vview['ServiceTerminalAcct'];
+//                            $vocaccount = $vview['ServiceTerminalAcct'];
 
                             //remove the "icsa-[SiteCode]"
                                $rterminalCode = substr($rterminalCode, strlen($rsitecode['SiteCode']));
 
 
-                            if(trim(strlen($vocaccount) > 0)) 
-                            {
-                               $vocval =   $vocaccount; 
-                            }
-                            else
-                            {
-                               $vocval = 'na';
-                            }        
+//                            if(trim(strlen($vocaccount) > 0)) 
+//                            {
+//                               $vocval =   $vocaccount; 
+//                            }
+//                            else
+//                            {
+//                               $vocval = 'na';
+//                            }        
 
                             if($vorigstatus == 1)
                             {
