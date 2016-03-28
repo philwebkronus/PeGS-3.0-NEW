@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/kronus-egm-ws-abbott/!svn/ver/285/trunk/kapi-v15.p2.msw/protected/config/RTGClientCerts/3
+END
+key.pem
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/kronus-egm-ws-abbott/!svn/ver/285/trunk/kapi-v15.p2.msw/protected/config/RTGClientCerts/3/key.pem
+END
+cert.pem
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/kronus-egm-ws-abbott/!svn/ver/285/trunk/kapi-v15.p2.msw/protected/config/RTGClientCerts/3/cert.pem
+END
