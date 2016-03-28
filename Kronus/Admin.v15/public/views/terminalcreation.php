@@ -33,6 +33,9 @@ $vaccesspages = array('8');
       var url = 'process/ProcessTerminalMgmt.php'; 
       jQuery("#cmbsitename").live('change', function(){
          var data = {page: function(){return jQuery("#page").val();}}
+         jQuery("#submit").attr("disabled", true);
+        document.getElementById('loading').style.display='block';
+         document.getElementById('fade2').style.display='block';
          jQuery.ajax({
              url: url,
              type: 'post',
@@ -51,7 +54,7 @@ $vaccesspages = array('8');
                     }
              }
          });
-         
+
          //this part is for displaying site name
          jQuery.ajax({
               url: url,
@@ -70,6 +73,10 @@ $vaccesspages = array('8');
                      jQuery("#txtposaccno").text(" ");
                   }
                   jQuery("#txttermcode").val(data.TerminalID);
+                   $('#loading').hide();
+                document.getElementById('loading').style.display='none';
+                document.getElementById('fade2').style.display='none';
+                jQuery("#submit").attr("disabled", false);
               }
          });
       }); 
@@ -131,8 +138,10 @@ $vaccesspages = array('8');
             </table>
             
             <div id="submitarea"> 
-                <input type="submit" value="Submit" onclick="return chkcreateterminal();"/>
+                <input disabled="true" type="submit" id="submit" value="Submit" onclick="return chkcreateterminal();"/>
             </div>
+            <div id="loading" style="position: fixed; z-index: 5000; background: url('images/Please_wait.gif') no-repeat; height: 162px; width: 260px; margin: 50px 0 0 400px; display: none;"></div>
+            <div id="fade2" class="black_overlay" oncontextmenu="return false"></div>
         </form>
 
 </div>

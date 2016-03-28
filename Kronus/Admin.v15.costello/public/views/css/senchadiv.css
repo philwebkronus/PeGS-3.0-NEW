@@ -1,0 +1,111 @@
+
+.x-grid-cell-topic b {
+    display: block;
+}
+.x-grid-cell-topic .x-grid-cell-inner {
+    white-space: normal;
+}
+.x-grid-cell-topic a {
+    color: #385F95;
+    text-decoration: none;
+}
+.x-grid-cell-topic a:hover {
+    text-decoration:underline;
+}
+        .x-grid-cell-topic .x-grid-cell-innerf {
+                padding: 5px;
+        }
+        .x-grid-rowbody {
+        padding: 0 5px 5px 5px;
+        }
+
+        
+        
+        
+.x-panel-header-text-default {
+    font-family: inherit;
+    color: #FFF;
+    font-size: 14px;
+}        
+
+.x-panel-header-default {
+    background-color: #3d561c;
+    background-image: none;
+    border-color: Black;
+    font-size: 14px;
+}
+        
+.x-grid-body, .x-panel {
+    border-color: #C5C5C5 #000000 #000000 !important;
+    font-size: 12px !important;
+}
+
+.x-panel-default-framed {
+    border-color: #000000;
+    background-color: #C5C5C5;
+}
+
+.x-grid-row .x-grid-cell {
+    font-size: 13px !important;
+}
+
+.x-grid-header-ct {
+    border: 1px solid #000000;
+    font-size: 12px !important;
+}
+
+.x-column-header {
+    font-size: 12px !important;
+    font-weight: Bold;
+}
+
+.x-toolbar-default {
+    border-color: #000000;
+    background-image: none;
+    background-color: #d5e5a3;
+}
+
+
+
+
+        
+div#senchahdr {
+    width: 1100px;
+    background-color: #edecda;
+/*    margin-left: auto;
+    margin-right: auto;*/
+    padding: 10px;
+    border-top: 1px solid Black;
+    border-left: 1px solid Black;
+    border-right: 1px solid Black;
+    font-size: 0.9em;
+}
+
+div#senchaexport {
+    clear: both;
+    width: 1100px;
+    background-color: #6a6a6a;
+    text-align: right;
+    padding: 20px;
+    border-bottom: 1px solid Black;
+    border-left: 1px solid Black;
+    border-right: 1px solid Black;
+    font-size: 0.9em;
+/*    margin-left: auto;
+    margin-right: auto;*/
+}                    
+
+div#senchaexport1{
+    display:none;
+    clear: both;
+    width: 760px;
+    background-color: #6a6a6a;
+    text-align: right;
+    padding: 20px;
+    border-bottom: 1px solid Black;
+    border-left: 1px solid Black;
+    border-right: 1px solid Black;
+    font-size: 0.9em;
+    margin-left: auto;
+    margin-right: auto;
+} 

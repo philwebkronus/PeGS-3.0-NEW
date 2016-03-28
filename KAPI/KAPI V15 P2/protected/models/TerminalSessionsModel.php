@@ -271,7 +271,7 @@ class TerminalSessionsModel {
     
     public function getLastSessionDetails($terminalID, $terminalIDVIP){
         $sql = "SELECT TerminalID, LoyaltyCardNumber, MID, UserMode, UBServiceLogin, UBServicePassword, 
-                ServiceID, UBHashedServicePassword, LastBalance FROM terminalsessions
+                ServiceID, UBHashedServicePassword, LastBalance, TransactionSummaryID FROM terminalsessions
                 WHERE TerminalID IN (:terminal_id, :terminal_id_vip)";
         $param = array(':terminal_id'=>$terminalID,':terminal_id_vip'=>$terminalIDVIP);
         $command = $this->_connection->createCommand($sql);
@@ -376,6 +376,37 @@ class TerminalSessionsModel {
         $result = $command->queryRow();
         
         return $result['Count'];
+    }
+    
+    /**
+     * Checks if the player has Active Terminal Session
+     * @param type $MID MembeID of the Player/Member
+     * @param type $serviceID Casino ID 
+     * @return boolean/int Return 1 if has session, FALSE if none
+     * @author Ralph Sison
+     * @date Dec. 28, 2015
+     */
+    public function checkIfHasTerminalSession2($MID, $serviceID)
+    {
+        $sql = "SELECT TerminalID 
+                FROM terminalsessions 
+                WHERE MID = :mid 
+                AND ServiceID = :serviceID";
+        $command = $this->_connection->createCommand($sql);
+        $command->bindValue(":mid", $MID);
+        $command->bindValue(":serviceID", $serviceID);
+        $result = $command->queryRow();
+        
+        return $result;
+    }
+        public function getTransSummaryID($mid, $serviceid) {
+        $sql = "SELECT TransactionSummaryID FROM terminalsessions WHERE MID = :mid AND ServiceID = :serviceid";
+        $command = $this->connection->createCommand($sql);
+        $command->bindValue(':mid', $mid);
+        $command->bindValue(":serviceid", $serviceid);
+        $result = $command->queryRow();
+
+        return $result;
     }
 }
 

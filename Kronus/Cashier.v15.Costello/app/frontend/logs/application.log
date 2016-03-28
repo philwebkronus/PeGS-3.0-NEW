@@ -1,0 +1,13 @@
+[2015-12-14 13:00:14.440556][NOTICE] "Undefined variable: IseSAFETrans" File: C:\xampp\htdocs\Kronus.UB.New\cashier.eSAFEv15.02\app\frontend\controllers\ReportsController.php Line: 998
+[2015-12-14 13:00:24.777491][NOTICE] "Undefined index: startlimit" File: C:\xampp\htdocs\Kronus.UB.New\cashier.eSAFEv15.02\app\frontend\controllers\ReportsController.php Line: 756
+[2015-12-14 13:00:24.877139][NOTICE] "Undefined variable: IseSAFETrans" File: C:\xampp\htdocs\Kronus.UB.New\cashier.eSAFEv15.02\app\frontend\controllers\ReportsController.php Line: 998
+[2015-12-14 13:00:29.570228][NOTICE] "Undefined index: startlimit" File: C:\xampp\htdocs\Kronus.UB.New\cashier.eSAFEv15.02\app\frontend\controllers\ReportsController.php Line: 756
+[2015-12-14 13:00:30.335887][NOTICE] "Undefined variable: IseSAFETrans" File: C:\xampp\htdocs\Kronus.UB.New\cashier.eSAFEv15.02\app\frontend\controllers\ReportsController.php Line: 998
+[2015-12-14 13:00:45.15508][NOTICE] "Undefined index: startlimit" File: C:\xampp\htdocs\Kronus.UB.New\cashier.eSAFEv15.02\app\frontend\controllers\ReportsController.php Line: 756
+[2015-12-14 13:00:46.449803][NOTICE] "Undefined variable: IseSAFETrans" File: C:\xampp\htdocs\Kronus.UB.New\cashier.eSAFEv15.02\app\frontend\controllers\ReportsController.php Line: 998
+[2015-12-14 13:40:03.241710][NOTICE] "Undefined index: startlimit" File: C:\xampp\htdocs\Kronus.UB.New\cashier.eSAFEv15.02\app\frontend\controllers\ReportsController.php Line: 486
+[2015-12-14 13:40:05.866468][NOTICE] "Undefined index: startlimit" File: C:\xampp\htdocs\Kronus.UB.New\cashier.eSAFEv15.02\app\frontend\controllers\ReportsController.php Line: 486
+[2015-12-14 13:40:07.588403][NOTICE] "Undefined index: TotalRegCash" File: C:\xampp\htdocs\Kronus.UB.New\cashier.eSAFEv15.02\app\frontend\controllers\ReportsController.php Line: 556
+[2015-12-14 13:40:07.589956][NOTICE] "Undefined index: TotalRegTicket" File: C:\xampp\htdocs\Kronus.UB.New\cashier.eSAFEv15.02\app\frontend\controllers\ReportsController.php Line: 558
+[2015-12-14 13:40:07.592873][NOTICE] "Undefined index: TotalRegCoupon" File: C:\xampp\htdocs\Kronus.UB.New\cashier.eSAFEv15.02\app\frontend\controllers\ReportsController.php Line: 560
+[2015-12-14 13:40:07.594305][NOTICE] "Undefined index: TotalCashierRedemption" File: C:\xampp\htdocs\Kronus.UB.New\cashier.eSAFEv15.02\app\frontend\controllers\ReportsController.php Line: 562
