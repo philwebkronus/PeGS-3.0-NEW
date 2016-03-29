@@ -74,22 +74,21 @@ if($connected)
                     $vsitecode = $_POST['txtsitecode'];
                     $vlastterminal = (int)$_POST['txtlastterm'];
                     
-                    //selected MG Server, per terminal
+                    //get Server ID
                     if(isset($_POST['optserver']))
                     {
                         $arrserverID = $_POST['optserver'];
                     }
                     
-                    if(isset($_POST['optserver1']))
-                    {
-                        $arrserverID1 = $_POST['optserver1'];
-                    }
-                    
-                    if(isset($_POST['optserver2']))
-                    {
-                        $arrserverID2 = $_POST['optserver2'];
-                    }
-                     
+//                    if(isset($_POST['optserver1']))
+//                    {
+//                        $arrserverID1 = $_POST['optserver1'];
+//                    }
+//                    
+//                    if(isset($_POST['optserver2']))
+//                    {
+//                        $arrserverID2 = $_POST['optserver2'];
+//                    }                  
                     $vCreatedByAID = $aid; // session account id
                     $vStatus = 1;
                     $vterminalno = $vlastterminal + 1; //add + 1
@@ -172,37 +171,55 @@ if($connected)
                                 $servicegroupname = $obatch->getServiceGrpNameById($vserviceID);
                                 
                                 $vprovider = $servicegroupname;
-                            }
-
-                            //explode radiobox of RTG
-                            if(isset($arrserverID1) && isset($arrserverID1[$ctrterminal]))
-                            {
-                                $rtgservers = explode(':',$arrserverID1[$ctrterminal]);
-                                $rtggrpid = $rtgservers[2];
-                                $rtgvserviceID = $rtgservers[1];
-                                $rtgvprovider = $rtgservers[0];
-                                
+                                //-----------------  explode radiobox of RTG ----------------------- //
+                                $rtggrpid = $servers[2];
+                                $rtgvserviceID = $servers[1];
+                                $rtgvprovider = $servers[0];
                                 $usermode = $obatch->getServiceUserMode($rtgvserviceID);
                                 
                                 $servicegroupname = $obatch->getServiceGrpNameById($rtgvserviceID);
                                 
-                                $rtgvprovider = $servicegroupname;
-                            }
-                           
-                            //explode radiobox of PT
-                            if(isset($arrserverID2) && isset($arrserverID2[$ctrterminal]))
-                            {
-                                $ptservers = explode(':',$arrserverID2[$ctrterminal]);
-                                $ptgrpid = $ptservers[2];
-                                $ptvserviceID = $ptservers[1];
-                                $ptvprovider = $ptservers[0];
-                                
+                                $rtgvprovider = $servicegroupname;                              
+                                //-----------------  explode radiobox of PT ----------------------- //
+                                $ptgrpid = $servers[2];
+                                $ptvserviceID = $servers[1];
+                                $ptvprovider = $servers[0];
                                 $usermode = $obatch->getServiceUserMode($ptvserviceID);
                                 
                                 $servicegroupname = $obatch->getServiceGrpNameById($ptvserviceID);
                                 
-                                $ptvprovider = $servicegroupname;
+                                $ptvprovider = $servicegroupname;                               
                             }
+
+//                            //explode radiobox of RTG
+//                            if(isset($arrserverID1) && isset($arrserverID1[$ctrterminal]))
+//                            {
+//                                $rtgservers = explode(':',$arrserverID1[$ctrterminal]);
+//                                $rtggrpid = $rtgservers[2];
+//                                $rtgvserviceID = $rtgservers[1];
+//                                $rtgvprovider = $rtgservers[0];
+//                                
+//                                $usermode = $obatch->getServiceUserMode($rtgvserviceID);
+//                                
+//                                $servicegroupname = $obatch->getServiceGrpNameById($rtgvserviceID);
+//                                
+//                                $rtgvprovider = $servicegroupname;
+//                            }
+//                           
+//                            //explode radiobox of PT
+//                            if(isset($arrserverID2) && isset($arrserverID2[$ctrterminal]))
+//                            {
+//                                $ptservers = explode(':',$arrserverID2[$ctrterminal]);
+//                                $ptgrpid = $ptservers[2];
+//                                $ptvserviceID = $ptservers[1];
+//                                $ptvprovider = $ptservers[0];
+//                                
+//                                $usermode = $obatch->getServiceUserMode($ptvserviceID);
+//                                
+//                                $servicegroupname = $obatch->getServiceGrpNameById($ptvserviceID);
+//                                
+//                                $ptvprovider = $servicegroupname;
+//                            }
                             
                             $lname = $vsitecode.$vstartcode;
                             $alias = $vsitecode.$vstartcode;
