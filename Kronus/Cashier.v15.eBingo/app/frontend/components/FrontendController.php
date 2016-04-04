@@ -361,6 +361,9 @@ class FrontendController extends MI_Controller {
                                                 if($ref_service['UserMode'] == 2){
                                                     $mid = $startSessionFormModel->terminal_id;
                                                     $loyaltyCardNo = $startSessionFormModel->terminal_id;
+                                                    $casinoUsername = null; 
+                                                    $casinoPassword= null;
+                                                    $isewallet= null;
                                                  }
                                                 $login_acct = $terminalname;
                                                 $terminal_pwd = $terminalsmodel->getTerminalPassword($startSessionFormModel->terminal_id, $startSessionFormModel->casino);
@@ -375,6 +378,9 @@ class FrontendController extends MI_Controller {
                                                if($ref_service['UserMode'] == 2){
                                                     $mid = $startSessionFormModel->terminal_id;
                                                     $loyaltyCardNo = $startSessionFormModel->terminal_id;
+                                                    $casinoUsername = null; 
+                                                    $casinoPassword= null;
+                                                    $isewallet= null;
                                                  }
                                                 $login_acct = $terminalname;
                                                 $casinoServiceID = $ref_service['ServiceID'];
@@ -600,6 +606,9 @@ class FrontendController extends MI_Controller {
                                                 if($ref_service['UserMode'] == 2){
                                                     $mid = $startSessionFormModel->terminal_id;
                                                     $loyaltyCardNo = $startSessionFormModel->terminal_id;
+                                                    $casinoUsername = null; 
+                                                    $casinoPassword= null;
+                                                    $isewallet= null;
                                                  }
                                                 $login_acct = $terminalname;
                                                 $terminal_pwd = $terminalsmodel->getTerminalPassword($startSessionFormModel->terminal_id, $startSessionFormModel->casino);
@@ -614,6 +623,9 @@ class FrontendController extends MI_Controller {
                                                 if($ref_service['UserMode'] == 2){
                                                     $mid = $startSessionFormModel->terminal_id;
                                                     $loyaltyCardNo = $startSessionFormModel->terminal_id;
+                                                    $casinoUsername = null; 
+                                                    $casinoPassword= null;
+                                                    $isewallet= null;
                                                  }
                                                 $login_acct = $terminalname;
                                                 $casinoServiceID = $ref_service['ServiceID'];
@@ -1101,6 +1113,9 @@ class FrontendController extends MI_Controller {
                                 if($ref_service['UserMode'] == 2){
                                                     $mid = $startSessionFormModel->terminal_id;
                                                     $loyaltyCardNo = $startSessionFormModel->terminal_id;
+                                                    $casinoUsername = null; 
+                                                    $casinoPassword= null;
+                                                    $isewallet= null;
                                 }
                                 $login_acct = $terminalName;
                                 $casinoServiceID = $service_id;
@@ -1132,6 +1147,9 @@ class FrontendController extends MI_Controller {
                                  if($ref_service['UserMode'] == 2){
                                                     $mid = $startSessionFormModel->terminal_id;
                                                     $loyaltyCardNo = $startSessionFormModel->terminal_id;
+                                                    $casinoUsername = null; 
+                                                    $casinoPassword= null;
+                                                    $isewallet= null;
                                  }
                                 $login_acct = $terminalname;
                                 $terminal_pwd = $terminalsmodel->getTerminalPassword($startSessionFormModel->terminal_id, $startSessionFormModel->casino);
@@ -1184,7 +1202,7 @@ class FrontendController extends MI_Controller {
                     }
                     
                     /**************************** LOYALTY *****************************/
-            if($casinoUserMode != 2){
+            if($ref_service['UserMode'] != 2){
             $pos_account_no = $sitesModel->getPosAccountNo($this->site_id);
 
             //Insert to loyaltyrequestlogs
@@ -1783,6 +1801,9 @@ class FrontendController extends MI_Controller {
                                                  if($ref_service['UserMode'] == 2){
                                                     $mid = $startSessionFormModel->terminal_id;
                                                     $loyaltyCardNo = $startSessionFormModel->terminal_id;
+                                                    $casinoUsername = null; 
+                                                    $casinoPassword= null;
+                                                    $isewallet= null;
                                                  }
                                                 $login_acct = $terminalname;
                                                 $casinoServiceID = $ref_service['ServiceID'];
@@ -1814,6 +1835,9 @@ class FrontendController extends MI_Controller {
                                                 if($ref_service['UserMode'] == 2){
                                                     $mid = $startSessionFormModel->terminal_id;
                                                     $loyaltyCardNo = $startSessionFormModel->terminal_id;
+                                                    $casinoUsername = null; 
+                                                    $casinoPassword= null;
+                                                    $isewallet= null;
                                                  }
                                                 $locatorname = '';
                                                 $login_acct = $terminalname;
@@ -2093,7 +2117,10 @@ class FrontendController extends MI_Controller {
                                             if(($ref_service['UserMode'] == 0 || $ref_service['UserMode'] == 2) && $CPV == 'v15'){
                                                 if($ref_service['UserMode'] == 2){
                                                     $mid = $startSessionFormModel->terminal_id;
-                                                    $loyaltyCardNo = $startSessionFormModel->terminal_id;   
+                                                    $loyaltyCardNo = $startSessionFormModel->terminal_id;
+                                                    $casinoUsername = null; 
+                                                    $casinoPassword= null;
+                                                    $isewallet= null;  
                                                 }
                                                 $login_acct = $terminalname;
                                                 $casinoServiceID = $ref_service['ServiceID'];
@@ -2126,6 +2153,9 @@ class FrontendController extends MI_Controller {
                                                 if($ref_service['UserMode'] == 2){
                                                     $mid = $startSessionFormModel->terminal_id;
                                                     $loyaltyCardNo = $startSessionFormModel->terminal_id;
+                                                    $casinoUsername = null; 
+                                                    $casinoPassword= null;
+                                                    $isewallet= null;
                                                  }
                                                 $login_acct = $terminalname;
                                                 $terminal_pwd = $terminalsmodel->getTerminalPassword($terminal_id, $startSessionFormModel->casino);
@@ -2209,7 +2239,7 @@ class FrontendController extends MI_Controller {
                             if(!empty($result))
                                  {    
 //------------------------------------------------------------------------------------------------------------>>>>>>>>>>>>>
-       
+                                    if($ref_service['UserMode'] != 2){
                                             /************************ FOR LOYALTY *************************/
                                            
                                         //Check if Loyalty
@@ -2249,7 +2279,7 @@ class FrontendController extends MI_Controller {
 
                                            } 
                                         }
-                
+                                    }
 //------------------------------------------------------------------------------------------------------------>>>>>>>>>>>>>  
                                  }                  
                 }
