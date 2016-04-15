@@ -185,6 +185,7 @@ class wsStackerApiController extends Controller {
                         //******************* DISABLE Genesis Reload *********************//
 $transMsg = 'Reload using genesis terminal is temporarily disabled Please Use Cashier Load tab';
 $errorCode = 29;
+$module = 'LogStackerTransaction';
 Utilities::log("Error Message: " . $transMsg . " ErrorCode: " . $errorCode);
 $this->_sendResponse(200, CJSON::encode(CommonController::StackerRetMsg($module, $transMsg, $errorCode)));
 exit;
@@ -527,6 +528,7 @@ exit;
                         //******************* DISABLE Genesis Reload *********************//
 $transMsg = 'Reload using genesis terminal is temporarily disabled Please Use Cashier Load tab';
 $errorCode = 29;
+$module = "GetStackerBatchID";
 Utilities::log("Error Message: " . $transMsg . " ErrorCode: " . $errorCode);
 $this->_sendResponse(200, CJSON::encode(CommonController::StackerRetMsg($module, $transMsg, $errorCode)));
 exit;
@@ -1063,6 +1065,7 @@ exit;
                         //******************* DISABLE Genesis Reload *********************//
 $transMsg = 'Reload using genesis terminal is temporarily disabled Please Use Cashier Load tab';
 $errorCode = 29;
+$module = "GetStackerInfo";
 Utilities::log("Error Message: " . $transMsg . " ErrorCode: " . $errorCode);
 $this->_sendResponse(200, CJSON::encode(CommonController::StackerRetMsg($module, $transMsg, $errorCode)));
 exit;
