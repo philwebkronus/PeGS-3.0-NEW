@@ -1541,7 +1541,11 @@ class WsKapiController extends Controller {
         $amount = trim($request['Amount']);
         $trackingID = trim($request['TrackingID']);
         $stackerBatchID = trim($request['StackerBatchID']);
-        
+ //******************* DISABLE Genesis Reload *********************//
+               $message = "Reload using genesis terminal is temporarily disabled Please Use Cashier Load tab";
+                        $this->_sendResponse(200, CommonController::eSafeReloadGenResponse(2, $DateTime, '', $message, 23));
+
+                        exit;       
         $casino = array();
         //Check if all required fields are set
         if (isset($casinoID) && $casinoID != '' && isset($terminalName) && $terminalName != '' && isset($playerMode) && $playerMode != '' && isset($cardNumber) && $cardNumber != '' && isset($amount) && $amount != '' && isset($trackingID) && $trackingID != '' && isset($stackerBatchID) && $stackerBatchID != '') {
@@ -2157,7 +2161,11 @@ class WsKapiController extends Controller {
 
         $paymentType = 1;
         $isCreditable = 1;
+//******************* DISABLE Genesis Reload *********************//
+               $message = "Reload using genesis terminal is temporarily disabled Please Use Cashier Load tab";
+                        $this->_sendResponse(200, CommonController::eSafeReloadGenResponse(2, $DateTime, '', $message, 23));
 
+                        exit;
         $terminalName = trim($request['TerminalName']);
         $trackingID = htmlentities($request['TrackingID']);
         $stackerBatchID = htmlentities($request['StackerBatchID']);
@@ -2445,7 +2453,11 @@ class WsKapiController extends Controller {
 
         $paymentType = 1;
         $isCreditable = 1;
+//******************* DISABLE Genesis Reload *********************//
+               $message = "Reload using genesis terminal is temporarily disabled Please Use Cashier Load tab";
+                        $this->_sendResponse(200, CommonController::eSafeReloadGenResponse(2, $DateTime, '', $message, 23));
 
+                        exit;
         $terminalName = trim($request['TerminalName']);
         $amount = trim($request['Amount']);
         $trackingID = trim($request['TrackingID']);
@@ -3214,7 +3226,7 @@ class WsKapiController extends Controller {
         Yii::import('application.components.VoucherManagement');
         Yii::import('application.components.VoucherTicketAPIWrapper');
         Yii::import('application.components.CasinoApiUB');
-        
+
         $request = $this->_readJsonRequest();
         
         $DateTime = '';
@@ -3222,7 +3234,11 @@ class WsKapiController extends Controller {
         $message = '';
         $errCode = '';
         $vouchercode = '';
-        
+        //******************* DISABLE Genesis Reload *********************//
+               $message = "Reload using genesis terminal is temporarily disabled Please Use Cashier Load tab";
+                        $this->_sendResponse(200, CommonController::eSafeReloadGenResponse(2, $DateTime, '', $message, 23));
+
+                        exit;
         //validate inputs
         if (isset($request['TerminalName']) && isset($request['Amount']) && 
             isset($request['TrackingID']) && isset($request['StackerBatchID'])) {
@@ -3914,7 +3930,8 @@ class WsKapiController extends Controller {
                             $transactionSummaryLogs->insertGenesisWithdrawal($result['trans_summary_id'],$genesisWithdrawal,$mswWithdrawal);
                             
                             $gamingRequestLogsModel->updateGamingLogsStatus($trans_id, $this->status, $result['udate'], $result['VoucherTicketBarcode'], $result['ExpirationDate']);
-                                                /* Autoemail update in eSAFE loads
+                            $this->_sendResponse(200, CommonController::eSafeRedemptionGenResponse(1, $result['amount'], $result['VoucherTicketBarcode'], $result['TransactionDate'], $result['ExpirationDate'], $sitecode, $loyaltyCardNo, $result['ewallet_trans_id'], $result['TransMessage'], 1, 0));
+                    /* Autoemail update in eSAFE loads
                      * Added on 03/01/2016
                      * Added by mcatangan
                      */
@@ -3936,7 +3953,6 @@ class WsKapiController extends Controller {
                                                         $genesisWithdrawal ,0, $sitename,$terminalcode, $POS, $loyaltyCardNo, $accname, 
                                                         $service, $transactionSummaryID,$timein, $timeout,$TransDateTime);
                                         }
-                            $this->_sendResponse(200, CommonController::eSafeRedemptionGenResponse(1, $result['amount'], $result['VoucherTicketBarcode'], $result['TransactionDate'], $result['ExpirationDate'], $sitecode, $loyaltyCardNo, $result['ewallet_trans_id'], $result['TransMessage'], 1, 0));
                         } else {
                             $this->status = 2;
                             $gamingRequestLogsModel->updateGamingLogsStatus($trans_id, $this->status, null, null, null);

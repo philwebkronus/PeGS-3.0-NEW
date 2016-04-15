@@ -182,12 +182,19 @@ class wsStackerApiController extends Controller {
 
     //A function to log every transaction made in a stacker such as deposit or reload using cash or ticket.
     public function actionLogStackerTransaction() {
+                        //******************* DISABLE Genesis Reload *********************//
+$transMsg = 'Reload using genesis terminal is temporarily disabled Please Use Cashier Load tab';
+$errorCode = 29;
+Utilities::log("Error Message: " . $transMsg . " ErrorCode: " . $errorCode);
+$this->_sendResponse(200, CJSON::encode(CommonController::StackerRetMsg($module, $transMsg, $errorCode)));
+exit;
         $request = $this->_readJsonRequest();
         $module = 'LogStackerTransaction';
         $APIMethodID = APILogsModel::API_METHOD_LOGSTACKERTRANSACTION;
         $transMsg = '';
         $errorCode = '';
         Yii::import('application.components.VoucherTicketAPIWrapper');
+
         $voucherticket = new VoucherTicketAPIWrapper();
         $stackerBatchID = "";
         //Required input must be set
@@ -517,6 +524,12 @@ class wsStackerApiController extends Controller {
 
     //A function that creates stackerbatchid/stackersummaryid then updates stackerbatchid field in egmsessions table of Kronus (npos database).
     public function actionGetStackerBatchId() {
+                        //******************* DISABLE Genesis Reload *********************//
+$transMsg = 'Reload using genesis terminal is temporarily disabled Please Use Cashier Load tab';
+$errorCode = 29;
+Utilities::log("Error Message: " . $transMsg . " ErrorCode: " . $errorCode);
+$this->_sendResponse(200, CJSON::encode(CommonController::StackerRetMsg($module, $transMsg, $errorCode)));
+exit;
         $request = $this->_readJsonRequest();
         $transMsg = '';
         $errorCode = '';
@@ -1047,6 +1060,12 @@ class wsStackerApiController extends Controller {
 
     //A function that returns the information of the stacker such as it's terminal and status
     public function actionGetStackerInfo() {
+                        //******************* DISABLE Genesis Reload *********************//
+$transMsg = 'Reload using genesis terminal is temporarily disabled Please Use Cashier Load tab';
+$errorCode = 29;
+Utilities::log("Error Message: " . $transMsg . " ErrorCode: " . $errorCode);
+$this->_sendResponse(200, CJSON::encode(CommonController::StackerRetMsg($module, $transMsg, $errorCode)));
+exit;
         $module = "GetStackerInfo";
         $APIMethodID = APILogsModel::API_METHOD_GETSTACKERINFO;
         $transMsg = "";
