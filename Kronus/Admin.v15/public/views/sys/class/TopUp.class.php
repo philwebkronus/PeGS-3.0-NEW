@@ -242,52 +242,73 @@ class TopUp extends DBHandler
                                         GROUP BY tckt.SiteID";
                 
                 //Query for Encashed Tickets of the pick date (per site/per cutoff)
-                $query10 = "SELECT SiteID,
-                                        CASE
+                $query10 = "SELECT et.SiteID, 
+									CASE
                                           WHEN (substr(StartDate, 12, 2) < '06') THEN substr(date_add(StartDate, INTERVAL -1 DAY), 1, 10)
                                           ELSE substr(StartDate, 1, 10)
                                         END AS ReportDate,
+                                -- Total e-SAFE Deposits
+                                SUM(CASE et.TransType
+                                        WHEN 'D' THEN et.Amount -- if deposit
+                                        ELSE 0 -- if not deposit
+                                END) AS EwalletDeposits,
 
-                                        SUM(CASE PaymentType -- Coupon
-                                            WHEN 2 THEN Amount
-                                            ELSE 0 END)
-                                        AS EwalletVoucherDeposit,
-                                        
-                                        SUM(CASE PaymentType -- Coupon
-                                            WHEN 3 THEN Amount
-                                            ELSE 0 END)
-                                        AS EwalletTicketDeposit,
-                                        
-                                        -- Total e-SAFE Withdrawal Genesis --
-                                        SUM(CASE TransType
-                                                WHEN 'W' THEN 
-                                                    CASE StackerSummaryID 
-                                                        WHEN NOT NULL THEN Amount -- if redemption
-                                                        ELSE 0
-                                                    END 
-                                                ELSE 0 -- if not redemption
-                                        END) AS EwalletRedemptionGenesis, 
-                                        
-                                        SUM(CASE PaymentType -- Bancnet
-                                            WHEN 1 THEN
-                                              CASE IFNULL(TraceNumber, '')
-                                                 WHEN '' THEN 0
-                                                  ELSE Amount -- Bancnet
-                                                    END
-                                            ELSE 0 END)
-                                        AS EwalletBancnetDeposit,
+                                -- Total e-SAFE Withdrawal
+                                SUM(CASE et.TransType
+                                        WHEN 'W' THEN et.Amount -- if redemption
+                                        ELSE 0 -- if not redemption
+                                END) AS EwalletRedemption,
+                                
+                                SUM(CASE IFNULL(et.TraceNumber,'')
+                                        WHEN '' THEN  
+                                                CASE IFNULL(et.ReferenceNumber, '')
+                                                WHEN '' THEN -- if not bancnet
+                                                        CASE et.TransType
+                                                        WHEN 'D' THEN -- if deposit
+                                                                CASE et.PaymentType 
+                                                                WHEN 1 THEN et.Amount -- if Cash
+                                                                ELSE 0 -- if not Cash
+                                                                END
+                                                        ELSE 0 -- if not deposit
+                                                        END
+                                                ELSE 0 -- if bancnet
+                                                END
+                                        ELSE 0
+                                END) AS EwalletCashDeposit,
+                                
+                                SUM(CASE IFNULL(et.TraceNumber,'')
+                                        WHEN '' THEN 0
+                                        ELSE CASE IFNULL(et.ReferenceNumber, '')
+                                                WHEN '' THEN 0 -- if not bancnet
+                                                ELSE CASE et.TransType -- if bancnet
+                                                        WHEN 'D' THEN et.Amount -- if deposit
+                                                        ELSE 0 -- if not deposit
+                                                        END
+                                                END
+                                END) AS EwalletBancnetDeposit,
+                                
+                                SUM(CASE et.TransType
+                                        WHEN 'D' THEN -- if deposit
+                                                CASE et.PaymentType
+                                                WHEN 2 THEN et.Amount -- if voucher
+                                                ELSE 0 -- if not voucher
+                                                END
+                                        ELSE 0 -- if not deposit
+                                END) AS EwalletVoucherDeposit, 
+                                
+                                SUM(CASE et.TransType
+                                        WHEN 'D' THEN -- if deposit
+                                                CASE et.PaymentType
+                                                WHEN 3 THEN et.Amount -- if voucher
+                                                ELSE 0 -- if not voucher
+                                                END
+                                        ELSE 0 -- if not deposit
+                                END) AS EwalletTicketDeposit 
 
-                                        SUM(CASE PaymentType -- Cash
-                                            WHEN 1 THEN
-                                              CASE IFNULL(TraceNumber, '')
-                                              WHEN '' THEN Amount -- Cash
-                                              ELSE 0 END
-                                            ELSE 0 END)
-                                        AS EwalletCashDeposit
-                                  FROM npos.ewallettrans
-                                  WHERE TransType = 'D' AND Status IN (1,3)
-                                  AND StartDate >= ? AND StartDate < ?
-                                  GROUP BY SiteID, ReportDate";
+                            FROM npos.ewallettrans et
+                            WHERE et.StartDate >= ? AND et.StartDate <= ?
+                            AND et.Status IN (1,3)
+                            GROUP BY et.SiteID";
                 
                 $query11 = "SELECT IFNULL(SUM(Amount), 0) AS EncashedTicketsV2, t.DateEncashed, t.UpdatedByAID, t.SiteID, ad.Name   
                    FROM vouchermanagement.tickets t 
@@ -318,8 +339,8 @@ class TopUp extends DBHandler
                         'RedemptionGenesis'=>'0.00','DepositCash'=>'0.00','ReloadCash'=>'0.00','UnusedTickets'=>'0.00','DepositTicket'=>'0.00',
                         'ReloadTicket'=>'0.00','DepositCoupon'=>'0.00','ReloadCoupon'=>'0.00', 'Replenishment'=>0,'Collection'=>0,
                         'EwalletDeposits' => $row1['EwalletDeposits'], 'EwalletWithdrawals' => $row1['EwalletWithdrawals'], 
-                        'EwalletCashLoads' => 0, 'EwalletRedemptionGenesis' => 0, 
-                        'EncashedTicketsV15' => 0, 'EwalletTicketDeposit' => 0 
+                        'EwalletCashLoads' => 0, 'EwalletRedemptionGenesis' => 0,  'EwalletWithdraw' =>0, 'EwalletLoads'=>0,
+                        'EncashedTicketsV15' => 0, 'EwalletTicketDeposit' => 0, 'TotalRedemption'=>0, 'ewalletCoupon'=>0 , 'LoadTickets'=>0
                         );
                 }
                 
@@ -398,12 +419,16 @@ class TopUp extends DBHandler
                                     $qr1[$keys]["Reload"] = (float)$qr1[$keys]["Reload"] + (float)$row6["ReloadCoupon"];
                                 }
                                 if($row6["DepositTicket"] != '0.00'){
-                                    $qr1[$keys]["DepositTicket"] = (float)$qr1[$keys]["DepositTicket"] + (float)$row6["DepositTicket"];
+                                    $qr1[$keys]["LoadTickets"] = (float)$qr1[$keys]["LoadTickets"] + (float)$row6["DepositTicket"];
                                     $qr1[$keys]["InitialDeposit"] = (float)$qr1[$keys]["InitialDeposit"] + (float)$row6["DepositTicket"];
                                 }
                                 if($row6["ReloadTicket"] != '0.00'){
-                                    $qr1[$keys]["ReloadTicket"] = (float)$qr1[$keys]["ReloadTicket"] + (float)$row6["ReloadTicket"];
+                                    $qr1[$keys]["LoadTickets"] = (float)$qr1[$keys]["LoadTickets"] + (float)$row6["ReloadTicket"];
                                     $qr1[$keys]["Reload"] = (float)$qr1[$keys]["Reload"] + (float)$row6["ReloadTicket"];
+                                }
+                                if($row6["TotalRedemption"] != '0.00'){
+                                    $qr1[$keys]["TotalRedemption"] = (float)$qr1[$keys]["TotalRedemption"] + (float)$row6["TotalRedemption"];                                
+                                    
                                 }
                             }
                         }
@@ -473,9 +498,11 @@ class TopUp extends DBHandler
                                 if($value1['ReportDate'] == $value2['ReportDate']){
                                     $qr1[$keys]["EwalletCashLoads"] += (float)$value1["EwalletCashDeposit"];
                                     $qr1[$keys]["EwalletCashLoads"] += (float)$value1["EwalletBancnetDeposit"];
-                                    $qr1[$keys]["EwalletRedemptionGenesis"] += (float)$value1["EwalletRedemptionGenesis"];
-                                    $qr1[$keys]["Coupon"] += (float)$value1["EwalletVoucherDeposit"];
-                                    $qr1[$keys]["EwalletTicketDeposit"] += (float)$value1["EwalletTicketDeposit"];
+                                    $qr1[$keys]["EwalletWithdraw"] += (float)$value1["EwalletRedemption"];
+                                    //$qr1[$keys]["EwalletRedemptionGenesis"] += (float)$value1["EwalletRedemptionGenesis"];
+                                    $qr1[$keys]["EwalletLoads"] += (float)$value1["EwalletDeposits"];
+                                    $qr1[$keys]["ewalletCoupon"] += (float)$value1["EwalletVoucherDeposit"];
+                                    $qr1[$keys]["LoadTickets"] += (float)$qr1[$keys]["LoadTickets"] + (float)$value1["EwalletTicketDeposit"];
                                 }
                             break;
                         }
@@ -788,53 +815,73 @@ class TopUp extends DBHandler
                                         GROUP BY tckt.SiteID";
                 
                 //Query for Encashed Tickets of the pick date (per site/per cutoff)
-                $query10 = "SELECT SiteID,
-                                        CASE
+                $query10 = "SELECT et.SiteID, 
+									CASE
                                           WHEN (substr(StartDate, 12, 2) < '06') THEN substr(date_add(StartDate, INTERVAL -1 DAY), 1, 10)
                                           ELSE substr(StartDate, 1, 10)
                                         END AS ReportDate,
+                                -- Total e-SAFE Deposits
+                                SUM(CASE et.TransType
+                                        WHEN 'D' THEN et.Amount -- if deposit
+                                        ELSE 0 -- if not deposit
+                                END) AS EwalletDeposits,
 
-                                        SUM(CASE PaymentType -- Coupon
-                                            WHEN 2 THEN Amount
-                                            ELSE 0 END)
-                                        AS EwalletVoucherDeposit, 
-                                        
-                                        SUM(CASE PaymentType -- Ticket
-                                            WHEN 3 THEN Amount
-                                            ELSE 0 END)
-                                        AS EwalletTicketDeposit, 
-                                        
-                                        -- Total e-SAFE Withdrawal Genesis --
-                                        SUM(CASE TransType
-                                                WHEN 'W' THEN 
-                                                    CASE StackerSummaryID 
-                                                        WHEN NOT NULL THEN Amount -- if redemption
-                                                        ELSE 0
-                                                    END
-                                                ELSE 0 -- if not redemption
-                                        END) AS EwalletRedemptionGenesis, 
+                                -- Total e-SAFE Withdrawal
+                                SUM(CASE et.TransType
+                                        WHEN 'W' THEN et.Amount -- if redemption
+                                        ELSE 0 -- if not redemption
+                                END) AS EwalletRedemption,
+                                
+                                SUM(CASE IFNULL(et.TraceNumber,'')
+                                        WHEN '' THEN  
+                                                CASE IFNULL(et.ReferenceNumber, '')
+                                                WHEN '' THEN -- if not bancnet
+                                                        CASE et.TransType
+                                                        WHEN 'D' THEN -- if deposit
+                                                                CASE et.PaymentType 
+                                                                WHEN 1 THEN et.Amount -- if Cash
+                                                                ELSE 0 -- if not Cash
+                                                                END
+                                                        ELSE 0 -- if not deposit
+                                                        END
+                                                ELSE 0 -- if bancnet
+                                                END
+                                        ELSE 0
+                                END) AS EwalletCashDeposit,
+                                
+                                SUM(CASE IFNULL(et.TraceNumber,'')
+                                        WHEN '' THEN 0
+                                        ELSE CASE IFNULL(et.ReferenceNumber, '')
+                                                WHEN '' THEN 0 -- if not bancnet
+                                                ELSE CASE et.TransType -- if bancnet
+                                                        WHEN 'D' THEN et.Amount -- if deposit
+                                                        ELSE 0 -- if not deposit
+                                                        END
+                                                END
+                                END) AS EwalletBancnetDeposit,
+                                
+                                SUM(CASE et.TransType
+                                        WHEN 'D' THEN -- if deposit
+                                                CASE et.PaymentType
+                                                WHEN 2 THEN et.Amount -- if voucher
+                                                ELSE 0 -- if not voucher
+                                                END
+                                        ELSE 0 -- if not deposit
+                                END) AS EwalletVoucherDeposit, 
+                                
+                                SUM(CASE et.TransType
+                                        WHEN 'D' THEN -- if deposit
+                                                CASE et.PaymentType
+                                                WHEN 3 THEN et.Amount -- if voucher
+                                                ELSE 0 -- if not voucher
+                                                END
+                                        ELSE 0 -- if not deposit
+                                END) AS EwalletTicketDeposit 
 
-                                        SUM(CASE PaymentType -- Bancnet
-                                            WHEN 1 THEN
-                                              CASE IFNULL(TraceNumber, '')
-                                                 WHEN '' THEN 0
-                                                  ELSE Amount -- Bancnet
-                                                    END
-                                            ELSE 0 END)
-                                        AS EwalletBancnetDeposit,
-
-                                        SUM(CASE PaymentType -- Cash
-                                            WHEN 1 THEN
-                                              CASE IFNULL(TraceNumber, '')
-                                              WHEN '' THEN Amount -- Cash
-                                              ELSE 0 END
-                                            ELSE 0 END)
-                                        AS EwalletCashDeposit
-                                  FROM npos.ewallettrans
-                                  WHERE TransType = 'D' AND Status IN (1,3)
-                                  AND StartDate >= ? AND StartDate < ?
-                                  AND SiteID = ?
-                                  GROUP BY SiteID, ReportDate";
+                            FROM npos.ewallettrans et
+                            WHERE et.StartDate >= ?  AND et.StartDate <= ?
+                            AND et.SiteID IN (?) AND et.Status IN (1,3)
+                            GROUP BY et.SiteID";
 
                 $query11 = "SELECT IFNULL(SUM(Amount), 0) AS EncashedTicketsV2, t.DateEncashed, t.UpdatedByAID, t.SiteID, ad.Name   
                    FROM vouchermanagement.tickets t 
@@ -868,8 +915,8 @@ class TopUp extends DBHandler
                             'RedemptionGenesis'=>'0.00','DepositCash'=>'0.00','ReloadCash'=>'0.00','UnusedTickets'=>'0.00','DepositTicket'=>'0.00',
                             'ReloadTicket'=>'0.00','DepositCoupon'=>'0.00','ReloadCoupon'=>'0.00', 'Replenishment'=>0,'Collection'=>0,
                             'EwalletDeposits' => $row1['EwalletDeposits'], 'EwalletWithdrawals' => $row1['EwalletWithdrawals'],
-                            'EwalletCashLoads' => 0, 'EwalletRedemptionGenesis' => 0.00, 
-                            'EncashedTicketsV15' => 0, 'EwalletTicketDeposit' => 0
+                            'EwalletCashLoads' => 0, 'EwalletRedemptionGenesis' => 0.00, 'EwalletWithdraw'=>0, 'EwalletLoads'=>0,
+                            'EncashedTicketsV15' => 0, 'EwalletTicketDeposit' => 0, 'ewalletCoupon'=>0, 'TotalRedemption'=>0, 'LoadTickets'=>0
                         );
                 }
 
@@ -953,12 +1000,16 @@ class TopUp extends DBHandler
                                     $qr1[$keys]["Reload"] = (float)$qr1[$keys]["Reload"] + (float)$row6["ReloadCoupon"];
                                 }
                                 if($row6["DepositTicket"] != '0.00'){
-                                    $qr1[$keys]["DepositTicket"] = (float)$qr1[$keys]["DepositTicket"] + (float)$row6["DepositTicket"];
+                                    $qr1[$keys]["LoadTickets"] = (float)$qr1[$keys]["LoadTicket"] + (float)$row6["DepositTicket"];
                                     $qr1[$keys]["InitialDeposit"] = (float)$qr1[$keys]["InitialDeposit"] + (float)$row6["DepositTicket"];
                                 }
                                 if($row6["ReloadTicket"] != '0.00'){
-                                    $qr1[$keys]["ReloadTicket"] = (float)$qr1[$keys]["ReloadTicket"] + (float)$row6["ReloadTicket"];
+                                    $qr1[$keys]["LoadTickets"] = (float)$qr1[$keys]["LoadTicket"] + (float)$row6["ReloadTicket"];
                                     $qr1[$keys]["Reload"] = (float)$qr1[$keys]["Reload"] + (float)$row6["ReloadTicket"];
+                                }
+                                if($row6["TotalRedemption"] != '0.00'){
+                                    $qr1[$keys]["TotalRedemption"] = (float)$qr1[$keys]["TotalRedemption"] + (float)$row6["TotalRedemption"];                                
+                                    
                                 }
                             }
                         }
@@ -1033,9 +1084,11 @@ class TopUp extends DBHandler
                                 if($value1['ReportDate'] == $value2['ReportDate']){
                                     $qr1[$keys]["EwalletCashLoads"] += (float)$value1["EwalletCashDeposit"];
                                     $qr1[$keys]["EwalletCashLoads"] += (float)$value1["EwalletBancnetDeposit"];
-                                    $qr1[$keys]["EwalletRedemptionGenesis"] += (float)$value1["EwalletRedemptionGenesis"];
-                                    $qr1[$keys]["Coupon"] += (float)$value1["EwalletVoucherDeposit"];
-                                    $qr1[$keys]["EwalletTicketDeposit"] += (float)$value1["EwalletTicketDeposit"];
+                                    $qr1[$keys]["EwalletWithdraw"] += (float)$value1["EwalletRedemption"];
+                                    $qr1[$keys]["EwalletLoads"] += (float)$value1["EwalletDeposits"];
+                                    //$qr1[$keys]["EwalletRedemptionGenesis"] += (float)$value1["EwalletRedemptionGenesis"];
+                                    $qr1[$keys]["ewalletCoupon"] += (float)$value1["EwalletVoucherDeposit"];
+                                    $qr1[$keys]["LoadTickets"] += (float)$qr1[$keys]["LoadTickets"] + (float)$value1["EwalletTicketDeposit"];
                                 }
                             break;
                         }
@@ -1943,6 +1996,8 @@ class TopUp extends DBHandler
                     'RedemptionCashier'=>"0.00", 
                     'RedemptionGenesis'=>"0.00", 
                     'Coupon'=>"0.00",
+                    'ewalletCoupon'=>"0.00",
+                    'TotalRedemption'=>"0.00",
                     'Replenishment'=>"0.00",
                     'Collection'=>"0.00", 
                     'EncashedTicketsV2' => "0.00", 
@@ -2123,12 +2178,6 @@ class TopUp extends DBHandler
                                   ELSE 0 -- Not Reload
                                 END) As ReloadTicket,
 
-                                -- TOTAL REDEMPTION --
-                                CASE tr.TransactionType
-                                  WHEN 'W' THEN SUM(tr.Amount)
-                                  ELSE 0
-                                END As TotalRedemption,
-
                                 -- REDEMPTION CASHIER --
                                 CASE tr.TransactionType
                                   WHEN 'W' THEN
@@ -2148,6 +2197,13 @@ class TopUp extends DBHandler
                                     END -- Cashier
                                   ELSE 0 -- Not Redemption
                                 END As RedemptionGenesis,
+                                
+                                -- Total Redemption --
+                               SUM(CASE tr.TransactionType
+                                    WHEN 'W' THEN
+                                    tr.Amount -- Redemption
+                                ELSE 0 --  Not Redemption
+                              END) As TotalRedemption, 
 
                                 tr.DateCreated, tr.SiteID
                                 FROM npos.transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)
@@ -2202,26 +2258,36 @@ class TopUp extends DBHandler
                             $varrmerge[$keys]["Reload"] = (float)$varrmerge[$keys]["Reload"] + (float)$value1["ReloadTicket"];
                             $varrmerge[$keys]["LoadTickets"] = (float)$varrmerge[$keys]["LoadTickets"] + (float)$value1["ReloadTicket"];
                         }
+                        if($value1["TotalRedemption"] != '0.00'){
+                            $varrmerge[$keys]["TotalRedemption"] = (float)$varrmerge[$keys]["TotalRedemption"] + (float)$value1["TotalRedemption"];
+                         }
                         break;
                     }
                 }  
             }
             
-            $query4 = "SELECT SiteID, SUM(PrintedTickets) AS PrintedTickets FROM (SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets FROM npos.transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)  -- Printed Tickets through W
-                            INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
-                            INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
-                            INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
-                            LEFT JOIN stackermanagement.stackersummary stckr ON stckr.StackerSummaryID = tr.StackerSummaryID
-                            WHERE tr.DateCreated >= :startdate AND tr.DateCreated < :enddate 
-                              AND tr.SiteID IN ($sites)
-                              AND tr.Status IN(1,4)
-                              AND tr.TransactionType = 'W'
-                              AND tr.StackerSummaryID IS NOT NULL
-                              GROUP BY tr.SiteID 
-                        UNION ALL
-                        SELECT SiteID, SUM(Amount) as PrintedTickets FROM ewallettrans WHERE StartDate >= :startdate
-                            AND StartDate < :enddate AND Status IN (1,3) AND SiteID IN ($sites) AND TransType='W' AND Source = 1 GROUP BY SiteID) 
-                        AS sum GROUP BY SiteID";
+            $query4 = "SELECT SiteID, SUM(PrintedTickets) AS PrintedTickets
+                            FROM (SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets
+                                  FROM transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)  -- Printed Tickets through W
+                                    INNER JOIN transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
+                                    INNER JOIN terminals t ON t.TerminalID = tr.TerminalID
+                                    INNER JOIN accounts a ON ts.CreatedByAID = a.AID
+                                    LEFT JOIN stackermanagement.stackersummary stckr ON stckr.StackerSummaryID = tr.StackerSummaryID
+                                  WHERE tr.DateCreated >= :startdate AND tr.DateCreated < :enddate 
+                                    AND tr.SiteID IN($sites)
+                                    AND tr.Status IN(1,4)
+                                    AND tr.TransactionType = 'W'
+                                    AND tr.StackerSummaryID IS NOT NULL
+                                    GROUP BY tr.SiteID
+                            UNION ALL SELECT SiteID, SUM(Amount) as PrintedTickets
+                              FROM ewallettrans FORCE INDEX (IX_ewallettrans_2)
+                              WHERE StartDate >= :startdate AND StartDate < :enddate
+                                AND Status IN (1,3)
+                                AND SiteID IN($sites)
+                                AND TransType='W'
+                                AND Source = 1
+                                GROUP BY SiteID)
+                            AS sum GROUP BY SiteID";
             //Get the total Printed Tickets per site
             $this->prepare($query4);
             $this->bindparameter(":startdate", $startdate);
@@ -2389,17 +2455,22 @@ class TopUp extends DBHandler
                             AND et.SiteID IN (".$sites.") AND et.Status IN (1,3)
                             GROUP BY et.CreatedByAID";
         
-        $query12 = "SELECT IFNULL(SUM(Amount), 0) AS EncashedTicketsV2, t.UpdatedByAID, t.SiteID, ad.Name   
-                   FROM vouchermanagement.tickets t 
-                   LEFT JOIN npos.accountdetails ad ON t.UpdatedByAID = ad.AID
-                   WHERE t.DateEncashed >= :startlimitdate AND t.DateEncashed < :endlimitdate   
-                   AND TicketCode NOT IN (
-                           SELECT IFNULL(ss.TicketCode, '') FROM stackermanagement.stackersummary ss 
-                           INNER JOIN npos.ewallettrans ewt ON ewt.StackerSummaryID = ss.StackerSummaryID 
-                           WHERE ewt.SiteID IN (".$sites.") AND ewt.TransType = 'W' 
-                           ORDER BY ss.StackerSummaryID DESC
-                   )
-                   GROUP BY t.SiteID";
+        $query12 = "SELECT IFNULL(SUM(Amount), 0) AS EncashedTicketsV2, t.UpdatedByAID, t.SiteID, ad.Name
+                            FROM vouchermanagement.tickets t
+                              LEFT JOIN accountdetails ad ON t.UpdatedByAID = ad.AID
+                            WHERE t.DateEncashed >= :startlimitdate AND t.DateEncashed < :endlimitdate
+                              AND t.UpdatedByAID IN
+                                (SELECT sacct.AID
+                                FROM siteaccounts sacct
+                                WHERE sacct.SiteID IN (".$sites."))
+                                  AND TicketCode NOT IN
+                                  (SELECT IFNULL(ss.TicketCode, '')
+                                  FROM stackermanagement.stackersummary ss
+                                  INNER JOIN ewallettrans ewt FORCE INDEX (IX_ewallettrans_2)
+                                  ON ewt.StackerSummaryID = ss.StackerSummaryID
+                                  WHERE ewt.SiteID IN (".$sites.")
+                                  AND ewt.TransType = 'W')
+                            GROUP BY t.SiteID";
         
         if($formatteddate == $comparedate) { //Date Started is less than 1 day of the date today
             
@@ -2627,7 +2698,7 @@ class TopUp extends DBHandler
                         $varrmerge[$keys]["EwalletCashLoads"] += (float)$value1["EwalletCashDeposit"];
                         $varrmerge[$keys]["EwalletCashLoads"] += (float)$value1["EwalletBancnetDeposit"];
                         $varrmerge[$keys]["EwalletLoads"] += (float)$value1["EwalletDeposits"];
-                        $varrmerge[$keys]["Coupon"] += (float)$value1["EwalletVoucherDeposit"];
+                        $varrmerge[$keys]["ewalletCoupon"] += (float)$value1["EwalletVoucherDeposit"];
                         $varrmerge[$keys]["LoadTickets"] = (float)$varrmerge[$keys]["LoadTickets"] + (float)$value1["EwalletTicketDeposit"];;
                     break;
                 }
