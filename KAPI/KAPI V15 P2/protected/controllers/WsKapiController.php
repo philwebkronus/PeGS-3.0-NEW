@@ -3710,6 +3710,10 @@ class WsKapiController extends Controller {
         $stackerBatchID = htmlentities($request['StackerBatchID']);
         $partialAmount = htmlentities($request['Amount']);
         
+         //******************* DISABLE Genesis Reload *********************//
+        $message = "Withdrawal function in this terminal is currently disabled. Please contact GA for assistance.";
+        $this->_sendResponse(200, CommonController::eSafeRedemptionGenResponse(2, '', '', '', '', '', '', '', $message, 0, 11));
+        exit;
         $loyaltyCardNo = '';
         if (isset($terminalName) && $terminalName != '' && isset($trackingID) && $trackingID != '' && isset($stackerBatchID) && $stackerBatchID != '') {
 
@@ -3984,7 +3988,8 @@ class WsKapiController extends Controller {
                 $this->_sendResponse(200, CommonController::eSafeRedemptionGenResponse(2, '', '', '', '', '', '', '', $message, 0, 40));
             }
         } else {
-            $message = "Parameters are not set";
+            //$message = "Parameters are not set";
+            $message = "Withdrawal function in this terminal is currently disabled. Please contact GA for assistance.";
             $this->_sendResponse(200, CommonController::eSafeRedemptionGenResponse(2, '', '', '', '', '', '', '', $message, 0, 11));
         }
     }
