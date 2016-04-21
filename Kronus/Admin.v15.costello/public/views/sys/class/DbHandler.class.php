@@ -133,7 +133,7 @@ class DBHandler
    //validation: check if with existing session
    public function checksession($zuserid)
    {
-        $this->prepare("Select COUNT(*)  from accountsessions  WHERE AID =  :userid ");
+        $this->prepare("Select COUNT(AID)  from accountsessions  WHERE AID =  :userid ");
         $checksession= array(':userid'=>$zuserid);
         $this->executewithparams($checksession );
         return $this->hasRows();
@@ -142,7 +142,7 @@ class DBHandler
    //validation: check if with existing session is still valid
    public function checkifsessionexist($zuserid,$zsession)
    {
-        $this->prepare("Select COUNT(*)  from accountsessions  WHERE AID =  :userid  AND SessionID =:sessionid ");
+        $this->prepare("Select COUNT(AID)  from accountsessions  WHERE AID =  :userid  AND SessionID =:sessionid ");
         $checksessionifexist= array(':userid'=>$zuserid,':sessionid'=>$zsession);
         $this->executewithparams($checksessionifexist );
         return $this->hasRows();

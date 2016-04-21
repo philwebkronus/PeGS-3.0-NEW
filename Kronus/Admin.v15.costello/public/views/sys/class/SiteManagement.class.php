@@ -115,7 +115,7 @@ class SiteManagement extends DBHandler{
 //      }
         function checkifterminalsessionexist($SiteID)
       {
-          $stmt = "SELECT COUNT(*) as count FROM terminalsessions ts 
+          $stmt = "SELECT COUNT(ts.TerminalID) as count FROM terminalsessions ts 
                             INNER JOIN terminals t 
                             ON ts.TerminalID=t.TerminalID 
                     WHERE t.SiteID = ?";
@@ -256,7 +256,7 @@ class SiteManagement extends DBHandler{
          if($zAID > 1)
          {
              //count if operator has assigned site and is active
-             $this->prepare("SELECT COUNT(*) FROM siteaccounts WHERE SiteID = ? AND AID = ? AND Status = 1");
+             $this->prepare("SELECT COUNT(AID) FROM siteaccounts WHERE SiteID = ? AND AID = ? AND Status = 1");
              $this->bindparameter(1, $zSiteID);
              $this->bindparameter(2, $zAID);
              $this->execute();
@@ -444,7 +444,7 @@ class SiteManagement extends DBHandler{
 //count all site records for pagination
       function countsitedetails()
       {
-        $stmt = "SELECT COUNT(*) as count FROM sites a
+        $stmt = "SELECT COUNT(a.SiteID) as count FROM sites a
                  INNER JOIN sitedetails b WHERE a.SiteID = b.SiteID AND a.SiteID <> 1";
         $this->executeQuery($stmt);
         $this->_row = $this->fetchData();
@@ -600,7 +600,7 @@ class SiteManagement extends DBHandler{
     //check if sitecode is exist
     function checksitecode($zsitecode)
     {
-        $stmt = "SELECT COUNT(*) as count FROM sites WHERE SiteCode = ?";
+        $stmt = "SELECT COUNT(SiteID) as count FROM sites WHERE SiteCode = ?";
         $this->prepare($stmt);
         $this->bindparameter(1, $zsitecode);
         $this->execute();

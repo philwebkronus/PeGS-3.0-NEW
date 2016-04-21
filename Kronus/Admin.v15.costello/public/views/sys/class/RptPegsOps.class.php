@@ -81,7 +81,7 @@ class RptPegsOps extends DBHandler{
       {
           if($zall > 0)
           {
-            $stmt = "SELECT COUNT(*) as count FROM sites as a 
+            $stmt = "SELECT COUNT(a.SiteID) as count FROM sites as a 
               INNER JOIN sitedetails as b ON a.SiteID = b.SiteID WHERE a.SiteID <> 1 AND (b.IslandID = ? OR b.RegionID = ? OR b.ProvinceID = ? OR b.CityID = ?)";
             $this->prepare($stmt);
             $this->bindparameter(1, $zislandID);
@@ -92,7 +92,7 @@ class RptPegsOps extends DBHandler{
           }
           else
           {
-            $stmt = "SELECT COUNT(*) as count FROM sites as a INNER JOIN sitedetails as b ON a.SiteID = b.SiteID WHERE a.SiteID <> 1";
+            $stmt = "SELECT COUNT(a.SiteID) as count FROM sites as a INNER JOIN sitedetails as b ON a.SiteID = b.SiteID WHERE a.SiteID <> 1";
             $this->prepare($stmt);  
           }
           $this->execute();
@@ -259,7 +259,7 @@ class RptPegsOps extends DBHandler{
       
       function countterminalbysite($zsiteID)
       {
-          $stmt = "SELECT count(*) as ctrterminal FROM terminals WHERE SiteID = ? AND isVIP = 0";
+          $stmt = "SELECT count(TerminalID) as ctrterminal FROM terminals WHERE SiteID = ? AND isVIP = 0";
           $this->prepare($stmt);
           $this->bindparameter(1, $zsiteID);
           $this->execute();
@@ -267,7 +267,7 @@ class RptPegsOps extends DBHandler{
       }
       function countterminallisting($zsiteID)
       {
-          $stmt = "SELECT COUNT(*) AS ctrterminal
+          $stmt = "SELECT COUNT(TerminalID) AS ctrterminal
                     FROM
                      (
                     SELECT DISTINCT t.TerminalID, t.TerminalName, t.TerminalCode, t.SiteID, ts.ServiceID

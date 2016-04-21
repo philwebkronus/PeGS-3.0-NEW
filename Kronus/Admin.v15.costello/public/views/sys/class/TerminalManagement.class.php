@@ -53,7 +53,7 @@ class TerminalManagement extends DBHandler
          if($this->execute())
          {
              $terminalID = $this->insertedid();
-             $this->prepare("SELECT COUNT(*) AS count FROM terminalservices WHERE TerminalID = ? AND isCreated = 1");
+             $this->prepare("SELECT COUNT(TerminalID) AS count FROM terminalservices WHERE TerminalID = ? AND isCreated = 1");
              $this->bindparameter(1, $terminalID);
              $this->execute();
              if(count == 0)
@@ -165,7 +165,7 @@ class TerminalManagement extends DBHandler
       //check terminal if mapped in terminalmapping table
       function checkterminalifmapped($zTerminalID,$zServiceTerminalID)
       {
-          $stmt = "SELECT COUNT(*) AS count FROM terminalmapping WHERE
+          $stmt = "SELECT COUNT(TerminalID) AS count FROM terminalmapping WHERE
               TerminalID = '".$zTerminalID."' AND  ServiceTerminalID = '".$zServiceTerminalID."' ";
           $this->executeQuery($stmt);
           return $this->fetchData();
@@ -411,7 +411,7 @@ class TerminalManagement extends DBHandler
       //count terminal details (for pagination)
       function countterminals($zsiteID)
       {
-          $stmt = "SELECT COUNT(*) AS count FROM terminals WHERE SiteID = '".$zsiteID."'";
+          $stmt = "SELECT COUNT(TerminalID) AS count FROM terminals WHERE SiteID = '".$zsiteID."'";
           $this->executeQuery($stmt);
           $this->_row = $this->fetchData();
           return $this->_row;
@@ -437,7 +437,7 @@ class TerminalManagement extends DBHandler
       //count info on serviceterminals for pagination
       function countserviceterminals()
       {
-          $stmt = "SELECT COUNT(*) as count FROM serviceterminals st
+          $stmt = "SELECT COUNT(st.ServiceTerminalID) as count FROM serviceterminals st
                    INNER JOIN serviceagents AS sa ON st.ServiceAgentID = sa.ServiceAgentID";
           $this->executeQuery($stmt);
           return $this->fetchData();
@@ -446,7 +446,7 @@ class TerminalManagement extends DBHandler
       //count info on serviceagentsfor pagination
       function countterminalagents()
       {
-          $stmt = "SELECT COUNT(*) AS count FROM serviceagents";
+          $stmt = "SELECT COUNT(ServiceAgentID) AS count FROM serviceagents";
           $this->executeQuery($stmt);
           return $this->fetchData();
       }
@@ -581,7 +581,7 @@ class TerminalManagement extends DBHandler
        //check if agent name exist
        function checkagentexist($zagentname)
        {
-           $stmt = "SELECT COUNT(*) AS ctragent FROM serviceagents WHERE Username = ?";
+           $stmt = "SELECT COUNT(ServiceAgentID) AS ctragent FROM serviceagents WHERE Username = ?";
            $this->prepare($stmt);
            $this->bindparameter(1, $zagentname);
            $this->execute();
@@ -591,7 +591,7 @@ class TerminalManagement extends DBHandler
        //check if service terminal account name exists
        function checkocifexist($zocusername)
        {
-           $stmt = "SELECT COUNT(*) AS ctroc FROM serviceterminals WHERE ServiceTerminalAccount = ?";
+           $stmt = "SELECT COUNT(ServiceTerminalID) AS ctroc FROM serviceterminals WHERE ServiceTerminalAccount = ?";
            $this->prepare($stmt);
            $this->bindparameter(1, $zocusername);
            $this->execute();

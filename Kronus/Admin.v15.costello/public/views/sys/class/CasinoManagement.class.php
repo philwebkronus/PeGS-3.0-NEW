@@ -30,7 +30,7 @@ class CasinoManagement extends DBHandler
       * for counting the number of services by a specific serviceid in terminalsessions 
       */
     function checkterminalsession($serviceid){
-        $sql = ("SELECT COUNT(*) as count FROM terminalsessions WHERE ServiceID = $serviceid");
+        $sql = ("SELECT COUNT(TerminalID) as count FROM terminalsessions WHERE ServiceID = $serviceid");
         $this->executeQuery($sql);
         $this->_row = $this->fetchData();
         return $this->_row;
@@ -45,14 +45,17 @@ class CasinoManagement extends DBHandler
       function countservicedetails($id)
       {
           if($id > 0){
-                $stmt = "SELECT COUNT(*) as count FROM ref_servicegroups a INNER JOIN ref_services b ON a.ServiceGroupID = b.ServiceGroupID WHERE b.ServiceGroupID = $id";
+                $stmt = "SELECT COUNT(a.ServiceGroupID) as count FROM ref_servicegroups a 
+                        INNER JOIN ref_services b ON a.ServiceGroupID = b.ServiceGroupID
+                        WHERE b.ServiceGroupID = $id";
                 $this->executeQuery($stmt);
                 $this->_row = $this->fetchData();
                 return $this->_row;
           }
           //count all services per groups
           else{
-                $stmt = "SELECT COUNT(*) as count FROM ref_servicegroups a INNER JOIN ref_services b ON a.ServiceGroupID = b.ServiceGroupID";
+                $stmt = "SELECT COUNT(a.ServiceGroupID) as count FROM ref_servicegroups a
+                        INNER JOIN ref_services b ON a.ServiceGroupID = b.ServiceGroupID";
                 $this->executeQuery($stmt);
                 $this->_row = $this->fetchData();
                 return $this->_row;

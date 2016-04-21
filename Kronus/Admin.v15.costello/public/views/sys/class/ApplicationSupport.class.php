@@ -669,7 +669,7 @@ class ApplicationSupport extends DBHandler
                   $zremarks = $row['Remarks'];
                   $zplainpassword = $row['PlainPassword'];
                   $zhashedpwd = $row['HashedPassword'];
-                  $this->prepare("SELECT COUNT(*) FROM terminalservices WHERE TerminalID = ?  AND ServiceID = ?");
+                  $this->prepare("SELECT COUNT(TerminalID) FROM terminalservices WHERE TerminalID = ?  AND ServiceID = ?");
                   $this->bindparameter(1, $zterminalID);
                   $this->bindparameter(2, $znewserviceID);
                   $this->execute();
@@ -813,11 +813,20 @@ class ApplicationSupport extends DBHandler
       {
           if($zsiteID > 0)
           {
-              $stmt = "Select DISTINCT(t.TerminalID), t.TerminalCode from terminals t INNER JOIN terminalservices ts ON  t.TerminalID = ts.TerminalID INNER JOIN ref_services rs ON ts.ServiceID = rs.ServiceID where t.SiteID = '".$zsiteID."' AND t.Status = 1 AND t.isVIP = 0 AND rs.UserMode IN (0,2) AND rs.Status=1 ORDER BY TerminalID ASC";
+              $stmt = "Select DISTINCT(t.TerminalID), t.TerminalCode from terminals t 
+                        INNER JOIN terminalservices ts ON  t.TerminalID = ts.TerminalID 
+                        INNER JOIN ref_services rs ON ts.ServiceID = rs.ServiceID
+                        where t.SiteID = '".$zsiteID."' AND t.Status = 1 
+                        AND t.isVIP = 0 AND rs.UserMode IN (0,2) AND rs.Status=1
+                      ORDER BY TerminalID ASC";
           }
           else
 	  {
-              $stmt = "Select DISTINCT(t.TerminalID), t.TerminalCode from terminals t INNER JOIN terminalservices ts ON  t.TerminalID = ts.TerminalID INNER JOIN ref_services rs ON ts.ServiceID = rs.ServiceID WHERE t.Status = 1 AND t.isVIP = 0 AND rs.UserMode IN(0,2) AND rs.Status=1 ORDER BY TerminalID ASC";
+              $stmt = "Select DISTINCT(t.TerminalID), t.TerminalCode from terminals t 
+                        INNER JOIN terminalservices ts ON  t.TerminalID = ts.TerminalID 
+                        INNER JOIN ref_services rs ON ts.ServiceID = rs.ServiceID 
+                        WHERE t.Status = 1 AND t.isVIP = 0 AND rs.UserMode IN(0,2) 
+                      AND rs.Status=1 ORDER BY TerminalID ASC";
           }
           $this->executeQuery($stmt);
           return $this->fetchAllData();

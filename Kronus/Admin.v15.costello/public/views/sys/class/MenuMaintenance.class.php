@@ -57,11 +57,11 @@ class MenuMaintenance extends DBHandler
     function countmenu($zmenuID)
     {
         if($zmenuID > 0){
-            $stmt = "SELECT COUNT(*) ctrmenu FROM menus WHERE MenuID = ?";
+            $stmt = "SELECT COUNT(MenuID) ctrmenu FROM menus WHERE MenuID = ?";
             $this->prepare($stmt);
             $this->bindparameter(1, $zmenuID);
         } else {
-            $stmt = "SELECT COUNT(*) ctrmenu FROM menus";
+            $stmt = "SELECT COUNT(MenuID) ctrmenu FROM menus";
             $this->prepare($stmt);
         }
         
@@ -232,13 +232,13 @@ class MenuMaintenance extends DBHandler
         if($zmenuID > 0)
         {
             if($zsubmenuid > 0){
-                $stmt = "SELECT COUNT(*) ctrsubmenu FROM submenus sb
+                $stmt = "SELECT COUNT(sb.SubMenuID) ctrsubmenu FROM submenus sb
                      INNER JOIN menus m ON sb.MenuID = m.MenuID WHERE sb.MenuID  = ? AND sb.SubMenuID = ?";
                 $this->prepare($stmt);
                 $this->bindparameter(1, $zmenuID);
                 $this->bindparameter(2, $zsubmenuid);
             } else {
-                $stmt = "SELECT COUNT(*) ctrsubmenu FROM submenus sb
+                $stmt = "SELECT COUNT(sb.SubMenuID) ctrsubmenu FROM submenus sb
                      INNER JOIN menus m ON sb.MenuID = m.MenuID WHERE sb.MenuID  = ?";
                 $this->prepare($stmt);
                 $this->bindparameter(1, $zmenuID);
@@ -247,12 +247,12 @@ class MenuMaintenance extends DBHandler
         else
         {
             if($zsubmenuid > 0){
-               $stmt = "SELECT COUNT(*) ctrsubmenu FROM submenus sb
+               $stmt = "SELECT COUNT(sb.SubMenuID) ctrsubmenu FROM submenus sb
                      INNER JOIN menus m ON sb.MenuID = m.MenuID WHERE sb.SubMenuID = ?";
                $this->prepare($stmt); 
                $this->bindparameter(1, $zsubmenuid);
             } else {
-               $stmt = "SELECT COUNT(*) ctrsubmenu FROM submenus sb
+               $stmt = "SELECT COUNT(sb.SubMenuID) ctrsubmenu FROM submenus sb
                      INNER JOIN menus m ON sb.MenuID = m.MenuID";
                $this->prepare($stmt); 
             }

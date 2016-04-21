@@ -657,12 +657,39 @@ class RptSupervisor extends DBHandler
                                 INNER JOIN terminals t ON t.TerminalID = tr.TerminalID
                                 INNER JOIN accounts a ON tr.CreatedByAID = a.AID
                                 INNER JOIN sites s ON tr.SiteID = s.SiteID
-                                WHERE tr.DateCreated >= '2016-02-02 06:00:00' AND tr.DateCreated < '2016-02-03 06:00:00'
-                                  AND tr.SiteID IN (167)
+                                WHERE tr.DateCreated >= ? AND tr.DateCreated < ?
+                                  AND tr.SiteID IN (".$zsiteID.")
                                   AND tr.Status IN(1,4) AND a.AccountTypeID NOT IN (17)
                                 GROUP By tr.CreatedByAID ORDER BY tr.CreatedByAID";
+        $query3 = "SELECT SiteID, SUM(PrintedTickets) AS PrintedTickets
+                            FROM (SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets
+                                  FROM transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)  -- Printed Tickets through W
+                                    INNER JOIN transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
+                                    INNER JOIN terminals t ON t.TerminalID = tr.TerminalID
+                                    INNER JOIN accounts a ON ts.CreatedByAID = a.AID
+                                    LEFT JOIN stackermanagement.stackersummary stckr ON stckr.StackerSummaryID = tr.StackerSummaryID
+                                  WHERE tr.DateCreated >= :startdate AND tr.DateCreated < :enddate 
+                                    AND tr.SiteID IN(".$zsiteID.")
+                                    AND tr.Status IN(1,4)
+                                    AND tr.TransactionType = 'W'
+                                    AND tr.StackerSummaryID IS NOT NULL
+                                    GROUP BY tr.SiteID
+                            UNION ALL SELECT SiteID, SUM(Amount) as PrintedTickets
+                              FROM ewallettrans FORCE INDEX (IX_ewallettrans_2)
+                              WHERE StartDate >= :startdate AND StartDate < :enddate
+                                AND Status IN (1,3)
+                                AND SiteID IN (".$zsiteID.")
+                                AND TransType='W'
+                                AND Source = 1
+                                GROUP BY SiteID)
+                            AS sum GROUP BY SiteID";
+
+        $query4 = "SELECT tckt.SiteID, IFNULL(SUM(tckt.Amount), 0) AS EncashedTickets FROM vouchermanagement.tickets tckt  -- Encashed Tickets
+                                WHERE tckt.DateEncashed >= ? AND tckt.DateEncashed < ?
+                                AND tckt.SiteID IN (".$zsiteID.")
+                                GROUP BY tckt.SiteID";
         
-        $query3 = "SELECT et.SiteID, et.CreatedByAID, ad.Name,
+        $query5 = "SELECT et.SiteID, et.CreatedByAID, ad.Name,
                                 SUM(CASE IFNULL(et.TraceNumber,'')
                                         WHEN '' THEN 
                                                 CASE IFNULL(et.ReferenceNumber, '')
@@ -730,18 +757,22 @@ class RptSupervisor extends DBHandler
                             AND et.SiteID IN (".$zsiteID.") AND et.Status IN (1,3)
                             GROUP BY et.CreatedByAID";
         
-        $query6 = "SELECT IFNULL(SUM(Amount), 0) AS EncashedTicketsV2, t.UpdatedByAID, t.SiteID, ad.Name  
-                   FROM vouchermanagement.tickets t
-                   LEFT JOIN accountdetails ad ON t.UpdatedByAID = ad.AID
-                   WHERE t.DateEncashed >= ? AND t.DateEncashed < ?
-                   AND t.UpdatedByAID IN (SELECT sacct.AID FROM siteaccounts sacct WHERE sacct.SiteID IN (".$zsiteID."))
-                   AND TicketCode NOT IN (
-                           SELECT IFNULL(ss.TicketCode, '') FROM stackermanagement.stackersummary ss
-                           INNER JOIN ewallettrans ewt ON ewt.StackerSummaryID = ss.StackerSummaryID
-                           WHERE ewt.SiteID IN (".$zsiteID.") AND ewt.TransType = 'W'
-                           ORDER BY ss.StackerSummaryID DESC
-                   )
-                   GROUP BY t.SiteID";
+        $query6 = " SELECT IFNULL(SUM(Amount), 0) AS EncashedTicketsV2, t.UpdatedByAID, t.SiteID, ad.Name
+                            FROM vouchermanagement.tickets t
+                              LEFT JOIN accountdetails ad ON t.UpdatedByAID = ad.AID
+                            WHERE t.DateEncashed >= ? AND t.DateEncashed < ?
+                              AND t.UpdatedByAID IN
+                                (SELECT sacct.AID
+                                FROM siteaccounts sacct
+                                WHERE sacct.SiteID IN (".$zsiteID."))
+                                  AND TicketCode NOT IN
+                                  (SELECT IFNULL(ss.TicketCode, '')
+                                  FROM stackermanagement.stackersummary ss
+                                  INNER JOIN ewallettrans ewt FORCE INDEX (IX_ewallettrans_2)
+                                  ON ewt.StackerSummaryID = ss.StackerSummaryID
+                                  WHERE ewt.SiteID IN (".$zsiteID.")
+                                  AND ewt.TransType = 'W')
+                            GROUP BY t.SiteID";
         
         $this->prepare($query1);
         $this->bindparameter(1, $zdatefrom);

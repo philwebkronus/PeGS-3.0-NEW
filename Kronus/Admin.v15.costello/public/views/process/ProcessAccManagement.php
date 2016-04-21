@@ -608,7 +608,7 @@ if($connected)
                             $vEmail = $vEmail.$vctremail; //if email exist append number to the last portion of string
                         }
 
-                        if($isuname > 0)
+                        if($isuname['count'] > 0)
                         {
                             $msg = "Account Creation : User name exist.";
                             $_SESSION['mess'] = $msg;

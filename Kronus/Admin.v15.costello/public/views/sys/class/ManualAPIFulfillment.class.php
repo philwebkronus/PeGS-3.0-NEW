@@ -745,8 +745,8 @@ class ManualAPIFulfillment extends DBHandler
      * Description: update BCF by deducting the new balance
      */
     public function updateBcf($newbal, $site_id, $transdtl) {
-        $sql = 'UPDATE sitebalance SET Balance = ?, LastTransactionDate = now_usec(), ' . 
-                'LastTransactionDescription = ? WHERE SiteID = ?';
+        $sql = 'UPDATE sitebalance SET Balance = ?, LastTransactionDate = now_usec(),  
+                LastTransactionDescription = ? WHERE SiteID = ?';
         $this->prepare($sql);
         $this->bindparameter(1, $newbal);
         $this->bindparameter(2, $transdtl);
@@ -1290,8 +1290,8 @@ class ManualAPIFulfillment extends DBHandler
         
         try
         {
-            $sql = 'UPDATE sitebalance SET Balance = ?, LastTransactionDate = now_usec(), ' . 
-                    'LastTransactionDescription = ? WHERE SiteID = ?';
+            $sql = 'UPDATE sitebalance SET Balance = ?, LastTransactionDate = now_usec(),  
+                    LastTransactionDescription = ? WHERE SiteID = ?';
             $this->prepare($sql);
             $this->bindparameter(1, $newbal);
             $this->bindparameter(2, $transdtl);
