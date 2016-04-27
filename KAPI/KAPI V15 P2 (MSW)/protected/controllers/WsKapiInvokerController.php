@@ -472,48 +472,51 @@ class WsKapiInvokerController extends Controller{
         $this->pageTitle = 'KAPI - e-SAFE Deposit MSW';
         $result = '';
         
-        if(isset($_POST['MID']) && isset($_POST['ServiceID']) && isset($_POST['Amount'])){
+        if(isset($_POST['MID']) && isset($_POST['ServiceID']) && isset($_POST['Amount']) && isset($_POST['Method'])){
             
             $mid = $_POST['MID'];
             $serviceID = $_POST['ServiceID'];
             $amount = $_POST['Amount'];
+            $method = $_POST['Method'];
             
-            $result = $this->_depositMSW($mid, $serviceID, $amount);
+            $result = $this->_depositMSW($mid, $serviceID, $amount, $method);
         }
         
         $this->render('depositmsw', array('result'=>$result));
     }
     
-    private function _depositMSW($mid, $serviceID, $amount) {
+    private function _depositMSW($mid, $serviceID, $amount, $method) {
         $url = Yii::app()->params['deposit_msw'];
         
-        $postdata = CJSON::encode(array('MID'=>$mid, 'ServiceID' => $serviceID, 'Amount' => $amount));
+        $postdata = CJSON::encode(array('MID'=>$mid, 'ServiceID' => $serviceID, 'Amount' => $amount, 'Method'=> $method));
        
         $result = $this->SubmitData($url, $postdata);
 
         return $result[1];
     }
 
+    //updated 04272016
+    //mcatangan
     public function actionWithdrawMSW() {
         $this->pageTitle = 'KAPI - e-SAFE Withdraw MSW';
         $result = '';
         
-        if(isset($_POST['MID']) && isset($_POST['ServiceID']) && isset($_POST['Amount'])){
+        if(isset($_POST['MID']) && isset($_POST['ServiceID']) && isset($_POST['Amount']) && isset($_POST['Amount'])){
             
             $mid = $_POST['MID'];
             $serviceID = $_POST['ServiceID'];
             $amount = $_POST['Amount'];
-            
-            $result = $this->_withdrawMSW($mid, $serviceID, $amount);
+            $method = $_POST['Method'];
+            $result = $this->_withdrawMSW($mid, $serviceID, $amount, $method);
         }
         
         $this->render('withdrawmsw', array('result'=>$result));
     }
     
-    private function _withdrawMSW($mid, $serviceID, $amount) {
+    private function _withdrawMSW($mid, $serviceID, $amount, $method) {
         $url = Yii::app()->params['withdraw_msw'];
         
-        $postdata = CJSON::encode(array('MID'=>$mid, 'ServiceID' => $serviceID, 'Amount' => $amount));
+        $postdata = CJSON::encode(array('MID'=>$mid, 'ServiceID' => $serviceID, 'Amount' => $amount, 'Method' => $method));
        
         $result = $this->SubmitData($url, $postdata);
 

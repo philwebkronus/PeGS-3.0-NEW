@@ -16,6 +16,10 @@
             <?php echo CHtml::label('Amount:','Amount'); ?>
             <?php echo CHtml::textField('Amount'); ?>
         </div>
+        <div class="row">
+            <?php echo CHtml::label('Method:','Method'); ?>
+            <?php echo CHtml::textField('Method'); ?>
+        </div>
     
         <div class="row" style="margin-left: 225px;">
             <?php echo CHtml::submitButton('Invoke'); ?>

@@ -4088,9 +4088,10 @@ class WsKapiController extends Controller {
         $mid = htmlentities($request['MID']);
         $serviceID = htmlentities($request['ServiceID']);
         $amount = htmlentities($request['Amount']);
+        $method = htmlentities($request['Method']);
 
         //check if all required fields are filled
-        if(isset($mid) && $mid != '' && isset($serviceID) && $serviceID != '' && isset($amount) && $amount != '')
+        if(isset($mid) && $mid != '' && isset($serviceID) && $serviceID != '' && isset($amount) && $amount != '' && isset($method) && $method != '')
         {
             //check if entered fields are of valid data type
             if(is_numeric($mid) && is_numeric($serviceID))
@@ -4120,13 +4121,24 @@ class WsKapiController extends Controller {
                                         $msResult = $memberServices->getDetailsByMIDAndCasinoID($mid, $serviceID);
                                         if($msResult)
                                         {
+                                            //get Terminal ID if MID has Session
+                                            $hasTerminalSession = $terminalSessions->checkIfHasTerminalSession2($mid, $serviceID);
+                                            if($hasTerminalSession)
+                                            {
+                                                $terminalID = $hasTerminalSession['TerminalID'];
+                                                //$siteID = $terminals->getSiteIDByTerminalID($terminalID);
+                                            }
+                                            else
+                                            {
+                                                $terminalID = ''; 
+                                            }
                                             $serviceUsername = $msResult['ServiceUsername'];
                                             $servicePassword = $msResult['ServicePassword'];
 
-                                            $tracking1 = date('YmdHis').$mid;
-                                            $tracking2 = "D";
-                                            $tracking3 = '';
-                                            $tracking4 = '';
+                                            $tracking1 = $method.date('YmdHis').$mid;
+                                            $tracking2 = "D"; // Deposit
+                                            $tracking3 = $mid; // MID
+                                            $tracking4 = $terminalID; // Terminal ID
 
                                             if ($serviceID == 20) { //RTG V15
                                                 $locatorname = Yii::app()->params['skinNameNonPlatinum'];
@@ -4279,9 +4291,10 @@ class WsKapiController extends Controller {
         $mid = htmlentities($request['MID']);
         $serviceID = htmlentities($request['ServiceID']);
         $amount = htmlentities($request['Amount']);
+        $method = htmlentities($request['Method']);
 
         //check if all required fields are filled
-        if(isset($mid) && $mid != '' && isset($serviceID) && $serviceID != '' && isset($amount) && $amount != '')
+        if(isset($mid) && $mid != '' && isset($serviceID) && $serviceID != '' && isset($amount) && $amount != '' && isset($method) && $method != '' )
         {
             //check if entered fields are of valid data type
             if(is_numeric($mid) && is_numeric($serviceID))
@@ -4328,16 +4341,21 @@ class WsKapiController extends Controller {
                                                 }
                                                 else
                                                 {
-//                                                    $hasTerminalSession = $terminalSessions->checkIfHasTerminalSession2($mid, $serviceID);
-//                                                    if($hasTerminalSession)
-//                                                    {
-//                                                        $terminalID = $hasTerminalSession['TerminalID'];
-//                                                        $siteID = $terminals->getSiteIDByTerminalID($terminalID);
+                                                    $hasTerminalSession = $terminalSessions->checkIfHasTerminalSession2($mid, $serviceID);
+                                                    if($hasTerminalSession)
+                                                    {
+                                                        $terminalID = $hasTerminalSession['TerminalID'];
+                                                        //$siteID = $terminals->getSiteIDByTerminalID($terminalID);
+                                                    }
+                                                    else
+                                                    {
+                                                        $terminalID = '';
+                                                    }
 //
-                                                        $tracking1 = date('YmdHis').$mid;
+                                                        $tracking1 = $method.date('YmdHis').$mid;
                                                         $tracking2 = 'W';
-                                                        $tracking3 = '';//$siteID;
-                                                        $tracking4 = '';//$siteID;
+                                                        $tracking3 = $mid;//MID;
+                                                        $tracking4 = $terminalID;//TerminalID;
                                                         $locatorname = '';
 //                                                        $siteClassification = $sites->getSiteClassfication($siteID);
 //                                                        if ($serviceID == 20) { //RTG V15
