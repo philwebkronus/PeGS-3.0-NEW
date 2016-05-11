@@ -34,7 +34,7 @@ class TopUp extends DBHandler
                             INNER JOIN sites s ON s.SiteID = sgc.SiteID
                             INNER JOIN accountdetails ad ON ad.AID = s.OwnerAID
                             INNER JOIN sitedetails sd ON sd.SiteID = sgc.SiteID
-                            WHERE sgc.DateCutOff >= ? AND sgc.DateCutOff < ?
+                            WHERE sgc.DateCutOff > ? AND sgc.DateCutOff <= ?
                             ORDER BY s.SiteCode, sgc.DateCutOff";          
 
                //Query for Replenishments
@@ -188,7 +188,7 @@ class TopUp extends DBHandler
                                 END As RedemptionGenesis,
 
                                 tr.DateCreated, tr.SiteID
-                                FROM ransactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)
+                                FROM transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)
                                 INNER JOIN transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
                                 INNER JOIN terminals t ON t.TerminalID = tr.TerminalID
                                 INNER JOIN accounts a ON tr.CreatedByAID = a.AID
@@ -318,8 +318,6 @@ class TopUp extends DBHandler
                            SELECT IFNULL(ss.TicketCode, '') FROM stackermanagement.stackersummary ss 
                            INNER JOIN ewallettrans ewt ON ewt.StackerSummaryID = ss.StackerSummaryID 
                            WHERE ewt.TransType = 'W' 
-                           GROUP BY ewt.SiteID 
-                           ORDER BY ss.StackerSummaryID DESC
                    )
                    GROUP BY t.SiteID";
 
@@ -893,8 +891,6 @@ class TopUp extends DBHandler
                            SELECT IFNULL(ss.TicketCode, '') FROM stackermanagement.stackersummary ss 
                            INNER JOIN ewallettrans ewt ON ewt.StackerSummaryID = ss.StackerSummaryID 
                            WHERE ewt.TransType = 'W' 
-                           GROUP BY ewt.SiteID 
-                           ORDER BY ss.StackerSummaryID DESC
                    )
                    GROUP BY t.SiteID";
 
