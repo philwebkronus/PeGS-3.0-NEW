@@ -415,7 +415,7 @@ class TopUpReportQuery extends DBHandler{
                             INNER JOIN sites s ON s.SiteID = sgc.SiteID
                             INNER JOIN accountdetails ad ON ad.AID = s.OwnerAID
                             INNER JOIN sitedetails sd ON sd.SiteID = sgc.SiteID
-                            WHERE sgc.DateCutOff >= ? AND sgc.DateCutOff < ?
+                            WHERE sgc.DateCutOff > ? AND sgc.DateCutOff <= ?
                             ORDER BY s.SiteCode, sgc.DateCutOff";          
 
                //Query for Replenishments
@@ -687,7 +687,7 @@ class TopUpReportQuery extends DBHandler{
                                 END) AS EwalletTicketDeposit 
 
                             FROM ewallettrans et
-                            WHERE et.StartDate >= ? AND et.StartDate <= ?
+                            WHERE et.StartDate >= ? AND et.StartDate < ?
                             AND et.Status IN (1,3)
                             GROUP BY et.SiteID";
                 
@@ -699,7 +699,6 @@ class TopUpReportQuery extends DBHandler{
                            SELECT IFNULL(ss.TicketCode, '') FROM stackermanagement.stackersummary ss 
                            INNER JOIN ewallettrans ewt ON ewt.StackerSummaryID = ss.StackerSummaryID 
                            WHERE ewt.TransType = 'W' 
-                           GROUP BY ewt.SiteID 
                    )
                    GROUP BY t.SiteID";
 
@@ -1259,7 +1258,7 @@ class TopUpReportQuery extends DBHandler{
                                 END) AS EwalletTicketDeposit 
 
                             FROM ewallettrans et
-                            WHERE et.StartDate >= ?  AND et.StartDate <= ?
+                            WHERE et.StartDate >= ?  AND et.StartDate < ?
                             AND et.SiteID IN (?) AND et.Status IN (1,3)
                             GROUP BY et.SiteID";
 
@@ -1272,8 +1271,6 @@ class TopUpReportQuery extends DBHandler{
                            SELECT IFNULL(ss.TicketCode, '') FROM stackermanagement.stackersummary ss 
                            INNER JOIN ewallettrans ewt ON ewt.StackerSummaryID = ss.StackerSummaryID 
                            WHERE ewt.TransType = 'W' 
-                           GROUP BY ewt.SiteID 
-                           ORDER BY ss.StackerSummaryID DESC
                    )
                    GROUP BY t.SiteID";
 
