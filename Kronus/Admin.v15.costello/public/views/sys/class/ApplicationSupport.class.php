@@ -983,7 +983,7 @@ class ApplicationSupport extends DBHandler
                         ts.HashedServicePassword, rs.ServiceName, rs.ServiceGroupID FROM terminals t
                         INNER JOIN terminalservices ts ON t.TerminalID = ts.TerminalID
                         INNER JOIN ref_services rs ON ts.ServiceID = rs.ServiceID
-                        WHERE t.TerminalCode IN('$terminalcode','$vipterminal') AND t.SiteID = ? AND ts.Status IN (1,9) AND t.Status = 1";
+                        WHERE t.TerminalCode IN('$terminalcode','$vipterminal') AND t.SiteID = ? AND ts.Status IN (1) AND t.Status = 1";
                     $this->prepare($stmt);
                     $this->bindparameter(1, $zsiteID);
                }
@@ -992,7 +992,7 @@ class ApplicationSupport extends DBHandler
                         ts.HashedServicePassword, rs.ServiceName, rs.ServiceGroupID FROM terminals t
                         INNER JOIN terminalservices ts ON t.TerminalID = ts.TerminalID
                         INNER JOIN ref_services rs ON ts.ServiceID = rs.ServiceID
-                        WHERE t.TerminalCode IN('$terminalcode','$vipterminal') AND t.SiteID = ? AND ts.Status IN (1,9) AND t.Status = 1 AND ts.ServiceID = ?";
+                        WHERE t.TerminalCode IN('$terminalcode','$vipterminal') AND t.SiteID = ? AND ts.Status IN (1) AND t.Status = 1 AND ts.ServiceID = ?";
                     $this->prepare($stmt);
                     $this->bindparameter(1, $zsiteID);
                     $this->bindparameter(2, $oldserviceid);
