@@ -66,7 +66,6 @@ class RptOthers extends DBHandler
         $this->bindparameter(2, $zdateto);
         //$this->bindparameter(3, $zacctype);
         $this->execute();
-        var_dump($stmt,$zdatefrom,$zdateto);exit;
         unset($listacctypes);
         unset($listchildaccs);
         return $this->fetchData();
