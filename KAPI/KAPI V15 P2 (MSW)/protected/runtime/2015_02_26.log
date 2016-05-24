@@ -1,0 +1,15 @@
+2015/02/26 05:46:49 [error] [php] Undefined offset: 18 (C:\xampp\htdocs\kronus-egm-ws-abbott\protected\components\CasinoApiUB.php:58)
+Stack trace:
+#0 C:\xampp\htdocs\kronus-egm-ws-abbott\protected\controllers\WsKapiController.php(2602): UserBasedTrans->reload()
+#1 C:\xampp\htdocs\yii\framework\web\actions\CInlineAction.php(49): WsKapiController->actionReloadSession()
+#2 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams()
+#3 C:\xampp\htdocs\yii\framework\web\CController.php(286): WsKapiController->runAction()
+#4 C:\xampp\htdocs\yii\framework\web\CController.php(265): WsKapiController->runActionWithFilters()
+#5 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): WsKapiController->run()
+#6 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#7 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#8 C:\xampp\htdocs\kronus-egm-ws-abbott\index.php(13): CWebApplication->run()
+REQUEST_URI=/kronus-egm-ws-abbott/index.php/wsKapi/reloadsession
+in C:\xampp\htdocs\kronus-egm-ws-abbott\protected\components\CasinoApiUB.php (58)
+in C:\xampp\htdocs\kronus-egm-ws-abbott\protected\components\CasinoApiUB.php (375)
+in C:\xampp\htdocs\kronus-egm-ws-abbott\protected\components\UserBasedTrans.php (384)

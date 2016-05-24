@@ -1,0 +1,39 @@
+2015/09/21 08:02:32 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'The system is unable to find the requested action "esafewithdrawgen".' in C:\xampp\htdocs\yii\framework\web\CController.php:483
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(270): CController->missingAction('esafewithdrawge...')
+#1 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): CController->run('esafewithdrawge...')
+#2 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('wsKapiInvoker/e...')
+#3 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#4 C:\xampp\htdocs\kronus-egm\kapi-v15\index.php(13): CApplication->run()
+#5 {main}
+REQUEST_URI=/kronus-egm/kapi-v15/index.php/wsKapiInvoker/esafewithdrawgen
+HTTP_REFERER=http://localhost/kronus-egm/kapi-v15/
+---
+2015/09/21 08:05:20 [error] [php] Undefined variable: result (C:\xampp\htdocs\kronus-egm\kapi-v15\protected\views\wsKapiInvoker\esafereloadgen.php:36)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(869): WsKapiInvokerController->renderFile()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(782): WsKapiInvokerController->renderPartial()
+#2 C:\xampp\htdocs\kronus-egm\kapi-v15\protected\controllers\WsKapiInvokerController.php(129): WsKapiInvokerController->render()
+#3 C:\xampp\htdocs\yii\framework\web\actions\CInlineAction.php(49): WsKapiInvokerController->actionEsafereloadgen()
+#4 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams()
+#5 C:\xampp\htdocs\yii\framework\web\CController.php(286): WsKapiInvokerController->runAction()
+#6 C:\xampp\htdocs\yii\framework\web\CController.php(265): WsKapiInvokerController->runActionWithFilters()
+#7 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): WsKapiInvokerController->run()
+#8 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#9 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#10 C:\xampp\htdocs\kronus-egm\kapi-v15\index.php(13): CWebApplication->run()
+REQUEST_URI=/kronus-egm/kapi-v15/index.php/wsKapiInvoker/esafereloadgen
+in C:\xampp\htdocs\kronus-egm\kapi-v15\protected\views\wsKapiInvoker\esafereloadgen.php (36)
+in C:\xampp\htdocs\kronus-egm\kapi-v15\protected\controllers\WsKapiInvokerController.php (129)
+in C:\xampp\htdocs\kronus-egm\kapi-v15\index.php (13)
+2015/09/21 09:29:25 [error] [php] Undefined variable: DateTime (C:\xampp\htdocs\kronus-egm\kapi-v15\protected\controllers\WsKapiController.php:3215)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(286): WsKapiController->runAction()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(265): WsKapiController->runActionWithFilters()
+#2 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): WsKapiController->run()
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#4 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#5 C:\xampp\htdocs\kronus-egm\kapi-v15\index.php(13): CWebApplication->run()
+REQUEST_URI=/kronus-egm/kapi-v15/index.php/wsKapi/esafereloadgenesis
+in C:\xampp\htdocs\kronus-egm\kapi-v15\protected\controllers\WsKapiController.php (3215)
+in C:\xampp\htdocs\kronus-egm\kapi-v15\index.php (13)

@@ -37,4 +37,43 @@ class TransactionSummaryLogsModel {
         //$transactionID = $this->_connection->getLastInsertID();
         return $result;
     }
+    /**
+     * Check if Transaction SummaryID already exist
+     * @date May 11, 2016
+     */
+    
+        public function checkTransactionSummaryID($transactionSummaryID) {
+        $sql = 'SELECT Count(TransactionSummaryLogID) as Count FROM transactionsummarylogs WHERE TransactionSummaryID = :TransactionSummaryID';
+        $param = array('TransactionSummaryID' => $transactionSummaryID);
+
+        $command = $this->_connection->createCommand($sql);
+        $result = $command->queryRow(true, $param);
+
+        return $result;
+    }
+        public function updateGenesisWithdrawal($transactionSummaryID, $amount) {
+
+        $startTrans = $this->_connection->beginTransaction();
+
+        try {
+            $sql = 'UPDATE transactionsummarylogs SET GenesisWithdrawal = :Amount WHERE TransactionSummaryID = :TransactionSummaryID';
+            $param = array(':Amount' => $amount, ':TransactionSummaryID' => $transactionSummaryID);
+            $command = $this->_connection->createCommand($sql);
+            $command->bindValues($param);
+            $command->execute();
+
+            try {
+                $startTrans->commit();
+                return 1;
+            } catch (PDOException $e) {
+                $startTrans->rollback();
+                Utilities::log($e->getMessage());
+                return 0;
+            }
+        } catch (Exception $e) {
+            $startTrans->rollback();
+            Utilities::log($e->getMessage());
+            return 0;
+        }
+    }
 }

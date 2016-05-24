@@ -1,0 +1,381 @@
+2014/03/17 10:41:23 [error] [application] 
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1191)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 10:45:28 [error] [php] Undefined index: RegMin (C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php:1845)
+Stack trace:
+#0 C:\Apache2.2\htdocs\yii\framework\web\CController.php(286): WsKapiController->runAction()
+#1 C:\Apache2.2\htdocs\yii\framework\web\CController.php(265): WsKapiController->runActionWithFilters()
+#2 C:\Apache2.2\htdocs\yii\framework\web\CWebApplication.php(282): WsKapiController->run()
+#3 C:\Apache2.2\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#4 C:\Apache2.2\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#5 C:\Apache2.2\htdocs\kronus-egm-ws\index.php(13): CWebApplication->run()
+REQUEST_URI=/kronus-egm-ws/index.php/wsKapi/startsession
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1845)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 10:46:40 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'MKEMAR17A4' for key 'UK_egmrequestlogs_TrackingID'. The SQL statement executed was: INSERT INTO egmrequestlogs(TrackingID, ReportedAmount, Status, 
+                    TransactionType, SiteID, TerminalID, ServiceID, LoyaltyCardNumber, MID) 
+                    VALUES(:tracking_id, :amount, :status, :trans_type, :site_id,
+                    :terminal_id, :service_id, :card_number, :mid).
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\models\GamingRequestLogs.php (53)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1609)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 10:46:41 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'MKEMAR17A4' for key 'UK_egmrequestlogs_TrackingID'. The SQL statement executed was: INSERT INTO egmrequestlogs(TrackingID, ReportedAmount, Status, 
+                    TransactionType, SiteID, TerminalID, ServiceID, LoyaltyCardNumber, MID) 
+                    VALUES(:tracking_id, :amount, :status, :trans_type, :site_id,
+                    :terminal_id, :service_id, :card_number, :mid)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\models\GamingRequestLogs.php (70)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1609)
+2014/03/17 10:46:41 [error] [application] Tracking ID must be unique.
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (2019)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 10:46:47 [error] [php] Undefined index: RegMin (C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php:1848)
+Stack trace:
+#0 C:\Apache2.2\htdocs\yii\framework\web\CController.php(286): WsKapiController->runAction()
+#1 C:\Apache2.2\htdocs\yii\framework\web\CController.php(265): WsKapiController->runActionWithFilters()
+#2 C:\Apache2.2\htdocs\yii\framework\web\CWebApplication.php(282): WsKapiController->run()
+#3 C:\Apache2.2\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#4 C:\Apache2.2\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#5 C:\Apache2.2\htdocs\kronus-egm-ws\index.php(13): CWebApplication->run()
+REQUEST_URI=/kronus-egm-ws/index.php/wsKapi/startsession
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1848)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 10:47:12 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'MKEMAR17A5' for key 'UK_egmrequestlogs_TrackingID'. The SQL statement executed was: INSERT INTO egmrequestlogs(TrackingID, ReportedAmount, Status, 
+                    TransactionType, SiteID, TerminalID, ServiceID, LoyaltyCardNumber, MID) 
+                    VALUES(:tracking_id, :amount, :status, :trans_type, :site_id,
+                    :terminal_id, :service_id, :card_number, :mid).
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\models\GamingRequestLogs.php (53)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1609)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 10:47:12 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'MKEMAR17A5' for key 'UK_egmrequestlogs_TrackingID'. The SQL statement executed was: INSERT INTO egmrequestlogs(TrackingID, ReportedAmount, Status, 
+                    TransactionType, SiteID, TerminalID, ServiceID, LoyaltyCardNumber, MID) 
+                    VALUES(:tracking_id, :amount, :status, :trans_type, :site_id,
+                    :terminal_id, :service_id, :card_number, :mid)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\models\GamingRequestLogs.php (70)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1609)
+2014/03/17 10:47:12 [error] [application] Tracking ID must be unique.
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (2020)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 10:49:59 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'MKEMAR17A6' for key 'UK_egmrequestlogs_TrackingID'. The SQL statement executed was: INSERT INTO egmrequestlogs(TrackingID, ReportedAmount, Status, 
+                    TransactionType, SiteID, TerminalID, ServiceID, LoyaltyCardNumber, MID) 
+                    VALUES(:tracking_id, :amount, :status, :trans_type, :site_id,
+                    :terminal_id, :service_id, :card_number, :mid).
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\models\GamingRequestLogs.php (53)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1609)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 10:49:59 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'MKEMAR17A6' for key 'UK_egmrequestlogs_TrackingID'. The SQL statement executed was: INSERT INTO egmrequestlogs(TrackingID, ReportedAmount, Status, 
+                    TransactionType, SiteID, TerminalID, ServiceID, LoyaltyCardNumber, MID) 
+                    VALUES(:tracking_id, :amount, :status, :trans_type, :site_id,
+                    :terminal_id, :service_id, :card_number, :mid)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\models\GamingRequestLogs.php (70)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1609)
+2014/03/17 10:49:59 [error] [application] Tracking ID must be unique.
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (2019)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 10:50:05 [error] [php] Undefined index: RegMin (C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php:1848)
+Stack trace:
+#0 C:\Apache2.2\htdocs\yii\framework\web\CController.php(286): WsKapiController->runAction()
+#1 C:\Apache2.2\htdocs\yii\framework\web\CController.php(265): WsKapiController->runActionWithFilters()
+#2 C:\Apache2.2\htdocs\yii\framework\web\CWebApplication.php(282): WsKapiController->run()
+#3 C:\Apache2.2\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#4 C:\Apache2.2\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#5 C:\Apache2.2\htdocs\kronus-egm-ws\index.php(13): CWebApplication->run()
+REQUEST_URI=/kronus-egm-ws/index.php/wsKapi/startsession
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1848)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 10:51:32 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'MKEMAR17A7' for key 'UK_egmrequestlogs_TrackingID'. The SQL statement executed was: INSERT INTO egmrequestlogs(TrackingID, ReportedAmount, Status, 
+                    TransactionType, SiteID, TerminalID, ServiceID, LoyaltyCardNumber, MID) 
+                    VALUES(:tracking_id, :amount, :status, :trans_type, :site_id,
+                    :terminal_id, :service_id, :card_number, :mid).
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\models\GamingRequestLogs.php (53)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1609)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 10:51:32 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'MKEMAR17A7' for key 'UK_egmrequestlogs_TrackingID'. The SQL statement executed was: INSERT INTO egmrequestlogs(TrackingID, ReportedAmount, Status, 
+                    TransactionType, SiteID, TerminalID, ServiceID, LoyaltyCardNumber, MID) 
+                    VALUES(:tracking_id, :amount, :status, :trans_type, :site_id,
+                    :terminal_id, :service_id, :card_number, :mid)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\models\GamingRequestLogs.php (70)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1609)
+2014/03/17 10:51:32 [error] [application] Tracking ID must be unique.
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (2019)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 10:51:39 [error] [application] Amount should be equal or greater than 500.0000
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1849)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 10:58:48 [error] [application] Amount should be equal or greater than 500.00
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1849)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 11:17:32 [error] [application] Amount should be equal or greater than 500,00
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1849)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 11:19:38 [error] [application] Amount should be equal or greater than 500.00
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1849)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 13:22:17 [error] [application] Amount should be equal or less than 100,000.00
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1859)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 13:30:08 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'MKEMAR14A13' for key 'UK_egmrequestlogs_TrackingID'. The SQL statement executed was: INSERT INTO egmrequestlogs(TrackingID, ReportedAmount, Status, 
+                    TransactionType, SiteID, TerminalID, ServiceID, LoyaltyCardNumber, MID) 
+                    VALUES(:tracking_id, :amount, :status, :trans_type, :site_id,
+                    :terminal_id, :service_id, :card_number, :mid).
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\models\GamingRequestLogs.php (53)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1609)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 13:30:08 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'MKEMAR14A13' for key 'UK_egmrequestlogs_TrackingID'. The SQL statement executed was: INSERT INTO egmrequestlogs(TrackingID, ReportedAmount, Status, 
+                    TransactionType, SiteID, TerminalID, ServiceID, LoyaltyCardNumber, MID) 
+                    VALUES(:tracking_id, :amount, :status, :trans_type, :site_id,
+                    :terminal_id, :service_id, :card_number, :mid)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\models\GamingRequestLogs.php (70)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1609)
+2014/03/17 13:30:08 [error] [application] Tracking ID must be unique.
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (2019)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 13:30:16 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'MKEMAR14A14' for key 'UK_egmrequestlogs_TrackingID'. The SQL statement executed was: INSERT INTO egmrequestlogs(TrackingID, ReportedAmount, Status, 
+                    TransactionType, SiteID, TerminalID, ServiceID, LoyaltyCardNumber, MID) 
+                    VALUES(:tracking_id, :amount, :status, :trans_type, :site_id,
+                    :terminal_id, :service_id, :card_number, :mid).
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\models\GamingRequestLogs.php (53)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1609)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 13:30:16 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'MKEMAR14A14' for key 'UK_egmrequestlogs_TrackingID'. The SQL statement executed was: INSERT INTO egmrequestlogs(TrackingID, ReportedAmount, Status, 
+                    TransactionType, SiteID, TerminalID, ServiceID, LoyaltyCardNumber, MID) 
+                    VALUES(:tracking_id, :amount, :status, :trans_type, :site_id,
+                    :terminal_id, :service_id, :card_number, :mid)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\models\GamingRequestLogs.php (70)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1609)
+2014/03/17 13:30:16 [error] [application] Tracking ID must be unique.
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (2019)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 13:30:22 [error] [application] Error: Invalid Amount.
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1904)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 13:30:33 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'MKEMAR14A15' for key 'UK_egmrequestlogs_TrackingID'. The SQL statement executed was: INSERT INTO egmrequestlogs(TrackingID, ReportedAmount, Status, 
+                    TransactionType, SiteID, TerminalID, ServiceID, LoyaltyCardNumber, MID) 
+                    VALUES(:tracking_id, :amount, :status, :trans_type, :site_id,
+                    :terminal_id, :service_id, :card_number, :mid).
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\models\GamingRequestLogs.php (53)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1609)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 13:30:33 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'MKEMAR14A15' for key 'UK_egmrequestlogs_TrackingID'. The SQL statement executed was: INSERT INTO egmrequestlogs(TrackingID, ReportedAmount, Status, 
+                    TransactionType, SiteID, TerminalID, ServiceID, LoyaltyCardNumber, MID) 
+                    VALUES(:tracking_id, :amount, :status, :trans_type, :site_id,
+                    :terminal_id, :service_id, :card_number, :mid)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\models\GamingRequestLogs.php (70)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1609)
+2014/03/17 13:30:33 [error] [application] Tracking ID must be unique.
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (2019)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 13:32:08 [error] [application] Please start a session first
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (2129)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 13:47:09 [error] [application] 
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1191)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 13:52:22 [error] [application] Amount should be equal or greater than 5,000.00.
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1827)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 13:52:45 [error] [application] Amount should be equal or less than 100,000.00.
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1837)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 13:53:16 [error] [application] Error: Invalid Amount.
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1904)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 13:53:22 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'MKEMAR17B11' for key 'UK_egmrequestlogs_TrackingID'. The SQL statement executed was: INSERT INTO egmrequestlogs(TrackingID, ReportedAmount, Status, 
+                    TransactionType, SiteID, TerminalID, ServiceID, LoyaltyCardNumber, MID) 
+                    VALUES(:tracking_id, :amount, :status, :trans_type, :site_id,
+                    :terminal_id, :service_id, :card_number, :mid).
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\models\GamingRequestLogs.php (53)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1609)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 13:53:22 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'MKEMAR17B11' for key 'UK_egmrequestlogs_TrackingID'. The SQL statement executed was: INSERT INTO egmrequestlogs(TrackingID, ReportedAmount, Status, 
+                    TransactionType, SiteID, TerminalID, ServiceID, LoyaltyCardNumber, MID) 
+                    VALUES(:tracking_id, :amount, :status, :trans_type, :site_id,
+                    :terminal_id, :service_id, :card_number, :mid)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\models\GamingRequestLogs.php (70)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1609)
+2014/03/17 13:53:22 [error] [application] Tracking ID must be unique.
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (2019)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 13:53:27 [error] [application] Amount should be equal or greater than 5,000.00.
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1827)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 13:53:33 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'MKEMAR17B12' for key 'UK_egmrequestlogs_TrackingID'. The SQL statement executed was: INSERT INTO egmrequestlogs(TrackingID, ReportedAmount, Status, 
+                    TransactionType, SiteID, TerminalID, ServiceID, LoyaltyCardNumber, MID) 
+                    VALUES(:tracking_id, :amount, :status, :trans_type, :site_id,
+                    :terminal_id, :service_id, :card_number, :mid).
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\models\GamingRequestLogs.php (53)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1609)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 13:53:33 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'MKEMAR17B12' for key 'UK_egmrequestlogs_TrackingID'. The SQL statement executed was: INSERT INTO egmrequestlogs(TrackingID, ReportedAmount, Status, 
+                    TransactionType, SiteID, TerminalID, ServiceID, LoyaltyCardNumber, MID) 
+                    VALUES(:tracking_id, :amount, :status, :trans_type, :site_id,
+                    :terminal_id, :service_id, :card_number, :mid)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\models\GamingRequestLogs.php (70)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1609)
+2014/03/17 13:53:33 [error] [application] Tracking ID must be unique.
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (2019)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 13:53:38 [error] [application] Error: Invalid Amount.
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1904)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 14:11:39 [error] [application] 
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1191)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 14:15:43 [error] [application] Amount should be equal or greater than 600.00
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1849)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 14:17:12 [error] [application] Error: Invalid Amount.
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1904)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 14:17:41 [error] [application] Error: Invalid Amount.
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1904)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 14:17:56 [error] [application] Error: Invalid Amount.
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1904)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 14:20:05 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'MKEMAR17C8' for key 'UK_egmrequestlogs_TrackingID'. The SQL statement executed was: INSERT INTO egmrequestlogs(TrackingID, ReportedAmount, Status, 
+                    TransactionType, SiteID, TerminalID, ServiceID, LoyaltyCardNumber, MID) 
+                    VALUES(:tracking_id, :amount, :status, :trans_type, :site_id,
+                    :terminal_id, :service_id, :card_number, :mid).
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\models\GamingRequestLogs.php (53)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1609)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 14:20:05 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'MKEMAR17C8' for key 'UK_egmrequestlogs_TrackingID'. The SQL statement executed was: INSERT INTO egmrequestlogs(TrackingID, ReportedAmount, Status, 
+                    TransactionType, SiteID, TerminalID, ServiceID, LoyaltyCardNumber, MID) 
+                    VALUES(:tracking_id, :amount, :status, :trans_type, :site_id,
+                    :terminal_id, :service_id, :card_number, :mid)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\models\GamingRequestLogs.php (70)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1609)
+2014/03/17 14:20:05 [error] [application] Tracking ID must be unique.
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (2019)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 14:28:05 [error] [application] 
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1191)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 15:25:14 [error] [application] Amount should be equal or less than 7,000.00.
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1837)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 15:26:12 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'MKEMAR17D8' for key 'UK_egmrequestlogs_TrackingID'. The SQL statement executed was: INSERT INTO egmrequestlogs(TrackingID, ReportedAmount, Status, 
+                    TransactionType, SiteID, TerminalID, ServiceID, LoyaltyCardNumber, MID) 
+                    VALUES(:tracking_id, :amount, :status, :trans_type, :site_id,
+                    :terminal_id, :service_id, :card_number, :mid).
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\models\GamingRequestLogs.php (53)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1609)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 15:26:12 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'MKEMAR17D8' for key 'UK_egmrequestlogs_TrackingID'. The SQL statement executed was: INSERT INTO egmrequestlogs(TrackingID, ReportedAmount, Status, 
+                    TransactionType, SiteID, TerminalID, ServiceID, LoyaltyCardNumber, MID) 
+                    VALUES(:tracking_id, :amount, :status, :trans_type, :site_id,
+                    :terminal_id, :service_id, :card_number, :mid)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\models\GamingRequestLogs.php (70)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1609)
+2014/03/17 15:26:12 [error] [application] Tracking ID must be unique.
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (2019)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 15:26:17 [error] [application] Amount should be equal or greater than 6,000.00.
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1827)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 15:26:40 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'MKEMAR17D9' for key 'UK_egmrequestlogs_TrackingID'. The SQL statement executed was: INSERT INTO egmrequestlogs(TrackingID, ReportedAmount, Status, 
+                    TransactionType, SiteID, TerminalID, ServiceID, LoyaltyCardNumber, MID) 
+                    VALUES(:tracking_id, :amount, :status, :trans_type, :site_id,
+                    :terminal_id, :service_id, :card_number, :mid).
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\models\GamingRequestLogs.php (53)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1609)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 15:26:40 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'MKEMAR17D9' for key 'UK_egmrequestlogs_TrackingID'. The SQL statement executed was: INSERT INTO egmrequestlogs(TrackingID, ReportedAmount, Status, 
+                    TransactionType, SiteID, TerminalID, ServiceID, LoyaltyCardNumber, MID) 
+                    VALUES(:tracking_id, :amount, :status, :trans_type, :site_id,
+                    :terminal_id, :service_id, :card_number, :mid)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\models\GamingRequestLogs.php (70)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1609)
+2014/03/17 15:26:40 [error] [application] Tracking ID must be unique.
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (2019)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 15:26:45 [error] [application] Amount should be equal or greater than 6,000.00.
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1827)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 15:27:38 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'MKEMAR17D10' for key 'UK_egmrequestlogs_TrackingID'. The SQL statement executed was: INSERT INTO egmrequestlogs(TrackingID, ReportedAmount, Status, 
+                    TransactionType, SiteID, TerminalID, ServiceID, LoyaltyCardNumber, MID) 
+                    VALUES(:tracking_id, :amount, :status, :trans_type, :site_id,
+                    :terminal_id, :service_id, :card_number, :mid).
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\models\GamingRequestLogs.php (53)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1609)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 15:27:38 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'MKEMAR17D10' for key 'UK_egmrequestlogs_TrackingID'. The SQL statement executed was: INSERT INTO egmrequestlogs(TrackingID, ReportedAmount, Status, 
+                    TransactionType, SiteID, TerminalID, ServiceID, LoyaltyCardNumber, MID) 
+                    VALUES(:tracking_id, :amount, :status, :trans_type, :site_id,
+                    :terminal_id, :service_id, :card_number, :mid)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\models\GamingRequestLogs.php (70)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1609)
+2014/03/17 15:27:38 [error] [application] Tracking ID must be unique.
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (2019)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 15:27:44 [error] [application] Error: Invalid Amount.
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1904)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 15:28:02 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'MKEMAR17D11' for key 'UK_egmrequestlogs_TrackingID'. The SQL statement executed was: INSERT INTO egmrequestlogs(TrackingID, ReportedAmount, Status, 
+                    TransactionType, SiteID, TerminalID, ServiceID, LoyaltyCardNumber, MID) 
+                    VALUES(:tracking_id, :amount, :status, :trans_type, :site_id,
+                    :terminal_id, :service_id, :card_number, :mid).
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\models\GamingRequestLogs.php (53)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1609)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/17 15:28:02 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'MKEMAR17D11' for key 'UK_egmrequestlogs_TrackingID'. The SQL statement executed was: INSERT INTO egmrequestlogs(TrackingID, ReportedAmount, Status, 
+                    TransactionType, SiteID, TerminalID, ServiceID, LoyaltyCardNumber, MID) 
+                    VALUES(:tracking_id, :amount, :status, :trans_type, :site_id,
+                    :terminal_id, :service_id, :card_number, :mid)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\models\GamingRequestLogs.php (70)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1609)
+2014/03/17 15:28:02 [error] [application] Tracking ID must be unique.
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (2019)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)

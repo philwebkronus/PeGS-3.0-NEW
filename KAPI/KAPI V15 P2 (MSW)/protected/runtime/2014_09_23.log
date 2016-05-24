@@ -1,0 +1,35 @@
+2014/09/23 14:18:21 [error] [php] Undefined index: StackerBatchID (C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\components\Controller.php:91)
+Stack trace:
+#0 C:\Apache2.2\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams()
+#1 C:\Apache2.2\htdocs\yii\framework\web\CController.php(286): WsKapiController->runAction()
+#2 C:\Apache2.2\htdocs\yii\framework\web\CController.php(265): WsKapiController->runActionWithFilters()
+#3 C:\Apache2.2\htdocs\yii\framework\web\CWebApplication.php(282): WsKapiController->run()
+#4 C:\Apache2.2\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#5 C:\Apache2.2\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#6 C:\Apache2.2\htdocs\kronus-egm-ws-abbott\index.php(13): CWebApplication->run()
+REQUEST_URI=/kronus-egm-ws-abbott/index.php/wsKapi/startsession
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\components\Controller.php (91)
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\controllers\WsKapiController.php (1540)
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\index.php (13)
+2014/09/23 15:01:26 [error] [php] Undefined variable: MID (C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\controllers\WsKapiController.php:1596)
+Stack trace:
+#0 C:\Apache2.2\htdocs\yii\framework\web\CController.php(286): WsKapiController->runAction()
+#1 C:\Apache2.2\htdocs\yii\framework\web\CController.php(265): WsKapiController->runActionWithFilters()
+#2 C:\Apache2.2\htdocs\yii\framework\web\CWebApplication.php(282): WsKapiController->run()
+#3 C:\Apache2.2\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#4 C:\Apache2.2\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#5 C:\Apache2.2\htdocs\kronus-egm-ws-abbott\index.php(13): CWebApplication->run()
+REQUEST_URI=/kronus-egm-ws-abbott/index.php/wsKapi/startsession
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\controllers\WsKapiController.php (1596)
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\index.php (13)
+2014/09/23 15:25:37 [error] [php] Undefined variable: total (C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\controllers\WsKapiController.php:1614)
+Stack trace:
+#0 C:\Apache2.2\htdocs\yii\framework\web\CController.php(286): WsKapiController->runAction()
+#1 C:\Apache2.2\htdocs\yii\framework\web\CController.php(265): WsKapiController->runActionWithFilters()
+#2 C:\Apache2.2\htdocs\yii\framework\web\CWebApplication.php(282): WsKapiController->run()
+#3 C:\Apache2.2\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#4 C:\Apache2.2\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#5 C:\Apache2.2\htdocs\kronus-egm-ws-abbott\index.php(13): CWebApplication->run()
+REQUEST_URI=/kronus-egm-ws-abbott/index.php/wsKapi/startsession
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\controllers\WsKapiController.php (1614)
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\index.php (13)

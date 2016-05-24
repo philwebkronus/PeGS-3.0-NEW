@@ -20,6 +20,10 @@
             <?php echo CHtml::label('Method:','Method'); ?>
             <?php echo CHtml::textField('Method'); ?>
         </div>
+        <div class="row">
+            <?php echo CHtml::label('Tracking:','Tracking'); ?>
+            <?php echo CHtml::textField('Tracking'); ?>
+        </div>
     
         <div class="row" style="margin-left: 225px;">
             <?php echo CHtml::submitButton('Invoke'); ?>

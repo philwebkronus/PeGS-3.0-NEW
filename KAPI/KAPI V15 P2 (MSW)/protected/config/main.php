@@ -64,57 +64,57 @@ return array(
                         '<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
                     ),
                 ),
-
+            
                 //put kronus database conn string here
 		'db'=>array(
                         'class'=>'CDbConnection',
-			'connectionString' => 'mysql:host=;dbname=npos',
+			'connectionString' => 'mysql:host=172.16.102.157;dbname=npos',
 			'emulatePrepare' => true,
-			'username' => '',
-			'password' => '',
+			'username' => 'pegsconn',
+			'password' => 'pegsconnpass',
 			'charset' => 'utf8',
 		),
-
+            
                 //put loyalty database conn string here
                 'db2'=>array(
                         'class'=>'CDbConnection',
-			'connectionString' => 'mysql:host=;dbname=loyaltydb',
+			'connectionString' => 'mysql:host=172.16.102.157;dbname=loyaltydb',
 			'emulatePrepare' => true,
-			'username' => '',
-			'password' => '',
+			'username' => 'pegsconn',
+			'password' => 'pegsconnpass',
 			'charset' => 'utf8',
 		),
-
+            
                 //put membership database conn string here
 		'db3'=>array(
                         'class'=>'CDbConnection',
-			'connectionString' => 'mysql:host=;dbname=membership',
+			'connectionString' => 'mysql:host=172.16.102.157;dbname=membership',
 			'emulatePrepare' => true,
-			'username' => '',
-			'password' => '',
+			'username' => 'pegsconn',
+			'password' => 'pegsconnpass',
 			'charset' => 'utf8',
 		),
                 'db4'=>array(
                         'class'=>'CDbConnection',
-			'connectionString' => 'mysql:host=;dbname=stackermanagement',
+			'connectionString' => 'mysql:host=172.16.102.157;dbname=stackermanagement',
 			'emulatePrepare' => true,
-			'username' => '',
-			'password' => '',
+			'username' => 'pegsconn',
+			'password' => 'pegsconnpass',
 			'charset' => 'utf8',
 		),
                 'db5'=>array(
                         'class'=>'CDbConnection',
-			'connectionString' => 'mysql:host=;dbname=vouchermanagement',
+			'connectionString' => 'mysql:host=172.16.102.157;dbname=vouchermanagement',
 			'emulatePrepare' => true,
-			'username' => '',
-			'password' => '',
+			'username' => 'pegsconn',
+			'password' => 'pegsconnpass',
 			'charset' => 'utf8',
 		),
                 'CURL' =>array(
                         'class' => 'application.extensions.curl.CurlController',
                      //you can setup timeout,http_login,proxy,proxylogin,cookie, and setOPTIONS
                  ),
-
+		
 		'errorHandler'=>array(
 			// use 'site/error' action to display errors
                 'errorAction'=>'wsGaming/error',
@@ -143,10 +143,10 @@ return array(
                 'deposit_method_id' =>503,
                 'withdrawal_method_id'=>502,
                 'rtg_cert_dir'=>'C://Apache2.2/htdocs/kronus-egm/kapi-v15/protected/config/RTGClientCerts/',
-
+        
                 'BGI_ownerID'=>1,
                 'allowminimumamount'=>true,
-
+            
                 'service_api_caching'=>array(
                     false,
                     false,
@@ -171,7 +171,7 @@ return array(
                     '10002', //Reload
                     '10003', //Withdraw
                  ),
-
+            
                 'pt_casino_name'=>'egamesqa',
                 'pt_secret_key'=>'playtech',
                 'pt_cert_dir'=>'/var/www/Kronus_UB/admin2_ub.pagcoregames.com/public/views/sys/config/PTClientCerts/',
@@ -192,7 +192,7 @@ return array(
                     'https://202.44.102.31/ECFDEMOFDGEFNPGEMFOQ/processor/processorapi/cashier.asmx',
                     'https://202.44.102.31/ECFDEMOFDGEFNPGEMFOQ/processor/processorapi/cashier.asmx',
                     'https://202.44.102.31/ECFDEMOFDGEFNPGEMFOQ/processor/processorapi/cashier.asmx',
-                    'https://202.44.102.31/ECFDEMOFDGEFNPGEMFOQ/processor/processorapi/cashier.asmx',
+                    'https://202.44.102.31/ECFDEMOFDGEFNPGEMFOQ/processor/processorapi/cashier.asmx',    
                     'https://202.44.102.31/ECFTESTFDGUFTUGEHVHF/processor/processorapi/cashier.asmx',
                     array('https://api18.valueactive.eu/philweb1_CAPI/CasinoAPI.aspx', 2238), //test environment
                     array('https://api18.valueactive.eu/philweb1_CAPI/CasinoAPI.aspx', 2238), // MG Server 1 (NCR)
@@ -200,7 +200,7 @@ return array(
                     'https://202.44.103.231/GPRIMESZNVJFROAPSERT/processor/ProcessorAPI/Cashier.asmx',
                     'https://202.44.102.31/ECFDEMOFDGEFNPGEMFOQ/processor/processorapi/cashier.asmx'
                 ),
-
+        
                 //Casino Game URL
                 'game_api' => array(
                     'https://202.44.102.31/ECFTESTFDGUFTUGEHVHF/CasinoAPI/Games.asmx',
@@ -219,18 +219,18 @@ return array(
                     '',
                     '',
                     '',
-                    'https://202.44.103.231/GPRIMESZNVJFROAPSERT/CasinoAPI/Games.asmx',
+                    'https://202.44.103.231/GPRIMESZNVJFROAPSERT/CasinoAPI/Games.asmx', 
                     '',
                 ),
-
+        
                 //credentials for revertbrokengames api
                 'revertbroken_api'=>array(
                     'URI' => 'https://webapi-dev.egamescasino-ss.ph/product/casino/service/backend/casino/egamesqa',
                     "REVERT_BROKEN_GAME_MODE" => "cancel",
                     "CASINO_NAME" => "egamesqa",
                     "PLAYER_MODE" => "real"
-                ),
-
+                ),        
+        
                 //Membership API
                 'mem_card_inquiry'=>'http://172.16.102.174/membership.rewards/API/cardinquiry.php',
                 'mem_transfer_points' => 'http://172.16.102.174/membership.rewards/API/transferpoints.php',
@@ -238,24 +238,24 @@ return array(
                 'mem_process_points' => 'http://172.16.102.174/membership.rewards/API/addpoints.php',
                 'mem_temp_activation' => 'http://172.16.102.174/membership.rewards/tempmemberactivation.php',
                 'mem_register_account' => 'http://172.16.102.174/membership.rewards/registration.php',
-                'mem_loyalty_service'=>7,
-
+                'mem_loyalty_service'=>7,        
+            
                 //Voucher management system API
                 'voucher_source'=>1,
                 'verify_ticket'=>'http://192.168.28.218/vouchermanagementsystem/VMS/index.php/Wsvoucher/verifyTicket',
                 'use_voucher_new'=>'http://192.168.28.218/vouchermanagementsystem/VMS/index.php/Wsvoucher/useTicket',
                 'get_voucher'=>'http://localhost/voucher-api/index.php/Wsvoucher/addTicket',
-
+            
 //                'authenticate_client'=>'http://192.168.28.108/kapi.dev.local/index.php/wsGaming/authenticateclient',
 //                'check_active_session'=>'http://192.168.28.108/kapi.dev.local/index.php/wsGaming/checkactivesession',
 //                'do_transaction'=>'http://192.168.28.108/kapi.dev.local/index.php/wsGaming/dotransaction',
 //                'minmaxinfo_kapi'=>'http://192.168.28.108/kapi.dev.local/index.php/wsGaming/minmaxinfo',
 //                'validate_token'=>'http://192.168.28.108/kapi.dev.local/index.php/wsGaming/validatetoken',
-//                'deposit'=>'http://192.168.28.108/kapi.dev.local/index.php/wsGaming/deposit',
+//                'deposit'=>'http://192.168.28.108/kapi.dev.local/index.php/wsGaming/deposit',                  
 //                'reload'=>'http://192.168.28.108/kapi.dev.local/index.php/wsGaming/reload',
 //                'withdraw'=>'http://192.168.28.108/kapi.dev.local/index.php/wsGaming/withdraw',
 //                'check_transaction'=>'http://192.168.28.108/kapi.dev.local/index.php/wsGaming/checktransaction',
-
+            
                 //KAPI (Invoker) Localhost
 //                'authenticate_client'=>'http://localhost/egmwebservice/index.php/wsGaming/authenticateclient',
 //                'check_active_session'=>'http://localhost/egmwebservice/index.php/wsGaming/checkactivesession',
@@ -266,42 +266,42 @@ return array(
 //                'reload'=>'http://localhost/egmwebservice/index.php/wsGaming/reload',
 //                'withdraw'=>'http://localhost/egmwebservice/index.php/wsGaming/withdraw',
 //                'check_transaction'=>'http://localhost/egmwebservice/index.php/wsGaming/checktransaction',
-//
+//            
                  //KAPI (Invoker) Staging
 //                'authenticate_client'=>'http://172.16.102.174/kapi.abbott.dev.local/index.php/wsGaming/authenticateclient',
 //                'check_active_session'=>'http://172.16.102.174/kapi.abbott.dev.local/index.php/wsGaming/checkactivesession',
 //                'do_transaction'=>'http://172.16.102.174/kapi.abbott.dev.local/index.php/wsGaming/dotransaction',
 //                'minmaxinfo_kapi'=>'http://172.16.102.174/kapi.abbott.dev.local/index.php/wsGaming/minmaxinfo',
 //                'validate_token'=>'http://172.16.102.174/kapi.abbott.dev.local/index.php/wsGaming/validatetoken',
-//                'deposit'=>'http://172.16.102.174/kapi.abbott.dev.local/index.php/wsGaming/deposit',
+//                'deposit'=>'http://172.16.102.174/kapi.abbott.dev.local/index.php/wsGaming/deposit',                  
 //                'reload'=>'http://172.16.102.174/kapi.abbott.dev.local/index.php/wsGaming/reload',
 //                'withdraw'=>'http://172.16.102.174/kapi.abbott.dev.local/index.php/wsGaming/withdraw',
 //                'check_transaction'=>'http://172.16.102.174/kapi.abbott.dev.local/index.php/wsGaming/checktransaction',
                 //Localhost
-                'get_terminal_info' => 'http://localhost/kronus-egm/kapi-v15/index.php/wsKapi/getterminalinfo',
-                'get_playing_balance' => 'http://localhost/kronus-egm/kapi-v15/index.php/wsKapi/getplayingbalance',
-                'get_membership_info' => 'http://localhost/kronus-egm/kapi-v15/index.php/wsKapi/getmembershipinfo',
-                'check_transaction' => 'http://localhost/kronus-egm/kapi-v15/index.php/wsKapi/checktransaction',
-                'get_login_info' => 'http://localhost/kronus-egm/kapi-v15/index.php/wsKapi/getlogininfo',
-                'start_session' => 'http://localhost/kronus-egm/kapi-v15/index.php/wsKapi/startsession',
-                'reload_session' => 'http://localhost/kronus-egm/kapi-v15/index.php/wsKapi/reloadsession',
-                'redeem_session' => 'http://localhost/kronus-egm/kapi-v15/index.php/wsKapi/redeemsession',
+                'get_terminal_info' => 'http://localhost/kronus-egm/kapi-v15/index.php/wsKapi/getterminalinfo', 
+                'get_playing_balance' => 'http://localhost/kronus-egm/kapi-v15/index.php/wsKapi/getplayingbalance', 
+                'get_membership_info' => 'http://localhost/kronus-egm/kapi-v15/index.php/wsKapi/getmembershipinfo', 
+                'check_transaction' => 'http://localhost/kronus-egm/kapi-v15/index.php/wsKapi/checktransaction', 
+                'get_login_info' => 'http://localhost/kronus-egm/kapi-v15/index.php/wsKapi/getlogininfo', 
+                'start_session' => 'http://localhost/kronus-egm/kapi-v15/index.php/wsKapi/startsession', 
+                'reload_session' => 'http://localhost/kronus-egm/kapi-v15/index.php/wsKapi/reloadsession', 
+                'redeem_session' => 'http://localhost/kronus-egm/kapi-v15/index.php/wsKapi/redeemsession', 
                 'create_egm_session' => 'http://localhost/kronus-egm/kapi-v15/index.php/wsKapi/createegmsession',
-                'remove_egm_session' => 'http://localhost/kronus-egm/kapi-v15/index.php/wsKapi/removeegmsession',
-                'get_site_balance' => 'http://172.16.102.174/kapi.abbott.dev.local/index.php/wsKapi/getsitebalance',
+                'remove_egm_session' => 'http://localhost/kronus-egm/kapi-v15/index.php/wsKapi/removeegmsession', 
+                'get_site_balance' => 'http://172.16.102.174/kapi.abbott.dev.local/index.php/wsKapi/getsitebalance', 
                 'esafe_reload_genesis' => 'http://localhost/kronus-egm/kapi-v15/index.php/wsKapi/esafegenesisreload',
                 'esafe_redemption_genesis' => 'http://localhost/kronus-egm/kapi-v15/index.php/wsKapi/esafegenesisredemption',
                 //Staging
-//                  'get_terminal_info' => 'http://172.16.102.174/kapi.abbott.dev.local/index.php/wsKapi/getterminalinfo',
-//                  'get_playing_balance' => 'http://172.16.102.174/kapi.abbott.dev.local/index.php/wsKapi/getplayingbalance',
-//                  'get_membership_info' => 'http://172.16.102.174/kapi.abbott.dev.local/index.php/wsKapi/getmembershipinfo',
-//                  'check_transaction' => 'http://172.16.102.174/kapi.abbott.dev.local/index.php/wsKapi/checktransaction',
-//                  'get_login_info' => 'http://172.16.102.174/kapi.abbott.dev.local/index.php/wsKapi/getlogininfo',
-//                  'start_session' => 'http://172.16.102.174/kapi.abbott.dev.local/index.php/wsKapi/startsession',
-//                  'reload_session' => 'http://172.16.102.174/kapi.abbott.dev.local/index.php/wsKapi/reloadsession',
-//                  'redeem_session' => 'http://172.16.102.174/kapi.abbott.dev.local/index.php/wsKapi/redeemsession',
+//                  'get_terminal_info' => 'http://172.16.102.174/kapi.abbott.dev.local/index.php/wsKapi/getterminalinfo', 
+//                  'get_playing_balance' => 'http://172.16.102.174/kapi.abbott.dev.local/index.php/wsKapi/getplayingbalance', 
+//                  'get_membership_info' => 'http://172.16.102.174/kapi.abbott.dev.local/index.php/wsKapi/getmembershipinfo', 
+//                  'check_transaction' => 'http://172.16.102.174/kapi.abbott.dev.local/index.php/wsKapi/checktransaction', 
+//                  'get_login_info' => 'http://172.16.102.174/kapi.abbott.dev.local/index.php/wsKapi/getlogininfo', 
+//                  'start_session' => 'http://172.16.102.174/kapi.abbott.dev.local/index.php/wsKapi/startsession', 
+//                  'reload_session' => 'http://172.16.102.174/kapi.abbott.dev.local/index.php/wsKapi/reloadsession', 
+//                  'redeem_session' => 'http://172.16.102.174/kapi.abbott.dev.local/index.php/wsKapi/redeemsession', 
 //                  'create_egm_session' => 'http://172.16.102.174/kapi.abbott.dev.local/index.php/wsKapi/createegmsession',
-
+                
                 //VMS Source Request
                 'vms_source'=>1,
                 'SitePrefix'=>'ICSA-',
@@ -313,5 +313,5 @@ return array(
                 'skinNameNonPlatinum' => 'Naboo'
 
 	),
-
+    
 );
