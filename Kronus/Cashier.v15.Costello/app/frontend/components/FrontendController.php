@@ -1192,7 +1192,7 @@ class FrontendController extends MI_Controller {
                     $result["trans_details_id"],$paymentType,$isCreditable);
             $transdate = CasinoApi::udate('Y-m-d H:i:s.u');
             $isSuccessful = $loyalty->processPoints($loyaltyCardNo, $transdate, 1, 'W', $startSessionFormModel->amount,$this->site_id, $result["trans_details_id"],
-                                                                                                                    $result['terminal_name'], $isCreditable,'', 7, 1);
+                                                                                                                    $result['terminal_name'], $isCreditable,'', $service_id, 1);
 
              //check if the loyaltydeposit is successful, if success insert to loyaltyrequestlogs and status = 1 else 2
             if($isSuccessful){
