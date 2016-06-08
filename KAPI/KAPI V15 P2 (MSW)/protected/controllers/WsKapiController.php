@@ -346,8 +346,10 @@ class WsKapiController extends Controller {
         $amount = htmlentities($request['Amount']);
         $method = htmlentities($request['Method']);
         $tracking = htmlentities($request['Tracking']);
+        $betSlip = htmlentities($request['BetSlipID']);
+        $betRef = htmlentities($request['BetRefID']);
         //check if all required fields are filled
-        if(isset($mid) && $mid != '' && isset($serviceID) && $serviceID != '' && isset($amount) && $amount != '' && isset($method) && $method != ''&& isset($tracking) && $tracking != '')
+        if(isset($mid) && $mid != '' && isset($serviceID) && $serviceID != '' && isset($amount) && $amount != '' && isset($method) && $method != ''&& isset($tracking) && $tracking != ''&& isset($betSlip) && $betSlip != ''&& isset($betRef) && $betRef != '')
         {
             //check if entered fields are of valid data type
             if(is_numeric($mid) && is_numeric($serviceID))
@@ -381,32 +383,61 @@ class WsKapiController extends Controller {
                                             $hasTerminalSession = $terminalSessions->checkIfHasTerminalSession2($mid, $serviceID);
                                             if($hasTerminalSession)
                                             {
-                                                $terminalID = $hasTerminalSession['TerminalID'];
+                                                $terminalCode = $hasTerminalSession['TerminalCode'];
+                                                 $terminal= str_replace('ICSA-', '', $terminalCode);
+                                                 $terminal= str_replace('VIP', '', $terminal);
                                                 //$siteID = $terminals->getSiteIDByTerminalID($terminalID);
                                             }
                                             else
                                             {
-                                                $terminalID = ''; 
+                                                $terminal = ''; 
                                             }
                                             $serviceUsername = $msResult['ServiceUsername'];
                                             $servicePassword = $msResult['ServicePassword'];
 
                                             $tracking1 = $tracking;
-                                            $tracking2 = "D"; // Deposit
-                                            $tracking3 = $mid; // MID
-                                            $tracking4 = $terminalID; // Terminal ID
+                                            $tracking2 = $betSlip; // BetSlipID
+                                            $tracking3 = $betRef; // BetRerference ID
+                                            $tracking4 = $terminal; // Terminal Code
 
                                             if ($serviceID == 20) { //RTG V15
                                                 $locatorname = Yii::app()->params['skinNameNonPlatinum'];
                                             } else {
                                                 $locatorname = '';
                                             }
+                                            $transSearchInfo = $casinoController->TransactionSearchInfo($serviceID, $serviceUsername, $tracking1, $tracking2, $tracking3, '');
 
+                                                if (isset($transSearchInfo['TransactionInfo'])) {
+                                                    //RTG / Magic Macau
+                                                    if (isset($transSearchInfo['TransactionInfo']['TrackingInfoTransactionSearchResult'])) {
+                                                        $initial_deposit = $transSearchInfo['TransactionInfo']['TrackingInfoTransactionSearchResult']['amount'];
+                                                        $apiresult = $transSearchInfo['TransactionInfo']['TrackingInfoTransactionSearchResult']['transactionStatus'];
+                                                        $transrefid = $transSearchInfo['TransactionInfo']['TrackingInfoTransactionSearchResult']['transactionID'];
+                                                    }
+                                                    //MG / Vibrant Vegas
+                                                    elseif (isset($transSearchInfo['TransactionInfo']['MG'])) {
+                                                        //$initial_deposit = $transSearchInfo['TransactionInfo']['MG']['Balance'];
+                                                        $transrefid = $transSearchInfo['TransactionInfo']['MG']['TransactionId'];
+                                                        $apiresult = $transSearchInfo['TransactionInfo']['MG']['TransactionStatus'];
+                                                    }
+                                                    //PT / PlayTech
+                                                    elseif (isset($transSearchInfo['TransactionInfo']['PT'])) {
+                                                        //$initial_deposit = $transSearchInfo['TransactionInfo']['PT']['']; //need to ask if reported amount will be passed from PT
+                                                        $transrefid = $transSearchInfo['TransactionInfo']['PT']['id'];
+                                                        $apiresult = $transSearchInfo['TransactionInfo']['PT']['status'];
+                                                    }
+                                                }
+                                                if ($apiresult == 'TRANSACTIONSTATUS_APPROVED' || $apiresult == 'true' || $apiresult == 'approved') {
+                                                $transSearchStatus = '1';
+                                                } else {
+                                                $transSearchStatus = '2';
+                                                }
+                                                if($transSearchStatus==2)
+                                                    {
                                             // Call Deposit API in RTG
-                                            
                                             $resultDeposit = $casinoController->Deposit($serviceID, $serviceUsername, $servicePassword, $amount, $tracking1, $tracking2, $tracking3, $tracking4, $locatorname);
                                             if (is_null($resultDeposit)) {
-                                                $transSearchInfo = $casinoController->TransactionSearchInfo($serviceID, $serviceUsername, $tracking1, $tracking2, $tracking3, $tracking4);
+                                                $transSearchInfo = $casinoController->TransactionSearchInfo($serviceID, $serviceUsername, $tracking1, $tracking2, $tracking3, '');
 
                                                 if (isset($transSearchInfo['TransactionInfo'])) {
                                                     //RTG / Magic Macau
@@ -448,11 +479,14 @@ class WsKapiController extends Controller {
                                                         $apiresult = $resultDeposit['TransactionInfo']['PT']['TransactionStatus'];
                                                         $apierrmsg = $resultDeposit['TransactionInfo']['PT']['TransactionStatus'];
                                                     }
-                                                } else {
-                                                    $apiresult = '';
-                                                    $transrefid = NULL;
-                                                    $apierrmsg = '';
-                                                }
+                                                } else 
+                                                    {
+                                                        if($resultDeposit['ErrorCode']==52)
+                                                        {
+                                                        $apiresult= 'INVALID_LOGIN';
+                                                        }
+                                                            
+                                                    }
                                             }
 
                                             if ($apiresult == 'TRANSACTIONSTATUS_APPROVED' || $apiresult == 'true' || $apiresult == 'approved') {
@@ -460,7 +494,6 @@ class WsKapiController extends Controller {
                                             } else {
                                                 $transstatus = '2';
                                             }
-
                                             if ($apiresult == "true" || $apiresult == 'TRANSACTIONSTATUS_APPROVED' || $apiresult == 'approved') {
                                                 if ($transstatus == 1) {
                                                     $message = 'MSW Deposit Transaction Successful';
@@ -470,9 +503,23 @@ class WsKapiController extends Controller {
                                                     $this->_sendResponse(200, CommonController::depositMSW('', $transstatus, $message, 81));
                                                 }
                                             } else {
-                                                $message = 'MSW Deposit Transaction Failed';
-                                                $this->_sendResponse(200, CommonController::depositMSW('', $transstatus, $message, 81));
+                                                if ($resultDeposit['ErrorCode']==52)
+                                                {
+                                                 $message = 'Invalid Player Login Please try Again';
+                                                $this->_sendResponse(200, CommonController::withdrawMSW('', $transstatus, $message, 52));    
+                                                }
+                                                else
+                                                {
+                                                    $message = 'MSW Deposit Transaction Failed';
+                                                    $this->_sendResponse(200, CommonController::depositMSW('', $transstatus, $message, 81));
+                                                }
                                             }
+                                        }
+                                        else
+                                        {
+                                            $message = 'MSW Deposit Transaction Successful';
+                                            $this->_sendResponse(200, CommonController::depositMSW($transrefid, $transSearchStatus, $message, 0));
+                                        }
                                         }
                                         else
                                         {
@@ -550,9 +597,11 @@ class WsKapiController extends Controller {
         $amount = htmlentities($request['Amount']);
         $method = htmlentities($request['Method']);
         $tracking = htmlentities($request['Tracking']);
+        $betSlip = htmlentities($request['BetSlipID']);
+        $betRef = htmlentities($request['BetRefID']);
 
         //check if all required fields are filled
-        if(isset($mid) && $mid != '' && isset($serviceID) && $serviceID != '' && isset($amount) && $amount != '' && isset($method) && $method != '' && isset($tracking) && $tracking != '' )
+        if(isset($mid) && $mid != '' && isset($serviceID) && $serviceID != '' && isset($amount) && $amount != '' && isset($method) && $method != '' && isset($tracking) && $tracking != '' && isset($betSlip) && $betSlip != ''&& isset($betRef) && $betRef != '')
         {
             //check if entered fields are of valid data type
             if(is_numeric($mid) && is_numeric($serviceID))
@@ -602,18 +651,20 @@ class WsKapiController extends Controller {
                                                     $hasTerminalSession = $terminalSessions->checkIfHasTerminalSession2($mid, $serviceID);
                                                     if($hasTerminalSession)
                                                     {
-                                                        $terminalID = $hasTerminalSession['TerminalID'];
+                                                        $terminalCode = $hasTerminalSession['TerminalCode'];
+                                                        $terminal= str_replace('ICSA-', '', $terminalCode);
+                                                        $terminal= str_replace('VIP', '', $terminal);
                                                         //$siteID = $terminals->getSiteIDByTerminalID($terminalID);
                                                     }
                                                     else
                                                     {
-                                                        $terminalID = '';
+                                                        $terminal = '';
                                                     }
 //
                                                         $tracking1 = $tracking;
-                                                        $tracking2 = 'W';
-                                                        $tracking3 = $mid;//MID;
-                                                        $tracking4 = $terminalID;//TerminalID;
+                                                        $tracking2 = $betSlip; // BetSlipID
+                                                        $tracking3 = $betRef; // BetRerference ID
+                                                        $tracking4 = $terminal; // Terminal Code
                                                         $locatorname = '';
 //                                                        $siteClassification = $sites->getSiteClassfication($siteID);
 //                                                        if ($serviceID == 20) { //RTG V15
@@ -627,9 +678,38 @@ class WsKapiController extends Controller {
 //                                                        }
 
                                                         // Call Withdraw API in RTG
+                                                $transSearchInfo = $casinoController->TransactionSearchInfo($serviceID, $serviceUsername, $tracking1, $tracking2, $tracking3, '');
+
+                                                if (isset($transSearchInfo['TransactionInfo'])) {
+                                                    //RTG / Magic Macau
+                                                    if (isset($transSearchInfo['TransactionInfo']['TrackingInfoTransactionSearchResult'])) {
+                                                        $initial_deposit = $transSearchInfo['TransactionInfo']['TrackingInfoTransactionSearchResult']['amount'];
+                                                        $apiresult = $transSearchInfo['TransactionInfo']['TrackingInfoTransactionSearchResult']['transactionStatus'];
+                                                        $transrefid = $transSearchInfo['TransactionInfo']['TrackingInfoTransactionSearchResult']['transactionID'];
+                                                    }
+                                                    //MG / Vibrant Vegas
+                                                    elseif (isset($transSearchInfo['TransactionInfo']['MG'])) {
+                                                        //$initial_deposit = $transSearchInfo['TransactionInfo']['MG']['Balance'];
+                                                        $transrefid = $transSearchInfo['TransactionInfo']['MG']['TransactionId'];
+                                                        $apiresult = $transSearchInfo['TransactionInfo']['MG']['TransactionStatus'];
+                                                    }
+                                                    //PT / PlayTech
+                                                    elseif (isset($transSearchInfo['TransactionInfo']['PT'])) {
+                                                        //$initial_deposit = $transSearchInfo['TransactionInfo']['PT']['']; //need to ask if reported amount will be passed from PT
+                                                        $transrefid = $transSearchInfo['TransactionInfo']['PT']['id'];
+                                                        $apiresult = $transSearchInfo['TransactionInfo']['PT']['status'];
+                                                    }
+                                                }
+                                                    if ($apiresult == 'TRANSACTIONSTATUS_APPROVED' || $apiresult == 'true' || $apiresult == 'approved') {
+                                                    $transSearchStatus = '1';
+                                                    } else {
+                                                    $transSearchStatus = '2';
+                                                    }
+                                                    if($transSearchStatus==2)
+                                                        {
                                                         $resultWithdraw = $casinoController->Withdraw($serviceID, $serviceUsername, $servicePassword, $amount, $tracking1, $tracking2, $tracking3, $tracking4, $locatorname);
                                                         if (is_null($resultWithdraw)) {
-                                                            $transSearchInfo = $casinoController->TransactionSearchInfo($serviceID, $serviceUsername, $tracking1, $tracking2, $tracking3, $tracking4);
+                                                            $transSearchInfo = $casinoController->TransactionSearchInfo($serviceID, $serviceUsername, $tracking1, $tracking2, $tracking3, '');
 
                                                             if (isset($transSearchInfo['TransactionInfo'])) {
                                                                 //RTG / Magic Macau
@@ -669,6 +749,13 @@ class WsKapiController extends Controller {
                                                                     $apiresult = $resultWithdraw['TransactionInfo']['PT']['TransactionStatus'];
                                                                 }
                                                             }
+                                                            else
+                                                            {
+                                                                if($resultWithdraw['ErrorCode']==62)
+                                                                    {
+                                                                    $apiresult= 'INVALID_LOGIN';
+                                                                    }
+                                                            }
                                                         }
 
                                                         if ($apiresult == 'TRANSACTIONSTATUS_APPROVED' || $apiresult == 'true' || $apiresult == 'approved') {
@@ -676,7 +763,7 @@ class WsKapiController extends Controller {
                                                         } else {
                                                             $transstatus = '2';
                                                         }
-
+                                                
                                                         if ($apiresult == "true" || $apiresult == 'TRANSACTIONSTATUS_APPROVED' || $apiresult == 'approved') {
                                                             if ($transstatus == 1) {
                                                                 $message = 'MSW Withdraw Transaction Successful';
@@ -686,8 +773,16 @@ class WsKapiController extends Controller {
                                                                 $this->_sendResponse(200, CommonController::withdrawMSW('', $transstatus, $message, 82));
                                                             }
                                                         } else {
+                                                            if ($resultWithdraw['ErrorCode']==62)
+                                                            {
+                                                             $message = 'Invalid Player Login Please try Again';
+                                                            $this->_sendResponse(200, CommonController::withdrawMSW('', $transstatus, $message, 62));    
+                                                            }
+                                                            else
+                                                            {
                                                             $message = 'MSW Withdraw Transaction Failed';
                                                             $this->_sendResponse(200, CommonController::withdrawMSW('', $transstatus, $message, 82));
+                                                            }
                                                         }
 //                                                    }
 //                                                    else
@@ -695,6 +790,10 @@ class WsKapiController extends Controller {
 //                                                        $message = "Terminal has no session for that account";
 //                                                        $this->_sendResponse(200, CommonController::withdrawMSW('', '', $message, 80));
 //                                                    }
+                                                }else{
+                                                  $message = 'MSW Withdraw Transaction Successful';
+                                                  $this->_sendResponse(200, CommonController::depositMSW($transrefid, $transSearchStatus, $message, 0));
+                                                }
                                                 }
                                             }
                                             else

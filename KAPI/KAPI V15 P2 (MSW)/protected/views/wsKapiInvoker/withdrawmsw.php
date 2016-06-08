@@ -24,6 +24,14 @@
             <?php echo CHtml::label('Tracking:','Tracking'); ?>
             <?php echo CHtml::textField('Tracking'); ?>
         </div>
+        <div class="row">
+            <?php echo CHtml::label('BetSlipID:','BetSlipID'); ?>
+            <?php echo CHtml::textField('BetSlipID'); ?>
+        </div>
+        <div class="row">
+            <?php echo CHtml::label('BetRefID:','BetRefID'); ?>
+            <?php echo CHtml::textField('BetRefID'); ?>
+        </div>
         <div class="row" style="margin-left: 225px;">
             <?php echo CHtml::submitButton('Invoke'); ?>
         </div>

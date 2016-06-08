@@ -62,6 +62,7 @@ class CasinoController
 
             if(!empty($login)){
                 $sessionID = $login['LoginResult'];
+                if ($sessionID >=0){
                 $methodID = Yii::app()->params->deposit_method_id;
                 $response = $rtgcashier->DepositGeneric($casinoID, $pid, $methodID, $amount, $tracking1, $tracking2, $tracking3, $tracking4, $sessionID, $skinID);
                 if ( !$rtgcashier->GetError() )
@@ -79,10 +80,14 @@ class CasinoController
                 {
                     return array( 'IsSucceed' => false, 'ErrorCode' => 51, 'ErrorMessage' => 'API Error: ' . $rtgcashier->GetError() );
                 }
+            }else{
+                 return array( 'IsSucceed' => false, 'ErrorCode' => 52, 'ErrorMessage' => 'Invalid Login' );
+            }
             }
             else{
                return 'Cant connect to RTG';
             }
+            
         }
         else{
             return 'Cant connect to RTG';
@@ -113,6 +118,7 @@ class CasinoController
             
             if(!empty($login)){
                 $sessionID = $login['LoginResult'];
+                if ($sessionID >=0){
                 $methodID = Yii::app()->params->withdrawal_method_id;
                 $response = $rtgcashier->WithdrawGeneric($casinoID, $PID, $methodID, $amount, $tracking1, $tracking2, $tracking3, $tracking4, $sessionID,$skinID);
 
@@ -133,6 +139,9 @@ class CasinoController
                 }
             }
             else{
+                 return array( 'IsSucceed' => false, 'ErrorCode' => 62, 'ErrorMessage' => 'Invalid Login' );
+            }
+            } else{
                 return 'Cant connect to RTG'; 
             }
         }
@@ -198,7 +207,7 @@ class CasinoController
         $url = Yii::app()->params->service_api[$serviceid-1];
         $certpath = Yii::app()->params->rtg_cert_dir.$serviceid.'/cert.pem';
         $keypath = Yii::app()->params->rtg_cert_dir.$serviceid.'/key.pem';
-        
+       
         $rtgcashier = new RealtimeGamingCashierAPI2($url, $certpath, $keypath, '');
         
         $PID = $this->GetPID($serviceid,$username);
@@ -206,8 +215,6 @@ class CasinoController
         if($PID != NULL){
             $TrackingInfoTransactionSearchResult = $rtgcashier->TrackingInfoTransactionSearch($PID, $tracking1, $tracking2, $tracking3, $tracking4);
 
-            if ( !$this->_API->GetError() )
-            {
                 if ( is_array( $TrackingInfoTransactionSearchResult ) )
                 {
                     return array( 'IsSucceed' => true, 'ErrorCode' => 0, 'ErrorMessage' => null, 'TransactionInfo' => $TrackingInfoTransactionSearchResult );
@@ -216,11 +223,6 @@ class CasinoController
                 {
                     return array( 'IsSucceed' => false, 'ErrorCode' => 40, 'ErrorMessage' => 'Response malformed' );
                 }
-            }
-            else
-            {
-                return array( 'IsSucceed' => false, 'ErrorCode' => 41, 'ErrorMessage' => 'API Error: ' . $this->_API->GetError() );
-            }
         }
         else{
             return 'Cant connect to RTG';

@@ -388,9 +388,10 @@ class TerminalSessionsModel {
      */
     public function checkIfHasTerminalSession2($MID, $serviceID)
     {
-        $sql = "SELECT TerminalID 
-                FROM terminalsessions 
-                WHERE MID = :mid 
+        $sql = "SELECT t.TerminalCode 
+                FROM terminalsessions ts
+		INNER JOIN terminals t ON t.TerminalID = ts.TerminalID
+                WHERE MID = :mid
                 AND ServiceID = :serviceID";
         $command = $this->_connection->createCommand($sql);
         $command->bindValue(":mid", $MID);

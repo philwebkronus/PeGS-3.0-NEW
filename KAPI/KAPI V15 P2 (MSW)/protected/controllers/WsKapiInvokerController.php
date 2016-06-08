@@ -111,24 +111,26 @@ class WsKapiInvokerController extends Controller{
         $this->pageTitle = 'KAPI - e-SAFE Deposit MSW';
         $result = '';
         
-        if(isset($_POST['MID']) && isset($_POST['ServiceID']) && isset($_POST['Amount']) && isset($_POST['Method']) && isset($_POST['Tracking'])){
+        if(isset($_POST['MID']) && isset($_POST['ServiceID']) && isset($_POST['Amount']) && isset($_POST['Method']) && isset($_POST['Tracking'])&& isset($_POST['BetSlipID'])&& isset($_POST['BetRefID'])){
             
             $mid = $_POST['MID'];
             $serviceID = $_POST['ServiceID'];
             $amount = $_POST['Amount'];
             $method = $_POST['Method'];
             $tracking = $_POST['Tracking'];
+            $betSlipID = $_POST['BetSlipID'];
+            $betRefID = $_POST['BetRefID'];
             
-            $result = $this->_depositMSW($mid, $serviceID, $amount, $method,$tracking);
+            $result = $this->_depositMSW($mid, $serviceID, $amount, $method,$tracking, $betSlipID, $betRefID);
         }
         
         $this->render('depositmsw', array('result'=>$result));
     }
     
-    private function _depositMSW($mid, $serviceID, $amount, $method,$tracking) {
+    private function _depositMSW($mid, $serviceID, $amount, $method,$tracking, $betSlipID, $betRefID) {
         $url = Yii::app()->params['deposit_msw'];
         
-        $postdata = CJSON::encode(array('MID'=>$mid, 'ServiceID' => $serviceID, 'Amount' => $amount, 'Method'=> $method, 'Tracking'=>$tracking));
+        $postdata = CJSON::encode(array('MID'=>$mid, 'ServiceID' => $serviceID, 'Amount' => $amount, 'Method'=> $method, 'Tracking'=>$tracking, 'BetSlipID'=>$betSlipID, 'BetRefID'=>$betRefID));
        
         $result = $this->SubmitData($url, $postdata);
 
@@ -141,23 +143,25 @@ class WsKapiInvokerController extends Controller{
         $this->pageTitle = 'KAPI - e-SAFE Withdraw MSW';
         $result = '';
         
-        if(isset($_POST['MID']) && isset($_POST['ServiceID']) && isset($_POST['Amount']) && isset($_POST['Amount']) && isset($_POST['Tracking'])){
+        if(isset($_POST['MID']) && isset($_POST['ServiceID']) && isset($_POST['Amount']) && isset($_POST['Amount']) && isset($_POST['Tracking'])&& isset($_POST['BetSlipID'])&& isset($_POST['BetRefID'])){
             
             $mid = $_POST['MID'];
             $serviceID = $_POST['ServiceID'];
             $amount = $_POST['Amount'];
             $method = $_POST['Method'];
             $tracking = $_POST['Tracking'];
-            $result = $this->_withdrawMSW($mid, $serviceID, $amount, $method, $tracking);
+            $betSlipID = $_POST['BetSlipID'];
+            $betRefID = $_POST['BetRefID'];
+            $result = $this->_withdrawMSW($mid, $serviceID, $amount, $method, $tracking,$betSlipID, $betRefID);
         }
         
         $this->render('withdrawmsw', array('result'=>$result));
     }
     
-    private function _withdrawMSW($mid, $serviceID, $amount, $method, $tracking) {
+    private function _withdrawMSW($mid, $serviceID, $amount, $method, $tracking,$betSlipID, $betRefID) {
         $url = Yii::app()->params['withdraw_msw'];
         
-        $postdata = CJSON::encode(array('MID'=>$mid, 'ServiceID' => $serviceID, 'Amount' => $amount, 'Method' => $method, 'Tracking'=>$tracking));
+        $postdata = CJSON::encode(array('MID'=>$mid, 'ServiceID' => $serviceID, 'Amount' => $amount, 'Method' => $method, 'Tracking'=>$tracking, 'BetSlipID'=>$betSlipID, 'BetRefID'=>$betRefID));
        
         $result = $this->SubmitData($url, $postdata);
 
