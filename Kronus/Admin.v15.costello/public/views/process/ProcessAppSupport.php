@@ -474,9 +474,11 @@ if ($connected && $connected2 && $connected3) {
                             $api_result = $pcwsWrapper->logoutLaunchPad($Pcws['forcelogoutgen'], $login, $serviceID);
                         } else {
                             $api_result = $pcwsWrapper->logoutLaunchPad($Pcws['forcelogout'], $login, $serviceID);
+                            $changepass=$pcwsWrapper->changePassword($Pcws['changepassword'], 1, $login, $serviceID, 0);
                         }
                     } else { //remove session
                         $api_result = $pcwsWrapper->removeSession($Pcws['removesession'], $terminal, $cardnumber);
+                        $changepass=$pcwsWrapper->changePassword($Pcws['changepassword'], 1, $login, $serviceID, 0);
                     }
                     foreach ($api_result as $result) {
                         if ($result['ErrorCode'] == 0) {

@@ -138,6 +138,24 @@ Class PcwsWrapper
 
         return json_decode($result[1], true);
     }
+    public function changePassword($url, $usermode, $login, $serviceID, $source) {
+        $postdata = json_encode(array('Usermode'=>$usermode, 
+            'Login' => $login, 
+            'ServiceID' => $serviceID,
+            'Source' => $source, 
+            'SystemUsername'=> $this->_username, 
+            'AccessDate'=>  $this->_accessdate, 
+            'Token'=> $this->_tkn));
+        
+        $logger = new CasinoLogger();
+        $methodname = "Change Password";
+        $message = "[$methodname] Input: ".print_r($postdata,true);     
+        $logger->logger($message, "Request", "", true);
+
+        $result = $this->curlApi($url, $postdata,$methodname,$logger);
+
+        return json_decode($result[1], true);
+    }
 }
 
 ?>
