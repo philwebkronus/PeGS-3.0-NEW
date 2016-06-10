@@ -465,7 +465,7 @@ class WsKapiController extends Controller {
                                                     if (isset($resultDeposit['TransactionInfo']['DepositGenericResult'])) {
                                                         $transrefid = $resultDeposit['TransactionInfo']['DepositGenericResult']['transactionID'];
                                                         $apiresult = $resultDeposit['TransactionInfo']['DepositGenericResult']['transactionStatus'];
-                                                        $apierrmsg = $resultDeposit['TransactionInfo']['DepositGenericResult']['errorMsg'];
+                                                        $apierrmsg = $resultDeposit['TransactionInfo']['DepositGenericResult']['ErrorMessage'];
                                                     }
                                                     //MG / Vibrant Vegas
                                                     else if (isset($resultDeposit['TransactionInfo']['MG'])) {
@@ -737,6 +737,7 @@ class WsKapiController extends Controller {
                                                                 if (isset($resultWithdraw['TransactionInfo']['WithdrawGenericResult'])) {
                                                                     $transrefid = $resultWithdraw['TransactionInfo']['WithdrawGenericResult']['transactionID'];
                                                                     $apiresult = $resultWithdraw['TransactionInfo']['WithdrawGenericResult']['transactionStatus'];
+                                                                    $apierrmsg = $resultDeposit['TransactionInfo']['WithdrawGenericResult']['ErrorMessage'];
                                                                 }
                                                                 //MG / Vibrant Vegas
                                                                 if (isset($resultWithdraw['TransactionInfo']['MG'])) {
