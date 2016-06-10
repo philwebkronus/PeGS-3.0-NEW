@@ -39,7 +39,7 @@
         <div class="row" id="newPinDiv" style="display: none">
             <?php echo CHtml::label('New PIN','newPinLabel'); ?>
             <?php echo CHtml::textField('NewPin'); ?>
-        </div>
+        </div>  
         
         <div class="row" style="margin-left: 225px;">
             <?php echo CHtml::submitButton('Invoke'); ?>
@@ -47,7 +47,7 @@
     
     <?php echo CHtml::endForm(); ?>
 </div>
-
+ 
 <script type="text/javascript">
 function changeMenu()
 {
@@ -56,6 +56,7 @@ function changeMenu()
        document.getElementById('currentPinDiv').style.display = "block";
        document.getElementById('newPinDiv').style.display = "block"; 
     }
+    
     else 
     {
         document.getElementById('currentPinDiv').style.display = "none";

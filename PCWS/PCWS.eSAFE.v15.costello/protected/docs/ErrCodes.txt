@@ -1,5 +1,5 @@
 ErrorCodes:
-0 - Transaction successful (all transaction) / valid / Ewallet loading successful / Ewallet withdraw successful
+0 - Transaction successful (all transaction) / valid / Ewallet loading successful / Ewallet withdraw successful / Terminal Password Successfully Changed.
 1 - Unauthorized Access.
 2 - Empty Sytem Username, Invalid Sytem Username, Empty DateTime
 3 - Expired Request/Request time out
@@ -10,8 +10,8 @@ ErrorCodes:
     Terminal Code must not be empty. / Can\'t get service information / Invalid terminal name. / Virtual Cashier is required. / Password is invalid./
     Pin is different from confirm pin. / Card must be active. / Checking of PIN is not allowed for Deactivated Card. / Checking of PIN is not allowed for Active Temporary Card. / 
     Checking of PIN is not allowed for New Migrated Card. / Checking of PIN is not allowed for Temporary Migrated Card. / Checking of PIN is not allowed for Banned Card. / 
-    Failed to End Session. Invalid Casino.
-5 - Card not found / Can\'t get card information / Card is invalid.
+    Failed to End Session. Invalid Casino. / Invalid Source.
+5 - Card not found / Can\'t get card information / Card is invalid. / Login or Card not found
 6 - Card does not have existing casino account
 7 - Insufficient site BCF
 8 - Can't connect to casino / Failed to deposit in casino backend / Failed to withdraw in casino backend / Failed to process comp points / Can't get balance / 
@@ -39,6 +39,12 @@ ErrorCodes:
 28 - Failed to convert to e-SAFE
 29 - Card must be white listed
 30 - Account is already e-SAFE
+31 - Only regular terminal is allowed.
+32 - TerminalCode must not be blank.
+33 - Only regular terminal is allowed.
+34 - Invalid Terminal Code. / Invalid Login or TerminalCode.
+35 - Can\'t get Terminal Status.
+36 - Change Terminal Password: No available site to get plain and encrypted password.
 
 
 Authentication:

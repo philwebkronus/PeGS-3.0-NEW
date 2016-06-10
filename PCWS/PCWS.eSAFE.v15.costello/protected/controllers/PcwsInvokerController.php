@@ -98,6 +98,8 @@ class PcwsInvokerController extends CController{
             $amount = $_POST['Amount'];
             $siteid = $_POST['SiteID'];
             $aid = $_POST['AID'];
+            $idchecked = isset($_POST['IDChecked']) ? $_POST['IDChecked'] : 0;
+            $csvalidated = isset($_POST['CSValidate']) ? $_POST['CSValidate'] : 0;
             $username = $_POST['SystemUsername'];
             $syscode = empty(Yii::app()->params['SystemCode'][$username])?'':Yii::app()->params['SystemCode'][$username];
             $accessdate = $_POST['AccessDate'];
@@ -108,16 +110,16 @@ class PcwsInvokerController extends CController{
             //$tkn = sha1($dt.$syscode);
 
             
-            $result = $this->_withdraw($serviceid, $cardnumber, $amount, $siteid, $aid, $username, $accessdate, $tkn);
+            $result = $this->_withdraw($serviceid, $cardnumber, $amount, $siteid, $aid, $username, $accessdate, $tkn , $idchecked, $csvalidated);
         }
         
         $this->render('withdraw', array('result'=>$result));
     }
     
-    private function _withdraw($serviceid, $cardnumber, $amount, $siteid, $aid, $username, $accessdate, $tkn){
+    private function _withdraw($serviceid, $cardnumber, $amount, $siteid, $aid, $username, $accessdate, $tkn, $idchecked, $csvalidated){
         $url = Yii::app()->params['withdraw'];
         
-        $postdata = CJSON::encode(array('ServiceID'=>$serviceid, 'CardNumber'=>$cardnumber, 'Amount'=>$amount, 'SiteID'=>$siteid, 'AID'=>$aid, 
+        $postdata = CJSON::encode(array('IDChecked'=> $idchecked , 'CSChecked' => $csvalidated, 'ServiceID'=>$serviceid, 'CardNumber'=>$cardnumber, 'Amount'=>$amount, 'SiteID'=>$siteid, 'AID'=>$aid, 
             'SystemUsername'=>$username, 'AccessDate'=>$accessdate, 'Token'=>$tkn));
        
         $result = $this->SubmitData($url, $postdata);
@@ -382,6 +384,7 @@ class PcwsInvokerController extends CController{
     }
     
     
+    
     private function SubmitData( $uri, $postdata)
     {
             $curl = curl_init( $uri );
@@ -605,5 +608,79 @@ class PcwsInvokerController extends CController{
 
         return $result[1];
     }
+     /**
+     * Added 06-01-2016
+     * Rica de Mesa
+     * 
+     */
+    public function actionChangePassword() {
+        $this->pageTitle = 'PCWS - Change Password';
+        $result = '';
+        
+        if(isset($_POST['Usermode']) && isset($_POST['Login']) && isset($_POST['ServiceID']) && isset($_POST['SystemUsername']) && isset($_POST['AccessDate']) && isset($_POST['Token']) && isset($_POST['Source'])){
+            $usermode = $_POST['Usermode'];
+            $login = $_POST['Login'];
+            $serviceid = $_POST['ServiceID'];
+            $source = $_POST['Source'];
+            $accessdate = $_POST['AccessDate'];
+            $username = $_POST['SystemUsername'];
+            $syscode = empty(Yii::app()->params['SystemCode'][$username])?'':Yii::app()->params['SystemCode'][$username];
+            //$accessdate = date('Y-m-d H:i:s');
+            $date1 = new DateTime($accessdate);
+            $dt = $date1->format('YmdHis');
+            $tkn = $_POST['Token'];
+
+            //$tkn = sha1($dt.$syscode);
+            
+            $result = $this->_changepassword( $usermode, $login, $serviceid, $username,$accessdate,$tkn  ,$source);
+            
+            
+        }
+        
+        $this->render('changepassword', array('result'=>$result));
+    }
+
+        private function _changepassword($usermode, $login, $serviceid, $username,$accessdate,$tkn  ,$source){
+        $url = Yii::app()->params['changepassword'];
+        
+        $postdata = CJSON::encode(array('Usermode'=>$usermode, 'Login'=>$login, 'ServiceID'=>$serviceid, 'SystemUsername'=>$username, 'AccessDate'=>$accessdate, 'Token'=>$tkn, 'Source'=>$source));
+        
+        $result = $this->SubmitData($url, $postdata);
+
+        return $result[1];
+    }
+
+    public function actionGetTerminalStatus() {
+        $this->pageTitle = 'PCWS - Get TerminalStatus';
+        $result = '';
+        if(isset($_POST['SystemUsername']) && isset($_POST['AccessDate']) && isset($_POST['Token']) && isset($_POST['TerminalCode'])){
+            $terminalcode = $_POST['TerminalCode'];
+            $username = $_POST['SystemUsername'];
+            $syscode = empty(Yii::app()->params['SystemCode'][$username])?'':Yii::app()->params['SystemCode'][$username];
+            $accessdate = $_POST['AccessDate'];
+            $date1 = new DateTime($accessdate);
+            $dt = $date1->format('YmdHis');
+            $tkn = $_POST['Token'];
+            
+            $result = $this->_getterminalstatus($terminalcode,$username,$accessdate,$tkn);
+        }
+        
+        $this->render('getterminalstatus', array('result'=>$result));
+    }
+    /*
+     * Added 06-01-2016
+     * John Aaron Vida
+     * 
+     */
+    private function _getterminalstatus($terminalcode,$username,$accessdate,$tkn){
+        $url = Yii::app()->params['getterminalstatus'];
+        
+        $postdata = CJSON::encode(array('SystemUsername'=>$username, 'AccessDate'=>$accessdate,'Token'=>$tkn,'TerminalCode'=>$terminalcode));
+       
+        $result = $this->SubmitData($url, $postdata);
+        
+        return $result[1];
+    }
+    
 }
 ?>

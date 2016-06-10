@@ -217,6 +217,22 @@ class CommonController {
     public function createsession($transMsg, $errCode){
         return CJSON::encode(array('CreateSession'=>(array('TransactionMessage'=>$transMsg, 'ErrorCode'=>(int)$errCode))));
     }
+    
+    public  function getterminalstatus($transMsg, $errCode, $terminalStatus ,$statusDesc){
+        return CJSON::encode(array('GetTerminalStatus'=>(array('TransactionMessage'=>$transMsg,'Status' => $terminalStatus, 
+            'StatusDescription' => $statusDesc, 'ErrorCode'=>(int)$errCode))));
+    }
+    /**
+     * Sends a json response
+     * @param String $username
+     * @param String $password
+     * @param String $transMsg
+     * @param int $errCode
+     * @return json response
+     */
+    public  function changepassword($transMsg, $errCode){
+        return CJSON::encode(array('ChangePassword'=>(array('TransactionMessage'=>$transMsg,'ErrorCode'=>(int)$errCode))));
+    }
 }
 
 ?>

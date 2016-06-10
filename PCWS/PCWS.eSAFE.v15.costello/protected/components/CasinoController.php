@@ -383,5 +383,41 @@ class CasinoController{
         
         return $result2;
     }
+    
+    public function changePassword($serviceid, $casinoID, $login, $oldpassword, $newpassword)
+    {
+        Yii::import('application.components.CasinoAPI.RealtimeGamingPlayerAPI');
+        
+        $url2 = Yii::app()->params->playerapi[$serviceid-1];
+        $certpath = Yii::app()->params->rtg_certkey_dir.$serviceid.'/cert.pem';
+        $keypath = Yii::app()->params->rtg_certkey_dir.$serviceid.'/key.pem';
+        $rtgplayer = new RealtimeGamingPlayerAPI($url2, $certpath, $keypath, '');
+            $result = $rtgplayer->changePlayerPassword($casinoID, $login, $oldpassword, $newpassword);
+        return $result;
+    }
+    
+    public function ResetPasswordMG( $loginName,$newPassword , $serviceid)
+    {    
+        
+        Yii::import('application.components.CasinoAPI.MicrogamingCAPI');
+ 
+        $URI = Yii::app()->params->playerapi[$serviceid-1];
+        //var_dump($serviceid-1);exit;
+        //$certpath = Yii::app()->params->rtg_certkey_dir.$serviceid.'/cert.pem';
+        //$keypath = Yii::app()->params->rtg_certkey_dir.$serviceid.'/key.pem';
+        
+        $authLogin = Yii::app()->params['mgcapi_username'];
+        $authPassword = Yii::app()->params['mgcapi_password'];
+        $playerName = Yii::app()->params['mgcapi_playername'];
+        
+        list($mgurl, $mgserverID) =  $URI;
+        $MG = new MicrogamingCAPI( $mgurl, $authLogin, $authPassword,$playerName, $mgserverID );
+        
+        //var_dump('ICSA-TSTID01',$newPassword);exit;
+        $CP = $MG->ResetPassword($loginName,$newPassword);
+        
+        return $CP;
+        
+    }
 }
 ?>

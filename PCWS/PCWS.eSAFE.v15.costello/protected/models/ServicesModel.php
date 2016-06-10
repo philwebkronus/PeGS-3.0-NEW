@@ -29,4 +29,16 @@ class ServicesModel extends CFormModel{
         return $result;
     }
     
+        public function getServiceGrpNameById($serviceid){
+        $sql = 'SELECT rsg.ServiceGroupName FROM ref_services rs
+                INNER JOIN ref_servicegroups rsg ON rs.ServiceGroupID = rsg.ServiceGroupID
+                WHERE rs.ServiceID = :serviceid';
+        $command = $this->connection->createCommand($sql);
+        $command->bindValue(":serviceid", $serviceid);
+        $result = $command->queryRow();
+        if(!isset($result['ServiceGroupName']))
+            return false;
+        return $result['ServiceGroupName'];
+    }
+    
 }

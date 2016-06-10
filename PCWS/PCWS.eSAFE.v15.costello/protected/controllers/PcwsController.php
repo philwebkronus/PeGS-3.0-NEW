@@ -159,8 +159,10 @@ class PcwsController extends Controller {
                                 } else {
                                     $transsumid = null;
                                 }
+                                $idchecked = 0;
+                                $csvalidated = 0;
 
-                                $tracking1 = $ewallet->insertEwallet($cardnumber, $siteid, $mid, $amount, $playablebalance, 'D', $serviceid, 1, $paymenttype, $aid, $transsumid, $tID, $tracenumber, $referencenumber, $paymentTrackingID, $couponCode);
+                                $tracking1 = $ewallet->insertEwallet($idchecked, $csvalidated, $cardnumber, $siteid, $mid, $amount, $playablebalance, 'D', $serviceid, 1, $paymenttype, $aid, $transsumid, $tID, $tracenumber, $referencenumber, $paymentTrackingID, $couponCode);
                                 $tracking2 = 'D';
                                 $tracking3 = $terminalid;
                                 $tracking4 = $siteid;
@@ -510,11 +512,11 @@ class PcwsController extends Controller {
         $this->_un = trim(trim($request['SystemUsername']));
         $this->_dt = trim(trim($request['AccessDate']));
         $this->_tkn = trim(trim($request['Token']));
-
+        
         $paramval = CJSON::encode($request);
         $message = "[GetBalance] Input: " . $paramval;
         CLoggerModified::log($message, CLoggerModified::REQUEST);
-
+        
         $isconnvalid = $this->_authenticate();
         if ($isconnvalid == 0) {
             $cardnumber = trim(trim($request['CardNumber']));          
@@ -673,6 +675,8 @@ class PcwsController extends Controller {
             $amount = trim(trim($request['Amount']));
             $siteid = trim(trim($request['SiteID']));
             $aid = trim(trim($request['AID']));
+            $idchecked = trim(trim($request['IDChecked']));
+            $csvalidated = trim(trim($request['CSChecked']));
 
             if (isset($serviceid) && $serviceid !== '' && isset($cardnumber) && $cardnumber !== '' && isset($amount) && $amount !== '' && isset($siteid) && $siteid !== '' && isset($aid) && $aid !== '') {
 
@@ -732,7 +736,7 @@ class PcwsController extends Controller {
                                     exit;
                                 }
 
-                                $tracking1 = $ewallet->insertEwallet($cardnumber, $siteid, $mid, $amount, $playablebalance, 'W', $serviceid, 1, 1, $aid, null, $terminalid, null, null);
+                                $tracking1 = $ewallet->insertEwallet($idchecked, $csvalidated, $cardnumber, $siteid, $mid, $amount, $playablebalance, 'W', $serviceid, 1, 1, $aid, null, $terminalid, null, null);
                                 $tracking2 = 'W';
                                 $tracking3 = $siteid;
                                 $tracking4 = $siteid;
@@ -1785,6 +1789,96 @@ class PcwsController extends Controller {
         CLoggerModified::log($message, CLoggerModified::RESPONSE);
         $this->_sendResponse(200, $data);
     }
+    
+    public function actionGetTerminalStatus() {
+        Yii::import('application.components.CasinoController');
+
+        $request = $this->_readJsonRequest();
+        $this->_un = trim(trim($request['SystemUsername']));
+        $this->_dt = trim(trim($request['AccessDate']));
+        $this->_tkn = trim(trim($request['Token']));
+
+        $paramval = CJSON::encode($request);
+        $message = "[GetTerminalStatus] Input: " . $paramval;
+        CLoggerModified::log($message, CLoggerModified::REQUEST);
+        
+        //Initialization of variablkes
+        $terminalStatus = '';
+        $statusDesc = '';
+        $errCode = '';
+        
+        $isconnvalid = $this->_authenticate();
+
+        if ($isconnvalid == 0) {
+            //Trim all white spaces
+            $terminalcode = strtoupper(trim(trim($request['TerminalCode'])));
+
+            if (isset($terminalcode) && $terminalcode !== '') {
+                $terminalsmodel = new TerminalsModel();
+
+                //Checking of Terminal Code
+                if (substr($terminalcode, -3) == 'VIP') {
+                    $transMsg = 'Only regular terminal is allowed.';
+                    $errCode = 33;
+                    $data = CommonController::getterminalstatus($transMsg, $errCode, $terminalStatus, $statusDesc);
+                } else {
+
+                    //Checking of Terminal Code
+                    if (substr($terminalcode, 0, 5) == 'ICSA-') {
+                        $terminalcode = substr($terminalcode, 5);
+                    }
+                    //Get Terminal ID
+                    $terminalInfo = $terminalsmodel->getTerminalID($terminalcode);
+                    $terminalID = $terminalInfo['TerminalID'];
+                    if ($terminalID) { // If TerminalID exists
+                        //Get Terminal Status
+                        $terminalStatus = $terminalsmodel->getTerminalStatus($terminalID);
+                        if ($terminalStatus <> '') {
+                            switch ($terminalStatus) {
+                                case 0: $statusDesc = 'Inactive or Deactivated'; break;
+                                case 1: $statusDesc = 'Active'; break;
+                            }
+
+                            $transMsg = 'Successful';
+                            $errCode = 0;
+                            $data = CommonController::getterminalstatus($transMsg, $errCode, $terminalStatus, $statusDesc);
+                        } else {
+                            $transMsg = 'Can\'t get Terminal Status.';
+                            $errCode = 35;
+                            $data = CommonController::getterminalstatus($transMsg, $errCode, $terminalStatus, $statusDesc);
+                        }
+                    } else {
+                        $transMsg = 'Invalid Terminal Code.';
+                        $errCode = 34;
+                        $data = CommonController::getterminalstatus($transMsg, $errCode, $terminalStatus, $statusDesc);
+                    }
+                }
+            } else {
+                $transMsg = 'TerminalCode must not be blank.';
+                $errCode = 32;
+                $data = CommonController::getterminalstatus($transMsg, $errCode, $terminalStatus, $statusDesc);
+            }
+        } else {
+            switch ($isconnvalid) {
+                case 1:
+                    $transMsg = 'Unauthorized Access! System does not have access right.';
+                    break;
+                case 2:
+                    $transMsg = 'Request time out.';
+                    break;
+                case 3:
+                    $transMsg = 'Incomplete or Invalid Request Data.';
+                    break;
+            }
+            $errCode = $isconnvalid;
+            $data = CommonController::getterminalstatus($transMsg, $errCode, $terminalStatus, $statusDesc);
+        }
+
+        $message = "[GetTerminalStatus] Token: " . $this->_tkn . ", Output: " . $data;
+        CLoggerModified::log($message, CLoggerModified::RESPONSE);
+
+        $this->_sendResponse(200, $data);
+    }
 
     private function _readJsonRequest() {
 
@@ -2367,7 +2461,7 @@ class PcwsController extends Controller {
         CLoggerModified::log($message, CLoggerModified::REQUEST);
 
         $isconnvalid = $this->_authenticate();
-
+        
         if ($isconnvalid == 0) {
             $terminals = new TerminalsModel();
             $terminalsessions = new TerminalSessionsModel();
@@ -3051,6 +3145,7 @@ class PcwsController extends Controller {
                 if (!$validate->isNullOrEmpty($serviceUsername)) {
 
                     if (ctype_alnum($serviceUsername)) {
+                          
                         $userMode = $services->getUserMode($serviceid);
                         if($userMode['UserMode']==1){
                         $casinoDetails = $terminalSessionsModel->getCasinoDetailsByUBServiceLogin($serviceUsername);
@@ -3094,12 +3189,15 @@ class PcwsController extends Controller {
                                                 if ($terminalType != 0) {
                                                     $transactionResult = $eWalletModel->forceLogout($mid, $terminalID, $serviceID, $cardNumber, $userMode, $transactionReferenceID, $amount, $transactionType, $siteID, $trackingID, $voucherCode, $paymentType, $serviceTransactionID, $AID, $transactionSummaryID, $withdrawal, $balance);
                                                     if ($transactionResult) {
+                                                       
                                                         //remove the EGM Session
                                                         $egmSessionsModel->removeEGMSession($EGMSessionID);
                                                         $eCode = 0;
                                                         $transMsg = 'Transaction successful, Terminal is now locked.';
-                                                        $casinocontroller->logout($serviceID, $serviceUsername);    
-                                                    
+                                                        $casinocontroller->logout($serviceID, $serviceUsername);
+                                                        $changepass = new PCWSAPI();
+                                                        $r = $changepass->ChangePassword(1, $serviceUsername, $serviceID, 3); 
+                                                        var_dump($r);exit;
                                                     } else {
                                                         $eCode = 19; //Failed to end session
                                                         $transMsg = 'Failed to end session';
@@ -3347,6 +3445,270 @@ class PcwsController extends Controller {
         }
 
         $message = "[EsafeConversion] Token: " . $this->_tkn . ", Output: " . $data;
+        CLoggerModified::log($message, CLoggerModified::RESPONSE);
+
+        $this->_sendResponse(200, $data);
+    }
+    
+    
+    
+    public function actionChangePassword() {
+        Yii::import('application.components.CasinoController');
+        
+        $request = $this->_readJsonRequest();
+        $this->_un = trim(trim($request['SystemUsername']));
+        $this->_dt = trim(trim($request['AccessDate']));
+        $this->_tkn = trim(trim($request['Token']));
+
+        $paramval = CJSON::encode($request);
+        $message = "[ChangePassword] Input: " . $paramval;
+        CLoggerModified::log($message, CLoggerModified::REQUEST);
+
+        $isconnvalid = $this->_authenticate();
+
+        if ($isconnvalid == 0) {
+            $usermode = trim(trim($request['Usermode']));
+            $login = trim(trim($request['Login']));
+            $serviceid = trim(trim($request['ServiceID']));
+            $source = trim(trim($request['Source']));
+            if (isset($usermode) && $usermode !== '' && isset($login) && $login !== '' && isset($serviceid) && $serviceid !== '' && isset($source) && $source !== ''
+            ) {
+                $memberservices = new MemberServicesModel();
+                $services = new ServicesModel();
+                $casinocontroller = new CasinoController();
+                $terminals = new TerminalsModel();
+                $auditTrailModel = new AuditTrailModel();
+                $genpasswordtbModel= new GeneratePasswordTBModel();
+                $genpasswordubModel= new GeneratePasswordUBModel();
+                $terminalservicesModel = new TerminalServices();
+                $vgenpwdid = 0;
+                $terminal = 'ICSA-'.$login;
+                if (strstr($login, "ICSA-"))
+                {
+                    $login1 = str_replace('ICSA-', '',$login );        
+                }
+                if (strstr($login, "VIP"))
+                {
+                    $login = str_replace('VIP', '',$login );        
+                }
+                if ($source ==0 || $source ==1 ||$source ==2 ||$source ==3){
+                $servicegroupname = $services->getServiceGrpNameById($serviceid);
+                $vprovidername = $servicegroupname;
+                if ($usermode==0){
+                                    $prefix = Yii::app()->params['prefix'];
+                                    $terminalcode = $prefix . $login;
+                                    $terminalid = $terminals->getTerminalID($login);
+                                    $terminalidvip = $terminals->getTerminalID($login.'VIP');                         
+                                    $siteid = $terminals->getSiteID($terminalid['TerminalID']);    
+                                    $rpwdbatch = $genpasswordtbModel->chkpwdbatch();
+                                    if ($rpwdbatch) {
+                                    $vgenpwdid = $rpwdbatch['GeneratedPasswordBatchID'];
+                                    }                                         
+                if ($vgenpwdid > 0) 
+                {                 
+                    if (strstr($vprovidername, "RTG")) 
+                    { 
+                                    if ($vprovidername=="RTG")
+                                    {
+                                        $servicegrpid = 1;
+                                    }
+                                    else
+                                    {
+                                        $servicegrpid = 4;
+                                    }
+                                    $vretrievepwd = $genpasswordtbModel->getgeneratedpassword($vgenpwdid, $servicegrpid);
+                                    $vgenpassword = $vretrievepwd['PlainPassword'];
+                                    $vgenhashed = $vretrievepwd['EncryptedPassword'];
+                                    $password = $vgenpassword;
+                                    $oldpassresult = $terminalservicesModel->getterminalpassword($terminalid['TerminalID'], $serviceid);
+                                    $oldpassresultvip = $terminalservicesModel->getterminalpassword($terminalidvip['TerminalID'], $serviceid);
+                                    if (isset($oldpassresult['ServicePassword']))
+                                    {
+                                        $oldpassword = $oldpassresult['ServicePassword'];
+                                        $oldpasswordvip = $oldpassresultvip['ServicePassword'];
+                                        $result = $casinocontroller->changePassword($serviceid, 1, $terminalcode, $oldpassword, $password);
+                                        $resultvip = $casinocontroller->changePassword($serviceid, 1, $terminalcode.'VIP', $oldpasswordvip, $password);
+                                        if ($result && $resultvip) 
+                                        {
+                                            $result4 = $terminalservicesModel->updateterminalpassword($password, $vgenhashed, $terminalid['TerminalID'],$terminalidvip['TerminalID'], $serviceid);
+                                            if ($result4 == 1) 
+                                            {
+                                                $result5 = $updbatchpwd = $genpasswordtbModel->updateGenPwdBatch($siteid['SiteID'], $vgenpwdid);
+                                                $Source = ';Source[' .$source. ']';
+                                                $transdetails = 'ChangePass' .' - '. $terminal .''. $Source;
+                                                $logtoAuditrail = $auditTrailModel->logEvent($transdetails,111);
+                                                if ($logtoAuditrail)
+                                                {
+                                                    $transMsg = 'Terminal Password Successfully Changed.';
+                                                    $errCode = 0;
+                                                    $data = CommonController::changepassword($transMsg, $errCode); 
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        $transMsg = 'Invalid Login or TerminalCode.';
+                                        $errCode = 34;
+                                        $data = CommonController::changepassword($transMsg, $errCode);                                               
+                                    }
+                         }      
+                elseif($vprovidername == "MG"){
+                        $vretrievepwd = $genpasswordtbModel->getgeneratedpassword($vgenpwdid, 2);
+                        $vgenpassword = $vretrievepwd['PlainPassword'];
+                        $vgenhashed = $vretrievepwd['EncryptedPassword'];
+                        $password = $vgenpassword;
+                        $changePassword = $casinocontroller->ResetPasswordMG($terminalcode, $vgenpassword, $serviceid);
+                        $changePasswordvip = $casinocontroller->ResetPasswordMG($terminalcode.'VIP', $vgenpassword, $serviceid);
+                         if ($changePassword && $changePasswordvip) {
+                                        $result4 = $terminalservicesModel->updateterminalpassword($password, $vgenhashed, $terminalid['TerminalID'],$terminalidvip['TerminalID'], $serviceid);
+                                        if ($result4 == 1) {
+                                            $result5 = $updbatchpwd = $genpasswordtbModel->updateGenPwdBatch($siteid['SiteID'], $vgenpwdid);
+                                            $Source = ';Source[' .$source. ']';
+                                            $transdetails = 'ChangePass' .' - '. $terminal .''. $Source;
+                                            $logtoAuditrail = $auditTrailModel->logEvent($transdetails,111);
+                                            if ($logtoAuditrail)
+                                            {
+                                                $transMsg = 'Terminal Password Successfully Changed.';
+                                                $errCode = 0;
+                                                 $data = CommonController::changepassword($transMsg, $errCode); 
+                                            }
+                                         }
+                                     } 
+                        }
+                else {
+                        $transMsg = 'Invalid Login.';
+                        $errCode = 4;
+                        $data = CommonController::changepassword($transMsg, $errCode);                                               
+                        }
+                }
+                else {
+                        $transMsg = 'Change Terminal Password: No available site to get plain and encrypted password.';
+                        $errCode = 36;
+                     }
+                }
+                elseif ($usermode==1){
+                $vprovidername = "RTG2";
+                                        $MID = $memberservices->getMIDbyLogin($login, $serviceid);
+                                        if($MID){
+                                        $genpassresult = $genpasswordubModel->getInactivePasswordBatchInfo();
+                                             if($genpassresult==false)
+                                                {   
+                                                                $transMsg = 'Error.';
+                                                                $errCode = 8; 
+                                                                $data = CommonController::changepassword($transMsg, $errCode);
+                                                                $apisuccess = 0;
+                                                                //Call API Change Password again to revert back to original password
+                                                                //$vapiResult = $casinocontroller->changePassword($serviceid, $userName, $newpassword, $password, $serviceID);
+                                                }
+                                        $genpassbatchid = $genpassresult['GeneratedPasswordBatchID'];
+                                        $newpassword = $genpassresult['PlainPassword'];
+                                        $hashednewpassword = $genpassresult['EncryptedPassword'];
+                                        $checkMS = $memberservices->CheckMemberService($MID['MID'], $serviceid);
+                                            if(!empty($checkMS))
+                                            {
+                                                $password = $checkMS['ServicePassword'];
+
+
+                                                if(isset($password))
+                                                {
+
+                                                    $vapiResult = $casinocontroller->changePassword($serviceid, 1, $login, $password, $newpassword); 
+                          
+                                                    if($vapiResult['changePlayerPWResult'][0] == 1)
+                                                     {
+                                                            $isMemberServicesUpdated = $memberservices->updateMemberServicesUBPassword($newpassword, 
+                                                            $hashednewpassword, $MID['MID'], $serviceid, $genpassbatchid);
+                                                           
+                                                            if($isMemberServicesUpdated)
+                                                            {
+                                                                $apisuccess = 1;  
+                                                                $transMsg = 'Password Successfully Changed';
+                                                                $errCode = 0;
+                                                                $Source = ';Source[' .$source. ']';
+                                                                $transdetails = 'ChangePass' .' - '. $login .''. $Source;
+                                                                $logtoAuditrail = $auditTrailModel->logEvent($transdetails,111);
+                                                                $data = CommonController::changepassword($transMsg, $errCode);
+                                                                
+                                                            }
+                                                            else
+                                                            {   
+                                                                $transMsg = 'Error.';
+                                                                $errCode = 8; 
+                                                                $data = CommonController::changepassword($transMsg, $errCode);
+                                                                $apisuccess = 0;
+                                                                //Call API Change Password again to revert back to original password
+                                                                //$vapiResult = $casinocontroller->changePassword($serviceid, $userName, $newpassword, $password, $serviceID);
+                                                            }
+                                                            
+                                                     }
+                                                     else
+                                                     {
+                                                        $apisuccess = 0;
+                                                     }
+                                                }
+                                                else
+                                                {
+                                                    $apisuccess = 0;
+                                                }
+                                            }
+                                            else
+                                            {
+
+                                                $apisuccess = 0;
+                                            }
+                                } else {
+                                    $transMsg = 'Login or Card not found';
+                                    $errCode = 5;
+                                    $data = CommonController::changepassword($transMsg, $errCode);
+                                        }                                               
+                            }
+                 else{
+                      $transMsg = 'Invalid Usermode.';
+                      $errCode = 12; 
+                      $data = CommonController::changepassword($transMsg, $errCode);
+                }
+                
+                 }
+                 else{
+                      $transMsg = 'Invalid Source.';
+                      $errCode = 4; 
+                      $data = CommonController::changepassword($transMsg, $errCode);
+                 }
+            } else {
+                $errCode = 4;
+                if (empty($source)) {
+                    $transMsg = 'Source must not be blank.';
+                }
+                if (empty($serviceid)) {
+                    $transMsg = 'ServiceID must not be blank.';
+                }
+                if (empty($login)) {
+                    $transMsg = 'Login must not be blank';
+                }
+                if (empty($usermode)) {
+                    $transMsg = 'Usermode must not be blank';
+                }
+
+                $data = CommonController::changepassword($transMsg, $errCode);
+            }
+        } else {
+            switch ($isconnvalid) {
+                case 1:
+                    $transMsg = 'Unauthorized Access! System does not have access right.';
+                    break;
+                case 2:
+                    $transMsg = 'Request time out.';
+                    break;
+                case 3:
+                    $transMsg = 'Incomplete/Invalid Request Data.';
+                    break;
+            }
+            $errCode = $isconnvalid;
+            $data = CommonController::authenticate($transMsg, $errCode);
+        }
+
+        $message = "[ChangePassword] Token: " . $this->_tkn . ", Output: " . $data;
         CLoggerModified::log($message, CLoggerModified::RESPONSE);
 
         $this->_sendResponse(200, $data);

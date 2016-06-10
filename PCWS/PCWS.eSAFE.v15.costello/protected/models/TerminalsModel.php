@@ -56,5 +56,15 @@ class TerminalsModel extends CFormModel
         
         return $result['TerminalType'];
     }
+    
+    public function getTerminalStatus($terminalID) {
+        $query = "SELECT Status FROM terminals 
+                  WHERE TerminalID = :terminal";
+        $command = $this->connection->createCommand($query);
+        $command->bindValue(":terminal", $terminalID);
+        $result = $command->queryRow();
+
+        return $result['Status'];
+    }
 }
 ?>
