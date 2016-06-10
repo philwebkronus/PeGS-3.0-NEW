@@ -15,6 +15,7 @@ include_once '../models/LPRefAllowedEwalletUser.php';
 include_once '../models/LPEGMSessions.php';
 include_once '../controllers/PcwsWrapper.php';
 require_once '../models/LPConfig.php';
+include_once '../models/LPRefServices.php';
 
 $function = $_POST["data"];
 $pin = "";
@@ -156,7 +157,6 @@ if(!empty($function)){
                 $oldPin = $_POST['oldP'];
                 $newPin = $_POST['newP'];
                 
-                
                 $APIresult = $_PCWS->changePin($cardNumber, $oldPin, $newPin);
                 $result = $APIresult['changePin']['ErrorCode'];
                 
@@ -231,7 +231,13 @@ if(!empty($function)){
               $ubServiceID = $_POST['UBServiceID'];
            
               $APIresult = $_PCWS->logoutLaunchPad($ubServiceLogin,$ubServiceID);
-              
+                            
+              //Checking for usermode
+              $usermode = LPRefServices::model()->checkUsermode($ubServiceID);
+              $source = "3";
+              //Every Logout will Change the Password
+              $_PCWS->changePassword($ubServiceLogin,$ubServiceID,$usermode['UserMode'],$source);
+                            
               $result = $APIresult['ForceLogout']['ErrorCode'];
                 
               break;

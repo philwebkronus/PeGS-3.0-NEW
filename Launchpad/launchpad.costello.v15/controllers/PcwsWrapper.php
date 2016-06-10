@@ -37,6 +37,7 @@ Class PcwsWrapper
      * Required variables to call PCWS API 
      */
     private $_uriForceLogout;
+    private $_uri_changePassword;
     private $_uri_changePin;
     private $_uri_startSession;
     private $_accessdate;
@@ -56,6 +57,7 @@ Class PcwsWrapper
         $this->_uri_changePin    = LPConfig::app()->params['uri_changePin'];
         $this->_uri_startSession = LPConfig::app()->params['uri_startSession'];
         $this->_uri_checkPin = LPConfig::app()->params['uri_checkPin'];
+        $this->_uri_changePassword = LPConfig::app()->params['uri_changePassword'];
         $this->_logpath = LPConfig::app()->params['logpath'];
     }
     
@@ -119,7 +121,7 @@ Class PcwsWrapper
     public function changePin($cardnumber,$oldPin,$newPin)
     {
         
-        $postdata = json_encode(array('CardNumber'=>$cardnumber,'CurrentPin'=>$oldPin,'NewPin'=>$newPin,'SystemUsername'=>  $this->_username, 'AccessDate'=>  $this->_accessdate, 
+        $postdata = json_encode(array('CardNumber'=>$cardnumber,'CurrentPin'=>$oldPin,'NewPin'=>$newPin, 'SystemUsername'=>  $this->_username, 'AccessDate'=>  $this->_accessdate, 
                                  'Token'=>  $this->_tkn,'ActionCode'=>1));
         
         $logger = new Logger($this->_logpath);
@@ -169,6 +171,27 @@ Class PcwsWrapper
         $logger->apirequestlog($message, "Request");
         
         $result = $this->curlApi($this->_uriForceLogout, $postdata,$methodname);
+        
+        return json_decode($result[1], true);
+    }
+    
+    public function changePassword($UBServiceLogin,$ubServiceID,$usermode,$source)
+    {
+        $postdata = json_encode(array('Login'=>$UBServiceLogin,
+            'ServiceID'=>$ubServiceID,
+            'Usermode'=>$usermode,
+            'Source'=>$source,
+            'SystemUsername'=> $this->_username, 
+            'AccessDate'=>  $this->_accessdate, 
+            'Token'=> $this->_tkn));
+        
+        $logger = new Logger($this->_logpath);
+        $methodname = "ChangePassword";
+        $data = print_r($postdata,true);
+        $message = "[$methodname] Input: $data";
+        $logger->apirequestlog($message, "Request");
+        
+        $result = $this->curlApi($this->_uri_changePassword, $postdata,$methodname);
         
         return json_decode($result[1], true);
     }

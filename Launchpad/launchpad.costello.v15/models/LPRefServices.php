@@ -35,6 +35,28 @@ class LPRefServices extends LPModel
             self::$_instance = new LPRefServices();
         return self::$_instance;
     }    
+    
+     /*
+     * Added 06-02-2016
+     * John Aaron Vida
+     */
+
+   public function checkUsermode($serviceID)
+   {
+       
+        $query = "SELECT UserMode FROM ref_services WHERE ServiceID = :serviceID";
+        
+        $rqst = $this->_pdoconn->prepare($query);
+        $rqst->bindParam(':serviceID',$serviceID);
+        $rqst->execute();
+        $result = $rqst->fetchAll(PDO::FETCH_ASSOC);
+        
+        if(!$result) {
+            $this->logerror("File: launchpad.models.LPEGMSessions, Message: Can't get Usermode");
+        }   
+        return $result[0]; 
+       
+   }
 
     
 }
