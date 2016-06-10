@@ -125,7 +125,7 @@ class PcwsController extends Controller {
                                 exit;
                             }
                         } else {
-                            $terminalid = null;
+                            $terminalid = '';
                             $tID = null;
                         }
 
