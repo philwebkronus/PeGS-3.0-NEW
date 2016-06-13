@@ -44,6 +44,16 @@
             <?php echo CHtml::textField('AID'); ?>
         </div>
     
+<!--        <div class="row">
+            <?php echo CHtml::label('IDChecked','lblIDChecked'); ?>
+            <?php echo CHtml::textField('IDChecked'); ?>
+        </div>
+    
+        <div class="row">
+            <?php echo CHtml::label('CSValidated','lblCSValidated'); ?>
+            <?php echo CHtml::textField('CSValidated'); ?>
+        </div>-->
+    
         <div class="row" style="margin-left: 225px;">
             <?php echo CHtml::submitButton('Invoke'); ?>
         </div>

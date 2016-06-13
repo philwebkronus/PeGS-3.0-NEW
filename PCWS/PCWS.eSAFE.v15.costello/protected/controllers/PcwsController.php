@@ -675,8 +675,8 @@ class PcwsController extends Controller {
             $amount = trim(trim($request['Amount']));
             $siteid = trim(trim($request['SiteID']));
             $aid = trim(trim($request['AID']));
-            $idchecked = trim(trim($request['IDChecked']));
-            $csvalidated = trim(trim($request['CSChecked']));
+//            $idchecked = trim(trim($request['IDChecked']));
+//            $csvalidated = trim(trim($request['CSChecked']));
 
             if (isset($serviceid) && $serviceid !== '' && isset($cardnumber) && $cardnumber !== '' && isset($amount) && $amount !== '' && isset($siteid) && $siteid !== '' && isset($aid) && $aid !== '') {
 
@@ -736,7 +736,8 @@ class PcwsController extends Controller {
                                     exit;
                                 }
 
-                                $tracking1 = $ewallet->insertEwallet($idchecked, $csvalidated, $cardnumber, $siteid, $mid, $amount, $playablebalance, 'W', $serviceid, 1, 1, $aid, null, $terminalid, null, null);
+                                //$tracking1 = $ewallet->insertEwallet($idchecked, $csvalidated, $cardnumber, $siteid, $mid, $amount, $playablebalance, 'W', $serviceid, 1, 1, $aid, null, $terminalid, null, null);
+                                $tracking1 = $ewallet->insertEwallet($cardnumber, $siteid, $mid, $amount, $playablebalance, 'W', $serviceid, 1, 1, $aid, null, $terminalid, null, null);
                                 $tracking2 = 'W';
                                 $tracking3 = $siteid;
                                 $tracking4 = $siteid;
@@ -3197,7 +3198,6 @@ class PcwsController extends Controller {
                                                         $casinocontroller->logout($serviceID, $serviceUsername);
                                                         $changepass = new PCWSAPI();
                                                         $r = $changepass->ChangePassword(1, $serviceUsername, $serviceID, 3); 
-                                                        var_dump($r);exit;
                                                     } else {
                                                         $eCode = 19; //Failed to end session
                                                         $transMsg = 'Failed to end session';

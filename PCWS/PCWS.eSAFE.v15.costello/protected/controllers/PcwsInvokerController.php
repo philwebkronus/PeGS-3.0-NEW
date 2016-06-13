@@ -98,8 +98,8 @@ class PcwsInvokerController extends CController{
             $amount = $_POST['Amount'];
             $siteid = $_POST['SiteID'];
             $aid = $_POST['AID'];
-            $idchecked = isset($_POST['IDChecked']) ? $_POST['IDChecked'] : 0;
-            $csvalidated = isset($_POST['CSValidate']) ? $_POST['CSValidate'] : 0;
+//            $idchecked = isset($_POST['IDChecked']) ? $_POST['IDChecked'] : 0;
+//            $csvalidated = isset($_POST['CSValidate']) ? $_POST['CSValidate'] : 0;
             $username = $_POST['SystemUsername'];
             $syscode = empty(Yii::app()->params['SystemCode'][$username])?'':Yii::app()->params['SystemCode'][$username];
             $accessdate = $_POST['AccessDate'];
@@ -110,16 +110,27 @@ class PcwsInvokerController extends CController{
             //$tkn = sha1($dt.$syscode);
 
             
-            $result = $this->_withdraw($serviceid, $cardnumber, $amount, $siteid, $aid, $username, $accessdate, $tkn , $idchecked, $csvalidated);
+//            $result = $this->_withdraw($serviceid, $cardnumber, $amount, $siteid, $aid, $username, $accessdate, $tkn , $idchecked, $csvalidated);
+            $result = $this->_withdraw($serviceid, $cardnumber, $amount, $siteid, $aid, $username, $accessdate, $tkn);
         }
         
         $this->render('withdraw', array('result'=>$result));
     }
     
-    private function _withdraw($serviceid, $cardnumber, $amount, $siteid, $aid, $username, $accessdate, $tkn, $idchecked, $csvalidated){
+//    private function _withdraw($serviceid, $cardnumber, $amount, $siteid, $aid, $username, $accessdate, $tkn, $idchecked, $csvalidated){
+//        $url = Yii::app()->params['withdraw'];
+//        
+//        $postdata = CJSON::encode(array('IDChecked'=> $idchecked , 'CSChecked' => $csvalidated, 'ServiceID'=>$serviceid, 'CardNumber'=>$cardnumber, 'Amount'=>$amount, 'SiteID'=>$siteid, 'AID'=>$aid, 
+//            'SystemUsername'=>$username, 'AccessDate'=>$accessdate, 'Token'=>$tkn));
+//       
+//        $result = $this->SubmitData($url, $postdata);
+//        
+//        return $result[1];
+//    }
+        private function _withdraw($serviceid, $cardnumber, $amount, $siteid, $aid, $username, $accessdate, $tkn){
         $url = Yii::app()->params['withdraw'];
         
-        $postdata = CJSON::encode(array('IDChecked'=> $idchecked , 'CSChecked' => $csvalidated, 'ServiceID'=>$serviceid, 'CardNumber'=>$cardnumber, 'Amount'=>$amount, 'SiteID'=>$siteid, 'AID'=>$aid, 
+        $postdata = CJSON::encode(array('ServiceID'=>$serviceid, 'CardNumber'=>$cardnumber, 'Amount'=>$amount, 'SiteID'=>$siteid, 'AID'=>$aid, 
             'SystemUsername'=>$username, 'AccessDate'=>$accessdate, 'Token'=>$tkn));
        
         $result = $this->SubmitData($url, $postdata);
