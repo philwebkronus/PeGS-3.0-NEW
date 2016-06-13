@@ -159,10 +159,11 @@ class PcwsController extends Controller {
                                 } else {
                                     $transsumid = null;
                                 }
-                                $idchecked = 0;
-                                $csvalidated = 0;
+//                                $idchecked = 0;
+//                                $csvalidated = 0;
 
-                                $tracking1 = $ewallet->insertEwallet($idchecked, $csvalidated, $cardnumber, $siteid, $mid, $amount, $playablebalance, 'D', $serviceid, 1, $paymenttype, $aid, $transsumid, $tID, $tracenumber, $referencenumber, $paymentTrackingID, $couponCode);
+                                //$tracking1 = $ewallet->insertEwallet($idchecked, $csvalidated, $cardnumber, $siteid, $mid, $amount, $playablebalance, 'D', $serviceid, 1, $paymenttype, $aid, $transsumid, $tID, $tracenumber, $referencenumber, $paymentTrackingID, $couponCode);
+                                $tracking1 = $ewallet->insertEwallet($cardnumber, $siteid, $mid, $amount, $playablebalance, 'D', $serviceid, 1, $paymenttype, $aid, $transsumid, $tID, $tracenumber, $referencenumber, $paymentTrackingID, $couponCode);
                                 $tracking2 = 'D';
                                 $tracking3 = $terminalid;
                                 $tracking4 = $siteid;
