@@ -49,7 +49,7 @@ class PCWSAPI{
     }
     
     
-    public function Withdraw($cardnumber, $serviceid, $amount, $siteid, $aid, $systemusername){
+    public function Withdraw($cardnumber, $serviceid, $amount, $siteid, $aid, $systemusername, $idchecked, $csvalidated){
         
         $url = Mirage::app()->param['pcwswithdraw'];
         
@@ -59,7 +59,7 @@ class PCWSAPI{
         $tkn = sha1($dt.$syscode);
         $amount = str_replace( ',', '', $amount );
         
-        $postdata = json_encode(array('ServiceID'=>$serviceid, 'CardNumber'=>$cardnumber, 'Amount'=>$amount, 'SiteID'=>$siteid, 'AID'=>$aid, 
+        $postdata = json_encode(array('IDChecked'=> $idchecked , 'CSChecked' => $csvalidated, 'ServiceID'=>$serviceid, 'CardNumber'=>$cardnumber, 'Amount'=>$amount, 'SiteID'=>$siteid, 'AID'=>$aid, 
             'SystemUsername'=>$systemusername, 'AccessDate'=>$accessdate, 'Token'=>$tkn));
        
         $methodname = "Withdraw";
@@ -179,6 +179,32 @@ class PCWSAPI{
         
         return $result;
     }
+      
+     /**
+     * Change Password API Call
+     * @author John Aaron Vida
+     * @date June 02, 2016
+     * 
+     */
+    public function ChangePassword($systemusername, $login, $serviceID, $usermode, $source) {
+        $url = Mirage::app()->param['pcwschangepassword']; 
+        
+        $syscode = empty(Mirage::app()->param['SystemCode'][$systemusername])?'':Mirage::app()->param['SystemCode'][$systemusername];
+        $accessdate = date('Y-m-d H:i:s');
+        $dt = date('YmdHis');
+        $tkn = sha1($dt.$syscode);
+        
+        $postdata = json_encode(array('Login'=>$login,'ServiceID'=>$serviceID, 'Usermode'=>$usermode,'Source'=>$source,
+            'SystemUsername'=>$systemusername, 'AccessDate'=>$accessdate, 'Token'=>$tkn));
+       
+        $methodname = "Change Password";
+        $data = print_r($postdata,true);
+        $message = "[$methodname] Input: $data";
+        logger($message, "Request", '', true);
+        $result = $this->SubmitData($url, $postdata,$methodname,$tkn);
+        
+        return $result;
+    } 
     
     private function SubmitData( $uri, $postdata,$methodname,$token)
     {

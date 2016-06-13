@@ -154,6 +154,15 @@ class CommonUBRedeem {
                 $udate = CasinoApiUB::udate('YmdHisu');
                 $amount = 0;
                 $isredeemed = 1;
+                
+                $systemusername = Mirage::app()->param['pcwssysusername'];
+                $source = "2";
+                if (strstr($casinoUsername, "ICSA-"))
+                {
+                  $casinoUsername = str_replace('ICSA-', '',$casinoUsername );        
+                }
+                $pcwsAPI->ChangePassword($systemusername, $casinoUsername, $service_id, $userMode, $source); 
+                
                 return array('message'=>'Info: Session has been ended.',
                             'trans_summary_id'=>0,'udate'=>$udate,'amount'=>$amount,'terminal_login'=>$terminal_name,
                             'terminal_name'=>$terminal_name,'trans_details_id'=>$isredeemed);
@@ -379,6 +388,14 @@ class CommonUBRedeem {
                     logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
                     CasinoApiUB::throwError($message);
                 }
+                
+                $systemusername = Mirage::app()->param['pcwssysusername'];
+                $source = "2";
+                if (strstr($casinoUsername, "ICSA-"))
+                {
+                  $casinoUsername = str_replace('ICSA-', '',$casinoUsername );        
+                }
+                $pcwsAPI->ChangePassword($systemusername, $casinoUsername, $service_id, $userMode, $source);
 
                 return array('message'=>'Info: Session has been ended.',
                             'trans_summary_id'=>$trans_summary_id,'udate'=>$udate,'amount'=>$amount,'terminal_login'=>$terminal_name,

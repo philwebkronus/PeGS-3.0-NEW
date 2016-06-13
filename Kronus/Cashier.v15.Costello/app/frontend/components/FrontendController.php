@@ -1228,6 +1228,9 @@ class FrontendController extends MI_Controller {
         $systemusername = Mirage::app()->param['pcwssysusername'];
         $service_id = Mirage::app()->param['UBCasinoServiceID'];
         
+        $idchecked = $_POST['idchecked'];
+        $csvalidate = $_POST['csvalidated'];
+        
         list($is_loyalty, $card_number,$loyalty, $casinos, $mid, $casinoarray_count, $isewallet,$statuscode) = 
                 $this->getCardInfo($loyaltycard, $this->site_id, 2);
         
@@ -1328,8 +1331,16 @@ class FrontendController extends MI_Controller {
                     $casinoIsVIP = $casinos[$ctr]['isVIP'];
                     $casinoUserMode = $casinos[$ctr]['UserMode'];                
         }
+        $minAmountWithdrawn = Mirage::app()->param['minAmountWithdrawn'];
+        $removeComma  = str_replace( ',', '', $amount);
+        $removeDot = str_replace( '.00', '', $removeComma );
+        $cleanAmount = $removeDot;
+        if($cleanAmount < $minAmountWithdrawn){
+            $idchecked = 0;
+            $csvalidate = 0;
+        }
         
-        $result = $pcws->Withdraw($loyaltycard, (string)$service_id, $amount, $this->site_id, $this->acc_id, $systemusername);
+        $result = $pcws->Withdraw($loyaltycard, (string)$service_id, $amount, $this->site_id, $this->acc_id, $systemusername, $idchecked, $csvalidate);
             
         if($result[0] == 200){
             $result = json_decode($result[1]);

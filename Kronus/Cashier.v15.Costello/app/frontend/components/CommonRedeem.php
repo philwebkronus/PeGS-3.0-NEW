@@ -28,7 +28,7 @@ class CommonRedeem {
      public function redeem($login_pwd, $terminal_id,$site_id,$bcf,$service_id,$amount, $paymentType,$acct_id,
             $loyalty_card, $mid = '', $userMode = '',$locatorname = '', $CPV = '') {
         
-        Mirage::loadComponents('CasinoApi');
+        Mirage::loadComponents(array('CasinoApi','PCWSAPI.class')); 
         Mirage::loadModels(array('TerminalsModel', 'EgmSessionsModel', 'CommonTransactionsModel','StackerSummaryModel',
                                  'PendingTerminalTransactionCountModel', 'AutoEmailLogsModel','RefServicesModel','SiteAccountsModel'));
         
@@ -41,6 +41,7 @@ class CommonRedeem {
         $autoemaillogs = new AutoEmailLogsModel();
         $refServicesModel = new RefServicesModel();
         $siteAccountsModel = new SiteAccountsModel();
+        $pcwsAPI = new PCWSAPI();
                 
         $terminalname = $terminalsModel->getTerminalName($terminal_id);
         
@@ -341,6 +342,13 @@ class CommonRedeem {
                        }
                     }
 
+                    $systemusername = Mirage::app()->param['pcwssysusername'];
+                    $source = 2;
+                    if (strstr($terminal_name, "ICSA-"))
+                    {
+                        $terminal_name = str_replace('ICSA-', '',$terminal_name );        
+                    }
+                    $pcwsAPI->ChangePassword($systemusername, $terminal_name, $service_id, $userMode, $source); 
                     
                     return array('message'=>'You have successfully redeemed the amount of PhP ' . toMoney($amount),
                         'trans_summary_id'=>$trans_summary_id,'udate'=>$udate,'amount'=>$amount,'terminal_login'=>$terminal_name,
