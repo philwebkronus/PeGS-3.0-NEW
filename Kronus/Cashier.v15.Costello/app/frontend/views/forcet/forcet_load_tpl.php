@@ -101,7 +101,7 @@
             <!--Added March 2016 @@ John Aaron Vida -->
             <input type="hidden" name="siteamountinfo" id="siteamountinfo" value="<?php echo $siteAmountInfo; ?>" />
             <!--Added June 13, 2016 @@ John Aaron Vida -->
-            <input type="hidden" name="iswithdraw" id="iswithdraw" value="0" /> 
+            <!--<input type="hidden" name="iswithdraw" id="iswithdraw" value="0" />--> 
             <table class="standalonetbl">
                 <tr>
 

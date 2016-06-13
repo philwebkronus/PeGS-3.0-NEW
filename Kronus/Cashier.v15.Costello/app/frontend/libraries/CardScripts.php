@@ -444,7 +444,7 @@ function identifyCard3()
                 var card_number = $('#ForceTFormModel_loyalty_card').val();
                 var data = 'card_number='+card_number+'&isreg=0'+'&siteid='+siteid;
                 var response = '';
-                var iswithdraw = $('#iswithdraw').val();
+//                var iswithdraw = $('#iswithdraw').val();
                 
                 //$('#btnLoad').attr('disabled','disabled'); //added 11-13-2015 10:30 AM
                 //$('#btnWithdraw2').attr('disabled','disabled'); //added 11-13-2015 10:30 AM
@@ -462,9 +462,9 @@ function identifyCard3()
                              var StatusValue = getStatusValue(json.CardInfo.StatusCode);
 
                             if(StatusValue == "Active" || StatusValue == "Active Temporary" || StatusValue == "New Migrated"){
-                                if(iswithdraw == 1){
-                                    document.getElementById('player_name').innerHTML = json.CardInfo.MemberName;
-                                }
+//                                if(iswithdraw == 1){
+//                                    document.getElementById('player_name').innerHTML = json.CardInfo.MemberName;
+//                                }
                                 response = "false";
                             } else if (StatusValue == 'Banned Card'){
                                     updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Card is BANNED.</label>' + 
