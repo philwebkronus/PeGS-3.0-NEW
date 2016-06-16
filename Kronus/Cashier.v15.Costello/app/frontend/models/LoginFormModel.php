@@ -531,12 +531,9 @@ class LoginFormModel extends MI_Model{
 //            $_SESSION[$k] = $v;
 //        }
 //    }
-    
+
     public function restoreHardwareInfoSession($hardware_info) {        
-            
-        if(!isset($_SESSION)) { 
            @session_start(); 
-        } 
         foreach($hardware_info as $k => $v) {
             $_SESSION[$k] = $v;
         }
