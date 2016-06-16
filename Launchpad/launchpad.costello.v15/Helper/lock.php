@@ -234,7 +234,7 @@ if(!empty($function)){
                             
               //Checking for usermode
               $usermode = LPRefServices::model()->checkUsermode($ubServiceID);
-              $source = "3";
+              $source = "2";
               //Every Logout will Change the Password
               $_PCWS->changePassword($ubServiceLogin,$ubServiceID,$usermode['UserMode'],$source);
                             
