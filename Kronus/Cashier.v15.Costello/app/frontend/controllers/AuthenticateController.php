@@ -53,16 +53,16 @@ class AuthenticateController extends MI_Controller{
      */
     public function storeMachineInfoAction() {
         if($this->isAjaxRequest() && $this->isPostRequest()) {
-            if($_POST['macid'] == '') {
+            if(isset($_POST['macid']) && $_POST['macid'] == '') {
                 header('HTTP/1.0 404 Not Found');
                 Mirage::app()->end();
             }
-            $_SESSION['scpuid'] = $_POST['cpuid'];
-            $_SESSION['scpuname'] = $_POST['cpuname'];
-            $_SESSION['sbiosid'] = $_POST['biosid'];
-            $_SESSION['smbid'] = $_POST['mbid'];
-            $_SESSION['sosid'] = $_POST['osid'];
-            $_SESSION['smacid'] = $_POST['macid'];
+            $_SESSION['scpuid'] = isset($_POST['cpuid']) ? $_POST['cpuid'] : '';
+            $_SESSION['scpuname'] = isset($_POST['cpuname']) ? $_POST['cpuname'] : '';
+            $_SESSION['sbiosid'] = isset($_POST['biosid']) ? $_POST['biosid'] : '';
+            $_SESSION['smbid'] = isset($_POST['mbid']) ? $_POST['mbid'] : '';
+            $_SESSION['sosid'] = isset($_POST['osid']) ? $_POST['osid'] : '';
+            $_SESSION['smacid'] = isset($_POST['macid']) ? $_POST['macid'] : '';
             $_SESSION['sipid'] = gethostbyaddr($_SERVER['REMOTE_ADDR']) ;
             $_SESSION['sguid'] = $this->_guid();
 //            $_SESSION['smachineid'] = sha1($_SESSION['sosid'].$_POST['oscaption'].$_POST['ossignature']);

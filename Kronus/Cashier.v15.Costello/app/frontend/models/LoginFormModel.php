@@ -351,10 +351,10 @@ class LoginFormModel extends MI_Model{
         $old_sessionid = session_id();
         session_regenerate_id();
         $new_sessionid = session_id();
-        $_SESSION['userid'] = $_SESSION['accID'];
-        $vusername = $_SESSION['uname'];
-        $aid =  $_SESSION['userid'];
-        $access = $_SESSION['acctype'];
+        $_SESSION['userid'] = isset($_SESSION['accID']) ? $_SESSION['accID'] : '';
+        $vusername = isset($_SESSION['uname']) ? $_SESSION['uname'] : '';
+        $aid =  isset($_SESSION['userid']) ? $_SESSION['userid'] : '';
+        $access = isset($_SESSION['acctype']) ? $_SESSION['acctype'] : '';
         $_SESSION['sessionID'] = $new_sessionid;
         $_SESSION['acctype'] = $access;
         $date = $this->getDate();
@@ -533,7 +533,10 @@ class LoginFormModel extends MI_Model{
 //    }
     
     public function restoreHardwareInfoSession($hardware_info) {        
-            @session_start();        
+            
+        if(!isset($_SESSION)) { 
+           @session_start(); 
+        } 
         foreach($hardware_info as $k => $v) {
             $_SESSION[$k] = $v;
         }

@@ -576,6 +576,15 @@ class ReportsController extends FrontendController{
                     $eWalletCashDeposits,$eWalletCouponDeposits,$eWalletTicketDeposits,$encashedtickets)=  $this->_getTransHistoryPerCashier($start_date, $end_date, $start, $limit,$tID,$transSummID,$IsTotal,$IsSales); 
             $coverage = 'Coverage ' . date('l , F d, Y ',strtotime($start_date)) . ' ' .Mirage::app()->param['cut_off'].' AM to ' . date('l , F d, Y ',strtotime($end_date)) . ' ' .Mirage::app()->param['cut_off'].' AM';
             $ticketlist = $this->getTicketListperCashier($start_date, $end_date, $this->acc_id);
+      
+            
+            $arrdata['TotalRegCash'] = 0;
+            $arrdata['TotalRegCash'] = 0;
+            $arrdata['TotalRegTicket'] = 0;
+            $arrdata['TotalRegTicket'] = 0;
+            $arrdata['TotalRegCoupon'] = 0;
+            $arrdata['TotalRegCoupon'] = 0;
+            $arrdata['TotalCashierRedemption'] = 0;     
             
             if(count($total_rows) > 0){
                 foreach($total_rows as $value){
@@ -1384,6 +1393,13 @@ class ReportsController extends FrontendController{
             $encashedtickets = $transactionSummaryModel->getEncashedTickets($startdate, $enddate, $this->site_id);
             $esafeloads = $eWalletTransModel->geteSAFELoadsAndWithdrawals($startdate, $enddate, $this->site_id);
             $manualredemptions = $this->getmanualRedemptions($startdate, $enddate);
+            
+            $transdetails['LoadCash'] = 0;
+            $transdetails['LoadCoupon'] = 0;
+            $transdetails['LoadBancnet'] = 0;
+            $transdetails['LoadTicket'] = 0;
+            $transdetails['WCash'] = 0;
+            $transdetails['WTicket'] = 0;
 
             $transdetails['LoadCash'] += (float)$esafeloads['eSAFELoadCash'];
             $transdetails['LoadCoupon'] += (float)$esafeloads['eSAFELoadCoupon'];

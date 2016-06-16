@@ -1061,6 +1061,13 @@ class FrontendController extends MI_Controller {
         $terminalName = $terminalsmodel->getTerminalName($startSessionFormModel->terminal_id);
         
         if($ref_service['UserMode'] != 2){
+             $casinoUsername = '';
+             $casinoPassword ='';
+             $casinoHashedPwd ='';
+             $mid = '';
+             $loyaltyCardNo = '';
+             $casinoUserMode = '';
+             $casinoServiceID = '';
             foreach ($casinoUBDetails as $val){
                 $casinoUsername = $val['UBServiceLogin'];
                 $casinoPassword = $val['UBServicePassword'];
@@ -1222,9 +1229,9 @@ class FrontendController extends MI_Controller {
         $terminalSessionsModel = new TerminalSessionsModel();
         $pcws = new PCWSAPI();
 
-        $loyaltycard = $_POST['cardnumber'];
-        $pin = $_POST['pin'];
-        $amount = $_POST['amount'];
+        $loyaltycard = isset($_POST['cardnumber']) ? $_POST['cardnumber'] : '';
+        $pin = isset($_POST['pin']) ? $_POST['pin'] : '';
+        $amount = isset($_POST['amount']) ? $_POST['amount'] : '';
         $systemusername = Mirage::app()->param['pcwssysusername'];
         $service_id = Mirage::app()->param['UBCasinoServiceID'];
         
@@ -1306,6 +1313,8 @@ class FrontendController extends MI_Controller {
         $casinoHashedPassword = '';
         $casinoServiceID = '';
         $casinoStatus = '';
+        $casinoIsVIP = '';
+        $casinoUserMode = '';        
 
         $casinos = $this->loopAndFindCasinoService($casinos, 'ServiceID', $service_id);
 
@@ -1353,6 +1362,7 @@ class FrontendController extends MI_Controller {
 
             }
             else{
+                $message = 'Error: Withdraw Transaction Failed';
                 $result = array('message'=>$result);
                 logger($message);
             }  
@@ -1511,7 +1521,14 @@ class FrontendController extends MI_Controller {
         $casinos = $this->loopAndFindCasinoService($casinos, 'ServiceID', $service_id);
 
             $casinoarray_count = count($casinos);
-
+            
+                        $casinoUsername = '';
+                        $casinoPassword = '';
+                        $casinoHashedPassword = '';
+                        $casinoServiceID = '';
+                        $casinoStatus = '';
+                        $casinoIsVIP = '';
+            
             for($ctr = 0; $ctr < $casinoarray_count; $ctr++)
             {
                     if($service_id == $casinos[$ctr]['ServiceID'] ){
@@ -2508,7 +2525,7 @@ class FrontendController extends MI_Controller {
         $terminalSessionsModel = new TerminalSessionsModel();
         
         $site_id = $this->site_id;
-        $terminal_id = $_POST['StartSessionFormModel']['terminal_id'];
+        $terminal_id = isset($_POST['StartSessionFormModel']['terminal_id']) ? $_POST['StartSessionFormModel']['terminal_id'] : '';
         //$last_trans_summary_id = $transactionSummaryModel->getLastTransSummaryId($terminal_id,$this->site_id);
         
         $service_id = $terminalSessionsModel->getServiceId($terminal_id);
@@ -2516,7 +2533,14 @@ class FrontendController extends MI_Controller {
         $last_trans_summary_id = $terminalSessionsModel->getLastSessSummaryID($terminal_id);
         
         $casinoUBDetails = $terminalSessionsModel->getLastSessionDetails($terminal_id);
-       
+        
+            $casinoUsername = '';
+            $casinoPassword ='';
+            $mid = '';
+            $loyaltyCardNo = '';
+            $casinoUserMode = '';
+            $casinoServiceID = '';
+        
         foreach ($casinoUBDetails as $val){
             $casinoUsername = $val['UBServiceLogin'];
             $casinoPassword = $val['UBServicePassword'];
@@ -2806,7 +2830,7 @@ class FrontendController extends MI_Controller {
         
         $casinoApi = new CasinoApi();
         
-        $loyaltycard = $_POST['loyalty_card'];
+        $loyaltycard = isset($_POST['loyalty_card']) ? $_POST['loyalty_card'] : '';
         
         list($is_loyalty, $card_number,$loyalty, $casinos, $mid, $casinoarray_count) = 
                 $this->getCardInfo($loyaltycard, $this->site_id, 2);
@@ -2874,7 +2898,7 @@ class FrontendController extends MI_Controller {
         $casinoApi = new CasinoApi();
         $site_id = $this->site_id;
         $aid = $this->acc_id;
-        $loyaltycard = $_POST['loyalty_card'];
+        $loyaltycard = isset($_POST['loyalty_card']) ? $_POST['loyalty_card'] : '';
         
         list($is_loyalty, $card_number,$loyalty, $casinos, $mid, $casinoarray_count) = 
                 $this->getCardInfo($loyaltycard, $site_id, 2);

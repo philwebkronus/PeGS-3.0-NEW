@@ -80,6 +80,13 @@ class ForceTController extends FrontendController {
             
                 $casinoUBDetails = $terminalSessionsModel->getLastSessionDetails($_POST['terminal_id']);
 
+                    $casinoUsername = '';
+                    $casinoPassword = '';
+                    $mid = '';
+                    $loyaltyCardNo = '';
+                    $casinoUserMode = '';
+                    $casinoServiceID = '';
+                    
                 foreach ($casinoUBDetails as $val){
                     $casinoUsername = $val['UBServiceLogin'];
                     $casinoPassword = $val['UBServicePassword'];
@@ -100,12 +107,19 @@ class ForceTController extends FrontendController {
                     'terminal_session_data'=>$terminal_session_data,'terminal_balance'=>toMoney($terminal_balance));
             } else {
                 $serviceid = Mirage::app()->param['UBCasinoServiceID'];
-                $terminal_id = $terminalSessionsModel->checkeSAFECardSession($_POST['cardnumber'],$serviceid);
+                $terminal_id = $terminalSessionsModel->checkeSAFECardSession(isset($_POST['cardnumber']) ? $_POST['cardnumber'] : '',$serviceid);
                 
                 if(!empty($terminal_id)){
                     $terminal_session_data = $terminalSessionsModel->getDataById($terminal_id);
                     $casinoUBDetails = $terminalSessionsModel->getLastSessionDetails($terminal_id);
 
+                        $casinoUsername = '';
+                        $casinoPassword ='';
+                        $mid = '';
+                        $loyaltyCardNo = '';
+                        $casinoUserMode = '';
+                        $casinoServiceID = '';
+                        
                     foreach ($casinoUBDetails as $val){
                         $casinoUsername = $val['UBServiceLogin'];
                         $casinoPassword = $val['UBServicePassword'];

@@ -16,7 +16,6 @@ class ReloadSessionController extends FrontendController{
         
         $terminalsModel = new TerminalsModel();
         $terminals = $terminalsModel->getAllActiveTerminals($this->site_id, $this->len);
-        $siteAmountInfo = $sitesModel->getSiteAmountInfo($this->site_id);
 
         if(isset($_POST['StartSessionFormModel']) && $this->isAjaxRequest()) {
             
@@ -30,6 +29,8 @@ class ReloadSessionController extends FrontendController{
                 $service_id = $terminal_session_data['ServiceID'];
                 $this->_reload($startSessionFormModel,$service_id);
         }
+        
+        $siteAmountInfo = $sitesModel->getSiteAmountInfo($this->site_id);
         $this->render('reloadsession_overview',array('startSessionFormModel'=>$startSessionFormModel,
             'terminals'=>$terminals, 'siteAmountInfo' => $siteAmountInfo));
     }
