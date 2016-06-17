@@ -159,11 +159,15 @@ class PcwsController extends Controller {
                                 } else {
                                     $transsumid = null;
                                 }
-//                                $idchecked = 0;
-//                                $csvalidated = 0;
+                                /*
+                                 * Added By John Aaron Vida
+                                 * June 17, 2016
+                                 */
+                                $idchecked = 0;
+                                $csvalidated = 0;
 
-                                //$tracking1 = $ewallet->insertEwallet($idchecked, $csvalidated, $cardnumber, $siteid, $mid, $amount, $playablebalance, 'D', $serviceid, 1, $paymenttype, $aid, $transsumid, $tID, $tracenumber, $referencenumber, $paymentTrackingID, $couponCode);
-                                $tracking1 = $ewallet->insertEwallet($cardnumber, $siteid, $mid, $amount, $playablebalance, 'D', $serviceid, 1, $paymenttype, $aid, $transsumid, $tID, $tracenumber, $referencenumber, $paymentTrackingID, $couponCode);
+                                $tracking1 = $ewallet->insertEwallet($idchecked, $csvalidated, $cardnumber, $siteid, $mid, $amount, $playablebalance, 'D', $serviceid, 1, $paymenttype, $aid, $transsumid, $tID, $tracenumber, $referencenumber, $paymentTrackingID, $couponCode);
+//                                $tracking1 = $ewallet->insertEwallet($cardnumber, $siteid, $mid, $amount, $playablebalance, 'D', $serviceid, 1, $paymenttype, $aid, $transsumid, $tID, $tracenumber, $referencenumber, $paymentTrackingID, $couponCode);
                                 $tracking2 = 'D';
                                 $tracking3 = $terminalid;
                                 $tracking4 = $siteid;
@@ -676,8 +680,12 @@ class PcwsController extends Controller {
             $amount = trim(trim($request['Amount']));
             $siteid = trim(trim($request['SiteID']));
             $aid = trim(trim($request['AID']));
-//            $idchecked = trim(trim($request['IDChecked']));
-//            $csvalidated = trim(trim($request['CSChecked']));
+            /*
+             * Added By John Aaron Vida
+             * June 17, 2016
+             */
+            $idchecked = trim(trim($request['IDChecked']));
+            $csvalidated = trim(trim($request['CSChecked']));
 
             if (isset($serviceid) && $serviceid !== '' && isset($cardnumber) && $cardnumber !== '' && isset($amount) && $amount !== '' && isset($siteid) && $siteid !== '' && isset($aid) && $aid !== '') {
 
@@ -737,8 +745,8 @@ class PcwsController extends Controller {
                                     exit;
                                 }
 
-                                //$tracking1 = $ewallet->insertEwallet($idchecked, $csvalidated, $cardnumber, $siteid, $mid, $amount, $playablebalance, 'W', $serviceid, 1, 1, $aid, null, $terminalid, null, null);
-                                $tracking1 = $ewallet->insertEwallet($cardnumber, $siteid, $mid, $amount, $playablebalance, 'W', $serviceid, 1, 1, $aid, null, $terminalid, null, null);
+                                $tracking1 = $ewallet->insertEwallet($idchecked, $csvalidated, $cardnumber, $siteid, $mid, $amount, $playablebalance, 'W', $serviceid, 1, 1, $aid, null, $terminalid, null, null);
+//                                $tracking1 = $ewallet->insertEwallet($cardnumber, $siteid, $mid, $amount, $playablebalance, 'W', $serviceid, 1, 1, $aid, null, $terminalid, null, null);
                                 $tracking2 = 'W';
                                 $tracking3 = $siteid;
                                 $tracking4 = $siteid;
@@ -2280,6 +2288,7 @@ class PcwsController extends Controller {
                         $userMode = $services->getUserMode($serviceid);
                         if($userMode['UserMode']==1){
                         $casinoDetails = $terminalSessionsModel->getCasinoDetailsByUBServiceLogin($serviceUsername);
+                        $transactionSummaryID = 0;
                         if ($casinoDetails) {
                            if($casinoDetails['ServiceID']==$serviceid){
                             $terminalID = $casinoDetails['TerminalID'];
@@ -2373,7 +2382,7 @@ class PcwsController extends Controller {
                 
                 /*esafebigwinnings*/                                            
                 $autoemailamnt = Yii::app()->params->autoemailwinnings;
-
+                if($transactionSummaryID!=0){
                 $trans = $autoemailModel->getValues($transactionSummaryID,$serviceid);
                 $vstartbal = $trans['StartBalance'];
                 $vendbal = $trans['EndBalance'];
@@ -2394,7 +2403,7 @@ class PcwsController extends Controller {
                                 $sitename,$terminalcode, $POS, $cardNumber, $accname,$servicename, $transactionSummaryID,
                                 $timein, $timeout,$transdatetime);
                     }
-              
+                }
                 } else {
                 $eCode = 4; //Incomplete data
                 if (empty($data['SystemUsername'])) {
@@ -3151,6 +3160,7 @@ class PcwsController extends Controller {
                         $userMode = $services->getUserMode($serviceid);
                         if($userMode['UserMode']==1){
                         $casinoDetails = $terminalSessionsModel->getCasinoDetailsByUBServiceLogin($serviceUsername);
+                        //$transactionSummaryID = 0;
                         if (!empty($casinoDetails) && isset($casinoDetails['TerminalID'])  && isset($casinoDetails['LoyaltyCardNumber']) && isset($casinoDetails['MID']) && isset($casinoDetails['TransactionSummaryID']) && isset($casinoDetails['UserMode'])) {
                             if($casinoDetails['ServiceID']==$serviceid){
                             $serviceID=$casinoDetails['ServiceID'];
@@ -3253,7 +3263,7 @@ class PcwsController extends Controller {
                 
                 /*esafebigwinnings*/
                 $autoemailamnt = Yii::app()->params->autoemailwinnings;
-                                                    
+                //if($transactionSummaryID!=0){                                    
                 $trans = $autoemailModel->getValues($transactionSummaryID,$serviceID);                    
                 $vstartbal = $trans['StartBalance'];
                 $vendbal = $trans['EndBalance'];
@@ -3274,7 +3284,7 @@ class PcwsController extends Controller {
                                          0 ,$vnetwin, $sitename,$terminalcode, $POS, $cardNumber, $accname, 
                                          $servicename, $transactionSummaryID,$timein, $timeout,$transdatetime);
                     }
-
+                //  }
                 } else {
                 $eCode = 4; //Incomplete data
                 
