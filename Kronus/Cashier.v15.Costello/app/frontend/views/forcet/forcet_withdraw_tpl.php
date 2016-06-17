@@ -13,7 +13,7 @@
     <!--Added March 2016 @@ John Aaron Vida -->
     <input type="hidden" name="siteamountinfo" id="siteamountinfo" value="<?php echo $siteAmountInfo; ?>" />
     <!--Added June 13, 2016 @@ John Aaron Vida -->
-    <!--<input type="hidden" name="iswithdraw" id="iswithdraw" value="1" />-->
+    <input type="hidden" name="iswithdraw" id="iswithdraw" value="1" />
     <tr>
         <th><?php echo MI_HTML::label($FTModel, 'loyalty_card', 'Membership Card') ?></th>
         <td><?php echo MI_HTML::inputPassword($FTModel, 'loyalty_card') ?></td>
@@ -25,12 +25,12 @@
         <td id="cur_playing_bal_ub"></td>
     </tr>
 
-<!--    <tr>
+    <tr>
         <th>Amount to be withdrawn </th>
         <td><?php echo MI_HTML::inputText($FTModel, 'amount', array('class' => 'auto', 'maxlength' => 10, 'value' => '0.00')) ?></td>
-    </tr>-->
+    </tr>
 
-<!--    <tr id="row_player_name">
+    <tr id="row_player_name">
         <th>Player Name</th>
         <td id="player_name"></td>
     </tr>
@@ -43,7 +43,7 @@
     <tr id="row_cs_validated">
         <th>Customer Service Validation </th>
         <td><input type="checkbox" name="cs_validated" id="cs_validated" /></td>
-    </tr>-->
+    </tr>
 
     <tr>
         <th><?php echo MI_HTML::label($FTModel, 'pin', 'PIN :') ?></th>
@@ -51,16 +51,10 @@
     </tr>
 
     <tr>
-        <th>Amount to be withdrawn </th>
-        <td><?php echo MI_HTML::inputText($FTModel, 'amount', array('class' => 'auto', 'maxlength' => 10, 'value' => '0.00')) ?></td>
-    </tr>
-    <tr>
         <td><input type="button" value="Withdraw" id="btnWithdraw2"/></td>
     </tr>                
 </table>
-<!--<input type="hidden" id="getAmount"/>-->
-
-
+<input type="hidden" id="getAmount"/>
 
 <script type="text/javascript">
     function CommaFormatted(num)
@@ -83,12 +77,12 @@
          * Added June 13, 2016
          * John Aaron Vida
          */
-//        var minAmount = '<?php echo Mirage::app()->param['minAmountWithdrawn'] ?>';
-//        $('#row_cs_validated').hide();
-//        $('#row_id_checked').hide();
-//        $('#row_player_name').hide();
-//        $('#ForceTFormModel_pin').attr('disabled', 'disabled');
-//        $('#btnWithdraw2').attr('disabled', 'disabled');
+        var minAmount = '<?php echo Mirage::app()->param['minAmountWithdrawn'] ?>';
+        $('#row_cs_validated').hide();
+        $('#row_id_checked').hide();
+        $('#row_player_name').hide();
+        $('#ForceTFormModel_pin').attr('disabled', 'disabled');
+        $('#btnWithdraw2').attr('disabled', 'disabled');
 
         if ($('#siteamountinfo').val() == 0) {
             showLightbox(function() {
@@ -106,169 +100,221 @@
          * John Aaron Vida
          */
 
-//        $("#ForceTFormModel_pin").keydown(function(e) {
-//            // Allow: backspace, delete, tab, escape, enter and .
-//            if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110]) !== -1 ||
-//                    // Allow: Ctrl+A
-//                            (e.keyCode == 65 && e.ctrlKey === true) ||
-//                            // Allow: Ctrl+C
-//                                    (e.keyCode == 67 && e.ctrlKey === true) ||
-//                                    // Allow: Ctrl+X
-//                                            (e.keyCode == 88 && e.ctrlKey === true) ||
-//                                            // Allow: home, end, left, right
-//                                                    (e.keyCode >= 35 && e.keyCode <= 39)) {
-//                                        // let it happen, don't do anything
-//                                        return;
-//                                    }
-//                                    // Ensure that it is a number and stop the keypress
-//                                    if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
-//                                        e.preventDefault();
-//                                    }
-//                                });
-//                        /*
-//                         * Added June 13, 2016
-//                         * John Aaron Vida
-//                         */
-//
-//                        $("#ForceTFormModel_amount").keydown(function() {
-//                            var amount = $("#ForceTFormModel_amount").val();
-//                            var convAmount = Number(amount.replace(/[^0-9\.]+/g, ""));
-//                            var getAmount = $("#getAmount").val();
-//                            var playingBal = parseFloat(getAmount.replace(/,/g, ''));
-//
-//                            if (playingBal < convAmount) {
-//                                $('#row_cs_validated').hide();
-//                                $('#row_id_checked').hide();
-//                                $('#row_player_name').hide();
-//                            }
-//                            else if (convAmount >= minAmount && playingBal >= convAmount) {
-//
-//                                $('#row_cs_validated').show();
-//                                $('#row_id_checked').show();
-//                                $('#row_player_name').show();
-//                            }
-//                            else {
-//                                $('#row_cs_validated').hide();
-//                                $('#row_id_checked').hide();
-//                                $('#row_player_name').hide();
-//                                $('#ForceTFormModel_pin').attr('disabled', false);
-//                            }
-//                        });
-//                        /*
-//                         * Added June 13, 2016
-//                         * John Aaron Vida
-//                         */
-//                        $('#id_checked').click(function() {
-//                            var id_checked = $("#id_checked").is(':checked');
-//                            var amount = $("#ForceTFormModel_amount").val();
-//                            var convAmount = Number(amount.replace(/[^0-9\.]+/g, ""));
-//
-//                            if (id_checked) {
-//                                if (convAmount >= minAmount) {
-//                                    $('#ForceTFormModel_pin').attr('disabled', false);
-//                                    $('#btnWithdraw2').attr('disabled', false);
-//                                }
-//                                else {
-//                                    $('#ForceTFormModel_pin').attr('disabled', 'disbaled');
-//                                    $('#btnWithdraw2').attr('disabled', 'disabled');
-//                                }
-//                            }
-//                            else {
-//                                $('#ForceTFormModel_pin').attr('disabled', 'disbaled');
-//                                $('#btnWithdraw2').attr('disabled', 'disabled');
-//                            }
-//
-//                        });
-//                        /*
-//                         * Added June 13, 2016
-//                         * John Aaron Vida
-//                         */
-//                        $('#ForceTFormModel_loyalty_card').bind('keyup', function() {
-//                            $('#btnWithdraw2').removeAttr('disabled');
-//                            $('#ForceTFormModel_amount').val('');
-//                            $('#ForceTFormModel_pin').val('');
-//                            $('#row_player_name').hide();
-//                            $('#cs_validated').val('');
-//                            $('#id_checked').val('');
-//
-//                        });
+        $("#ForceTFormModel_pin").keydown(function(e) {
+            // Allow: backspace, delete, tab, escape, enter and .
+            if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110]) !== -1 ||
+                    // Allow: Ctrl+A
+                            (e.keyCode == 65 && e.ctrlKey === true) ||
+                            // Allow: Ctrl+C
+                                    (e.keyCode == 67 && e.ctrlKey === true) ||
+                                    // Allow: Ctrl+X
+                                            (e.keyCode == 88 && e.ctrlKey === true) ||
+                                            // Allow: home, end, left, right
+                                                    (e.keyCode >= 35 && e.keyCode <= 39)) {
+                                        // let it happen, don't do anything
+                                        return;
+                                    }
+                                    // Ensure that it is a number and stop the keypress
+                                    if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                                        e.preventDefault();
+                                    }
+                                });
                         /*
                          * Added June 13, 2016
                          * John Aaron Vida
                          */
-//                        function ShowHide() {
-//                            var amount = $("#ForceTFormModel_amount").val();
-//                            var convAmount = Number(amount.replace(/[^0-9\.]+/g, ""));
-//                            var getAmount = $("#getAmount").val();
-//                            var playingBal = parseFloat(getAmount.replace(/,/g, ''));
-//
-//                            if (playingBal < convAmount) {
-//                                $('#row_cs_validated').hide();
-//                                $('#row_id_checked').hide();
-//                                $('#row_player_name').hide();
-//                            }
-//                            else if (convAmount >= minAmount && playingBal >= convAmount) {
-//
-//                                $('#row_cs_validated').show();
-//                                $('#row_id_checked').show();
-//                                $('#row_player_name').show();
-//                            }
-//                            else {
-//                                $('#row_cs_validated').hide();
-//                                $('#row_id_checked').hide();
-//                                $('#row_player_name').hide();
-//                                $('#ForceTFormModel_pin').attr('disabled', false);
-//                            }
-//
-//                        }
-//                        /*
-//                         * Added June 13, 2016
-//                         * John Aaron Vida
-//                         */
-//
-//                        $('#ForceTFormModel_loyalty_card, #ForceTFormModel_amount, #ForceTFormModel_pin').bind('keyup', function() {
-//                            ShowHide();
-//                            var amount = $("#ForceTFormModel_amount").val();
-//                            var convAmount = Number(amount.replace(/[^0-9\.]+/g, ""));
-//                            var getAmount = $("#getAmount").val();
-//                            var playingBal = parseFloat(getAmount.replace(/,/g, ''));
-//
-//                            if (playingBal < convAmount) {
-//                                card = $("#ForceTFormModel_loyalty_card").val();
-//                                pin = $("#ForceTFormModel_pin").val();
-//
-//                                if (card != '' && pin != '') {
-//                                    $('#btnWithdraw2').removeAttr('disabled');
-//                                }
-//                                else {
-//                                    $('#btnWithdraw2').attr('disabled', 'disabled');
-//                                }
-//                            }
-//                            else if (convAmount >= minAmount && playingBal >= convAmount) {
-//                                var card = $("#ForceTFormModel_loyalty_card").val();
-//                                var pin = $("#ForceTFormModel_pin").val();
-//                                var bal = $("#ForceTFormModel_amount").val();
-//                                var id = $("#id_checked").is(':checked');
-//
-//                                if (card != '' && pin != '' && bal != '' && id != '') {
-//                                    $('#btnWithdraw2').removeAttr('disabled');
-//                                }
-//                                else {
-//                                    $('#btnWithdraw2').attr('disabled', 'disabled');
-//                                }
-//                            }
-//                            else {
-//                                card = $("#ForceTFormModel_loyalty_card").val();
-//                                pin = $("#ForceTFormModel_pin").val();
-//
-//                                if (card != '' && pin != '') {
-//                                    $('#btnWithdraw2').removeAttr('disabled');
-//                                }
-//                                else {
-//                                    $('#btnWithdraw2').attr('disabled', 'disabled');
-//                                }
-//                            }
-//                        });
+
+                        $("#ForceTFormModel_amount").keydown(function() {
+                            var amount = $("#ForceTFormModel_amount").val();
+                            var convAmount = Number(amount.replace(/[^0-9\.]+/g, ""));
+                            var getAmount = $("#getAmount").val();
+                            var playingBal = parseFloat(getAmount.replace(/,/g, ''));
+                            if (convAmount != '') {
+                                if (playingBal < convAmount && convAmount >= minAmount) {
+                                    $('#row_cs_validated').show();
+                                    $('#row_id_checked').show();
+                                    $('#row_player_name').show();
+                                    $('#ForceTFormModel_pin').attr('disabled', 'disabled');
+                                }
+                                else if (convAmount >= minAmount && playingBal >= convAmount) {
+
+                                    $('#row_cs_validated').show();
+                                    $('#row_id_checked').show();
+                                    $('#row_player_name').show();
+                                    $('#ForceTFormModel_pin').attr('disabled', 'disabled');
+                                }
+                                else {
+                                    $('#row_cs_validated').hide();
+                                    $('#row_id_checked').hide();
+                                    $('#row_player_name').hide();
+                                    $('#ForceTFormModel_pin').attr('disabled', false);
+                                }
+                            } else {
+                                $('#row_cs_validated').hide();
+                                $('#row_id_checked').hide();
+                                $('#row_player_name').hide();
+                                $('#ForceTFormModel_pin').attr('disabled', 'disabled');
+                                $('#btnWithdraw2').attr('disabled', 'disabled');
+                            }
+                        });
+                        /*
+                         * Added June 13, 2016
+                         * John Aaron Vida
+                         */
+                        $('#id_checked').click(function() {
+                            var id_checked = $("#id_checked").is(':checked');
+                            var amount = $("#ForceTFormModel_amount").val();
+                            var convAmount = Number(amount.replace(/[^0-9\.]+/g, ""));
+
+                            if (id_checked) {
+                                if (convAmount >= minAmount) {
+                                    $('#ForceTFormModel_pin').attr('disabled', false);
+                                    $('#btnWithdraw2').attr('disabled', 'disbaled');
+                                }
+                                else {
+                                    $('#ForceTFormModel_pin').attr('disabled', 'disbaled');
+                                    $('#btnWithdraw2').attr('disabled', 'disabled');
+                                }
+                            }
+                            else {
+                                $('#ForceTFormModel_pin').attr('disabled', 'disbaled');
+                                $('#btnWithdraw2').attr('disabled', 'disabled');
+                                $('#ForceTFormModel_pin').val('');
+                            }
+
+                        });
+                        /*
+                         * Added June 13, 2016
+                         * John Aaron Vida
+                         */
+                        $('#ForceTFormModel_loyalty_card').bind('keyup', function() {
+                            $('#btnWithdraw2').removeAttr('disabled');
+                            $('#ForceTFormModel_amount').val('');
+                            $('#ForceTFormModel_pin').val('');
+                            $('#row_player_name').hide();
+                            $('#cs_validated').removeAttr('checked');
+                            $('#id_checked').removeAttr('checked');
+
+                        });
+                        /*
+                         * Added June 13, 2016
+                         * John Aaron Vida
+                         */
+                        $('#ForceTFormModel_amount').bind('keyup', function() {
+                            $('#btnWithdraw2').attr('disabled', 'disbaled');
+                            $('#ForceTFormModel_pin').attr('disabled', 'disbaled');
+                            //$('#ForceTFormModel_amount').val('');
+                            $('#ForceTFormModel_pin').val('');
+                            //$('#row_player_name').hide();
+                            $('#cs_validated').removeAttr('checked');
+                            $('#id_checked').removeAttr('checked');
+
+                        });
+                        /*
+                         * Added June 13, 2016
+                         * John Aaron Vida
+                         */
+                        function ShowHide() {
+                            var amount = $("#ForceTFormModel_amount").val();
+                            var convAmount = Number(amount.replace(/[^0-9\.]+/g, ""));
+                            var getAmount = $("#getAmount").val();
+                            var playingBal = parseFloat(getAmount.replace(/,/g, ''));
+                            if (convAmount != '') {
+                                if (playingBal < convAmount && convAmount >= minAmount) {
+                                    if ($("#ForceTFormModel_amount").val() != '') {
+                                        $('#row_cs_validated').show();
+                                        $('#row_id_checked').show();
+                                        $('#row_player_name').show();
+                                    }
+                                    else {
+                                        $('#row_cs_validated').show();
+                                        $('#row_id_checked').show();
+                                        $('#row_player_name').show();
+                                        $('#ForceTFormModel_pin').attr('disabled', 'disabled');
+                                    }
+                                }
+                                else if (convAmount >= minAmount && playingBal >= convAmount) {
+                                    if ($("#ForceTFormModel_amount").val() != '') {
+                                        $('#row_cs_validated').show();
+                                        $('#row_id_checked').show();
+                                        $('#row_player_name').show();
+                                    }
+                                    else {
+                                        $('#row_cs_validated').show();
+                                        $('#row_id_checked').show();
+                                        $('#row_player_name').show();
+                                        $('#ForceTFormModel_pin').attr('disabled', 'disabled');
+                                    }
+                                }
+                                else {
+                                    $('#row_cs_validated').hide();
+                                    $('#row_id_checked').hide();
+                                    $('#row_player_name').hide();
+                                    $('#ForceTFormModel_pin').attr('disabled', false);
+                                }
+                            }
+                            else {
+                                $('#row_cs_validated').hide();
+                                $('#row_id_checked').hide();
+                                $('#row_player_name').hide();
+                                $('#ForceTFormModel_pin').attr('disabled', 'disabled');
+                                $('#btnWithdraw2').attr('disabled', 'disabled');
+                            }
+                        }
+                        /*
+                         * Added June 13, 2016
+                         * John Aaron Vida
+                         */
+
+                        $('#ForceTFormModel_loyalty_card, #ForceTFormModel_amount, #ForceTFormModel_pin').bind('keyup', function() {
+                            ShowHide();
+                            var amount = $("#ForceTFormModel_amount").val();
+                            var convAmount = Number(amount.replace(/[^0-9\.]+/g, ""));
+                            var getAmount = $("#getAmount").val();
+                            var playingBal = parseFloat(getAmount.replace(/,/g, ''));
+                            if (convAmount != '') {
+                                if (playingBal < convAmount && convAmount >= minAmount) {
+                                    var card = $("#ForceTFormModel_loyalty_card").val();
+                                    var pin = $("#ForceTFormModel_pin").val();
+                                    var bal = $("#ForceTFormModel_amount").val();
+                                    var id = $("#id_checked").is(':checked');
+
+                                    if (card != '' && pin != '' && bal != '' && id != '') {
+                                        $('#btnWithdraw2').removeAttr('disabled');
+                                    }
+                                    else {
+                                        $('#btnWithdraw2').attr('disabled', 'disabled');
+                                    }
+                                }
+                                else if (convAmount >= minAmount && playingBal >= convAmount) {
+                                    var card = $("#ForceTFormModel_loyalty_card").val();
+                                    var pin = $("#ForceTFormModel_pin").val();
+                                    var bal = $("#ForceTFormModel_amount").val();
+                                    var id = $("#id_checked").is(':checked');
+
+                                    if (card != '' && pin != '' && bal != '' && id != '') {
+                                        $('#btnWithdraw2').removeAttr('disabled');
+                                    }
+                                    else {
+                                        $('#btnWithdraw2').attr('disabled', 'disabled');
+                                    }
+                                }
+                                else {
+                                    card = $("#ForceTFormModel_loyalty_card").val();
+                                    pin = $("#ForceTFormModel_pin").val();
+
+                                    if (card != '' && pin != '') {
+                                        $('#btnWithdraw2').removeAttr('disabled');
+                                    }
+                                    else {
+                                        $('#btnWithdraw2').attr('disabled', 'disabled');
+                                    }
+                                }
+                            } else {
+                                $('#ForceTFormModel_pin').attr('disabled', 'disabled');
+                                $('#btnWithdraw2').attr('disabled', 'disabled');
+                            }
+                        });
 
                         $('#btnWithdraw2').click(function() {
 
@@ -425,7 +471,7 @@
                                     try {
                                         $('#cur_playing_bal_ub').html("");
                                         $('#cur_playing_bal_ub').html(data);
-//                                        $('#getAmount').val(data);
+                                        $('#getAmount').val(data);
 
                                     } catch (e) {
                                         alert('Oops! Something went wrong');
@@ -439,7 +485,7 @@
                             });
 
 //                if(issuccess == 'false'){
-//                    var url = '<?php //echo Mirage::app()->createUrl('redeem/getbalance')  ?>';
+//                    var url = '<?php //echo Mirage::app()->createUrl('redeem/getbalance')      ?>';
 //                    var data = 'loyalty_card='+$('#ForceTFormModel_loyalty_card').val();
 //                    var tbody = '';
 ////                    var total_reload = 0;
@@ -513,6 +559,5 @@
                                 });
                             }
                         });
-
                     });
 </script>

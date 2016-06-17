@@ -1,4 +1,4 @@
-<?php Mirage::loadLibraries(array('CardScripts', 'LoyaltyScripts')); //print_r($sel_amount);  ?>
+<?php Mirage::loadLibraries(array('CardScripts', 'LoyaltyScripts')); //print_r($sel_amount);     ?>
 <script type="text/javascript" src="jscripts/autoNumeric-1.6.2.js"></script>
 <script type="text/javascript" src="jscripts/validation.js"></script>
 <script type="text/javascript">
@@ -101,7 +101,7 @@
             <!--Added March 2016 @@ John Aaron Vida -->
             <input type="hidden" name="siteamountinfo" id="siteamountinfo" value="<?php echo $siteAmountInfo; ?>" />
             <!--Added June 13, 2016 @@ John Aaron Vida -->
-            <!--<input type="hidden" name="iswithdraw" id="iswithdraw" value="0" />--> 
+            <input type="hidden" name="iswithdraw" id="iswithdraw" value="0" /> 
             <table class="standalonetbl">
                 <tr>
 

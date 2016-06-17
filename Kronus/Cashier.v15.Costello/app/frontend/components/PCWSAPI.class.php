@@ -49,29 +49,7 @@ class PCWSAPI{
     }
     
     
-//    public function Withdraw($cardnumber, $serviceid, $amount, $siteid, $aid, $systemusername, $idchecked, $csvalidated){
-//        
-//        $url = Mirage::app()->param['pcwswithdraw'];
-//        
-//        $syscode = empty(Mirage::app()->param['SystemCode'][$systemusername])?'':Mirage::app()->param['SystemCode'][$systemusername];
-//        $accessdate = date('Y-m-d H:i:s');
-//        $dt = date('YmdHis');
-//        $tkn = sha1($dt.$syscode);
-//        $amount = str_replace( ',', '', $amount );
-//        
-//        $postdata = json_encode(array('IDChecked'=> $idchecked , 'CSChecked' => $csvalidated, 'ServiceID'=>$serviceid, 'CardNumber'=>$cardnumber, 'Amount'=>$amount, 'SiteID'=>$siteid, 'AID'=>$aid, 
-//            'SystemUsername'=>$systemusername, 'AccessDate'=>$accessdate, 'Token'=>$tkn));
-//       
-//        $methodname = "Withdraw";
-//        $data = print_r($postdata,true);
-//        $message = "[$methodname] Input: $data";
-//        logger($message, "Request", '', true);
-//        $result = $this->SubmitData($url, $postdata,$methodname,$tkn);
-//        
-//        return $result;
-//    }
-    
-        public function Withdraw($cardnumber, $serviceid, $amount, $siteid, $aid, $systemusername){
+    public function Withdraw($cardnumber, $serviceid, $amount, $siteid, $aid, $systemusername, $idchecked, $csvalidated){
         
         $url = Mirage::app()->param['pcwswithdraw'];
         
@@ -81,7 +59,7 @@ class PCWSAPI{
         $tkn = sha1($dt.$syscode);
         $amount = str_replace( ',', '', $amount );
         
-        $postdata = json_encode(array('ServiceID'=>$serviceid, 'CardNumber'=>$cardnumber, 'Amount'=>$amount, 'SiteID'=>$siteid, 'AID'=>$aid, 
+        $postdata = json_encode(array('IDChecked'=> $idchecked , 'CSChecked' => $csvalidated, 'ServiceID'=>$serviceid, 'CardNumber'=>$cardnumber, 'Amount'=>$amount, 'SiteID'=>$siteid, 'AID'=>$aid, 
             'SystemUsername'=>$systemusername, 'AccessDate'=>$accessdate, 'Token'=>$tkn));
        
         $methodname = "Withdraw";
@@ -92,6 +70,28 @@ class PCWSAPI{
         
         return $result;
     }
+    
+//        public function Withdraw($cardnumber, $serviceid, $amount, $siteid, $aid, $systemusername){
+//        
+//        $url = Mirage::app()->param['pcwswithdraw'];
+//        
+//        $syscode = empty(Mirage::app()->param['SystemCode'][$systemusername])?'':Mirage::app()->param['SystemCode'][$systemusername];
+//        $accessdate = date('Y-m-d H:i:s');
+//        $dt = date('YmdHis');
+//        $tkn = sha1($dt.$syscode);
+//        $amount = str_replace( ',', '', $amount );
+//        
+//        $postdata = json_encode(array('ServiceID'=>$serviceid, 'CardNumber'=>$cardnumber, 'Amount'=>$amount, 'SiteID'=>$siteid, 'AID'=>$aid, 
+//            'SystemUsername'=>$systemusername, 'AccessDate'=>$accessdate, 'Token'=>$tkn));
+//       
+//        $methodname = "Withdraw";
+//        $data = print_r($postdata,true);
+//        $message = "[$methodname] Input: $data";
+//        logger($message, "Request", '', true);
+//        $result = $this->SubmitData($url, $postdata,$methodname,$tkn);
+//        
+//        return $result;
+//    }
     
     public function Lock($systemusername, $login,$serviceid){
         $url = Mirage::app()->param['pcwsforcelogout'];
