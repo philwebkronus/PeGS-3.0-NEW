@@ -41,7 +41,7 @@ class TerminalController extends FrontendController {
         }
         else {
             $denominationtype = DENOMINATION_TYPE::INITIAL_DEPOSIT;
-            $usermode = $this->getCasinoTerminalMode(isset($_POST['terminal_id']) ? $_POST['terminal_id'] : '');
+            $usermode = $this->getCasinoTerminalMode($_POST['terminal_id']);
         }
         $deno_casino_min_max = $this->_getDenoCasinoMinMax($denominationtype);
         if(isset($_POST['isreload'])) {
@@ -52,10 +52,10 @@ class TerminalController extends FrontendController {
             $terminalSessionsModel = new TerminalSessionsModel();
             $casinoApi = new CasinoApi();
             
-            $terminal_session_data = $terminalSessionsModel->getDataById(isset($_POST['terminal_id']) ? $_POST['terminal_id'] : '');
+            $terminal_session_data = $terminalSessionsModel->getDataById($_POST['terminal_id']);
             
-            $casinoUBDetails = $terminalSessionsModel->getLastSessionDetails(isset($_POST['terminal_id']) ? $_POST['terminal_id'] : '');
-            
+            $casinoUBDetails = $terminalSessionsModel->getLastSessionDetails($_POST['terminal_id']);
+
             $casinoUsername = '';
             $casinoPassword ='';
             $mid = '';
@@ -163,13 +163,14 @@ class TerminalController extends FrontendController {
             foreach($terminals as $terminal) {
             
                 if($terminal['lastbalance'] != null) {
-                    $casinoUBDetails = $terminalSessionsModel->getLastSessionDetails(isset($_POST['TerminalID']) ? $_POST['TerminalID'] : '');
+                    $casinoUBDetails = $terminalSessionsModel->getLastSessionDetails($terminal['TerminalID']);
+                    $casinoUserMode = '';
                     $casinoUsername = '';
                     $casinoPassword ='';
                     $mid = '';
                     $loyaltyCardNo = '';
-                    $casinoUserMode = '';
                     $casinoServiceID = '';
+                    
                     foreach ($casinoUBDetails as $val){
                         $casinoUsername = $val['UBServiceLogin'];
                         $casinoPassword = $val['UBServicePassword'];
@@ -209,6 +210,12 @@ class TerminalController extends FrontendController {
                 if($terminal['lastbalance'] != null) {
                     $casinoUBDetails = $terminalSessionsModel->getLastSessionDetails($terminal['TerminalID']);
                     $casinoUserMode = '';
+                    $casinoUsername = '';
+                    $casinoPassword ='';
+                    $mid = '';
+                    $loyaltyCardNo = '';
+                    $casinoServiceID = '';
+                    
                     foreach ($casinoUBDetails as $val){
                         $casinoUsername = $val['UBServiceLogin'];
                         $casinoPassword = $val['UBServicePassword'];
@@ -245,20 +252,20 @@ class TerminalController extends FrontendController {
         Mirage::loadModels('TerminalSessionsModel');
         $casinoApi = new CasinoApi();
         $site_id = $this->site_id;
-        $terminal_id = isset($_POST['StartSessionFormModel']['terminal_id']) ? $_POST['StartSessionFormModel']['terminal_id']: '';
+        $terminal_id = $_POST['StartSessionFormModel']['terminal_id'];
         $terminalSessionsModel = new TerminalSessionsModel();
         
         $service_id = $terminalSessionsModel->getServiceId($terminal_id);
         
         $casinoUBDetails = $terminalSessionsModel->getLastSessionDetails($terminal_id);
-          
-            $casinoUsername = '';
-            $casinoPassword ='';
-            $mid = '';
-            $loyaltyCardNo = '';
-            $casinoUserMode = '';
-            $casinoServiceID = '';
-
+       
+        $casinoUsername = '';
+        $casinoPassword ='';
+        $mid = '';
+        $loyaltyCardNo = '';
+        $casinoUserMode = '';
+        $casinoServiceID = '';
+        
         foreach ($casinoUBDetails as $val){
             $casinoUsername = $val['UBServiceLogin'];
             $casinoPassword = $val['UBServicePassword'];
@@ -484,16 +491,15 @@ class TerminalController extends FrontendController {
         //$cid = $_POST['cid'];
         $cid = $terminalSession->getServiceId($tid);
 
+        $casinoUBDetails = $terminalSession->getLastSessionDetails($tid);
+        
             $casinoUsername = '';
             $casinoPassword ='';
             $mid = '';
             $loyaltyCardNo = '';
             $casinoUserMode = '';
-            $casinoServiceID = '';
-        
-        
-        $casinoUBDetails = $terminalSession->getLastSessionDetails($tid);
-       
+            $casinoServiceID = '';   
+            
         foreach ($casinoUBDetails as $val){
             $casinoUsername = $val['UBServiceLogin'];
             $casinoPassword = $val['UBServicePassword'];
@@ -607,7 +613,7 @@ class TerminalController extends FrontendController {
             echo json_encode($data);
             Mirage::app()->end();
         } else {
-            $terminal_id = isset($_POST['StartSessionFormModel']['terminal_id']) ? $_POST['StartSessionFormModel']['terminal_id'] : '';
+            $terminal_id = $_POST['StartSessionFormModel']['terminal_id'];
             $this->renderPartial('terminal_redeem',array('data'=>$data,'terminal_id'=>$terminal_id));
         }
     }
@@ -649,8 +655,8 @@ class TerminalController extends FrontendController {
         $accid = $this->acc_id;
         
         // post from ajax and hidden field
-        $is_vip = $_POST['isvip'];
-        $tcode = $_POST['tcode'];
+        $is_vip = isset($_POST['isvip']) ? $_POST['isvip'] : '';
+        $tcode = isset($_POST['tcode']) ? $_POST['tcode'] : '';
         
         // get denomination base on minimum and maximum denomination of sites
         $denomination = $siteDenomination->getDenominationPerSiteAndType($siteid, DENOMINATION_TYPE::INITIAL_DEPOSIT, $is_vip);
@@ -712,7 +718,7 @@ class TerminalController extends FrontendController {
             if(isset($_POST['UnlockTerminalFormModel']['loyalty_card'])
                 && isset($_POST['sitecode']) 
                 && isset($_POST['tcode'])){
-                $cardNumber = isset($_POST['UnlockTerminalFormModel']['loyalty_card']) ? $_POST['UnlockTerminalFormModel']['loyalty_card'] : '';
+                $cardNumber = $_POST['UnlockTerminalFormModel']['loyalty_card'];
                 $terminalCode = $_POST['sitecode'].$_POST['tcode'];
                 $this->_Unlock($terminalCode,$cardNumber);
             }
