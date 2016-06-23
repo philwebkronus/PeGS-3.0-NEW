@@ -82,6 +82,7 @@
         $('#row_id_checked').hide();
         $('#row_player_name').hide();
         $('#ForceTFormModel_pin').attr('disabled', 'disabled');
+        $('#ForceTFormModel_amount').attr('disabled', 'disabled');
         $('#btnWithdraw2').attr('disabled', 'disabled');
 
         if ($('#siteamountinfo').val() == 0) {
@@ -163,10 +164,12 @@
                          */
                         $('#id_checked').click(function() {
                             var id_checked = $("#id_checked").is(':checked');
+                            var cs_validated = $("#cs_validated").is(':checked');
                             var amount = $("#ForceTFormModel_amount").val();
                             var convAmount = Number(amount.replace(/[^0-9\.]+/g, ""));
 
-                            if (id_checked) {
+                            if (id_checked || cs_validated) {
+                                $('#ForceTFormModel_pin').val('');
                                 if (convAmount >= minAmount) {
                                     $('#ForceTFormModel_pin').attr('disabled', false);
                                     $('#btnWithdraw2').attr('disabled', 'disbaled');
@@ -183,6 +186,34 @@
                             }
 
                         });
+                        /*
+                         * Added June 23, 2016
+                         * John Aaron Vida
+                         */
+                        $('#cs_validated').click(function() {
+                            var id_checked = $("#id_checked").is(':checked');
+                            var cs_validated = $("#cs_validated").is(':checked');
+                            var amount = $("#ForceTFormModel_amount").val();
+                            var convAmount = Number(amount.replace(/[^0-9\.]+/g, ""));
+
+                            if (id_checked || cs_validated) {
+                                $('#ForceTFormModel_pin').val('');
+                                if (convAmount >= minAmount) {
+                                    $('#ForceTFormModel_pin').attr('disabled', false);
+                                    $('#btnWithdraw2').attr('disabled', 'disbaled');
+                                }
+                                else {
+                                    $('#ForceTFormModel_pin').attr('disabled', 'disbaled');
+                                    $('#btnWithdraw2').attr('disabled', 'disabled');
+                                }
+                            }
+                            else {
+                                $('#ForceTFormModel_pin').attr('disabled', 'disbaled');
+                                $('#btnWithdraw2').attr('disabled', 'disabled');
+                                $('#ForceTFormModel_pin').val('');
+                            }
+
+                        });                        
                         /*
                          * Added June 13, 2016
                          * John Aaron Vida
@@ -268,6 +299,12 @@
 
                         $('#ForceTFormModel_loyalty_card, #ForceTFormModel_amount, #ForceTFormModel_pin').bind('keyup', function() {
                             ShowHide();
+                            var balance = $("#cur_playing_bal_ub").text();
+                            if(balance != ''){
+                                $('#ForceTFormModel_amount').attr('disabled', false);
+                            }else{
+                                $('#ForceTFormModel_amount').attr('disabled', 'disabled');
+                            }
                             var amount = $("#ForceTFormModel_amount").val();
                             var convAmount = Number(amount.replace(/[^0-9\.]+/g, ""));
                             var getAmount = $("#getAmount").val();
@@ -278,8 +315,9 @@
                                     var pin = $("#ForceTFormModel_pin").val();
                                     var bal = $("#ForceTFormModel_amount").val();
                                     var id = $("#id_checked").is(':checked');
+                                    var cs = $("#cs_validated").is(':checked');
 
-                                    if (card != '' && pin != '' && bal != '' && id != '') {
+                                    if (( id != ''|| cs != '') && card != '' && bal != '' && pin != '') {
                                         $('#btnWithdraw2').removeAttr('disabled');
                                     }
                                     else {
@@ -291,8 +329,9 @@
                                     var pin = $("#ForceTFormModel_pin").val();
                                     var bal = $("#ForceTFormModel_amount").val();
                                     var id = $("#id_checked").is(':checked');
+                                    var cs = $("#cs_validated").is(':checked');
 
-                                    if (card != '' && pin != '' && bal != '' && id != '') {
+                                    if (( id != ''|| cs != '') && card != '' && bal != '' && pin != '') {
                                         $('#btnWithdraw2').removeAttr('disabled');
                                     }
                                     else {
@@ -472,6 +511,7 @@
                                         $('#cur_playing_bal_ub').html("");
                                         $('#cur_playing_bal_ub').html(data);
                                         $('#getAmount').val(data);
+                                        $('#ForceTFormModel_amount').attr('disabled', false);
 
                                     } catch (e) {
                                         alert('Oops! Something went wrong');
