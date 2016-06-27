@@ -208,6 +208,9 @@ class PCWSAPI{
      * @date June 02, 2016
      * 
      */
+/* 
+  * CHANGE PASSWORD
+  *  
     public function ChangePassword($systemusername, $login, $serviceID, $usermode, $source) {
         $url = Mirage::app()->param['pcwschangepassword']; 
         
@@ -227,6 +230,8 @@ class PCWSAPI{
         
         return $result;
     } 
+ * 
+ */
     
     private function SubmitData( $uri, $postdata,$methodname,$token)
     {

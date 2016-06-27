@@ -341,7 +341,9 @@ class CommonRedeem {
                                    $accountName, $transactionDetails['DateStarted'], $transactionDetails['DateEnded'], null,$transactionDetails['TransactionsSummaryID']);
                        }
                     }
-
+ /* 
+  * CHANGE PASSWORD
+  *  
                     $systemusername = Mirage::app()->param['pcwssysusername'];
                     $source = 2;
                     if (strstr($terminal_name, "ICSA-"))
@@ -350,6 +352,8 @@ class CommonRedeem {
                     }
                     $pcwsAPI->ChangePassword($systemusername, $terminal_name, $service_id, $userMode, $source); 
                     
+  * 
+  */
                     return array('message'=>'You have successfully redeemed the amount of PhP ' . toMoney($amount),
                         'trans_summary_id'=>$trans_summary_id,'udate'=>$udate,'amount'=>$amount,'terminal_login'=>$terminal_name,
                         'trans_ref_id'=>$transrefid,'terminal_name'=>$terminal_name,'trans_details_id'=>$isredeemed);
@@ -392,14 +396,18 @@ class CommonRedeem {
                 CasinoApi::throwError($message);
             }
                     
-            
+ /* 
+  * CHANGE PASSWORD
+  *           
           $systemusername = Mirage::app()->param['pcwssysusername'];
           $source = 2;
           if (strstr($terminal_name, "ICSA-"))
           {
               $terminal_name = str_replace('ICSA-', '',$terminal_name );        
           }
-          $pcwsAPI->ChangePassword($systemusername, $terminal_name, $service_id, $userMode, $source); 
+          $pcwsAPI->ChangePassword($systemusername, $terminal_name, $service_id, $userMode, $source);
+  * 
+  */ 
                     
             return array('message'=>'Info: Session has been ended.',
                         'trans_summary_id'=>$trans_summary_id,'udate'=>$udate,'amount'=>$amount,'terminal_login'=>$terminal_name,
