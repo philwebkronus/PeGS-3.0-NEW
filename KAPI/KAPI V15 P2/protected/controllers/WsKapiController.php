@@ -3234,11 +3234,6 @@ class WsKapiController extends Controller {
         $message = '';
         $errCode = '';
         $vouchercode = '';
-        //******************* DISABLE Genesis Reload *********************//
-               $message = "Reload using genesis terminal is temporarily disabled Please Use Cashier Load tab";
-                        $this->_sendResponse(200, CommonController::eSafeReloadGenResponse(2, $DateTime, '', $message, 23));
-
-                        exit;
         //validate inputs
         if (isset($request['TerminalName']) && isset($request['Amount']) && 
             isset($request['TrackingID']) && isset($request['StackerBatchID'])) {
@@ -3279,7 +3274,9 @@ class WsKapiController extends Controller {
                     $transSummary           = new TransactionSummaryModel();
                     $terminalName = Yii::app()->params['SitePrefix'] . $terminalName;
                     $terminalID = $terminalsModel->getTerminalSiteID($terminalName);
-
+                    
+                    $siteid = $terminalID[0]['SiteID'];
+                    if ($siteid == 139){
                     if ($terminalID == false) {
                         $message = "Invalid Terminal Name";
                         $this->_sendResponse(200, CommonController::eSafeReloadGenResponse(2, $DateTime, '', $message, 23));
@@ -3321,6 +3318,12 @@ class WsKapiController extends Controller {
                     }
                     //check if player is tagged as e-SAFE
                     $isEwallet = $membersModel->checkIfEwallet($mid);
+                    if ($isEwallet == null){
+                        $message = "Inactive player is not allowed.";
+                        $this->_sendResponse(200, CommonController::eSafeReloadGenResponse(2, $DateTime, '', $message, 75));
+                        exit;
+                        
+                    }
                     if ($isEwallet['IsEwallet'] != 1) {
                         $message = "Non-eSAFE player is not allowed.";
                         $this->_sendResponse(200, CommonController::eSafeReloadGenResponse(2, $DateTime, '', $message, 73));
@@ -3645,6 +3648,13 @@ class WsKapiController extends Controller {
                         $message = 'Tracking ID must be unique.';
                         $this->_sendResponse(200, CommonController::eSafeReloadGenResponse(2, $DateTime, '', $message, 40));
                     }
+                }else
+                {
+                        //******************* DISABLE Genesis Reload *********************//
+                        $message = "Reload using genesis terminal is temporarily disabled Please Use Cashier Load tab";
+                        $this->_sendResponse(200, CommonController::eSafeReloadGenResponse(2, $DateTime, '', $message, 23));
+                        exit;   
+                }
                 }
                 else {
                     $message = "Parameters are not set";
@@ -3711,9 +3721,9 @@ class WsKapiController extends Controller {
         $partialAmount = htmlentities($request['Amount']);
         
          //******************* DISABLE Genesis Reload *********************//
-        $message = "Withdrawal function in this terminal is currently disabled. Please contact GA for assistance.";
-        $this->_sendResponse(200, CommonController::eSafeRedemptionGenResponse(2, '', '', '', '', '', '', '', $message, 0, 11));
-        exit;
+//        $message = "Withdrawal function in this terminal is currently disabled. Please contact GA for assistance.";
+//        $this->_sendResponse(200, CommonController::eSafeRedemptionGenResponse(2, '', '', '', '', '', '', '', $message, 0, 11));
+//        exit;
         $loyaltyCardNo = '';
         if (isset($terminalName) && $terminalName != '' && isset($trackingID) && $trackingID != '' && isset($stackerBatchID) && $stackerBatchID != '') {
 
@@ -3730,7 +3740,9 @@ class WsKapiController extends Controller {
 
             $terminalName = Yii::app()->params['SitePrefix'] . $terminalName;
             $terminalID = $terminals->getTerminalSiteID($terminalName);
-
+            $siteid = $terminalID[0]['SiteID'];
+            if ($siteid == 139)
+            {
             if ($terminalID == false) {
                 $message = "Invalid Terminal Name";
                 $this->_sendResponse(200, CommonController::eSafeRedemptionGenResponse(2, '', '', '', '', '', '', '', $message, 0, 23));
@@ -3986,6 +3998,13 @@ class WsKapiController extends Controller {
                 $gamingRequestLogsModel->updateGamingLogsStatus($trans_id, $this->status, null, null, null);
                 $message = 'Tracking ID must be unique.';
                 $this->_sendResponse(200, CommonController::eSafeRedemptionGenResponse(2, '', '', '', '', '', '', '', $message, 0, 40));
+            }
+        }else
+            {
+//                     ******************* DISABLE Genesis Reload *********************//
+                $message = "Withdrawal function in this terminal is currently disabled. Please contact GA for assistance.";
+                $this->_sendResponse(200, CommonController::eSafeRedemptionGenResponse(2, '', '', '', '', '', '', '', $message, 0, 11));
+                exit;
             }
         } else {
             //$message = "Parameters are not set";

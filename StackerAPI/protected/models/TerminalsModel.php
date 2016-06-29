@@ -23,7 +23,7 @@ class TerminalsModel {
 
     public function getTerminalIDByCode($terminalCode) {
         $terminalCodeVip = $terminalCode . "VIP";
-        $sql = 'SELECT TerminalID FROM terminals WHERE TerminalCode IN (:terminal_code, :terminal_code_vip)';
+        $sql = 'SELECT TerminalID, SiteID FROM terminals WHERE TerminalCode IN (:terminal_code, :terminal_code_vip)';
         $param = array(":terminal_code" => $terminalCode, ":terminal_code_vip" => $terminalCodeVip);
         $command = $this->_connection2->createCommand($sql);
         $result = $command->queryAll(true, $param);
