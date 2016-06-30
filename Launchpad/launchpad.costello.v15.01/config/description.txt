@@ -1,0 +1,18 @@
+<p id='eSafetcheader'>e-SAFE TERMS & CONDITIONS</p>
+<hr>
+<p id='eSafetcheader2'>e-SAFE ACCOUNT</p>
+<div id='eSafetcbody'>
+1. The e-SAFE is a system that allows Members to make cashless e-Games betting and enables the Members to store e-Games betting credits in their e-SAFE accounts.<br/>
+2. Members&#146; e-Games betting credits are held separately from those of PhilWeb and are not incorporated into or used for PhilWeb&#146;s operating expenses or corporate purposes. Members acknowledge that PhilWeb offers the e-SAFE as a means for cashless e-Games betting and storage of e-Games betting credits and that it is not a bank. No interest or any other earning on the e-Games betting credits will accrue or be paid or credited to the Members by PhilWeb.<br/>
+3. Membership cardholders in good standing are eligible to activate their e-SAFE accounts. By activating their e-SAFE, Members agree to be bound by all the terms and conditions contained herein.<br/>
+4. e-SAFE accounts are non-transferable.<br/>
+5. Members must ensure that their membership cards, login credentials and PINs are kept safely and are not shared with another person or to third parties. Members are responsible for all transactions associated with their e-SAFE accounts, including unauthorized transactions. Members shall be solely responsible for any losses incurred due to mishandling of their membership cards, credentials or PINs. Lost or stolen card should be reported immediately to PhilWeb’s Customer Service. Replacement of card is subject to validation.<br/>
+6. Members agree not to use the e-SAFE for any activities that are fraudulent or illegal under Philippine laws and regulations.<br/>
+7. Personal information can be updated by accessing the Membership Portal found in the e-Games Casino website. If for any reason, it is not possible to change some of the information, Members must contact PhilWeb&#146;s Customer Services with their updated information.<br/>
+8. Members must regularly update their account details to ensure that they are able to receive PhilWeb communication. PhilWeb is not responsible for losses caused by Members for failure to comply with this provision.<br/>
+9. PhilWeb reserves the right to correct the balance of a Member’s e-SAFE account if PhilWeb believes that a clerical or accounting error occurred. Any erroneous transaction reported by Members will be investigated by PhilWeb. If found to be valid, PhilWeb may reverse transactions found to be violative of fair practice and/or are abusive of the e-SAFE service.<br/>
+10. PhilWeb may suspend a Member’s account without prior notice if he or she is found to violate the terms of this agreement. Such suspension can be lifted upon proof satisfactory to PhilWeb to attest that there is no such violation.<br/>
+11. If a Member dies, the cash equivalent of any remaining betting credits in the Member’s e-SAFE account shall accrue to his/her estate unless his/her legal heir(s) produce proof that the Member&#146;s estate has been judicially or extrajudicially settled in accordance with law and that such heir(s) is/are entitled to receive such balance.<br/>
+12. PhilWeb reserves the right to amend the terms and conditions governing the usage of the e-SAFE.<br/>
+13. The decision of PhilWeb shall be final in the event of any dispute concerning the usage of the e-SAFE.<br/>
+</div>

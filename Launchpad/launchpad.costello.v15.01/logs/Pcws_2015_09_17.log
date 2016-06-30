@@ -1,0 +1,18 @@
+[2015-09-17 09:56:57.401593][REQUEST][CheckPin] Input: {"CardNumber":"UBTX4K4B","PIN":"312824","SystemUsername":"lliter","AccessDate":"2015-09-17 09:56:57","Token":"c10e088d6eb076b6ca99c8dfe0b2e8bea6d1f33b"}
+[2015-09-17 09:56:57.842477][RESPONSE][CheckPin] Token: c10e088d6eb076b6ca99c8dfe0b2e8bea6d1f33b, Output: {"checkPin":{"TransactionMessage":"Invalid PIN Code","ErrorCode":14}}
+[2015-09-17 09:57:10.623548][REQUEST][CheckPin] Input: {"CardNumber":"UBTX4K4B","PIN":"315024","SystemUsername":"lliter","AccessDate":"2015-09-17 09:57:10","Token":"58fdc66d0ea9e394dbba5a9dd27ef0dad8d7b549"}
+[2015-09-17 09:57:10.952299][RESPONSE][CheckPin] Token: 58fdc66d0ea9e394dbba5a9dd27ef0dad8d7b549, Output: {"checkPin":{"TransactionMessage":"Transaction successful. PIN and UB Card is valid.","ErrorCode":0}}
+[2015-09-17 09:57:12.411535][REQUEST][Unlock] Input: {"TerminalCode":"TSTID21","ServiceID":"20","CardNumber":"UBTX4K4B","SystemUsername":"lliter","AccessDate":"2015-09-17 09:57:12","Token":"e991075e69a716efd79f41b3fc3c5dc5921e452c"}
+[2015-09-17 09:57:14.186832][RESPONSE][Unlock] Token: e991075e69a716efd79f41b3fc3c5dc5921e452c, Output: {"Unlock":{"TransactionMessage":"Transaction successful, Terminal is now unlocked.","ErrorCode":0}}
+[2015-09-17 10:17:24.320541][REQUEST][CheckPin] Input: {"CardNumber":"UBW2L6H4","PIN":"253617","SystemUsername":"lliter","AccessDate":"2015-09-17 10:17:24","Token":"92b76de64c671ba2d0981a969f656d0da25b458e"}
+[2015-09-17 10:17:24.454509][RESPONSE][CheckPin] Token: 92b76de64c671ba2d0981a969f656d0da25b458e, Output: {"checkPin":{"TransactionMessage":"Transaction successful. PIN and UB Card is valid.","ErrorCode":0}}
+[2015-09-17 10:17:25.159546][REQUEST][Unlock] Input: {"TerminalCode":"TSTID25","ServiceID":"20","CardNumber":"UBW2L6H4","SystemUsername":"lliter","AccessDate":"2015-09-17 10:17:25","Token":"57ac73e2330c102be9a182763d69d1fb13dcac8f"}
+[2015-09-17 10:17:25.696987][RESPONSE][Unlock] Token: 57ac73e2330c102be9a182763d69d1fb13dcac8f, Output: {"Unlock":{"TransactionMessage":"Transaction successful, Terminal is now unlocked.","ErrorCode":0}}
+[2015-09-17 13:17:45.314359][REQUEST][CheckPin] Input: {"CardNumber":"UBW2L6H4","PIN":"253617","SystemUsername":"lliter","AccessDate":"2015-09-17 13:17:45","Token":"3c4b5b891170274b140bb076f7eacc940de67aaa"}
+[2015-09-17 13:17:45.745524][RESPONSE][CheckPin] Token: 3c4b5b891170274b140bb076f7eacc940de67aaa, Output: {"checkPin":{"TransactionMessage":"Transaction successful. PIN and UB Card is valid.","ErrorCode":0}}
+[2015-09-17 13:17:46.408453][REQUEST][Unlock] Input: {"TerminalCode":"TSTID25","ServiceID":"20","CardNumber":"UBW2L6H4","SystemUsername":"lliter","AccessDate":"2015-09-17 13:17:46","Token":"c0c2362c253866d63f12ed3ff641c85b43a4f8b0"}
+[2015-09-17 13:17:47.119010][RESPONSE][Unlock] Token: c0c2362c253866d63f12ed3ff641c85b43a4f8b0, Output: {"Unlock":{"TransactionMessage":"Transaction successful, Terminal is now unlocked.","ErrorCode":0}}
+[2015-09-17 20:49:47.744144][REQUEST][ForceLogout] Input: {"Login":"874300000027","SystemUsername":"lliter","AccessDate":"2015-09-17 20:49:47","Token":"d7c00cde0bd7a3ba5aff892fab604b032030d364"}
+[2015-09-17 20:49:53.432591][RESPONSE][ForceLogout] Token: d7c00cde0bd7a3ba5aff892fab604b032030d364, Output: {"ForceLogout":{"TransactionMessage":"Transaction successful, Terminal is now locked.","ErrorCode":0}}
+[2015-09-17 20:49:53.816703][REQUEST][Unlock] Input: {"TerminalCode":"TSTID25","ServiceID":"","CardNumber":"","SystemUsername":"lliter","AccessDate":"2015-09-17 20:49:53","Token":"f9c2aa66c89f405d23f62d5f2bf30f0277c00b1f"}
+[2015-09-17 20:49:53.916959][RESPONSE][Unlock] Token: f9c2aa66c89f405d23f62d5f2bf30f0277c00b1f, Output: {"Unlock":{"TransactionMessage":"Card Number must not be empty.","ErrorCode":4}}
