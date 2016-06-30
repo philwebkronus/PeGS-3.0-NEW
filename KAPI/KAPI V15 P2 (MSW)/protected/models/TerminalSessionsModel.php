@@ -392,7 +392,8 @@ class TerminalSessionsModel {
                 FROM terminalsessions ts
 		INNER JOIN terminals t ON t.TerminalID = ts.TerminalID
                 WHERE MID = :mid
-                AND ServiceID = :serviceID";
+                AND ServiceID = :serviceID
+                AND TransactionSummaryID IS NOT NULL";
         $command = $this->_connection->createCommand($sql);
         $command->bindValue(":mid", $MID);
         $command->bindValue(":serviceID", $serviceID);
