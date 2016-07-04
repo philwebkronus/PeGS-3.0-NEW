@@ -1309,6 +1309,7 @@ $(document).ready(function(){
                                         $.checkLandingPage();
                                     }
                                 }else{ //end session.
+                                    if(tmpUBserviceLogin != "0"){
                                         $.endUBSession();
                                     } else {
                                         $.checkLandingPage();
