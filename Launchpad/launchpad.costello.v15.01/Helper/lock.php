@@ -233,12 +233,6 @@ if(!empty($function)){
            
               $APIresult = $_PCWS->logoutLaunchPad($ubServiceLogin,$ubServiceID);
                             
-              //Checking for usermode
-              $usermode = LPRefServices::model()->checkUsermode($ubServiceID);
-              $source = "3";
-              //Every Logout will Change the Password
-//              $_PCWS->changePassword($ubServiceLogin,$ubServiceID,$usermode['UserMode'],$source);
-                            
               $result = $APIresult['ForceLogout']['ErrorCode'];
                 
               break;

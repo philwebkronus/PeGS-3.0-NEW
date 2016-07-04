@@ -1309,7 +1309,6 @@ $(document).ready(function(){
                                         $.checkLandingPage();
                                     }
                                 }else{ //end session.
-                                    if(tmpUBserviceLogin != "0" && !(tmpTransactionSummaryID === undefined || tmpTransactionSummaryID === null || tmpTransactionSummaryID === 'undefined' || tmpTransactionSummaryID === 'null' || tmpTransactionSummaryID === '' )){
                                         $.endUBSession();
                                     } else {
                                         $.checkLandingPage();
@@ -1362,6 +1361,7 @@ $(document).ready(function(){
                                 data:{fn:function(){return 'checkForExistingSession';},
                                      TerminalCode:function(){return terminalCode;}},
                                 success:function(data){
+                                    
                                     SessionType = JSON.stringify(data['SessionType']);
                                     serviceid = data['ServiceID'];
                                     TransactionSummaryID = JSON.stringify(data['TransactionSummaryID']);
@@ -1372,14 +1372,14 @@ $(document).ready(function(){
                                     } else if(isesafe == 1 && SessionType == 2 && !(TransactionSummaryID === undefined || TransactionSummaryID === null || TransactionSummaryID === 'undefined' || TransactionSummaryID === 'null')) { //e-safe, user based session
                                         $.showLobby2(true);
                                     } else if(isesafe == 0 && SessionType == 2 && !(TransactionSummaryID === undefined || TransactionSummaryID === null || TransactionSummaryID === 'undefined' || TransactionSummaryID === 'null')) { //non e-safe, user based session
-                                        $.$.showRegular(true);
+                                        $.showRegular(true);
                                     } else { //return to the default home page if there's no active session with valid login start
-                                        if(terminalType=="2"&&(userMode=="0"||userMode=="2")){
+                                        if(terminalType==2&&(userMode=="0"||userMode=="2")){
                                             $.prompt("Session was already ended.");
                                             infoPinValue="";
                                             infoPinValue="000000";
                                             $.showRegular(true);
-                                        } else if(terminalType=="2"&&userMode=="1"){
+                                        } else if(terminalType==2&&userMode=="1"){
                                             if(TransactionSummaryID == null || TransactionSummaryID == 'null' || TransactionSummaryID == ''){
                                                 infoPinValue="";
                                                 infoPinValue="000000";  
