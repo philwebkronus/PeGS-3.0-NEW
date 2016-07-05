@@ -3276,7 +3276,8 @@ class WsKapiController extends Controller {
                     $terminalID = $terminalsModel->getTerminalSiteID($terminalName);
                     
                     $siteid = $terminalID[0]['SiteID'];
-                    if ($siteid == 139){
+                    $enabledSite = Yii::app()->params['enabledSite'];
+                    if ($siteid == $enabledSite){
                     if ($terminalID == false) {
                         $message = "Invalid Terminal Name";
                         $this->_sendResponse(200, CommonController::eSafeReloadGenResponse(2, $DateTime, '', $message, 23));
@@ -3741,7 +3742,8 @@ class WsKapiController extends Controller {
             $terminalName = Yii::app()->params['SitePrefix'] . $terminalName;
             $terminalID = $terminals->getTerminalSiteID($terminalName);
             $siteid = $terminalID[0]['SiteID'];
-            if ($siteid == 139)
+            $enabledSite = Yii::app()->params['enabledSite'];
+            if ($siteid == $enabledSite)
             {
             if ($terminalID == false) {
                 $message = "Invalid Terminal Name";
@@ -3943,8 +3945,15 @@ class WsKapiController extends Controller {
                                 $genesisWithdrawal = $genWithdrawAmount;
                             else
                                 $genesisWithdrawal = 0.0;
+                            $transSummaryExist = $transactionSummaryLogs->checkTransactionSummaryID($result['trans_summary_id']);
+                            if ($transSummaryExist['Count']==0)
+                            {
                             $transactionSummaryLogs->insertGenesisWithdrawal($result['trans_summary_id'],$genesisWithdrawal,$mswWithdrawal);
-                            
+                            }
+                            else
+                            {
+                             $transactionSummaryLogs->updateGenesisWithdrawal($result['trans_summary_id'],$genesisWithdrawal);   
+                            }
                             $gamingRequestLogsModel->updateGamingLogsStatus($trans_id, $this->status, $result['udate'], $result['VoucherTicketBarcode'], $result['ExpirationDate']);
                             $this->_sendResponse(200, CommonController::eSafeRedemptionGenResponse(1, $result['amount'], $result['VoucherTicketBarcode'], $result['TransactionDate'], $result['ExpirationDate'], $sitecode, $loyaltyCardNo, $result['ewallet_trans_id'], $result['TransMessage'], 1, 0));
                     /* Autoemail update in eSAFE loads

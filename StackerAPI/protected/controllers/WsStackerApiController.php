@@ -238,7 +238,8 @@ class wsStackerApiController extends Controller {
                     $_stackerSessionCashDenomModel = new StackerSessionCashDenomModel();
                     $getSiteID = $_terminalsModel->getTerminalIDByCode($sc2);
                     $siteID = $getSiteID[0]['SiteID'];
-                    if ($siteID == 139){
+                    $enabledSite = Yii::app()->params['enabledSite'];
+                    if ($siteID == $enabledSite){
                     if ($amount >= $allowedAmount) { //Input amount should be greater than or equal to allowed amount
                         $isTrackingIDExists = $_stackerDetails->isTrackingIDExists($trackingID);
 
@@ -568,7 +569,8 @@ class wsStackerApiController extends Controller {
                     $sc2 = Yii::app()->params['SitePrefix2'] . $terminalName; //Prefix (eg. ICSA-)
                     $getSiteID = $_TerminalsModel->getTerminalIDByCode($sc2);
                     $siteID = $getSiteID[0]['SiteID'];
-                    if ($siteID == 139){
+                    $enabledSite = Yii::app()->params['enabledSite'];
+                    if ($siteID == $enabledSite){
                     $countMCard = $_memberCardsModel->isCardNumberExists($mCardNumber);
                     if ($countMCard > 0) {
                         $MID = $_memberCardsModel->getMIDByCardNumber($mCardNumber);
