@@ -858,96 +858,69 @@ class FrontendController extends MI_Controller {
                                     $trackingId = "c".$casinoAPI->udate('YmdHisu');
                                         $systemusername = Mirage::app()->param['pcwssysusername'];
                                         $result = $pcwsapi->Deposit($loyaltyCardNo, $cid, $paymentType, $amount, $siteid, $accid, $systemusername, $tracenumber, $referencenumber, $vouchercode,$trackingId);
-                                    
-                                    if(!empty($result))
-                                    {
-//------------------------------------------------------------------------------------------------------------>>>>>>>>>>>>>
-       
-                                            /************************ FOR LOYALTY *************************/
-                                           
-                                        //Check if Loyalty
-                                         $isLoyalty = Mirage::app()->param['Isloyaltypoints'];
+                                
+                                if($result[0] == 200){
+                                    $result = json_decode($result[1]);
 
-                                        //Loyalty points
-                                        if ($isLoyalty == 1) {
-                                            
-                                            $loyalty = new LoyaltyAPIWrapper();
-                                            
-                                            $trans_details_id = (!empty($result["trans_details_id"]) ? $result["trans_details_id"] : "");
-                                            $terminal_name = (!empty($result['terminal_name']) ? $result['terminal_name'] : "");
-                                            
-                                            //Insert to loyaltyrequestlogs
-                                            $loyaltyrequestlogsID = $loyaltyrequestlogs->insert($mid, 'D', $terminal_id, toInt($amount), $trans_details_id, $paymentType, 1);
-                                            $transdate = CasinoApi::udate('Y-m-d H:i:s.u');
-                                            $isSuccessful = $loyalty->processPoints($loyaltyCardNo, $transdate, $paymentType, 'D', toInt($amount),$siteid, $trans_details_id,
-                                                                          $terminal_name, 1, $vouchercode, $cid  ,  $isCreditable);
-                                            
-                                             //check if the loyaltydeposit is successful, if success insert to loyaltyrequestlogs and status = 1 else 2
-                                            if($isSuccessful){
-                                                $loyaltyrequestlogs->updateLoyaltyRequestLogs($loyaltyrequestlogsID,1);
+                                    $result = $result->Deposit->TransactionMessage;
+
+                                    if(preg_match('/\Successful\b/', $result)) {
+                                        $result = array('message'=>$result);
+                                              
+                                            //Insert to vmsrequestlogs
+                                            $vmsrequestlogsID = $vmsrequestlogs->insert($vouchercode, $accid, $terminal_id,$trackingId);
+
+                                            //use voucher and check result
+                                            $useVoucherResult = $voucherManagement->useVoucher($accid, $trackingId, $vouchercode, $terminal_id, $source, $siteid, $mid);
+
+                                            //If first try of use voucher fails, retry
+                                            if(isset($useVoucherResult['UseVoucher']['ErrorCode']) && $useVoucherResult['UseVoucher']['ErrorCode'] != 0)
+                                            {
+                                                    $vmsrequestlogs->updateVMSRequestLogs($vmsrequestlogsID, 2);
+
+                                                    //verify tracking id, if tracking id is not found and voucher is unclaimed proceed to use voucher
+                                                    $verifyVoucherResult = $voucherManagement->verifyVoucher('', $accid, $source, $trackingId);
+
+                                                    //check if tracking result is not found that means transaction was not successful on the first try
+                                                    if(!isset($verifyVoucherResult['VerifyVoucher']['ErrorCode']) && $verifyVoucherResult['VerifyVoucher']['ErrorCode'] != 0){
+
+                                                        $trackingId = "c".$casinoAPI->udate('YmdHisu');
+
+                                                        //Insert to vmsrequestlogs
+                                                        $vmsrequestlogs->insert($vouchercode, $accid, $terminal_id,$trackingId);
+
+                                                        $useVoucherResult = $voucherManagement->useVoucher($accid, $trackingId, $vouchercode, $terminal_id, $source, $siteid, $mid);
+
+                                                        if(isset($useVoucherResult['UseVoucher']['ErrorCode']) && $useVoucherResult['UseVoucher']['ErrorCode'] != 0)
+                                                        {
+                                                                $vmsrequestlogs->updateVMSRequestLogs($vmsrequestlogsID, 2);
+
+                                                                $result = array('message'=>$useVoucherResult['UseVoucher']['TransMsg']);
+                                                                echo json_encode($result);
+                                                                Mirage::app()->end(); 
+                                                        } else {
+                                                                //check if the useVoucher is successful, if success insert to vmsrequestlogs and status = 1 else 2
+                                                                $vmsrequestlogs->updateVMSRequestLogs($vmsrequestlogsID, 1);
+                                                        }
+                                                    }
+
                                             } else {
-                                                $loyaltyrequestlogs->updateLoyaltyRequestLogs($loyaltyrequestlogsID,2);
+                                                //check if the useVoucher is successful, if success insert to vmsrequestlogs and status = 1 else 2
+                                                $vmsrequestlogs->updateVMSRequestLogs($vmsrequestlogsID, 1);
                                             }
-                                        }
-                                        else{
-//                                            
-                                            $comppointslogs = new CompPointsLogsModel();
-                                            $comppoints = new PCWSAPI();
-                                            
-                                            $usermode = $comppointslogs->checkUserMode($cid);
-                                            if ($usermode == 0) {
-                                                
-                                               //Insert to comppointslogs  
-                                              $comppoints->AddCompPoints($systemusername ,$loyaltyCardNo,  $siteid,  $cid, toInt($amount));
 
-                                           } 
-                                        }
-
-//------------------------------------------------------------------------------------------------------------>>>>>>>>>>>>> 
-                                    }      
-                                    
-                                    //Insert to vmsrequestlogs
-                                    $vmsrequestlogsID = $vmsrequestlogs->insert($vouchercode, $accid, $terminal_id,$trackingId);
-                                    
-                                    //use voucher and check result
-                                    $useVoucherResult = $voucherManagement->useVoucher($accid, $trackingId, $vouchercode, $terminal_id, $source, $siteid, $mid);
-                                   
-                                    //If first try of use voucher fails, retry
-                                    if(isset($useVoucherResult['UseVoucher']['ErrorCode']) && $useVoucherResult['UseVoucher']['ErrorCode'] != 0)
-                                    {
-                                            $vmsrequestlogs->updateVMSRequestLogs($vmsrequestlogsID, 2);
-                                            
-                                            //verify tracking id, if tracking id is not found and voucher is unclaimed proceed to use voucher
-                                            $verifyVoucherResult = $voucherManagement->verifyVoucher('', $accid, $source, $trackingId);
-                                             
-                                            //check if tracking result is not found that means transaction was not successful on the first try
-                                            if(!isset($verifyVoucherResult['VerifyVoucher']['ErrorCode']) && $verifyVoucherResult['VerifyVoucher']['ErrorCode'] != 0){
-
-                                                $trackingId = "c".$casinoAPI->udate('YmdHisu');
-                                                
-                                                //Insert to vmsrequestlogs
-                                                $vmsrequestlogs->insert($vouchercode, $accid, $terminal_id,$trackingId);
-                                                
-                                                $useVoucherResult = $voucherManagement->useVoucher($accid, $trackingId, $vouchercode, $terminal_id, $source, $siteid, $mid);
-                                                
-                                                if(isset($useVoucherResult['UseVoucher']['ErrorCode']) && $useVoucherResult['UseVoucher']['ErrorCode'] != 0)
-                                                {
-                                                        $vmsrequestlogs->updateVMSRequestLogs($vmsrequestlogsID, 2);
-                                                        
-                                                        $result = array('message'=>$useVoucherResult['UseVoucher']['TransMsg']);
-                                                        echo json_encode($result);
-                                                        Mirage::app()->end(); 
-                                                } else {
-                                                        //check if the useVoucher is successful, if success insert to vmsrequestlogs and status = 1 else 2
-                                                        $vmsrequestlogs->updateVMSRequestLogs($vmsrequestlogsID, 1);
-                                                }
-                                            }
-                                            
-                                    } else {
-                                        //check if the useVoucher is successful, if success insert to vmsrequestlogs and status = 1 else 2
-                                        $vmsrequestlogs->updateVMSRequestLogs($vmsrequestlogsID, 1);
                                     }
+                                    else{
+                                        $result = array('message'=>$result);
+                                        logger($result);
+                                    }    
                                 }
+                                else{
+                                    $message = 'Error: Deposit Failed';
+                                    $result = array('message'=>$message);
+                                    logger($message);
+                                } 
+                            }
                         }
                         else
                         {
@@ -983,7 +956,26 @@ class FrontendController extends MI_Controller {
                 
                     $systemusername = Mirage::app()->param['pcwssysusername'];
                     $result = $pcwsapi->Deposit($loyaltyCardNo, $cid, $paymentType, $amount, $siteid, $accid, $systemusername, $tracenumber, $referencenumber);
-                
+                    if($result[0] == 200){
+                        $result = json_decode($result[1]);
+
+                        $result = $result->Deposit->TransactionMessage;
+
+                        if(preg_match('/\Successful\b/', $result)) {
+                            $result = array('message'=>$result);
+
+                        }
+                        else{
+                            $result = array('message'=>$result);
+                            logger($result);
+                        }    
+
+                    }
+                    else{
+                        $message = 'Error: Deposit Failed';
+                        $result = array('message'=>$message);
+                        logger($message);
+                    }                 
 //                $pos_account_no = $sitesModel->getPosAccountNo($siteid);            
 //
 //                //Insert to loyaltyrequestlogs
@@ -1001,26 +993,26 @@ class FrontendController extends MI_Controller {
 //                   }
 
         }
-        if($result[0] == 200){
-            $result = json_decode($result[1]);
-
-            $result = $result->Deposit->TransactionMessage;
-                    
-            if(preg_match('/\Successful\b/', $result)) {
-                $result = array('message'=>$result);
-
-            }
-            else{
-                $result = array('message'=>$result);
-                logger($result);
-            }    
-            
-        }
-        else{
-            $message = 'Error: Deposit Failed';
-            $result = array('message'=>$message);
-            logger($message);
-        }    
+//        if($result[0] == 200){
+//            $result = json_decode($result[1]);
+//
+//            $result = $result->Deposit->TransactionMessage;
+//                    
+//            if(preg_match('/\Successful\b/', $result)) {
+//                $result = array('message'=>$result);
+//
+//            }
+//            else{
+//                $result = array('message'=>$result);
+//                logger($result);
+//            }    
+//            
+//        }
+//        else{
+//            $message = 'Error: Deposit Failed';
+//            $result = array('message'=>$message);
+//            logger($message);
+//        }    
         
         echo json_encode($result);
         Mirage::app()->end();

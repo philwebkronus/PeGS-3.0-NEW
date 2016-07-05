@@ -1629,7 +1629,12 @@ class TransactionSummaryModel extends MI_Model{
         INNER JOIN transactionrequestlogs trl ON tdtls.TransactionReferenceID = trl.TransactionReferenceID
         INNER JOIN accounts a ON tdtls.CreatedByAID = a.AID
         WHERE tdtls.DateCreated >= :startdate AND tdtls.DateCreated < :enddate
-        AND tdtls.Status IN (1,4) AND tdtls.SiteID = :siteid 
+        AND tdtls.Status IN (1,4) AND tdtls.SiteID = :siteid
+        AND trl.MID = tdtls.MID
+	AND trl.TerminalID = tdtls.TerminalID
+	AND trl.Amount = tdtls.Amount
+	AND trl.TransactionType = tdtls.TransactionType
+	AND trl.ServiceID = tdtls.ServiceID
         GROUP BY tdtls.ServiceID";
         
         $param = array(
