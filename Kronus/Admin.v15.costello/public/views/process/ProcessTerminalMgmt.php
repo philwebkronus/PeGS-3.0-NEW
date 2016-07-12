@@ -644,6 +644,7 @@ if ($connected) {
                                         $isVIP = 0;
                                     }
                                     $PID = $_RealtimeGamingCashierAPI->GetPIDFromLogin($login);
+                                    $vaccountExist = count($PID['GetPIDFromLoginResult']);
                                     break;
                                 case strstr($vprovidername, "v15"):
                                     $hashedpass = sha1($password);
@@ -708,7 +709,7 @@ if ($connected) {
                             }
 
                             if ($usermode == 0) {
-                                if (count($PID['GetPIDFromLoginResult'])<=0 || $vaccountExist<=0)
+                                if ($vaccountExist<=0)
                                     {
                                     $vapiResult = $_CasinoGamingPlayerAPI->createTerminalAccount($vprovidername, $serverId, $url, $login, $password, $aid, $currency, $email, $fname, $lname, $dayphone, $evephone, $addr1, $addr2, $city, $country, $state, $zip, $userID, $birthdate, $fax, $occupation, $sex, $alias, $casinoID, $ip, $mac, $downloadID, $clientID, $putInAffPID, $calledFromCasino, $hashedPassword, $agentID, $currentPosition, $thirdPartyPID, $capiusername, $capipassword, $capiplayername, $capiserverID, $isVIP, $usermode);
                                     if($vapiResult == NULL) { // proceeed if certificate does not match
@@ -747,20 +748,23 @@ if ($connected) {
                                     //if provider is RTG, then
                                     if (strstr($vprovidername, "RTG") == true) {
                                         //Call API to get Account Info
-                                        if($usermode == 0) {
-                                            $vapiResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $serverId, $cashierurl, $password, $vprovidername, $usermode);
-                                            if($vapiResult == NULL) { // proceeed if certificate does not match
-                                                $vapiResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $serverId, $cashierurl, $password, $vprovidername);
-                                            }
-                                        }
-                                        if($usermode == 2) {
-                                            $vapiResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $serverId, $cashierurl, $password, $vprovidername, $usermode);
-                                        }
-
+//                                        if($usermode == 0) {
+//                                            $vapiResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $serverId, $cashierurl, $password, $vprovidername, $usermode);
+//                                            if($vapiResult == NULL) { // proceeed if certificate does not match
+//                                                $vapiResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $serverId, $cashierurl, $password, $vprovidername);
+//                                            }
+//                                        }
+//                                        if($usermode == 2) {
+//                                            $vapiResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $serverId, $cashierurl, $password, $vprovidername, $usermode);
+//                                        }
+                                        $terminalID = $oterminal->getTerminalIDz($login);
+                                        if ($terminalID != false)
+                                        {
+                                        $vapiResult = $oterminal->getTerminalServicePassword($terminalID, $serverId);
                                         //check if exists in RTG
-                                        if (isset($vapiResult['AccountInfo']['password']) &&
-                                                $vapiResult['AccountInfo']['password'] <> null) {
-                                            $vrtgoldpwd = $vapiResult['AccountInfo']['password'];
+                                        if (isset($vapiResult['ServicePassword']) &&
+                                                $vapiResult['ServicePassword'] <> null) {
+                                            $vrtgoldpwd = $vapiResult['ServicePassword'];
 
 
                                             //Call API Change Password
@@ -779,7 +783,26 @@ if ($connected) {
                                             if ($usermode == 2) {
                                                 $vapiResult = $_CasinoGamingPlayerAPI->changeTerminalPassword($vprovidername, $serverId, $url, $casinoID, $login, $vrtgoldpwd, $password, $capiusername, $capipassword, $capiplayername, $capiserverID, $usermode);
                                             }
-                                        }
+                                           if (isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true)
+                                                $apisuccess = 1;
+                                            else
+                                                $apisuccess = 0; 
+                                        } else
+                                            {
+                                            $msg = "Terminal Service Assignment : Create Player Full";
+                                            $oterminal->close();
+                                            $_SESSION['mess'] = $msg;
+                                            header("Location: ../serviceassignment.php");
+                                            break;
+                                            }
+                                        }   else
+                                            {
+                                            $msg = "Terminal Service Assignment : Create Player Full";
+                                            $oterminal->close();
+                                            $_SESSION['mess'] = $msg;
+                                            header("Location: ../serviceassignment.php");
+                                            break;
+                                            }
                                     }
                                     //if provider is MG, then
                                     else if (strstr($vprovidername, "MG") == true) {
@@ -852,7 +875,9 @@ if ($connected) {
                                 $oterminal->logtoaudit($new_sessionid, $accountID, $vtransdetails, $vdate, $vipaddress, $vauditfuncID);
                             }
                             else
+                            {
                                 $msg = "API Error: " . $vapiResult['ErrorMessage'];
+                            }
                         }
                     }
                 }

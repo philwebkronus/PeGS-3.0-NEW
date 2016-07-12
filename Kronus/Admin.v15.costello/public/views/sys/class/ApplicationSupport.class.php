@@ -2063,6 +2063,15 @@ class ApplicationSupport extends DBHandler
         $this->execute();
         return $this->fetchData();
     }
+      function getServicePassword($terminalid, $serviceID)
+    {
+        $stmt = "SELECT ServicePassword FROM terminalservices WHERE TerminalID = ? AND ServiceID = ?";
+        $this->prepare($stmt);
+        $this->bindparameter(1, $terminalid);
+        $this->bindparameter(2, $serviceID);
+        $this->execute();
+        return $this->fetchData();
+    }
      
      
      function getServiceUserMode($serviceID)
@@ -2075,8 +2084,7 @@ class ApplicationSupport extends DBHandler
            $result =  $this->fetchData();
            return $result['UserMode'];
      }
-     
-      //**************** FOR REMOVAL *******************//        
+          
 //     function getTerminalServicePassword($terminalid, $serviceID)
 //     {
 //           $stmt = "SELECT ServicePassword FROM terminalservices 
@@ -2085,8 +2093,8 @@ class ApplicationSupport extends DBHandler
 //           $this->bindparameter(1, $terminalid);
 //           $this->bindparameter(2, $serviceID);
 //           $this->execute($stmt);
-//           $result =  $this->fetchData();
-//           return $result['ServicePassword'];
+//           return $this->fetchData();
+//           
 //     }
       //**************** FOR REMOVAL *******************//     
 //     function checkTerminalServices($terminalid, $serviceID)

@@ -1918,24 +1918,33 @@ if ($connected && $connected2 && $connected3) {
 
 
                                             //Call API to get Account Info, for RTG casino
-                                            if ($usermode == 0) {
-                                                $vapiResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $vserviceID, $cashierurl, '', $vprovidername, $usermode);
-                                                if ($vapiResult == NULL) { // proceeed if certificate does not match
-                                                    $vapiResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $vserviceID, $cashierurl, '', $vprovidername);
-                                                }
+//                                            if ($usermode == 0) {
+//                                                $vapiResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $vserviceID, $cashierurl, '', $vprovidername, $usermode);
+//                                                if ($vapiResult == NULL) { // proceeed if certificate does not match
+//                                                    $vapiResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $vserviceID, $cashierurl, '', $vprovidername);
+//                                                }
+//                                            }
+//                                            if ($usermode == 2) {
+//                                                $vapiResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $vserviceID, $cashierurl, '', $vprovidername, $usermode);
+//                                            }
+                                           $terminalID = $oas->getTerminalIDs($login);
+                                            if ($terminalID['TerminalID'] == null)
+                                            {
+                                                $vapiResult['IsSucceed'] = false;
                                             }
-                                            if ($usermode == 2) {
-                                                $vapiResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $vserviceID, $cashierurl, '', $vprovidername, $usermode);
+                                            else
+                                            {
+                                                $terminalID = $terminalID['TerminalID'];
+                                            $servicePassword = $oas->getServicePassword($terminalID, $vserviceID);
+                                            $vapiResult['IsSucceed'] = true;
                                             }
-
-
                                             //Verify if API Call was successful
                                             if (isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true) {
                                                 //check if exists in RTG
-                                                if (isset($vapiResult['AccountInfo']['password']) &&
-                                                        $vapiResult['AccountInfo']['password'] <> null) {
+                                                if (isset($servicePassword['ServicePassword']) &&
+                                                        $servicePassword['ServicePassword'] <> null) {
                                                     $isexists = 1;
-                                                    $vrtgoldpwd = $vapiResult['AccountInfo']['password'];
+                                                    $vrtgoldpwd = $servicePassword['ServicePassword'];
 
                                                     //Call API Change Password
                                                     if ($usermode == 0) {
@@ -2866,24 +2875,35 @@ if ($connected && $connected2 && $connected3) {
 
                                     
                                     //Call API to get Account Info, for RTG casino
-                                    if ($usermode == 0) {
-                                        $vapiResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $vserviceID, $cashierurl, '', $vprovidername, $usermode);
-                                        if ($vapiResult == null) { // proceeed if certificate does not match
-                                            $vapiResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $vserviceID, $cashierurl, '', $vprovidername);
-                                        }
-                                    }
-
-                                    if ($usermode == 2) {
-                                        $vapiResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $vserviceID, $cashierurl, '', $vprovidername);
-                                    }
-
+//                                    if ($usermode == 0) {
+//                                        $vapiResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $vserviceID, $cashierurl, '', $vprovidername, $usermode);
+//                                        if ($vapiResult == null) { // proceeed if certificate does not match
+//                                            $vapiResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $vserviceID, $cashierurl, '', $vprovidername);
+//                                        }
+//                                    }
+//
+//                                    if ($usermode == 2) {
+//                                        $vapiResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $vserviceID, $cashierurl, '', $vprovidername);
+//                                    }
+                                        $terminalID = $oas->getTerminalIDs($login);
+                                            if ($terminalID['TerminalID'] == null)
+                                            {
+                                                $vapiResult['IsSucceed'] = false;
+                                                $isapicreated == 1;
+                                            }
+                                            else
+                                            {
+                                            $terminal = $terminalID['TerminalID'];
+                                            $getpassword = $oas->getServicePassword($terminal, $vserviceID);
+                                            $vapiResult['IsSucceed'] = true;
+                                            }
                                     //Verify if API Call was successful
                                     if (isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true) {
                                         //check if exists in RTG
-                                        if (isset($vapiResult['AccountInfo']['password']) &&
-                                                $vapiResult['AccountInfo']['password'] <> null) {
+                                        if (isset($getpassword['ServicePassword']) &&
+                                                $getpassword['ServicePassword'] <> null) {
                                             $isexists = 1;
-                                            $oldpassword = $vapiResult['AccountInfo']['password'];
+                                            $oldpassword = $getpassword['ServicePassword'];
 
                                             if ($usermode == 0) {
                                                 $vapiResult = $_CasinoGamingPlayerAPI->changeTerminalPassword($vprovidername, $vserviceID, $playerurl, $casinoID, $login, $oldpassword, $password, $capiusername, $capipassword, $capiplayername, $capiserverID, $usermode);

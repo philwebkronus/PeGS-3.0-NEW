@@ -708,7 +708,7 @@ class TerminalManagement extends DBHandler
            $this->bindparameter(2, $serviceID);
            $this->execute($stmt);
            $result =  $this->fetchData();
-           return $result['ServicePassword'];
+           return $result;
      }
      
 //     function checkTerminalServiceUserMode($terminalid){

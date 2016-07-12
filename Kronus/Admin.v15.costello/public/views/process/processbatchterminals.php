@@ -434,21 +434,25 @@ if ($connected) {
                                         else
                                         {                                           
                                             //Call API to get Account Info
-                                            if ($usermode == 0) {
-                                                $vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl, $password, $rtgvprovider, $usermode);
-                                                if ($vplayerResult == NULL) { // proceeed if certificate does not match
-                                                    $vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl,$rtgvprovider, $password);
-                                                }
-                                            }
-                                            if ($usermode == 2) {
-                                                $vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl, $password, $rtgvprovider, $usermode);
-                                            }
+//                                            if ($usermode == 0) {
+                                                //$vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl, $password, $rtgvprovider, $usermode);
+                                                $terminalID = $obatch->getTerminalIDbyTerminalCode($login);
+                                                if ($terminalID['TerminalID'] != false)
+                                                {
+                                                $vplayerResult = $obatch->getServicePasssword($terminalID, $vserviceID);
+//                                                if ($vplayerResult == NULL) { // proceeed if certificate does not match
+//                                                    $vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl,$rtgvprovider, $password);
+//                                                }
+//                                            }
+//                                            if ($usermode == 2) {
+                                                //$vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl, $password, $rtgvprovider, $usermode);
+//                                            }
 
                                             //check if exists in RTG
-                                            if (isset($vplayerResult['AccountInfo']['password']) &&
-                                                    $vplayerResult['AccountInfo']['password'] <> null) {
+                                            if (isset($vplayerResult['ServicePassword']) &&
+                                                    $vplayerResult['ServicePassword'] <> null) {
 
-                                                $vrtgoldpwd = $vplayerResult['AccountInfo']['password'];
+                                                $vrtgoldpwd = $vplayerResult['ServicePassword'];
 
                                                 if ($usermode == 1) {
                                                     $vplayerResult = array('IsSucceed' => true);
@@ -477,10 +481,15 @@ if ($connected) {
                                                 }
                                             } else {
                                                 $isapisuccess = 0;
-                                                $errmsg = "RTG " . $vplayerResult['ErrorMessage'];
+                                                $errmsg = "Error in Changing Terminal Password";
                                            }
                                         $vplayerResult['IsSucceed'] == true;
                                         $vplayerResult['Added'] == true;
+                                        } 
+                                            else 
+                                            {
+                                            $vplayerResult = array('IsSucceed' => false, 'Added' => false, 'ErrorCode' => 5);
+                                            } 
                                         }
                                     }
 
@@ -543,16 +552,19 @@ if ($connected) {
                                                     || $vplayerResult['ErrorCode']==10) {
 
                                                 //Call API to get Account Info
-                                                if ($usermode == 0) {
-                                                    $vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl, $password, $rtgvprovider, $usermode);
-                                                    if ($vplayerResult == NULL) { // proceeed if certificate does not match
-                                                        $vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl, $password, $rtgvprovider);
-                                                    }
-                                                }
-                                                if ($usermode == 2) {
-                                                    $vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl, $password, $rtgvprovider, $usermode);
-                                                }
-
+//                                                if ($usermode == 0) {
+//                                                    $vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl, $password, $rtgvprovider, $usermode);
+//                                                    if ($vplayerResult == NULL) { // proceeed if certificate does not match
+//                                                        $vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl, $password, $rtgvprovider);
+//                                                    }
+//                                                }
+//                                                if ($usermode == 2) {
+//                                                    $vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl, $password, $rtgvprovider, $usermode);
+//                                                }
+                                                $terminalID = $obatch->getTerminalIDbyTerminalCode($login);
+                                                if ($terminalID['TerminalID'] != false)
+                                                {
+                                                $vplayerResult = $obatch->getServicePasssword($terminalID, $vserviceID);
                                                 //check if exists in RTG
                                                 if (isset($vplayerResult['AccountInfo']['password']) &&
                                                         $vplayerResult['AccountInfo']['password'] <> null) {
@@ -587,6 +599,10 @@ if ($connected) {
                                                     $isapisuccess = 0;
                                                     $errmsg = "RTG " . $vplayerResult['ErrorMessage'];
                                                 }
+                                            }else {
+                                            $isapisuccess = 0;
+                                            $errmsg = "Create Player Full";
+                                            }
                                             } else {
                                                 $isapisuccess = 0;
                                                 $errmsg = "RTG " . $vplayerResult['ErrorMessage'];
@@ -602,21 +618,24 @@ if ($connected) {
                                                 isset($vplayerResult['ErrorID']) && $vplayerResult['ErrorID'] == 5) {
 
                                             //Call API to get Account Info
-                                            if ($usermode == 0) {
-                                                $vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl, $password, $rtgvprovider, $usermode);
-                                                if ($vplayerResult == NULL) { // proceeed if certificate does not match
-                                                    $vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl, $password, $rtgvprovider);
-                                                }
-                                            }
-                                            if ($usermode == 2) {
-                                                $vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl, $password, $rtgvprovider, $usermode);
-                                            }
-
+//                                            if ($usermode == 0) {
+//                                                $vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl, $password, $rtgvprovider, $usermode);
+//                                                if ($vplayerResult == NULL) { // proceeed if certificate does not match
+//                                                 $vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl, $password, $rtgvprovider);
+//                                                }
+//                                            }
+//                                            if ($usermode == 2) {
+//                                                $vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl, $password, $rtgvprovider, $usermode);
+//                                            }
+                                            $terminalID = $obatch->getTerminalIDbyTerminalCode($login);
+                                                if ($terminalID['TerminalID'] != false)
+                                                {
+                                                $vplayerResult = $obatch->getServicePasssword($terminalID['TerminalID'], $vserviceID);
                                             //check if exists in RTG
-                                            if (isset($vplayerResult['AccountInfo']['password']) &&
-                                                    $vplayerResult['AccountInfo']['password'] <> null) {
+                                            if (isset($vplayerResult) &&
+                                                    $vplayerResult <> null) {
 
-                                                $vrtgoldpwd = $vplayerResult['AccountInfo']['password'];
+                                                $vrtgoldpwd = $vplayerResult;
 
                                                 if ($usermode == 1) {
                                                     $vplayerResult = array('IsSucceed' => true);
@@ -646,6 +665,10 @@ if ($connected) {
                                             } else {
                                                 $isapisuccess = 0;
                                                 $errmsg = "RTG " . $vplayerResult['ErrorMessage'];
+                                            }
+                                            } else {
+                                            $isapisuccess = 0;
+                                            $errmsg = "Create Player Full";
                                             }
                                         } else {
                                             $isapisuccess = 0;

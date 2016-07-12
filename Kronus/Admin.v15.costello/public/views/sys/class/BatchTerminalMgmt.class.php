@@ -261,6 +261,29 @@ class BatchTerminalMgmt extends DBHandler{
             return false;
         return $result['ServiceGroupName'];
     }
+        public function getServicePasssword($terminalID, $serviceID){
+        $sql = 'SELECT ServicePassword FROM terminalservices
+                WHERE TerminalID = ? AND ServiceID = ?';
+        $this->prepare($sql);
+        $this->bindparameter(1, $terminalID);
+        $this->bindparameter(2, $serviceID);
+        $this->execute($sql);
+        $result =  $this->fetchData();
+        if(!isset($result['ServicePassword']))
+            return false;
+        return $result['ServicePassword'];
+    }
+        public function getTerminalIDbyTerminalCode($terminalCode){
+        $sql = 'SELECT TerminalID FROM terminals
+                WHERE TerminalCode = ?';
+        $this->prepare($sql);
+        $this->bindparameter(1, $terminalCode);
+        $this->execute($sql);
+        $result =  $this->fetchData();
+        if(!isset($result['TerminalID']))
+            return false;
+        return $result['TerminalID'];
+    }
 }
 
 ?>
