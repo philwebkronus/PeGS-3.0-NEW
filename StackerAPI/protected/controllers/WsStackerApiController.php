@@ -236,10 +236,10 @@ class wsStackerApiController extends Controller {
                     $_accountsModel = new AccountsModel();
                     $_refCashDenominationModel = new RefCashDenominationModel();
                     $_stackerSessionCashDenomModel = new StackerSessionCashDenomModel();
-                    $getSiteID = $_terminalsModel->getTerminalIDByCode($sc2);
-                    $siteID = $getSiteID[0]['SiteID'];
-                    $enabledSite = Yii::app()->params['enabledSite'];
-                    if ($siteID == $enabledSite){
+//                    $getSiteID = $_terminalsModel->getTerminalIDByCode($sc2);
+//                    $siteID = $getSiteID[0]['SiteID'];
+//                    $enabledSite = Yii::app()->params['enabledSite'];
+//                    if ($siteID == $enabledSite){
                     if ($amount >= $allowedAmount) { //Input amount should be greater than or equal to allowed amount
                         $isTrackingIDExists = $_stackerDetails->isTrackingIDExists($trackingID);
 
@@ -514,16 +514,16 @@ class wsStackerApiController extends Controller {
                         $errorCode = 4;
                         Utilities::log("Error Message: " . $transMsg . " ErrorCode: " . $errorCode);
                     }
-                    }else
-                        {
-                        // ******************* DISABLE Genesis Reload *********************//
-                        $transMsg = 'Reload using genesis terminal is temporarily disabled Please Use Cashier Load tab';
-                        $errorCode = 29;
-                        $module = 'LogStackerTransaction';
-                        Utilities::log("Error Message: " . $transMsg . " ErrorCode: " . $errorCode);
-                        $this->_sendResponse(200, CJSON::encode(CommonController::StackerRetMsg($module, $transMsg, $errorCode)));
-                        exit;
-                        }
+//                    }else
+//                        {
+//                        // ******************* DISABLE Genesis Reload *********************//
+//                        $transMsg = 'Reload using genesis terminal is temporarily disabled Please Use Cashier Load tab';
+//                        $errorCode = 29;
+//                        $module = 'LogStackerTransaction';
+//                        Utilities::log("Error Message: " . $transMsg . " ErrorCode: " . $errorCode);
+//                        $this->_sendResponse(200, CJSON::encode(CommonController::StackerRetMsg($module, $transMsg, $errorCode)));
+//                        exit;
+//                        }
                 } else {
                     $transMsg = 'Invalid input parameter.';
                     $errorCode = 2;
@@ -567,10 +567,10 @@ class wsStackerApiController extends Controller {
                     $mCardNumber = trim($request['MembershipCardNumber']);
                     $sc = Yii::app()->params['SitePrefix'] . $terminalName;
                     $sc2 = Yii::app()->params['SitePrefix2'] . $terminalName; //Prefix (eg. ICSA-)
-                    $getSiteID = $_TerminalsModel->getTerminalIDByCode($sc2);
-                    $siteID = $getSiteID[0]['SiteID'];
-                    $enabledSite = Yii::app()->params['enabledSite'];
-                    if ($siteID == $enabledSite){
+//                    $getSiteID = $_TerminalsModel->getTerminalIDByCode($sc2);
+//                    $siteID = $getSiteID[0]['SiteID'];
+//                    $enabledSite = Yii::app()->params['enabledSite'];
+//                    if ($siteID == $enabledSite){
                     $countMCard = $_memberCardsModel->isCardNumberExists($mCardNumber);
                     if ($countMCard > 0) {
                         $MID = $_memberCardsModel->getMIDByCardNumber($mCardNumber);
@@ -649,15 +649,15 @@ class wsStackerApiController extends Controller {
                         $errorCode = 7;
                         Utilities::log("Error Message: " . $transMsg . " ErrorCode: " . $errorCode);
                     }
-                }  else {
-                        //******************* DISABLE Genesis Reload *********************//
-                        $transMsg = 'Reload using genesis terminal is temporarily disabled Please Use Cashier Load tab';
-                        $errorCode = 29;
-                        $module = 'GetStackerId';
-                        Utilities::log("Error Message: " . $transMsg . " ErrorCode: " . $errorCode);
-                        $this->_sendResponse(200, CJSON::encode(CommonController::StackerRetMsg($module, $transMsg, $errorCode)));
-                        exit;
-                }
+//                }  else {
+//                        //******************* DISABLE Genesis Reload *********************//
+//                        $transMsg = 'Reload using genesis terminal is temporarily disabled Please Use Cashier Load tab';
+//                        $errorCode = 29;
+//                        $module = 'GetStackerId';
+//                        Utilities::log("Error Message: " . $transMsg . " ErrorCode: " . $errorCode);
+//                        $this->_sendResponse(200, CJSON::encode(CommonController::StackerRetMsg($module, $transMsg, $errorCode)));
+//                        exit;
+//                }
                 } else {
                     $transMsg = 'Invalid input parameter.';
                     $errorCode = 2;

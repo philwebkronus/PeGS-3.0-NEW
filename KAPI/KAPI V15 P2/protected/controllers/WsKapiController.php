@@ -3275,9 +3275,9 @@ class WsKapiController extends Controller {
                     $terminalName = Yii::app()->params['SitePrefix'] . $terminalName;
                     $terminalID = $terminalsModel->getTerminalSiteID($terminalName);
                     
-                    $siteid = $terminalID[0]['SiteID'];
-                    $enabledSite = Yii::app()->params['enabledSite'];
-                    if ($siteid == $enabledSite){
+//                    $siteid = $terminalID[0]['SiteID'];
+//                    $enabledSite = Yii::app()->params['enabledSite'];
+//                    if ($siteid == $enabledSite){
                     if ($terminalID == false) {
                         $message = "Invalid Terminal Name";
                         $this->_sendResponse(200, CommonController::eSafeReloadGenResponse(2, $DateTime, '', $message, 23));
@@ -3649,13 +3649,13 @@ class WsKapiController extends Controller {
                         $message = 'Tracking ID must be unique.';
                         $this->_sendResponse(200, CommonController::eSafeReloadGenResponse(2, $DateTime, '', $message, 40));
                     }
-                }else
-                {
-                        //******************* DISABLE Genesis Reload *********************//
-                        $message = "Reload using genesis terminal is temporarily disabled Please Use Cashier Load tab";
-                        $this->_sendResponse(200, CommonController::eSafeReloadGenResponse(2, $DateTime, '', $message, 23));
-                        exit;   
-                }
+//                }else
+//                {
+//                        //******************* DISABLE Genesis Reload *********************//
+//                        $message = "Reload using genesis terminal is temporarily disabled Please Use Cashier Load tab";
+//                        $this->_sendResponse(200, CommonController::eSafeReloadGenResponse(2, $DateTime, '', $message, 23));
+//                        exit;   
+//                }
                 }
                 else {
                     $message = "Parameters are not set";
@@ -3741,10 +3741,10 @@ class WsKapiController extends Controller {
 
             $terminalName = Yii::app()->params['SitePrefix'] . $terminalName;
             $terminalID = $terminals->getTerminalSiteID($terminalName);
-            $siteid = $terminalID[0]['SiteID'];
-            $enabledSite = Yii::app()->params['enabledSite'];
-            if ($siteid == $enabledSite)
-            {
+//            $siteid = $terminalID[0]['SiteID'];
+//            $enabledSite = Yii::app()->params['enabledSite'];
+//            if ($siteid == $enabledSite)
+//            {
             if ($terminalID == false) {
                 $message = "Invalid Terminal Name";
                 $this->_sendResponse(200, CommonController::eSafeRedemptionGenResponse(2, '', '', '', '', '', '', '', $message, 0, 23));
@@ -4008,16 +4008,16 @@ class WsKapiController extends Controller {
                 $message = 'Tracking ID must be unique.';
                 $this->_sendResponse(200, CommonController::eSafeRedemptionGenResponse(2, '', '', '', '', '', '', '', $message, 0, 40));
             }
-        }else
-            {
-//                     ******************* DISABLE Genesis Reload *********************//
-                $message = "Withdrawal function in this terminal is currently disabled. Please contact GA for assistance.";
-                $this->_sendResponse(200, CommonController::eSafeRedemptionGenResponse(2, '', '', '', '', '', '', '', $message, 0, 11));
-                exit;
-            }
+//        }else
+//            {
+////                     ******************* DISABLE Genesis Reload *********************//
+//                $message = "Withdrawal function in this terminal is currently disabled. Please contact GA for assistance.";
+//                $this->_sendResponse(200, CommonController::eSafeRedemptionGenResponse(2, '', '', '', '', '', '', '', $message, 0, 11));
+//                exit;
+//            }
         } else {
-            //$message = "Parameters are not set";
-            $message = "Withdrawal function in this terminal is currently disabled. Please contact GA for assistance.";
+            $message = "Parameters are not set";
+            //$message = "Withdrawal function in this terminal is currently disabled. Please contact GA for assistance.";
             $this->_sendResponse(200, CommonController::eSafeRedemptionGenResponse(2, '', '', '', '', '', '', '', $message, 0, 11));
         }
     }
