@@ -3722,9 +3722,9 @@ class WsKapiController extends Controller {
         $partialAmount = htmlentities($request['Amount']);
         
          //******************* DISABLE Genesis Reload *********************//
-//        $message = "Withdrawal function in this terminal is currently disabled. Please contact GA for assistance.";
-//        $this->_sendResponse(200, CommonController::eSafeRedemptionGenResponse(2, '', '', '', '', '', '', '', $message, 0, 11));
-//        exit;
+        $message = "Withdrawal function in this terminal is currently disabled. Please contact GA for assistance.";
+        $this->_sendResponse(200, CommonController::eSafeRedemptionGenResponse(2, '', '', '', '', '', '', '', $message, 0, 11));
+        exit;
         $loyaltyCardNo = '';
         if (isset($terminalName) && $terminalName != '' && isset($trackingID) && $trackingID != '' && isset($stackerBatchID) && $stackerBatchID != '') {
 
