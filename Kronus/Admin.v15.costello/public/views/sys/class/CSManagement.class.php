@@ -616,8 +616,89 @@ class CSManagement extends DBHandler{
             return 0;
           }
       }
+      /**
+      Added on : July 07, 2016
+      Author   : John Aaron Vida
+      Description:
+        for MSW Transactions Reports
+     */
+    //check betRefID
+      function chkbetrefid($zBetRefID){
+           $this->prepare("SELECT MID FROM wagertransdetails WHERE BetRefID = '$zBetRefID'");
+           $this->execute();
+           return $this->fetchData();
+      }
+      //Count All Bets, Payouts & Resettlement Transactions using BetRefID
+      function countbetsdetails($zBetRefID){
+           $this->prepare("SELECT COUNT(WagerTransDetailsID) as count FROM wagertransdetails  WHERE BetRefID = '$zBetRefID'
+                   ORDER BY TransDate DESC");
+           $this->execute();
+           return $this->fetchAllData();
+      }
+      //get All Bets, Payouts & Resettlement Transactions using BetRefID
+      function getbetsdetails($zBetRefID, $zstart, $zlimit){
+          // Jgrid
+          if($zstart != null && $zlimit != null){
+           $this->prepare("SELECT WagerTransDetailsID, BetSlipID, TransTypeID , Amount, TransactionNo, TransDate, LastTransUpdate, 
+                   ResettleType, Status, Option1 FROM wagertransdetails  WHERE BetRefID = '$zBetRefID'
+                   ORDER BY TransDate DESC
+                   LIMIT ".$zstart.",".$zlimit."");
+           //Excel And PDF Generation
+          }else{
+                   $this->prepare("SELECT WagerTransDetailsID, BetSlipID, TransTypeID , Amount, TransactionNo, TransDate, LastTransUpdate, 
+                   ResettleType, Status, Option1 FROM wagertransdetails  WHERE BetRefID = '$zBetRefID'
+                   ORDER BY TransDate DESC");
+          }
+           $this->execute();
+           return $this->fetchAllData();
+      }
+      //Count All Recredit Transactions using BetRefID
+      function countrecreditdetails($zBetRefID){
+           $this->prepare("SELECT COUNT(RecreditTransDetailsID)as count FROM recredittransdetails  WHERE BetRefID = '$zBetRefID'
+                   ORDER BY TransDate DESC");
+           $this->execute();
+           return $this->fetchAllData();
+      }
+      //get All Recredit Transactions using BetRefID
+      function getrecreditdetails($zBetRefID , $zstart, $zlimit){
+          // Jgrid
+           if($zstart != null && $zlimit != null){
+           $this->prepare("SELECT RecreditTransDetailsID, BetSlipID, Amount, TransactionNo, TransDate, LastTransUpdate,
+                   Status, Option1 FROM recredittransdetails  WHERE BetRefID = '$zBetRefID'
+                   ORDER BY TransDate DESC
+                   LIMIT ".$zstart.",".$zlimit."");
+           }
+           //Excel And PDF Generation
+           else{
+           $this->prepare("SELECT RecreditTransDetailsID, BetSlipID, Amount, TransactionNo, TransDate, LastTransUpdate,
+                   Status, Option1 FROM recredittransdetails  WHERE BetRefID = '$zBetRefID'
+                   ORDER BY TransDate DESC");   
+           }
+           $this->execute();
+           return $this->fetchAllData();
+      }
+      //get CardNumber using MID
+      function getCardNumberUsingMID($zMID){
+           $this->prepare("SELECT  ms.ServiceUsername, mc.CardNumber FROM membership.memberservices ms 
+                            INNER JOIN loyaltydb.membercards mc ON ms.MID = mc.MID
+                            WHERE ms.MID =  ? AND ms.ServiceID = 20 AND mc.Status = 1");
+           $this->bindparameter(1, $zMID);
+           $this->execute();
+           return $this->fetchData();
+      }
+          //paginate site transactions
+    function paginateMSWtransaction($zdetails, $zstart, $zlimit)
+    {
+        $res = array();
+        foreach($zdetails as $value) 
+        {
+           $res[] = $value;
+        }
+        $res = array_slice($res, $zstart, $zlimit);
+        return $res;
+    }
 }
 
 ?>
 
-    
+     

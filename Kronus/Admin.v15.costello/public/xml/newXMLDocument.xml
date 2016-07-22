@@ -132,6 +132,7 @@
       <submenu id="99" name='e-SAFE Transaction History Per Membership Card' path='TopUpeWalletTransactionCardNumberHistory.php' group="e-SAFE Transaction History" pagename="19" />     
       <submenu id ="82" name='UB Last Transaction' group=" " path='LastTransactionub.php'  pagename="19" />
       <submenu id ="54" name='Audit Trail' path='rptaudittrail.php' pagename="19" group=' '/> 
+      <submenu id ="54" name='MSW Transactions' path='rptmswtransactions.php' pagename="19" group=' '/> 
    </menu>
 </right>
 <right id="7">   
@@ -193,6 +194,7 @@
         <submenu id="88" name="Reset Casino Account User Based" path='appunlockterminal_ub.php' group='Reset Casino Account'  pagename="17" />
         <submenu id="89" name="Manual Casino Fulfillment" path='manualAPIfulfillment.php' group=' '  pagename="17" />
         <submenu id="95" name="Manual e-SAFE Fulfillment" path='manualEwalletAPIfulfillment.php' group=' '  pagename="17" />
+        <!--<submenu id="98" name="Manual Points Redemption Fulfillment" path='manualPtsRedemptionAPIfulfillment.php' group=' '  pagename="17" />-->
         <submenu id="96" name="Active Session Checking" path='activesessionchecking.php' group=' '  pagename="17" />
         <submenu id="96" name="Enabling of Spyder" path='enablingofspyder.php' group=''  pagename="17" />
         <submenu id="97" name="Cashier URL Management" path='appurlmanagement.php' group=''  pagename="17" />
@@ -208,6 +210,7 @@
         <submenu id ="97" name='Manual e-SAFE Fulfillment History' group=" " path='manualewalletfulfillmenthistory.php'  pagename="19" /> 
         <submenu id ="81" name='Cashier Node Logins' group=" " path='rptcashierNodeLogins.php'  pagename="19" />
         <submenu id ="82" name='UB Last Transaction' group=" " path='LastTransactionub.php'  pagename="19" />    
+        <submenu id ="54" name='MSW Transactions' path='rptmswtransactions.php' pagename="19" group=' '/> 
      </menu>
 </right>
 <right id="11">
@@ -248,6 +251,7 @@
       <submenu id="99" name='e-SAFE Transaction History Per Membership Card' path='TopUpeWalletTransactionCardNumberHistory.php' group="e-SAFE Transaction History" pagename="19" /> 
       <submenu id ="82" name='UB Last Transaction' group=" " path='LastTransactionub.php'  pagename="19" />
       <submenu id ="54" name='Audit Trail' path='rptaudittrail.php' pagename="19" group=' '/> 
+      <submenu id ="54" name='MSW Transactions' path='rptmswtransactions.php' pagename="19" group=' '/> 
    </menu>
 </right>
 <right id="19">   
