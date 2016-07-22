@@ -258,10 +258,26 @@ class PCWSAPI{
             curl_close( $curl );
             
             $data = print_r($response,true);
-            $message = "[$methodname] Token: $token Output: $data";
+            $result = $this->checkResponse($data);
+            $message = "[$methodname] Token: $token Output: $result";
             logger($message, "Response", '', true);
 
             return array( $http_status, $response );
     }
+    /*
+     * Added July 21, 2016
+     * John Aaron Vida
+     * Stripper for PCWS API Request and Response
+     */
+    public function checkResponse($data){
+        $obj = json_decode($data);
+        if($obj === null) {
+            $pattern = "/<p class=\"message\">([\w\W]*?)<\/p>/";
+            preg_match($pattern, $data, $matches);
+            $result=$matches[1];
+            return trim($result);
+        }
+        return $data;
+    } 
 }
 ?>
