@@ -465,7 +465,7 @@ class WsKapiController extends Controller {
                                                     if (isset($resultDeposit['TransactionInfo']['DepositGenericResult'])) {
                                                         $transrefid = $resultDeposit['TransactionInfo']['DepositGenericResult']['transactionID'];
                                                         $apiresult = $resultDeposit['TransactionInfo']['DepositGenericResult']['transactionStatus'];
-                                                        $apierrmsg = $resultDeposit['TransactionInfo']['DepositGenericResult']['ErrorMessage'];
+                                                        $apierrmsg = $resultDeposit['TransactionInfo']['DepositGenericResult']['errorMsg'];
                                                     }
                                                     //MG / Vibrant Vegas
                                                     else if (isset($resultDeposit['TransactionInfo']['MG'])) {
@@ -635,13 +635,20 @@ class WsKapiController extends Controller {
                                             $servicePassword = $msResult['ServicePassword'];
 
                                             // Call GetBalance to get the amount in Casino
+                                            if ($method != 'B')
+                                            {
                                             $getBalance = $casinoController->GetBalance($serviceID, $serviceUsername);
+                                            }
+                                            else 
+                                            {
+                                            $getBalance['balance'] = $amount;    
+                                            }
                                             if(is_array($getBalance))
                                             {
                                                 $balance = $getBalance['balance'];
 
                                                 //check if RTG balance is greater than or equal to the inputted amount
-                                                if($balance < $amount)
+                                                if($balance <= $amount)
                                                 {
                                                     $message = 'Amount should be less than or equal to the withdrawable balance';
                                                     $this->_sendResponse(200, CommonController::withdrawMSW('', '', $message, 79));
@@ -678,28 +685,38 @@ class WsKapiController extends Controller {
 //                                                        }
 
                                                         // Call Withdraw API in RTG
-                                                $transSearchInfo = $casinoController->TransactionSearchInfo($serviceID, $serviceUsername, $tracking1, $tracking2, $tracking3, '');
+                                                        if ($method=='B' || $method=='b')
+                                                        {
+                                                         $apiresult = false;   
+                                                        }
+                                                        else{
+                                                            $transSearchInfo = $casinoController->TransactionSearchInfo($serviceID, $serviceUsername, $tracking1, $tracking2, $tracking3, '');
 
-                                                if (isset($transSearchInfo['TransactionInfo'])) {
-                                                    //RTG / Magic Macau
-                                                    if (isset($transSearchInfo['TransactionInfo']['TrackingInfoTransactionSearchResult'])) {
-                                                        $initial_deposit = $transSearchInfo['TransactionInfo']['TrackingInfoTransactionSearchResult']['amount'];
-                                                        $apiresult = $transSearchInfo['TransactionInfo']['TrackingInfoTransactionSearchResult']['transactionStatus'];
-                                                        $transrefid = $transSearchInfo['TransactionInfo']['TrackingInfoTransactionSearchResult']['transactionID'];
+                                                        if (isset($transSearchInfo['TransactionInfo']))
+                                                        {
+                                                            //RTG / Magic Macau
+                                                            if (isset($transSearchInfo['TransactionInfo']['TrackingInfoTransactionSearchResult']))
+                                                            {
+                                                                $initial_deposit = $transSearchInfo['TransactionInfo']['TrackingInfoTransactionSearchResult']['amount'];
+                                                                $apiresult = $transSearchInfo['TransactionInfo']['TrackingInfoTransactionSearchResult']['transactionStatus'];
+                                                                $transrefid = $transSearchInfo['TransactionInfo']['TrackingInfoTransactionSearchResult']['transactionID'];
+                                                            }
+                                                            //MG / Vibrant Vegas
+                                                            elseif (isset($transSearchInfo['TransactionInfo']['MG']))
+                                                            {
+                                                                //$initial_deposit = $transSearchInfo['TransactionInfo']['MG']['Balance'];
+                                                                $transrefid = $transSearchInfo['TransactionInfo']['MG']['TransactionId'];
+                                                                $apiresult = $transSearchInfo['TransactionInfo']['MG']['TransactionStatus'];
+                                                            }
+                                                            //PT / PlayTech
+                                                            elseif (isset($transSearchInfo['TransactionInfo']['PT']))
+                                                            {
+                                                                //$initial_deposit = $transSearchInfo['TransactionInfo']['PT']['']; //need to ask if reported amount will be passed from PT
+                                                                $transrefid = $transSearchInfo['TransactionInfo']['PT']['id'];
+                                                                $apiresult = $transSearchInfo['TransactionInfo']['PT']['status'];
+                                                            }
+                                                        }
                                                     }
-                                                    //MG / Vibrant Vegas
-                                                    elseif (isset($transSearchInfo['TransactionInfo']['MG'])) {
-                                                        //$initial_deposit = $transSearchInfo['TransactionInfo']['MG']['Balance'];
-                                                        $transrefid = $transSearchInfo['TransactionInfo']['MG']['TransactionId'];
-                                                        $apiresult = $transSearchInfo['TransactionInfo']['MG']['TransactionStatus'];
-                                                    }
-                                                    //PT / PlayTech
-                                                    elseif (isset($transSearchInfo['TransactionInfo']['PT'])) {
-                                                        //$initial_deposit = $transSearchInfo['TransactionInfo']['PT']['']; //need to ask if reported amount will be passed from PT
-                                                        $transrefid = $transSearchInfo['TransactionInfo']['PT']['id'];
-                                                        $apiresult = $transSearchInfo['TransactionInfo']['PT']['status'];
-                                                    }
-                                                }
                                                     if ($apiresult == 'TRANSACTIONSTATUS_APPROVED' || $apiresult == 'true' || $apiresult == 'approved') {
                                                     $transSearchStatus = '1';
                                                     } else {
@@ -737,17 +754,19 @@ class WsKapiController extends Controller {
                                                                 if (isset($resultWithdraw['TransactionInfo']['WithdrawGenericResult'])) {
                                                                     $transrefid = $resultWithdraw['TransactionInfo']['WithdrawGenericResult']['transactionID'];
                                                                     $apiresult = $resultWithdraw['TransactionInfo']['WithdrawGenericResult']['transactionStatus'];
-                                                                    $apierrmsg = $resultDeposit['TransactionInfo']['WithdrawGenericResult']['ErrorMessage'];
+                                                                    $errMsg = $resultWithdraw['TransactionInfo']['WithdrawGenericResult']['errorMsg'];
                                                                 }
                                                                 //MG / Vibrant Vegas
                                                                 if (isset($resultWithdraw['TransactionInfo']['MG'])) {
                                                                     $transrefid = $resultWithdraw['TransactionInfo']['MG']['TransactionId'];
                                                                     $apiresult = $resultWithdraw['TransactionInfo']['MG']['TransactionStatus'];
+                                                                    $errMsg = $resultWithdraw['TransactionInfo']['MG']['errorMsg'];
                                                                 }
                                                                 //PT / Rocking Reno
                                                                 if (isset($resultWithdraw['TransactionInfo']['PT'])) {
                                                                     $transrefid = $resultWithdraw['TransactionInfo']['PT']['TransactionId'];
                                                                     $apiresult = $resultWithdraw['TransactionInfo']['PT']['TransactionStatus'];
+                                                                    $errMsg = $resultWithdraw['TransactionInfo']['PT']['errorMsg'];
                                                                 }
                                                             }
                                                             else
@@ -767,8 +786,16 @@ class WsKapiController extends Controller {
                                                 
                                                         if ($apiresult == "true" || $apiresult == 'TRANSACTIONSTATUS_APPROVED' || $apiresult == 'approved') {
                                                             if ($transstatus == 1) {
+                                                                if ($errMsg == "OK" || "This transaction is a duplicate")
+                                                                {
                                                                 $message = 'MSW Withdraw Transaction Successful';
                                                                 $this->_sendResponse(200, CommonController::withdrawMSW($transrefid, $transstatus, $message, 0));
+                                                                }
+                                                                else
+                                                                {
+                                                                $message = 'MSW Withdraw Transaction Failed';
+                                                                $this->_sendResponse(200, CommonController::withdrawMSW('', $transstatus, $message, 82));   
+                                                                }
                                                             } else {
                                                                 $message = 'MSW Withdraw Transaction Failed';
                                                                 $this->_sendResponse(200, CommonController::withdrawMSW('', $transstatus, $message, 82));
