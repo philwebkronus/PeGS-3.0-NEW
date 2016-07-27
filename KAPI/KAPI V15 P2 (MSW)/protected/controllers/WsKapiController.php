@@ -648,7 +648,7 @@ class WsKapiController extends Controller {
                                                 $balance = $getBalance['balance'];
 
                                                 //check if RTG balance is greater than or equal to the inputted amount
-                                                if($balance <= $amount)
+                                                if($balance < $amount)
                                                 {
                                                     $message = 'Amount should be less than or equal to the withdrawable balance';
                                                     $this->_sendResponse(200, CommonController::withdrawMSW('', '', $message, 79));
