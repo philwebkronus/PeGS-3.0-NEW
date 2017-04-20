@@ -1400,13 +1400,13 @@ class TopUp extends DBHandler
         //if site was selected
         if($zSiteID > 0)
         {
-            $stmt = "SELECT Balance,MinBalance,MaxBalance,TopUpType, PickUpTag  FROM sitebalance WHERE SiteID ='".$zSiteID."'";
+            $stmt = "SELECT Balance, MinBalance, MaxBalance, TopUpType , PickUpTag  FROM sitebalance WHERE SiteID ='".$zSiteID."'";
             $this->executeQuery($stmt);
             return $this->fetchAllData();
         }
         else
         {
-            $stmt = "SELECT Balance,MinBalance,MaxBalance,TopUpType,PickUpTag FROM sitebalance";
+            $stmt = "SELECT Balance, MinBalance, MaxBalance, TopUpType, PickUpTag FROM sitebalance";
             $this->executeQuery($stmt);
             return $this->fetchData();
         }
@@ -2987,13 +2987,15 @@ class TopUp extends DBHandler
       
       public function getManualRedemptionTotal($startdate,$enddate) {
             $total_row = 0;
+            //CCT - BEGIN added '' in between $startdate and $enddate
             $query = "SELECT count(mr.ManualRedemptionsID) AS totalrow 
                       FROM manualredemptions mr 
                       INNER JOIN sites st ON mr.SiteID = st.SiteID 
                       LEFT JOIN terminals tm ON mr.TerminalID = tm.TerminalID
                       INNER JOIN accounts at ON mr.ProcessedByAID = at.AID 
                       LEFT JOIN ref_services rs ON mr.ServiceID = rs.ServiceID 
-                      WHERE mr.TransactionDate >= $startdate AND mr.TransactionDate < $enddate";
+                      WHERE mr.TransactionDate >= '$startdate' AND mr.TransactionDate < '$enddate'";             
+            //CCT - END            
             $this->prepare($query);
             $this->execute();
             
@@ -3006,6 +3008,7 @@ class TopUp extends DBHandler
       }
       
       public function getManualRedemption($sort, $dir, $start, $limit,$startdate,$enddate) {
+            //CCT - BEGIN added '' in between $startdate and $enddate
             $query = "SELECT mr.ManualRedemptionsID,
                 mr.ReportedAmount,
                 mr.ActualAmount,
@@ -3025,8 +3028,9 @@ class TopUp extends DBHandler
                 LEFT JOIN terminals tm ON mr.TerminalID = tm.TerminalID
                 INNER JOIN accountdetails at ON mr.ProcessedByAID = at.AID 
                 LEFT JOIN ref_services rs ON mr.ServiceID = rs.ServiceID
-                WHERE mr.TransactionDate >= $startdate AND mr.TransactionDate < $enddate 
+                WHERE mr.TransactionDate >= '$startdate' AND mr.TransactionDate < '$enddate' 
                 ORDER BY $sort $dir LIMIT $start,$limit";
+            //CCT - END
             $this->prepare($query);
             $this->execute();
             return $this->fetchAllData();      
@@ -3345,7 +3349,7 @@ class TopUp extends DBHandler
       */
       public function getActiveTerminalsub($sort, $dir, $start, $limit) {
           $cardnumber = $_GET['cardnumber'];
-          $acctype = $_SESSION['acctype'];
+	  //$acctype = $_SESSION['acctype'];
           $condition = " WHERE ts.LoyaltyCardNumber = '$cardnumber' ";
           if($_GET['cardnumber'] == 'all') {
               $condition = '';
@@ -4757,18 +4761,35 @@ class TopUp extends DBHandler
         $result = $this->fetchData();
         
         return $result['EGMCount'];
+    }    
+    function checkIfHasTermalSession($mid) {   
+    	$sql = "SELECT Count(MID) as TSCount
+	        FROM terminalsessions 
+		        WHERE MID =?";
+	$this->prepare($sql);
+	$this->bindparameter(1, $mid);
+	$this->execute();
+	$result = $this->fetchData();
+	
+	return $result['TSCount'];
     }
-    function checkIfHasTermalSession($mid) {
+    // CCT BEGIN - Reverted to old copy
+    /* 
+    function checkIfHasTermalSession($mid, $serviceID) {
         $sql = "SELECT Count(MID) as TSCount 
                 FROM terminalsessions 
-                WHERE MID =?";
+                WHERE MID =? AND ServiceID = ?";
         $this->prepare($sql);
         $this->bindparameter(1, $mid);
+        $this->bindparameter(2, $serviceID);
         $this->execute();
         $result = $this->fetchData();
         
         return $result['TSCount'];
     }
+    */
+    // CCT END - Reverted to old copy 
+    
     function getMIDByUBCard($cardnumber) {
         $sql = "SELECT MID FROM loyaltydb.membercards 
                 WHERE CardNumber = ?";
