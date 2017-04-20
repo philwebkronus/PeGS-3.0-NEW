@@ -5,7 +5,13 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="language" content="en" />
         <meta http-equiv="X-UA-Compatible" content="IE=9" />
-
+        <!--
+        <meta http-equiv="cache-control" content="max-age=0" />
+        <meta http-equiv="cache-control" content="no-cache" />
+        <meta http-equiv="expires" content="0" />
+        <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+        <meta http-equiv="pragma" content="no-cache" />
+        -->
 	<!-- blueprint CSS framework -->
 	<link rel="stylesheet" type="text/css" href="../css/screen.css" media="screen, projection" />
         <link rel="stylesheet" type="text/css" href="../css/fancybox/jquery.fancybox-1.3.4.css" media="screen" />
@@ -47,8 +53,8 @@
                 var Shell = new ActiveXObject('WScript.Shell');
                 var regpath = '<?php echo LPConfig::app()->params["registry_path"]["terminalCode"] ?>';
                 var terminalCode = Shell.RegRead(regpath);
-//                var terminalCode = 'ICSA-TSTJFJ10';
-//                var terminalCode = '<?php echo LPConfig::app()->params["TerminalTstCode"]; ?>';
+//              var terminalCode = 'ICSA-TSTID06';
+//              var terminalCode = '<?php echo LPConfig::app()->params["TerminalTstCode"]; ?>';
                 var userMode = "";
                 var serviceCode = "";
                 var terminalType="";
@@ -632,7 +638,10 @@ alert('There is a problem in activex');
                 <div id="virtual-ecity-logo-container" style="visibility: hidden; margin-top: 40px;">
                     <img src="../images/virtual_entertainment_city_logo.png" >
                 </div>
+                <!-- previous code ------------------------------------------------
                 <table id="iptable" style="margin-top: 10px; margin-left: -12.5px;">
+                -->
+                <table id="iptable" style="margin-top: 10px;">
                     <tr>
                         <td id="tdmm">
                             <div id="link-mm" class="link-container">
@@ -648,11 +657,13 @@ alert('There is a problem in activex');
                                 </a>
                             </div>
                         </td>
+                        <!--    remove this comment to display SS casino image  -----------------------
                         <td id="tdss">
                             <div id="link-ss" >
                                     <img id="ssimg" src="../images/ss_unavailable.png" />
                             </div>
                         </td>
+                        -->
                     </tr></table>
                 <div style='margin-bottom: 5px'></div>
             </div>
