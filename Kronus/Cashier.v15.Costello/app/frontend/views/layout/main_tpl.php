@@ -44,6 +44,8 @@
                     <div id="head-spacer"><div>e-Games Station Manager</div></div>
                     <div id="main-menu">
                     <?php
+                    /*
+                     * CCT - BEGIN
                         echo Menu::display(array(
                             'Terminal Monitoring'=>array('link'=>$this->createUrl('terminal/overview'),'act'=>'overview','con'=>'Terminal','attr'=>'desc="Terminal activity monitoring"'),
                             'Start Session'=>array('link'=>$this->createUrl('startsession'),'act'=>'overview','con'=>'StartSession','attr'=>'desc="Start a new player session"'),
@@ -53,7 +55,20 @@
                             'View Transaction History'=>array('link'=>$this->createUrl('viewtrans/history'),'act'=>'history','con'=>'ViewTransaction','attr'=>'desc="View Transactions History"'),
                             'e-SAFE Load & Withdraw'=>array('link'=>$this->createUrl('forcet'),'act'=>'overview','con'=>'ForceT','attr'=>'desc="Load and Withdraw"'),
                             'Refresh'=>array('link'=>'','attr'=>'desc="Refresh the page" id="refresh_getbal"','visible'=>$this->show_refresh)
+                     * CCT - END
+                     */
+                    // CCT - BEGIN
+                        echo Menu::display(array(
+                            'Terminal Monitoring'=>array('link'=>$this->createUrl('terminal/overview'),'act'=>'overview','con'=>'Terminal','attr'=>'desc="Terminal activity monitoring"'),
+                            'Start Session'=>array('link'=>$this->createUrl('startsession'),'act'=>'overview','con'=>'StartSession','attr'=>'desc="Start a new player session"'),
+                            'Reload Session'=>array('link'=>$this->createUrl('reload'),'act'=>'overview','con'=>'ReloadSession','attr'=>'desc="Increase the player\'s playing money"'),
+                            'Redemption'=>array('link'=>$this->createUrl('redeem'),'act'=>'overview','con'=>'Redeem','attr'=>'desc="End a player\'s session and process cash redemption"'),
+                            'Reports'=>array('link'=>$this->createUrl('reports'),'act'=>'overview','con'=>'Reports','attr'=>'desc="List of all player session transactions"'),
+                            'View Transaction History'=>array('link'=>$this->createUrl('viewtrans/history'),'act'=>'history','con'=>'ViewTransaction','attr'=>'desc="View Transactions History"'),
+                            'Refresh'=>array('link'=>'','attr'=>'desc="Refresh the page" id="refresh_getbal"','visible'=>$this->show_refresh)
+                    // CCT - END
                         )); 
+                        
                     ?>
                         <div id="user-details">
                             <?php echo $_SESSION['account_name'] . ' - ' . $_SESSION['site_code'] .' / '. $_SESSION['pos_account']; ?>    

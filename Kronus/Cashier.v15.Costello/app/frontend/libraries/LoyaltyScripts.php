@@ -394,7 +394,11 @@
                 
                 
                 if (event.keyCode == 8 || event.charCode == 8) {
+                    /*
+                     * CCT - BEGIN
                     $('.hideControls').hide();
+                     * CCT - END
+                    */
                     $('.bankContainer').hide();
                     isEwalletSessionMode = false;
                     isValidated = false;

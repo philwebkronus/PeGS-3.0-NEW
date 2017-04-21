@@ -19,9 +19,13 @@ $(document).ready(function(){
                 <th><?php echo MI_HTML::label($unlock, 'terminal_id', 'TERMINAL:') ?></th>
                 <td><?php echo MI_HTML::dropDownArray($unlock, 'terminal_id', $terminals, 'id', 'code', array(''=>'Select Terminal')) ?></td>
             </tr>
+            <!--
+            // CCT BEGIN
             <tr>
-                <th><?php echo MI_HTML::label($unlock, 'loyalty_card', 'Membership Card:') ?></th><td><?php echo MI_HTML::inputPassword($unlock, 'loyalty_card') ?></td>
+                <th><'?php echo MI_HTML::label($unlock, 'loyalty_card', 'Membership Card:') ?></th><td><'?php echo MI_HTML::inputPassword($unlock, 'loyalty_card') ?></td>
             </tr>
+            // CCT END
+            -->
             <tr>
                 <th colspan ="2"><center><a href="javascript:void(0);" id="get_info_card2">Get Card Info</a></center></th>
                 <!--<td><b><a href="javascript:void(0);" id="register">Register</a></b></td>-->

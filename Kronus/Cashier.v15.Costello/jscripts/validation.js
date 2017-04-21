@@ -37,10 +37,14 @@ $(document).ready(function(){
         
         if(isEwalletSessionMode==false){
 
+            /*
+             * CCT - BEGIN
             if(isValidated == false){
                 alert('Membership Card is not yet validated. Please scan again');
                 return false;
             }
+            * CCT - END
+            */
             
             if($('#StartSessionFormModel_sel_amount').is(':disabled') && $('#StartSessionFormModel_voucher_code').val('')) {
                 amount = $('#StartSessionFormModel_amount').val();
@@ -129,19 +133,24 @@ $(document).ready(function(){
             });
         }else{
         
-        
+/*     
+ * CCT - BEGIN
         //check loyalty card if empty
         if(loyalty_card == ''){
             alert('Please enter loyalty card number');
             return false;
         }
-        
+* CCT - END             
+*/        
         if(isEwalletSessionMode==false){
-            
+            /*
+             * CCT - BEGIN
             if(isValidated == false){
                 alert('Membership Card is not yet validated. Please scan again');
                 return false;
             }
+             * CCT - END
+            */
             //check if the selected type of deposit is in terms of voucher or money
            if(selected != 'voucher' && selected != 'bancnet'){
                    bcf = toInt(bcf);
@@ -250,13 +259,15 @@ $(document).ready(function(){
                                         );   ;   
             });
         }else{
-        
+/*        
+ * CCT - BEGIN
         //check loyalty card if empty
         if(loyalty_card == ''){
             alert('Please enter loyalty card number');
             return false;
         }
-         
+* CCT - END             
+*/         
          
             //check if the selected type of deposit is in terms of voucher or money
            if(selected != 'voucher' && selected != 'bancnet'){
@@ -443,12 +454,15 @@ $(document).ready(function(){
     unlockTerminalChecking = function() {
         var bcf = $('#head-bcf > div').children('span').html();
         var loyalty_card = $('#UnlockTerminalFormModel_loyalty_card').val();
-
+/* 
+ * CCT - BEGIN
         //check loyalty card if empty
         if(loyalty_card == ''){
             alert('Please enter loyalty card number');
             return false;
         }
+* CCT - END        
+*/        
 //        
         return true;
     };

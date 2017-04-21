@@ -9,6 +9,19 @@
 <script type="text/javascript">
 var isEwalletSessionMode = false;
 var isValidated = false;
+// CCT - BEGIN
+function zeroPad(num, numZeros) 
+{
+    var n = Math.abs(num);
+    var zeros = Math.max(0, numZeros - Math.floor(n).toString().length );
+    var zeroString = Math.pow(10,zeros).toString().substr(1);
+    if( num < 0 ) 
+    {
+        zeroString = '-' + zeroString;
+    }
+    return zeroString+n;
+}
+// CCT - END
 function identifyCard()
 {
     
@@ -18,19 +31,22 @@ function identifyCard()
                 var url_transfer = '<?php echo Mirage::app()->createUrl('loyalty/transferpoints') ?>'; 
                 var url_activate = '<?php echo Mirage::app()->param['member_activation']?>'; 
                 var url_tempactivate = '<?php echo Mirage::app()->param['temp_activation']?>'; 
-                  
-                
                 var servertime = '<?php echo date('m-d-Y H:i:s'); ?>';
                 var AID = $('#acc_id').val();
                 var siteid = <?php echo $_SESSION['AccountSiteID'] ?>;
                 var sitecode = $('#sitecode').val();
                 var card_number = $('#StartSessionFormModel_loyalty_card').val();
-                var data = 'card_number='+card_number+'&isreg=0'+'&siteid='+siteid;
+                // CCT - BEGIN
+                //var data = 'card_number='+card_number+'&isreg=0'+'&siteid='+siteid;
+                // CCT - END
                 var response = '';
                 var tid = $("#StartSessionFormModel_terminal_id").val();
                 var servicesCount = '';
                 var serviceID = '';
-                
+                // CCT - BEGIN
+                card_number = 'UBT' + zeroPad(tid, 5);
+                var data = 'card_number='+card_number+'&isreg=0'+'&siteid='+siteid;
+                // CCT - END
                 
                 if(tid ==''){
                     $('.hideControls').hide();
@@ -252,16 +268,21 @@ function identifyCard2()
                 var url_transfer = '<?php echo Mirage::app()->createUrl('loyalty/transferpoints') ?>'; 
                 var url_activate = '<?php echo Mirage::app()->param['member_activation']?>'; 
                 var url_tempactivate = '<?php echo Mirage::app()->param['temp_activation']?>'; 
-                  
                 
                 var servertime = '<?php echo date('m-d-Y H:i:s'); ?>';
                 var AID = $('#acc_id').val();
                 var siteid = <?php echo $_SESSION['AccountSiteID'] ?>;
                 var sitecode = $('#sitecode').val();
                 var card_number = $('#UnlockTerminalFormModel_loyalty_card').val();
-                var data = 'card_number='+card_number+'&isreg=0'+'&siteid='+siteid;
+                // CCT - BEGIN
+                //var data = 'card_number='+card_number+'&isreg=0'+'&siteid='+siteid;                
+                // CCT - END
                 var response = '';
-                
+                // CCT - BEGIN
+                card_number = 'UBT' + zeroPad(tid, 5);
+                var data = 'card_number='+card_number+'&isreg=0'+'&siteid='+siteid;
+                // CCT - END
+
                 $.ajax({
                     type : 'post',
                     async: false,
@@ -436,12 +457,14 @@ function identifyCard3()
                 var url_activate = '<?php echo Mirage::app()->param['member_activation']?>'; 
                 var url_tempactivate = '<?php echo Mirage::app()->param['temp_activation']?>'; 
                   
-                
                 var servertime = '<?php echo date('m-d-Y H:i:s'); ?>';
                 var AID = $('#acc_id').val();
                 var siteid = <?php echo $_SESSION['AccountSiteID'] ?>;
                 var sitecode = $('#sitecode').val();
                 var card_number = $('#ForceTFormModel_loyalty_card').val();
+                // CCT - BEGIN
+                card_number = 'UBT' + zeroPad(tid, 5);
+                // CCT - END
                 var data = 'card_number='+card_number+'&isreg=0'+'&siteid='+siteid;
                 var response = '';
                 var iswithdraw = $('#iswithdraw').val();

@@ -297,7 +297,11 @@ $(document).ready(function(){
                     } else {
                         $('#loyalty_card_tr').css('display','block');
                         $('#btnInitailDepositHk').attr("mode",json.usermode);
-                        $('.hideControls').hide();
+                        /*
+                         * CCT - BEGIN
+                         $('.hideControls').hide();
+                         * CCT - END
+                         */
                     }
                     
                     $('#StartSessionFormModel_max_deposit').val(json.max_denomination);

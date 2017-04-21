@@ -12,12 +12,15 @@
             <th><?php echo MI_HTML::label($UTFormModel, 'terminal_id', 'Gaming Terminal'); ?></th>
             <td><?php echo MI_HTML::dropDownArray($UTFormModel, 'terminal_id', $terminals, 'id', 'code', array(''=>'--Select Terminal--')) ?></td>
         </tr>
-       
+       <!--
+       // CCT - BEGIN
         <tr>
-            <th><?php echo MI_HTML::label($UTFormModel, 'loyalty_card', 'Membership Card') ?></th>
-            <td><?php echo MI_HTML::inputPassword($UTFormModel, 'loyalty_card') ?></td>
+            <th><'?php echo MI_HTML::label($UTFormModel, 'loyalty_card', 'Membership Card') ?></th>
+            <td><'?php echo MI_HTML::inputPassword($UTFormModel, 'loyalty_card') ?></td>
             <td><a href="javascript:void(0);" id="get_info_card">Get Card Info</a><a style="display: none;" href="javascript:void(0);" id="register">Register</a></td>
         </tr>
+       // CCT - END
+       -->
         <tr>
             <td><input type="button" value="Unlock" id="btnUnlockTerminalsa"/></td>
         </tr>

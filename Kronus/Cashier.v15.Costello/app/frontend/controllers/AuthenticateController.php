@@ -34,11 +34,18 @@ class AuthenticateController extends MI_Controller{
                     else{
                         $menu = $sitesModel->getMenu($_SESSION['AccountSiteID']);
                         $esafetab = $menu['ESafeTab'];
+                        /*
+                         * CCT - BEGIN
                         if($esafetab != 1){
                             $this->redirect($this->createUrl('viewtrans/history'));
                         } else {
                             $this->redirect($this->createUrl('forcet'));
                         }
+                         * CCT - END
+                         */
+                        //CCT - BEGIN 
+                        $this->redirect($this->createUrl('viewtrans/history'));
+                        //CCT - END
                     }
                 }
             } else {
@@ -90,11 +97,18 @@ class AuthenticateController extends MI_Controller{
             if($loginForm->isValid(array('passkey')) && $loginForm->authenticatePasskey()) {
                 $menu = $sitesModel->getMenu($_SESSION['AccountSiteID']);
                 $esafetab = $menu['ESafeTab'];
+                /*
+                 *  CCT - BEGIN
                 if($esafetab != 1){
                     $this->redirect($this->createUrl('viewtrans/history'));
                 } else {
                     $this->redirect($this->createUrl('forcet'));
                 }
+                 *  CCT - END
+                 */
+                //CCT - BEGIN 
+                $this->redirect($this->createUrl('viewtrans/history'));
+                //CCT - END                
             } else {
 //                if($loginForm->getAttributeErrorMessage('message')) {
 //                    $_SESSION['error_message'] = $loginForm->getAttributeErrorMessage('message');

@@ -368,7 +368,7 @@ class FrontendController extends MI_Controller {
                                                 $locatorname = '';
                                                 $result = $commonReload->reload(toInt($this->getSiteBalance()),$amount, $paymentType,
                                                             $terminal_id,$siteid,$cid,$accid,$loyaltyCardNo,$vouchercode,$trackingId, 
-                                                            $mid, $casinoUserMode,$casinoUsername,$casinoPassword, $casinoServiceID,$locatorname, $CPV);
+                                                            $mid,$ref_service['UserMode'],$traceNumber,$referenceNumber,$locatorname, $CPV);
                                                             
                                              // e-BINGO v15
                                            } else if(($casinoUserMode == 0 || $casinoUserMode == 2) && $CPV == 'v15'){
@@ -398,7 +398,7 @@ class FrontendController extends MI_Controller {
                                                         }
                                               $result = $commonReload->reload(toInt($this->getSiteBalance()),$amount, $paymentType,
                                                             $terminal_id,$siteid,$cid,$accid,$loyaltyCardNo,$vouchercode,$trackingId, 
-                                                            $mid, $casinoUserMode,$casinoUsername,$casinoPassword, $casinoServiceID,$locatorname, $CPV);
+                                                            $mid,$ref_service['UserMode'],$traceNumber,$referenceNumber,$locatorname, $CPV);
                                                                                        
                                             
                                         //checking if casino is user based
@@ -422,7 +422,7 @@ class FrontendController extends MI_Controller {
 
                                           $result = $commonUBReload->reload(toInt($this->getSiteBalance()),$amount, $paymentType,
                                             $terminal_id,$siteid,$cid,$accid,$loyaltyCardNo,$vouchercode,$trackingId, 
-                                            $mid, $casinoUserMode,$casinoUsername,$casinoPassword, $casinoServiceID,'','',$locatorname, $CPV);
+                                            $mid, $casinoUserMode,$casinoUsername,$casinoPassword, $casinoServiceID,$traceNumber,$referenceNumber,$locatorname, $CPV);
                                    
                               } else{
                                $message = 'Error : Failed Reloading a Session.';
@@ -607,7 +607,7 @@ class FrontendController extends MI_Controller {
                                                 $locatorname = '';
                                                 $result = $commonReload->reload(toInt($this->getSiteBalance()),$amount, $paymentType,
                                                             $terminal_id,$siteid,$cid,$accid,$loyaltyCardNo,$vouchercode,$trackingId, 
-                                                            $mid, $casinoUserMode,$casinoUsername,$casinoPassword, $casinoServiceID,$locatorname, $CPV);
+                                                            $mid,$ref_service['UserMode'],$traceNumber,$referenceNumber,$locatorname, $CPV);
                                                             
                                              // e-BINGO v15
                                             } else if(($casinoUserMode == 0 || $casinoUserMode == 2) && $CPV == 'v15'){
@@ -637,7 +637,7 @@ class FrontendController extends MI_Controller {
                                                         }
                                               $result = $commonReload->reload(toInt($this->getSiteBalance()),$amount, $paymentType,
                                                             $terminal_id,$siteid,$cid,$accid,$loyaltyCardNo,$vouchercode,$trackingId, 
-                                                            $mid, $casinoUserMode,$casinoUsername,$casinoPassword, $casinoServiceID,$locatorname, $CPV);
+                                                            $mid,$ref_service['UserMode'],$traceNumber,$referenceNumber,$locatorname, $CPV);
                                                                                                   
                                     //checking if casino is user based
                                      }  else if($casinoUserMode == 1 && $CPV == 'v15'){                                     
@@ -660,7 +660,7 @@ class FrontendController extends MI_Controller {
 
                                           $result = $commonUBReload->reload(toInt($this->getSiteBalance()),$amount, $paymentType,
                                             $terminal_id,$siteid,$cid,$accid,$loyaltyCardNo,$vouchercode,$trackingId, 
-                                            $mid, $casinoUserMode,$casinoUsername,$casinoPassword, $casinoServiceID,'','',$locatorname, $CPV);         
+                                            $mid, $casinoUserMode,$casinoUsername,$casinoPassword, $casinoServiceID,$traceNumber,$referenceNumber,$locatorname, $CPV);         
                               } else{
                                $message = 'Error : Failed Reloading a Session.';
                                 logger($message);
@@ -1636,9 +1636,22 @@ class FrontendController extends MI_Controller {
        }
        
        if($ref_service['UserMode'] != 2){
+           /*
+            * CCT - BEGIN
            list($is_loyalty, $loyaltyCardNo,$loyalty, $casinos, $mid, $casinoarray_count, $isewallet,$statuscode) = 
-                                            $this->getCardInfo($startSessionFormModel->loyalty_card, $this->site_id, $terminaltype);
-           
+                                          $this->'getCardInfo($startSessionFormModel->loyalty_card, $this->site_id, '$terminaltype);
+            * CCT - END 
+           */
+           /* CCT - BEGIN */
+           $zero_fill = 5;
+           $terminal_padzeroes = str_pad($terminal_id, $zero_fill, '0', STR_PAD_LEFT);
+           $terminal_idUBTB = 'UBT'.$terminal_padzeroes;
+           //var_dump($terminal_idUBTB);
+           //die();
+           //$terminal_idUBTB = 'UBT0'.$terminal_id;
+           list($is_loyalty, $loyaltyCardNo,$loyalty, $casinos, $mid, $casinoarray_count, $isewallet,$statuscode) =            
+                                          $this->getCardInfo($terminal_idUBTB, $this->site_id, $terminaltype);
+           /* CCT - END */
            if($ref_service['UserMode']  == 1 && $statuscode == 5 && $isewallet > 0){
                 $message = 'Active temporary card cannot start a session on this terminal.';
                  logger($message);
@@ -1828,7 +1841,7 @@ class FrontendController extends MI_Controller {
                                                 $result = $commonStartSession->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino,
                                                                    toInt($this->getSiteBalance()),toInt($amount),$accid,$loyaltyCardNo, 
                                                                    $startSessionFormModel->voucher_code,$trackingId, $casinoUsername,
-                                                                   $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'],'','',$locatorname,$CPV);
+                                                                   $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'],$traceNumber,$referenceNumber,$locatorname,$CPV);
                                             
                                             //checking if casino is terminal based
                                            }else if (($ref_service['UserMode'] == 0 || $ref_service['UserMode'] == 2) && $CPV == 'v12') {
@@ -1843,7 +1856,7 @@ class FrontendController extends MI_Controller {
                                                 $result = $commonStartSession->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino,
                                                                    toInt($this->getSiteBalance()),toInt($amount),$accid,$loyaltyCardNo, 
                                                                    $startSessionFormModel->voucher_code, $trackingId, $casinoUsername,
-                                                                   $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'],'','',$locatorname,$CPV);
+                                                                   $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'],$traceNumber,$referenceNumber,$locatorname,$CPV);
                                              
                                             //checking if casino is user based
                                            }else if($ref_service['UserMode'] == 1 && $CPV == 'v15')
@@ -1895,7 +1908,7 @@ class FrontendController extends MI_Controller {
                                                 $result = $commonUBStartSession->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino,
                                                                    toInt($this->getSiteBalance()),toInt($amount),$accid,$loyaltyCardNo, 
                                                                    $startSessionFormModel->voucher_code,$trackingId, $casinoUsername,
-                                                                   $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'],'','',$locatorname,$CPV);
+                                                                   $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'],$traceNumber,$referenceNumber,$locatorname,$CPV);
                                            
                                     } else{
                                         $message = 'Error : Failed Starting a Session.';
@@ -2139,7 +2152,7 @@ class FrontendController extends MI_Controller {
                                                 $result = $commonStartSession->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino,
                                                                    toInt($this->getSiteBalance()),toInt($amount),$accid,$loyaltyCardNo, 
                                                                    $startSessionFormModel->voucher_code,$trackingId, $casinoUsername,
-                                                                   $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'],'','',$locatorname,$CPV);
+                                                                   $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'],$traceNumber,$referenceNumber,$locatorname,$CPV);
                                             }
                                             
                                             //checking if casino is terminal based
@@ -2155,7 +2168,7 @@ class FrontendController extends MI_Controller {
                                                 $result = $commonStartSession->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino,
                                                                    toInt($this->getSiteBalance()),toInt($amount),$accid,$loyaltyCardNo, 
                                                                    $startSessionFormModel->voucher_code, $trackingId, $casinoUsername,
-                                                                   $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'],'','',$locatorname,$CPV);
+                                                                   $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'],$traceNumber,$referenceNumber,$locatorname,$CPV);
                                             } 
 
                                             //checking if casino is user based
@@ -2208,7 +2221,7 @@ class FrontendController extends MI_Controller {
                                                 $result = $commonUBStartSession->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino,
                                                                    toInt($this->getSiteBalance()),toInt($amount),$accid,$loyaltyCardNo, 
                                                                    $startSessionFormModel->voucher_code,$trackingId, $casinoUsername,
-                                                                   $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'],'','',$locatorname,$CPV);
+                                                                   $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'],$traceNumber,$referenceNumber,$locatorname,$CPV);
                                             }
                             else{
                                $message = 'Error : Failed Starting a Session.';

@@ -16,10 +16,13 @@ $(document).ready(function(){
     <?php //endif; ?>
     <table id="tblstartsession">
         <tbody>
-            
+            <!--
+            // CCT - BEGIN
             <tr>
-                <th><?php echo MI_HTML::label($unlock, 'loyalty_card', 'Membership Card:') ?></th><td><?php echo MI_HTML::inputPassword($unlock, 'loyalty_card') ?></td>
+                <th><'?php echo MI_HTML::label($unlock, 'loyalty_card', 'Membership Card:') ?></th><td><'?php echo MI_HTML::inputPassword($unlock, 'loyalty_card') ?></td>
+            // CCT - END
             </tr>
+            --> 
             <tr>
                 <th colspan="2"><center><a href="javascript:void(0);" id="get_info_card2">Get Card Info</a></center></th>
                 <!--<td><b><a style="display: none;" href="javascript:void(0);" id="register">Register</a></b></td>-->

@@ -8,25 +8,31 @@ $(document).ready(function(){
     $('input.auto').autoNumeric();
     $('#StartSessionFormModel_voucher_code').hide();
     $('.bankContainer').hide();
+    /*
+     * CCT - BEGIN
     $('.hideControls').hide();
-    
-    $('#StartSessionFormModel_loyalty_card').bind('keydown', function(event) {
-        if (event.keyCode == 13 || event.charCode == 13 || event.keyCode==9) {
+        
+    $('#StartSessionFormModel_loyalty_card').bind('keydown', function(event) 
+    {
+        if (event.keyCode == 13 || event.charCode == 13 || event.keyCode==9) 
+        {
             var cardNumber = $('#StartSessionFormModel_loyalty_card').val();
-            if(cardNumber==''){
+            if(cardNumber=='')
+            {
                 alert('Please enter loyalty card number.');
                 return false;
             }
             var issuccess = identifyCard();
-            if(issuccess == "false"){
-
+            if(issuccess == "false")
+            {
                 $('.btnSubmit').focus();
                 $('#StartSessionFormModel_sel_amount').focus();
                 return false;
             }
         }
         
-        if(event.keyCode!=9){
+        if(event.keyCode!=9)
+        {
             $('.hideControls').hide();
             $('.bankContainer').hide();
             isEwalletSessionMode = false;
@@ -39,8 +45,9 @@ $(document).ready(function(){
             $('#StartSessionFormModel_amount').autoNumeric();
             document.getElementById('StartSessionFormModel_sel_amount').selectedIndex = 0;
         }
-        
-   });
+        });        
+      * CCT - END
+      */  
 })
 </script>
 <form id="frmhotkey">
@@ -61,11 +68,13 @@ $(document).ready(function(){
                 <th><?php echo MI_HTML::label($startSessionFormModel, 'terminal_id', 'TERMINAL') ?></th>
                 <td><?php echo MI_HTML::dropDownArray($startSessionFormModel, 'terminal_id', $terminals, 'id', 'code', array(''=>'Select Terminal'), array(),array('class'=>'width204')) ?></td>
             </tr>
-            
+            <!--
+            // CCT - BEGIN
             <tr id="loyalty_card_tr">
-                <th><?php echo MI_HTML::label($startSessionFormModel, 'loyalty_card', 'Membership Card') ?></th><td><?php echo MI_HTML::inputPassword($startSessionFormModel, 'loyalty_card', array('class'=>'width200')) ?></td>
+                <th><'?php echo MI_HTML::label($startSessionFormModel, 'loyalty_card', 'Membership Card') ?></th><td><'?php echo MI_HTML::inputPassword($startSessionFormModel, 'loyalty_card', array('class'=>'width200')) ?></td>
+            // CCT - END
             </tr>
-            
+            -->
             <tr>
                 <!--<th colspan ="2"><center><a href="javascript:void(0);" id="get_info_card">Get Card Info</a></center></th>-->
                 <!--<td><b><a href="javascript:void(0);" id="register">Register</a></b></td>-->

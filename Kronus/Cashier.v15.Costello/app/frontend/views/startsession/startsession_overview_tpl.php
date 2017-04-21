@@ -17,11 +17,19 @@
             <th><?php echo MI_HTML::label($startSessionFormModel, 'terminal_id', 'Gaming Terminal'); ?></th>
             <td><?php echo MI_HTML::dropDownArray($startSessionFormModel, 'terminal_id', $terminals, 'id', 'code', array(''=>'--Select Terminal--'), array(), array('class'=>'width204')) ?></td>
         </tr>
+        <!--
+        // CCT - BEGIN
         <tr id="loyalty_card_tr">
-            <th><?php echo MI_HTML::label($startSessionFormModel, 'loyalty_card', 'Membership Card') ?></th>
-            <td><?php echo MI_HTML::inputPassword($startSessionFormModel, 'loyalty_card', array('class'=>'width200')) ?></td>
+            <th><'?php echo MI_HTML::label($startSessionFormModel, 'loyalty_card', 'Membership Card') ?></th>
+            <td><'?php echo MI_HTML::inputPassword($startSessionFormModel, 'loyalty_card', array('class'=>'width200')) ?></td>
+        // CCT - END
+        -->        
             <!--<td><a href="javascript:void(0);" id="get_info_card">Get Card Info</a><a style="display: none;" href="javascript:void(0);" id="register">Register</a></td>-->
+        <!--
+        // CCT - BEGIN
         </tr>
+        // CCT - END
+        -->
         <tr class='hideControls'>
             <th><?php echo MI_HTML::label($startSessionFormModel, 'casino', 'Casino'); ?></th>
             <td><?php echo MI_HTML::dropDown($startSessionFormModel, 'casino', array(''=>'Select Casino'), array(), array(), array('class'=>'width204'))  ?></td>
@@ -86,7 +94,11 @@
         if ($('#siteclassification').val() == 3){
               $('#loyalty_card_tr').css('display','none');
         }         
+        /*
+        * CCT - BEGIN
         $('.hideControls').hide();
+        * CCT - END
+        */
         $('#StartSessionFormModel_terminal_id').focus();
         $('#chkbancnet').removeAttr('disabled');
         $('#StartSessionFormModel_amount').autoNumeric();
@@ -238,7 +250,11 @@
                                 $('.hideControls').show();
                             } else {
                                 $('#loyalty_card_tr').css('display','block');
+                                /*
+                                 * CCT - BEGIN
                                 $('.hideControls').hide();
+                                 * CCT - END
+                                */
                             }
                             
                             $.each(json.denomination,function(k,v){
@@ -265,7 +281,11 @@
             });
             
             $('#StartSessionFormModel_loyalty_card').val('');
+            /*
+            * CCT - BEGIN
             $('.hideControls').hide();
+            * CCT - END
+            */
              
         });
         
@@ -434,26 +454,29 @@
             }
         });
         
-        
-        $('#StartSessionFormModel_loyalty_card').bind('keydown', function(event) {
-            
-            if (event.keyCode == 13 || event.charCode == 13 || event.keyCode==9) {
+        /*
+        * CCT - BEGIN
+        $('#StartSessionFormModel_loyalty_card').bind('keydown', function(event) 
+        {
+            if (event.keyCode == 13 || event.charCode == 13 || event.keyCode==9) 
+            {
                 var cardNumber = $('#StartSessionFormModel_loyalty_card').val();
-                if(cardNumber==''){
+                if(cardNumber=='')
+                {
                     alert('Please enter loyalty card number.');
                     return false;
                 }
                 var issuccess = identifyCard();
-                if(issuccess == "false"){
-
+                if(issuccess == "false")
+                {
                     $('.btnSubmit').focus();
                     $('#StartSessionFormModel_sel_amount').focus();
                     return false;
                 }
             }
 
-
-            if(event.keyCode !=9){
+            if(event.keyCode !=9)
+            {
                 $('.hideControls').hide();
                 $('.bankContainer').hide();
                 isEwalletSessionMode = false;
@@ -478,6 +501,7 @@
                 document.getElementById('StartSessionFormModel_sel_amount').selectedIndex = 0;
             }
        });
-        
+    * CCT - END
+    */
     })
 </script>
