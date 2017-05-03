@@ -600,8 +600,9 @@ if($connected)
                        $grosshold_COSTELLO       = $deposit_reload_COSTELLO['Amount'] - ($withdraw_COSTELLO['Amount'] + $mr_COSTELLO['Amount']);
                        //for abbott
                        $loads = $orptoptr->getGrossHoldeSAFE($siteID['SiteID'], $datefrom, $dateto);
-
-                       $subtotal = $grosshold_MG + $grosshold_COSTELLO + $loads['GrossHold'];
+                       
+                  $gh = $loads['StartBalance']+$loads['WalletReloads'] - $loads['EndBalance'] - $loads['GenesisWithdrawal'];
+                  $subtotal = $grosshold_MG + $grosshold_COSTELLO + $gh;
                        $results[] = array(
                              'SubTotal' => number_format($subtotal, 2, ".", ","), 
                              'SiteCode' => trim(str_replace("ICSA-", "", $siteCode['SiteCode']))
@@ -2472,7 +2473,9 @@ if($connected)
                 //for abbott
                 
                 $loads = $orptoptr->getGrossHoldeSAFE($siteID['SiteID'], $datefrom, $dateto);
-                $subtotal += ($grosshold_MG + $grosshold_COSTELLO + $loads['GrossHold']);
+                 //appending results
+                $gh = $loads['StartBalance']+$loads['WalletReloads'] - $loads['EndBalance'] - $loads['GenesisWithdrawal'];
+                $subtotal += ($grosshold_MG + $grosshold_COSTELLO + $gh);
                 $arr_grosshold[] = array( 'SiteCode' => $siteCode['SiteCode'], 
                                           'SubTotal' => $subtotal);
                 $total += $subtotal;
@@ -2541,7 +2544,8 @@ if($connected)
                   $loads = $orptoptr->getGrossHoldeSAFE($siteID['SiteID'], $datefrom, $dateto);
                   
                   //appending results
-                  $subtotal += ($grosshold_MG + $grosshold_COSTELLO + $loads['GrossHold']);
+                  $gh = $loads['StartBalance']+$loads['WalletReloads'] - $loads['EndBalance'] - $loads['GenesisWithdrawal'];
+                  $subtotal += ($grosshold_MG + $grosshold_COSTELLO + $gh);
                   
                   $arr_grosshold[] = array( 'SiteCode' => str_replace("ICSA-", "", $siteCode['SiteCode']), 'SubTotal' => $subtotal);
                   
