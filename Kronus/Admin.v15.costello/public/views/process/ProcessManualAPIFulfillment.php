@@ -195,7 +195,9 @@ if ($connected && $connected2) {
                     echo "Manual Casino Fulfillment: Transaction Request Logs Empty";
                 }
 
-
+                //CCT - BEGIN 
+                $_SESSION['transrefid'] = $transactionrefid;
+                //CCT - END
                 unset($newarray);
                 $maf->close();
                 exit;
@@ -581,7 +583,9 @@ if ($connected && $connected2) {
                 $usermode = $_POST['txtusermode'];
                 $transrefid = $_SESSION['servicetransid'];
                 $apiresult = $_SESSION['servicestatus'];
-
+                // CCT - BEGIN
+                $tdtlstransrefid = $_SESSION['transrefid'];
+                // CCT - END
                 $servicegroupname = $maf->getServiceGrpNameByName($txtcasino);
                 $txtcasino = $servicegroupname;
                 //check mode if user mode
@@ -665,7 +669,10 @@ if ($connected && $connected2) {
                                     $txtusername = "";
                                 }
                                 //insert transaction summary, transactiondetails, and terminal sessions when transaction type is Deposit
-                                $trans = $maf->startTransaction($cmbsite, $cmbterm, $amount, $aid, $txttransrefid, 'D', $serviceid, $transstatus, $cardnumber, $mid);
+                                //CCT - BEGIN
+                                //$trans = $maf->startTransaction($cmbsite, $cmbterm, $amount, $aid, $txttransrefid, 'D', $serviceid, $transstatus, $cardnumber, $mid);
+                                $trans = $maf->startTransaction($cmbsite, $cmbterm, $amount, $aid, $txttransrefid, 'D', $serviceid, $transstatus, $cardnumber, $mid, $tdtlstransrefid);
+                                //CCT - END
                             } else {
                                 $trans = false;
                             }
@@ -755,7 +762,10 @@ if ($connected && $connected2) {
                             //insert in terminal sessions is successful
                             if ($insrttermsess == true) {
                                 //insert transaction summary, transactiondetails, and terminal sessions when transaction type is Reload
-                                $trans = $maf->reloadTransaction($amount, $trans_summary_id, $txttransrefid, $cmbsite, $cmbterm, 'R', $serviceid, $aid, $transstatus, $total_reload_balance, $total_terminal_balance, $cardnumber, $mid);
+                                //CCT - BEGIN
+                                //$trans = $maf->reloadTransaction($amount, $trans_summary_id, $txttransrefid, $cmbsite, $cmbterm, 'R', $serviceid, $aid, $transstatus, $total_reload_balance, $total_terminal_balance, $cardnumber, $mid);
+                                $trans = $maf->reloadTransaction($amount, $trans_summary_id, $txttransrefid, $cmbsite, $cmbterm, 'R', $serviceid, $aid, $transstatus, $total_reload_balance, $total_terminal_balance, $cardnumber, $mid, $tdtlstransrefid);
+                                //CCT - END
                             } else {
                                 $trans = false;
                             }
@@ -806,7 +816,10 @@ if ($connected && $connected2) {
                             //insert in terminal sessions is successful
                             if ($insrttermsess == true) {
                                 //insert transaction summary, transactiondetails, and terminal sessions when transaction type is Withdraw
-                                $trans = $maf->redeemTransaction($amount, $trans_summary_id, $txttransrefid, $cmbsite, $cmbterm, 'W', $serviceid, $aid, $transstatus, $cardnumber, $mid);
+                                //CCT - BEGIN
+                                //$trans = $maf->redeemTransaction($amount, $trans_summary_id, $txttransrefid, $cmbsite, $cmbterm, 'W', $serviceid, $aid, $transstatus, $cardnumber, $mid);
+                                $trans = $maf->redeemTransaction($amount, $trans_summary_id, $txttransrefid, $cmbsite, $cmbterm, 'W', $serviceid, $aid, $transstatus, $cardnumber, $mid, $tdtlstransrefid);
+                                //CCT - END
                             } else {
                                 $trans = false;
                             }

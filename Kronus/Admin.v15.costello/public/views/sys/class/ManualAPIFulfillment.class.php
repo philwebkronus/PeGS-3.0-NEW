@@ -460,7 +460,7 @@ class ManualAPIFulfillment extends DBHandler
      * @return int | boolean  $trans_summary_max_id
      */
     public function startTransaction($site_id,$terminal_id,$amount,$acctid, $trans_ref_id,
-                                      $trans_type,$service_id,$trans_status, $loyalty_card, $mid)
+                                      $trans_type,$service_id,$trans_status, $loyalty_card, $mid, $tdtls_trans_ref_id) // CCT - Added $tdtls_trans_ref_id
     {
         
             $this->begintrans();
@@ -489,8 +489,10 @@ class ManualAPIFulfillment extends DBHandler
                         ServiceID, CreatedByAID, Status, LoyaltyCardNumber, MID, PaymentType) VALUES 
                         (?, ?, ?, ?, ?, ?, now_usec(), ?, ?, ?, ?, ?, 1)";
                 $this->prepare($stmt2);
-                
-                $this->bindparameter(1, $trans_ref_id);
+                // CCT - BEGIN
+                //$this->bindparameter(1, $trans_ref_id);
+                $this->bindparameter(1, $tdtls_trans_ref_id);
+                // CCT - END
                 $this->bindparameter(2, $trans_summary_max_id);
                 $this->bindparameter(3, $site_id);
                 $this->bindparameter(4, $terminal_id);
@@ -554,7 +556,7 @@ class ManualAPIFulfillment extends DBHandler
     public function reloadTransaction($amount, $trans_summary_id, $trans_ref_id, $site_id,
                                       $terminal_id, $trans_type, $service_id, $acctid, 
                                       $trans_status, $terminal_balance, $total_terminal_balance, 
-                                      $loyalty_card, $mid)    
+                                      $loyalty_card, $mid, $tdtls_trans_ref_id)     // CCT - Added $tdtls_trans_ref_id
             
     {
         $this->begintrans();
@@ -572,8 +574,10 @@ class ManualAPIFulfillment extends DBHandler
                                              VALUES (?, ?, ?, ?, ?, 
                                              ?, now_usec(), ?, ?, ?, ?, ?, 1)";
                 $this->prepare($stmt2);
-                
-                $this->bindparameter(1,$trans_ref_id);
+                //CCT - BEGIN
+                //$this->bindparameter(1,$trans_ref_id);
+                $this->bindparameter(1,$tdtls_trans_ref_id);
+                //CCT - END
                 $this->bindparameter(2, $trans_summary_id);
                 $this->bindparameter(3, $site_id);
                 $this->bindparameter(4, $terminal_id);
@@ -644,7 +648,7 @@ class ManualAPIFulfillment extends DBHandler
      */
     public function redeemTransaction($amount, $trans_summary_id, $trans_ref_id, $site_id,
                                       $terminal_id, $trans_type, $service_id, $acctid,
-                                      $trans_status, $loyalty_card, $mid)
+                                      $trans_status, $loyalty_card, $mid, $tdtls_trans_ref_id) // CCT - Added $tdtls_trans_ref_id
     {
         $this->begintrans();
         try {
@@ -663,7 +667,10 @@ class ManualAPIFulfillment extends DBHandler
                                              ?, ?, now_usec(), ?, ?, ?, ?, ?, 1)";
                 
                 $this->prepare($stmt2);
-                $this->bindparameter(1,$trans_ref_id);
+                //CCT - BEGIN
+                //$this->bindparameter(1,$trans_ref_id);
+                $this->bindparameter(1,$tdtls_trans_ref_id);
+                //CCT - END
                 $this->bindparameter(2, $trans_summary_id);
                 $this->bindparameter(3, $site_id);
                 $this->bindparameter(4, $terminal_id);

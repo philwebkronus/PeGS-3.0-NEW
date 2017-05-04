@@ -2173,11 +2173,22 @@ class ApplicationSupport extends DBHandler
         //validate if combo boxes of transaction status and transaction type are selected ALL 
           if($transstatus == 'All')
           {
+              // CCT - BEGIN removed LEFT JOIN to transactiondetails, added FORCE INDEX
+              /*
               $stmt = "SELECT COUNT(trl.TransactionRequestLogID) AS Count FROM transactionrequestlogs trl LEFT JOIN transactiondetails td 
                           ON td.TransactionReferenceID = trl.TransactionReferenceID INNER JOIN terminals t ON t.TerminalID = trl.TerminalID 
                           INNER JOIN sites s ON s.SiteID = trl.SiteID INNER JOIN ref_services rs ON rs.ServiceID = trl.ServiceID
                           WHERE trl.SiteID =? AND trl.TerminalID =? AND trl.StartDate >= ? 
                           AND trl.StartDate < ? AND trl.Status IN (3,4)";
+               */
+              $stmt = "SELECT COUNT(trl.TransactionRequestLogID) AS Count FROM transactionrequestlogs trl FORCE INDEX (IX_transactionrequestlogs) 
+                          INNER JOIN terminals t ON t.TerminalID = trl.TerminalID 
+                          INNER JOIN sites s ON s.SiteID = trl.SiteID 
+                          INNER JOIN ref_services rs ON rs.ServiceID = trl.ServiceID
+                          WHERE trl.SiteID =? AND trl.TerminalID =? AND trl.StartDate >= ? 
+                          AND trl.StartDate < ? AND trl.Status IN (3,4)";
+              
+              // CCT - END
               $this->prepare($stmt);
               $this->bindparameter(1,$SiteID);
               $this->bindparameter(2,$TerminalID);
@@ -2185,11 +2196,22 @@ class ApplicationSupport extends DBHandler
               $this->bindparameter(4,$To);   
           }
           else {
+              // CCT - BEGIN removed LEFT JOIN to transactiondetails, added FORCE INDEX
+              /*
               $stmt = "SELECT COUNT(trl.TransactionRequestLogID) AS Count FROM transactionrequestlogs trl LEFT JOIN transactiondetails td 
                           ON td.TransactionReferenceID = trl.TransactionReferenceID INNER JOIN terminals t ON t.TerminalID = trl.TerminalID 
                           INNER JOIN sites s ON s.SiteID = trl.SiteID INNER JOIN ref_services rs ON rs.ServiceID = trl.ServiceID
                           WHERE trl.SiteID =? AND trl.TerminalID =? AND trl.StartDate >= ? 
                           AND trl.StartDate < ? AND trl.Status = ?";
+               */
+              $stmt = "SELECT COUNT(trl.TransactionRequestLogID) AS Count FROM transactionrequestlogs trl FORCE INDEX (IX_transactionrequestlogs) 
+                          INNER JOIN terminals t ON t.TerminalID = trl.TerminalID 
+                          INNER JOIN sites s ON s.SiteID = trl.SiteID 
+                          INNER JOIN ref_services rs ON rs.ServiceID = trl.ServiceID
+                          WHERE trl.SiteID =? AND trl.TerminalID =? AND trl.StartDate >= ? 
+                          AND trl.StartDate < ? AND trl.Status = ?";
+              
+              // CCT - END
               $this->prepare($stmt);
               $this->bindparameter(1,$SiteID);
               $this->bindparameter(2,$TerminalID);
@@ -2210,12 +2232,26 @@ class ApplicationSupport extends DBHandler
         //validate if combo boxes of transaction status and transaction type are selected ALL 
           if($transstatus == 'All')
           {
+              // CCT - BEGIN Added FORCE INDEX, and link to SiteID, re-arranged table in LEFT JOIN
+              /*
               $stmt = "SELECT trl.TransactionRequestLogID, s.SiteCode, t.TerminalCode, trl.TransactionType, trl.Amount, rs.ServiceName, rs.UserMode, 
 			  td.LoyaltyCardNumber, td.CreatedByAID, trl.TransactionDate, trl.Status FROM transactionrequestlogs trl LEFT JOIN transactiondetails td 
                           ON td.TransactionReferenceID = trl.TransactionReferenceID INNER JOIN terminals t ON t.TerminalID = trl.TerminalID 
                           INNER JOIN sites s ON s.SiteID = trl.SiteID INNER JOIN ref_services rs ON rs.ServiceID = trl.ServiceID
                           WHERE trl.SiteID =? AND trl.TerminalID =? AND trl.StartDate >= ? 
                           AND trl.StartDate < ? AND trl.Status IN (3,4) ORDER BY trl.StartDate LIMIT ".$start.", ".$limit."";
+               */
+              $stmt = "SELECT trl.TransactionRequestLogID, s.SiteCode, t.TerminalCode, trl.TransactionType, trl.Amount, 
+                          rs.ServiceName, rs.UserMode, trl.LoyaltyCardNumber, td.CreatedByAID, trl.TransactionDate, trl.Status 
+                          FROM transactionrequestlogs trl FORCE INDEX (IX_transactionrequestlogs) 
+                          LEFT JOIN transactiondetails td 
+                          ON trl.TransactionReferenceID = td.TransactionReferenceID AND trl.SiteID = td.SiteID
+                          INNER JOIN terminals t ON t.TerminalID = trl.TerminalID 
+                          INNER JOIN sites s ON s.SiteID = trl.SiteID INNER JOIN ref_services rs ON rs.ServiceID = trl.ServiceID
+                          WHERE trl.SiteID =? AND trl.TerminalID =? AND trl.StartDate >= ? 
+                          AND trl.StartDate < ? AND trl.Status IN (3,4) ORDER BY trl.StartDate LIMIT ".$start.", ".$limit."";
+
+              // CCT - END
               $this->prepare($stmt);
               $this->bindparameter(1,$SiteID);
               $this->bindparameter(2,$TerminalID);
@@ -2223,12 +2259,26 @@ class ApplicationSupport extends DBHandler
               $this->bindparameter(4,$To);   
           }
           else {
+              // CCT - BEGIN Added FORCE INDEX, and link to SiteID, re-arranged table in LEFT JOIN
+              /*
               $stmt = "SELECT trl.TransactionRequestLogID, s.SiteCode, t.TerminalCode, trl.TransactionType, trl.Amount, rs.ServiceName, rs.UserMode, 
 			  td.LoyaltyCardNumber, td.CreatedByAID, trl.TransactionDate, trl.Status FROM transactionrequestlogs trl LEFT JOIN transactiondetails td 
                           ON td.TransactionReferenceID = trl.TransactionReferenceID INNER JOIN terminals t ON t.TerminalID = trl.TerminalID 
                           INNER JOIN sites s ON s.SiteID = trl.SiteID INNER JOIN ref_services rs ON rs.ServiceID = trl.ServiceID
                           WHERE trl.SiteID =? AND trl.TerminalID =? AND trl.StartDate >= ? 
                           AND trl.StartDate < ? AND trl.Status = ? ORDER BY trl.StartDate LIMIT ".$start.", ".$limit."";
+               */
+              $stmt = "SELECT trl.TransactionRequestLogID, s.SiteCode, t.TerminalCode, trl.TransactionType, trl.Amount, 
+                          rs.ServiceName, rs.UserMode, trl.LoyaltyCardNumber, td.CreatedByAID, trl.TransactionDate, trl.Status 
+                          FROM transactionrequestlogs trl FORCE INDEX (IX_transactionrequestlogs) 
+                          LEFT JOIN transactiondetails td 
+                          ON trl.TransactionReferenceID = td.TransactionReferenceID AND trl.SiteID = td.SiteID
+                          INNER JOIN terminals t ON t.TerminalID = trl.TerminalID 
+                          INNER JOIN sites s ON s.SiteID = trl.SiteID 
+                          INNER JOIN ref_services rs ON rs.ServiceID = trl.ServiceID
+                          WHERE trl.SiteID =? AND trl.TerminalID =? AND trl.StartDate >= ? 
+                          AND trl.StartDate < ? AND trl.Status = ? ORDER BY trl.StartDate LIMIT ".$start.", ".$limit."";
+              // CCT - END
               $this->prepare($stmt);
               $this->bindparameter(1,$SiteID);
               $this->bindparameter(2,$TerminalID);
@@ -2250,12 +2300,26 @@ class ApplicationSupport extends DBHandler
         //validate if combo boxes of transaction status and transaction type are selected ALL 
           if($transstatus == 'All')
           {
+              // CCT - BEGIN Added FORCE INDEX, and link to SiteID, re-arranged table in LEFT JOIN
+              /*
               $stmt = "SELECT trl.TransactionRequestLogID, s.SiteCode, t.TerminalCode, trl.TransactionType, trl.Amount, rs.ServiceName, rs.UserMode, 
 			  td.LoyaltyCardNumber, td.CreatedByAID, trl.TransactionDate, trl.Status FROM transactionrequestlogs trl LEFT JOIN transactiondetails td 
                           ON td.TransactionReferenceID = trl.TransactionReferenceID INNER JOIN terminals t ON t.TerminalID = trl.TerminalID 
                           INNER JOIN sites s ON s.SiteID = trl.SiteID INNER JOIN ref_services rs ON rs.ServiceID = trl.ServiceID
                           WHERE trl.SiteID =? AND trl.TerminalID =? AND trl.StartDate >= ? 
                           AND trl.StartDate < ? AND trl.Status IN (3,4) ORDER BY trl.StartDate";
+               */
+              $stmt = "SELECT trl.TransactionRequestLogID, s.SiteCode, t.TerminalCode, trl.TransactionType, trl.Amount, 
+                          rs.ServiceName, rs.UserMode, trl.LoyaltyCardNumber, td.CreatedByAID, trl.TransactionDate, trl.Status 
+                          FROM transactionrequestlogs trl FORCE INDEX (IX_transactionrequestlogs)  
+                          LEFT JOIN transactiondetails td 
+                          ON trl.TransactionReferenceID = td.TransactionReferenceID AND trl.SiteID = td.SiteID
+                          INNER JOIN terminals t ON t.TerminalID = trl.TerminalID 
+                          INNER JOIN sites s ON s.SiteID = trl.SiteID 
+                          INNER JOIN ref_services rs ON rs.ServiceID = trl.ServiceID
+                          WHERE trl.SiteID =? AND trl.TerminalID =? AND trl.StartDate >= ? 
+                          AND trl.StartDate < ? AND trl.Status IN (3,4) ORDER BY trl.StartDate";
+              // CCT - END
               $this->prepare($stmt);
               $this->bindparameter(1,$SiteID);
               $this->bindparameter(2,$TerminalID);
@@ -2263,12 +2327,27 @@ class ApplicationSupport extends DBHandler
               $this->bindparameter(4,$To);   
           }
           else {
+              // CCT - BEGIN Added FORCE INDEX, and link to SiteID, re-arranged table in LEFT JOIN
+              /*
               $stmt = "SELECT trl.TransactionRequestLogID, s.SiteCode, t.TerminalCode, trl.TransactionType, trl.Amount, rs.ServiceName, rs.UserMode, 
 			  td.LoyaltyCardNumber, td.CreatedByAID, trl.TransactionDate, trl.Status FROM transactionrequestlogs trl LEFT JOIN transactiondetails td 
                           ON td.TransactionReferenceID = trl.TransactionReferenceID INNER JOIN terminals t ON t.TerminalID = trl.TerminalID 
                           INNER JOIN sites s ON s.SiteID = trl.SiteID INNER JOIN ref_services rs ON rs.ServiceID = trl.ServiceID
                           WHERE trl.SiteID =? AND trl.TerminalID =? AND trl.StartDate >= ? 
                           AND trl.StartDate < ? AND trl.Status = ? ORDER BY trl.StartDate";
+               */
+               $stmt = "SELECT trl.TransactionRequestLogID, s.SiteCode, t.TerminalCode, trl.TransactionType, trl.Amount, 
+                          rs.ServiceName, rs.UserMode, trl.LoyaltyCardNumber, td.CreatedByAID, trl.TransactionDate, trl.Status 
+                          FROM transactionrequestlogs trl FORCE INDEX (IX_transactionrequestlogs)   
+                          LEFT JOIN transactiondetails td 
+                          ON trl.TransactionReferenceID = td.TransactionReferenceID AND trl.SiteID = td.SiteID
+                          INNER JOIN terminals t ON t.TerminalID = trl.TerminalID 
+                          INNER JOIN sites s ON s.SiteID = trl.SiteID 
+                          INNER JOIN ref_services rs ON rs.ServiceID = trl.ServiceID
+                          WHERE trl.SiteID =? AND trl.TerminalID =? AND trl.StartDate >= ? 
+                          AND trl.StartDate < ? AND trl.Status = ? ORDER BY trl.StartDate";
+
+              // CCT - END
               $this->prepare($stmt);
               $this->bindparameter(1,$SiteID);
               $this->bindparameter(2,$TerminalID);
