@@ -16,7 +16,7 @@ body
 
 #virtual-ecity-logo-container{text-align: center;}
 #bars-container{width: 612px; margin: auto; padding-top: 8px;}
-
+    
 /*#copyright img{margin: 0 10px;}*/
 /* #casino-games-wrapper{height: 339px; margin: 0 auto 0 auto; text-align: center;} */
 /* #casino-games-container{text-align: center; margin: auto; display: inline-block;} */
@@ -420,7 +420,8 @@ ul li a:hover + .hidden, .hidden:hover
 
 /*Responsive Styles*/
 
-@media screen and (max-width : 760px)
+/* @media screen and (max-width : 760px) */
+@media screen and (max-width : 100%)
 {
     /*Make dropdown links appear inline*/
     ul 
@@ -822,7 +823,7 @@ tr.fourth
 
 #lobby2 
 {
-    display: block;
+    /* display: block; */
     width:850px;
     display: none;
 }

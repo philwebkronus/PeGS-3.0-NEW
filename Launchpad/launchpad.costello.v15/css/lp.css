@@ -1,64 +1,73 @@
 /* .lightboxButton{width: 100px; height: 30px} */
 
-body{background-color:#0e0209;}
-/* #page{width: 914px; color:#FFFFFF; margin: 90px auto 0; background: url(../images/bg_.jpg) top no-repeat; height: 444px;} */
+body
+{
+   /* margin: 0 auto; */ 
+   /* position: relative; */
+    background-color:#0e0209; width: 100%; height: 100%; overflow: hidden;
+}
+/* #page{width: 914px; color:#FFFFFF; margin: 90px auto 0; background: url(../images/lobby_background.jpg) top no-repeat; height: 444px;} */
 
 /* CCT ADDED latest launchpad design */
+#page /*  ID */
+{
+    /* margin: 0 auto; width: 1024px; height: 768px;  color:#FFFFFF; 
+    background:url(../images/lp-bg.jpg); background-repeat: no-repeat; */
+    width: 100%; height: 100%; color:#FFFFFF; 
+    margin: 0 auto;
+}
+
+.wrapper /* CLASS */
+{
+    width: 100%; height: 100%; 
+    margin: 0 auto;
+    position: relative;
+}
+
 .banner 
 {
-    background: url(../images/banner-ad.gif);
-    width: 1024px;
-    height: 90px; 
-    background-repeat: no-repeat;
-    float: center	
-}
-
-#page 
-{
-    margin: 0 auto; width: 1024px; height: 768px;  color:#FFFFFF; 
-    background:url(../images/lp-bg.jpg); background-repeat: no-repeat;
-}
-
-.wrapper 
-{
-    width: 100%;
+    /* width: 1024px; height: 90px; */
+    /*float: center;*/    
+    width: 100%; height: 90px;      
+    background: url(../images/banner-ad.gif); background-repeat: no-repeat;
+    position: absolute; 
+    top: 0;
+    margin-left: 22.5%;
+    margin-right: 22.5%;  
+    /* margin: 0 auto;*/
 }
 
 .games-logo-container 
 {
-    padding: 150px 0px 0px 120px;
-    position: fixed;
+    /* padding: 150px 0px 0px 120px;*/
+    /* position: fixed; */
+    width: 100%;    
+    /* margin: 0 auto; */
+    margin-top: 25%;
+    margin-left: 30%;
+    margin-right: 22.5%;    
+    position: absolute; 
 }
-
-/*
-.magicmacau-logo-btn 
-{
-    background: url(./img/magic-macau.png);
-    width: 244px;
-    height: 277px;
-    padding: 0px 30px 0px 20px;
-    background-repeat: no-repeat;
-    float: left;
-}
-*/
 
 .footer-logos 
 {
-    position: absolute;
-    background: url(../images/footer-logos.png);
-    width: 1024px;
+    width: 100%;
     height: 80px;
-    background-repeat: no-repeat;
-    bottom: 0; 
-}
+    background: url(../images/footer-logos.png) no-repeat; overflow: hidden; 
+    bottom: 15px; 
+    /*margin: 0 auto;*/
+    margin-left: 22.5%;
+    margin-right: 22.5%;    
+    position: absolute; 
+ }
 
 .sysversion /* CCT added for system version on the bottom */
 {
-    position: absolute;
-    width: 1024px;
+    width: 100%;    
     height: 20px;
-    background-repeat: no-repeat;
-    bottom: 10px;
+    bottom: 10px;    
+    margin: 0 auto;    
+    position: absolute;    
 }
 /* CCT ADDED latest launchpad design */
 
@@ -90,7 +99,7 @@ a img{border:1px solid #480F00;}
 
 /* .money{text-align: right} */
 #fancybox-overlay{overflow: hidden;}
-body{overflow: hidden}
+/* body{overflow: hidden} */
 .bolder{font-weight: bolder}
 
 /* CCT added for system version on the bottom */

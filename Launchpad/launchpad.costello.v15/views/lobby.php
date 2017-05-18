@@ -270,6 +270,13 @@
                     "height":lobby2imgH+"px",
                     "background-size":lobby2imgW+"px "+lobby2imgH+"px"
                 });
+                /*
+                $("footer_logos").css(
+                {
+                    "margin-left":((screen_width - 1024) /2)+"px",
+                });
+                alert(screen_width);
+                */
                 /* CCT END added */
             }
             else
@@ -746,7 +753,7 @@
                         <img src="../images/virtual_entertainment_city_logo.png" >
                     </div>
                 -->
-                <!-- CCT END COMMENT -->    
+                <!-- CCT END COMMENT -->   
                 <table id="iptable" style="margin-top: 10px;">
                     <!-- CCT BEGIN COMMENT and ADDED -->  
                     <tr>
@@ -788,7 +795,7 @@
             <!-- CCT BEGIN ADDED -->  
             <!-- games-logo-container end -->
             </div> 
-            <div class="footer-logos"></div>
+            <div id="footer_logos" class="footer-logos"></div>
             <div id="system-version" class="sysversion" ></div>
             <!-- CCT END ADDED -->      
             <!--CCT BEGIN COMMENT -->  
