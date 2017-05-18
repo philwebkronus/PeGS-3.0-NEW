@@ -1,134 +1,129 @@
 
 html, body { width: 100%; height: 100%; padding: 0; margin: 0; text-align: center; }
-/*body{background-color:#0e0209;overflow: hidden}*/
-body{background-color:#0e0209; 
-            background: url(../images/lobby_background.jpg) no-repeat; 
-            overflow: hidden; 
-            /*background: url(images/bg.jpg) no-repeat center center fixed;*/ 
-            -webkit-background-size: cover;
-            -moz-background-size: cover;
-            -o-background-size: cover;
-            background-size: cover;
-/*            background-size: 100%;
-            filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(
-            src='../images/lobby_background.png',
-            sizingMethod='scale');
-            
-            -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/lobby_background.png',sizingMethod='scale')";*/
+body
+{
+    background-color:#0e0209; 
+    background: url(../images/lp-bg.jpg) no-repeat; 
+    overflow: hidden; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
 }
-#page-wrapper{width: 100%; color:#FFFFFF; margin: 90px auto 0; background: url(../images/main_bg.jpg) top no-repeat; height: 475px;}
-#wood-background{width: 100%; color:#FFFFFF; margin: 0 auto;background: url(../images/wood_texture.jpg) top no-repeat; height: 86px;}
+
+/* #page-wrapper{width: 100%; color:#FFFFFF; margin: 90px auto 0; background: url(../images/main_bg.jpg) top no-repeat; height: 475px;} */
+/* #wood-background{width: 100%; color:#FFFFFF; margin: 0 auto;background: url(../images/wood_texture.jpg) top no-repeat; height: 86px;} */
+
 #virtual-ecity-logo-container{text-align: center;}
 #bars-container{width: 612px; margin: auto; padding-top: 8px;}
+
 /*#copyright img{margin: 0 10px;}*/
-/*uncomment next line to use no-modal background*/
-/*#page-wrapper{width: 911px; color:#FFFFFF; margin: 90px auto 0; background: url(../images/bg_box.jpg) top no-repeat; height: 454px;}*/
-/*#casino-games-wrapper{height: 333px; margin: 25px auto 0 auto; text-align: center;}*/
-#casino-games-wrapper{height: 339px; margin: 0 auto 0 auto; text-align: center;}
-#casino-games-container{text-align: center; margin: auto; display: inline-block;}
+/* #casino-games-wrapper{height: 339px; margin: 0 auto 0 auto; text-align: center;} */
+/* #casino-games-container{text-align: center; margin: auto; display: inline-block;} */
 
-
-#slots-world-container{width: 301px; height:260px; float:left; background:url(../images/slots_world.png) no-repeat;}
-/*#magic-macau-container{width: 256px; height:339px; float:left; background:url(../images/magic_macau_bg.png) no-repeat;}*/
-#magic-macau-container{height:339px; float:left; background:url(../images/mm_v15_normal.png) no-repeat;}
-/*#vibrant-vegas-container{width: 304px; height:333px; float:left; background:url(../images/mm_v15_normal.png) no-repeat;}*/
-#vibrant-vegas-container{height:339px; float:left; background:url(../images/ss_v15_normal.png) no-repeat;}
-/*#swinging-singapore-container{width: 305px; height:333px; float:left; background:url(../images/mm_v15_normal.png) no-repeat;}*/
-#swinging-singapore-container{height:339px; float:left; background:url(../images/mm_v15_normal.png) no-repeat;}
+/* #magic-macau-container{height:277px; float:left; background:url(../images/magic-macau.png) no-repeat;} */
+/* #vibrant-vegas-container{height:277px; float:left; background:url(../images/viva-lasvegas.png) no-repeat;} */
+/* #swinging-singapore-container{height:277px; float:left; background:url(../images/swinging-singapore.png) no-repeat;} */
 
 .disabled{display:none;}
-#egames-logo-container{height: 45px; width: 159px; margin:4px auto 0 auto;}
-#footer-wrapper{width: 914px; color:#FFFFFF; font-family: Arial;font-size: 10px; margin: 12px auto 0; text-align: center;}
+/* #egames-logo-container{height: 45px; width: 159px; margin:4px auto 0 auto;} */
+/* #footer-wrapper{width: 914px; color:#FFFFFF; font-family: Arial;font-size: 10px; margin: 12px auto 0; text-align: center;} */
 /*#copyright{width: 910px; margin:0 auto;}*/
 
 .clearer{clear:both;}
-#copies-container{width: 704px; margin: 12px auto;}
+/* #copies-container{width: 704px; margin: 12px auto;} */
 
-#progressive-jackpot-container{font-family: Calibri, 'Verdana', Ariel, sans-serif;  background: url(../images/bar_top.png) no-repeat; width: 612px;height:36px;}
-#prog-text{width:213px; float:left; text-align: center; margin-top: 8px; margin-left: 2px;}
-#prog-text2{width:246px;margin-top: 8px; float:left; margin-left: 20px; text-align: center;}
-#prog-text2 ul{list-style: none}
-#prog-text2 ul li{text-align: left}
-#prog-amount{width:130px; margin-top: 8px; float:left; text-align: right;}
+/* #progressive-jackpot-container{font-family: Calibri, 'Verdana', Ariel, sans-serif;  background: url(../images/bar_top.png) no-repeat; width: 612px;height:36px;} */
+/* #prog-text{width:213px; float:left; text-align: center; margin-top: 8px; margin-left: 2px;} */
+/* #prog-text2{width:246px;margin-top: 8px; float:left; margin-left: 20px; text-align: center;} */
+/* #prog-text2 ul{list-style: none} */
+/* #prog-text2 ul li{text-align: left} */
+/* #prog-amount{width:130px; margin-top: 8px; float:left; text-align: right;} */
 
-#main-casino-game-container{width: 612px;}
-#casino-game-container{font-family: Calibri, 'Verdana', Ariel, sans-serif;background: url(../images/bar_bottom.png) no-repeat; width:480px; height: 34px; float:left;}
-#casino-text{width:90px; float:left; text-align: center; margin-top: 4px; margin-left: 3px;}
-#casino-text2{width:145px; float:left; text-align: center; margin-top: 4px;}
-#casino-balance-text{width:100px; float:left; text-align: center; margin-top: 4px;}
-#casino-balance{margin-left: 5px; width:120px; float:left; text-align: right; margin-top: 4px;}
+/* #main-casino-game-container{width: 612px;} */
+/* #casino-game-container{font-family: Calibri, 'Verdana', Ariel, sans-serif;background: url(../images/bar_bottom.png) no-repeat; width:480px; height: 34px; float:left;}*/
+/* #casino-text{width:90px; float:left; text-align: center; margin-top: 4px; margin-left: 3px;} */
+/* #casino-text2{width:145px; float:left; text-align: center; margin-top: 4px;} */
+/* #casino-balance-text{width:100px; float:left; text-align: center; margin-top: 4px;} */
+/* #casino-balance{margin-left: 5px; width:120px; float:left; text-align: right; margin-top: 4px;} */
 
-#refresh-button{background:url(../images/refresh_button_hover.png) no-repeat; width: 130px; height:30px; float:left;}
-#refresh-button a:hover img{visibility: hidden;}
-#refresh-button a{display:block;}
+/* #refresh-button{background:url(../images/refresh_button_hover.png) no-repeat; width: 130px; height:30px; float:left;} */
+/* #refresh-button a:hover img{visibility: hidden;} */
+/* #refresh-button a{display:block;} */
 
-#in-slots-world{width: 155px; height:155px; margin-left: 74px; background: url(../images/slots_world_hover.png) no-repeat;}
-#link-magic-macau{width: 256px; height:339px; background: url(../images/mm_v15_hover.png) no-repeat;}
-#link-vibrant-vegas{width: 256px; height:339px; padding-top:5px; background: url(../images/ss_v15_hover.png) no-repeat;}
-#link-swinging-singapore{width: 256px; height:339px;  background: url(../images/mm_v15_normal.png) no-repeat;}
+/* #in-slots-world{width: 155px; height:155px; margin-left: 74px; background: url(../images/slots_world_hover.png) no-repeat;} */
+/* link-magic-macau{width: 244px; height:277px; background: url(../images/magic-macau-hover.png) no-repeat;} */
+/* #link-vibrant-vegas{width: 244px; height:277px; padding-top:5px; background: url(../images/viva-lasvegas.png) no-repeat;} */
+/* #link-swinging-singapore{width: 244px; height:277px;  background: url(../images/swinging-singapore.png) no-repeat;} */
 #link-endsession{width: 230px; height:40px;  background: url(../images/end_session_hover.png) no-repeat;}
 
-#link-non-platinum{width: 256px; height:339px; background: url(../images/mm_v15_hover.png) no-repeat;}
-#link-platinum-nonactive{width: 256px; height:339px; background: url(../images/ss_unavailable.png) no-repeat;}
-#link-platinum-active{width: 256px; height:339px; background: url(../images/ss_v15_hover.png) no-repeat;}
-#link-mm{width: 256px; height:339px; background: url(../images/mm_v15_hover.png) no-repeat;}
-#link-vv{width: 256px; height:339px; background: url(../images/vv_v15_hover.png) no-repeat;}
-#link-ss{width: 256px; height:339px; background: url(../images/ss_v15_hover.png) no-repeat;}
+#link-non-platinum{width: 244px; height:277px; background: url(../images/magic-macau-hover.png) no-repeat;}
+#link-platinum-nonactive{width: 244px; height:277px; background: url(../images/magic-macau-hover.png) no-repeat;}
+#link-platinum-active{width: 244px; height:277px; background: url(../images/magic-macau-hover.png) no-repeat;}
+#link-mm{width: 244px; height:277px; background: url(../images/magic-macau-hover.png) no-repeat;}
+#link-vv{width: 244px; height:277px; background: url(../images/viva-lasvegas-hover.png) no-repeat;}
+#link-ss{width: 244px; height:277px; background: url(../images/swinging-singapore-hover.png) no-repeat;}
 
-.link-container a, .link-container a:link, .link-container a:visited {
-display:block;
+.link-container a, .link-container a:link, .link-container a:visited 
+{
+    display:block;
 }
 
-.link-container img {
-width:100%;
-height:100%;
-border:none;
+.link-container img 
+{
+    width:100%; height:100%; border:none;
 }
 
-.link-container a:hover img {
-visibility:hidden;
+.link-container a:hover img 
+{
+    visibility:hidden;
 }
 
 /************** SCREEN SAVER ******/
-#rotating-content-container{width:400px; margin-top: 30px; margin-left:320px; height: 160px; text-align: center;color: #fff; word-wrap:break-word;}
-#rotating-content{margin: 12px 40px; font-size: 15px; height: 138px; overflow: hidden; word-wrap:break-word; width: 320px;}
+/* #rotating-content-container{width:400px; margin-top: 30px; margin-left:320px; height: 160px; text-align: center;color: #fff; word-wrap:break-word;} */
+/* #rotating-content{margin: 12px 40px; font-size: 15px; height: 138px; overflow: hidden; word-wrap:break-word; width: 320px;} */
 
-#feedcontent{width: inherit}
-#feedcontent li{word-wrap:break-word; }
+/* #feedcontent{width: inherit} */
+/* #feedcontent li{word-wrap:break-word; } */
 
-
-#page-wrapper2{width: 1024px; height:764px; margin: 0 auto; background: url(../images/background.png) no-repeat;}
-#logo-container{width: 160px; padding-top: 110px; margin: 0 auto;}
-#footer-logos{width: 330px; margin: 20px auto; text-align: center;}
-#refresh-button-container{width: 81px; margin: 60px auto 0px; background: url(../images/refresh_button_hover2.png) no-repeat; height:26px;}
-#refresh-button-container a, #refresh-button-container a:link, #refresh-button-container a:visited {
-  display:block;
-  width: 81px;
-  height: 26px;
+/* #page-wrapper2{width: 1024px; height:764px; margin: 0 auto; background: url(../images/background.png) no-repeat;} */
+/* #logo-container{width: 160px; padding-top: 110px; margin: 0 auto;} */
+/* #footer-logos{width: 330px; margin: 20px auto; text-align: center;} */
+/* #refresh-button-container{width: 81px; margin: 60px auto 0px; background: url(../images/refresh_button_hover2.png) no-repeat; height:26px;} */
+/* 
+#refresh-button-container a, #refresh-button-container a:link, #refresh-button-container a:visited 
+{
+  display:block; width: 81px; height: 26px;
 }
-#copyright-container{width: 330px; margin: 20px auto; text-align: center; color: #fff}
-#messages-and-announcement-container{margin-top: 109px; width: 400px; margin-left:320px; text-align: center;}
-#messages-and-announcement-container h2{color: #fff}
-#refresh-button-container a:hover img {
+*/
+/* #copyright-container{width: 330px; margin: 20px auto; text-align: center; color: #fff} */
+/* #messages-and-announcement-container{margin-top: 109px; width: 400px; margin-left:320px; text-align: center;} */
+/* #messages-and-announcement-container h2{color: #fff} */
+/* 
+#refresh-button-container a:hover img 
+{
   visibility:hidden;
 }
+*/
+
 #fancybox-overlay{overflow: hidden;}
 #fancybox-content{font-family: Calibri, 'Verdana', Ariel, sans-serif;}
 .textCenter{text-align: center}
 
-#overlay {
-     position: absolute;
-     left: 0px;
-     top: 0px;
-     width:100%;
-     height:100%;
-     text-align:center;
-     z-index: 1000;
-/*     background: #000000; */
+#overlay 
+{
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width:100%;
+    height:100%;
+    text-align:center;
+    z-index: 1000;
     background: url(../images/overlay.png) repeat;
 }
 
-#overlay div.overlay-child {
+#overlay div.overlay-child 
+{
      opacity: 100;filter:Alpha(Opacity=100);
      width:960px;
      margin: 55px auto;
@@ -136,46 +131,44 @@ visibility:hidden;
      text-align:center;
      color:#FFFFFF;
 }
+
 #link-overlay-refresh{width: 142px; height:37px;  background: url(../images/refresh_large_hover.png) no-repeat;}
 
-
-div#blackwrapper {
-	position: absolute;
-	top: 0;
-	left: 0;
-	height:200%;
-	width: 100%;
-	background-color: #000;
-                    background: url(../images/lobby_background.png) no-repeat; overflow: hidden; background-size: 100%;
-	z-index: 500;
-/*        background: rgb(0, 0, 0);  Fall-back for browsers that don't support rgba 
-        background: rgba(0, 0, 0, .4);
-        filter: alpha(opacity=70);*/
-        display: none;
+div#blackwrapper 
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+    height:200%;
+    width: 100%;
+    background-color: #000;
+    background: url(../images/lp-bg.jpg) no-repeat; overflow: hidden; background-size: 100%;
+    z-index: 500;
+    display: none;
 }
+
 #blocker
 {
     position: absolute;
-	top: 0;
-	left: 0;
-	height:200%;
-	width: 100%;
-	background-color: #000;
-	z-index: 700;
-        filter: alpha(opacity=70);
-        display: none;
+    top: 0;
+    left: 0;
+    height:200%;
+    width: 100%;
+    background-color: #000;
+    z-index: 700;
+    filter: alpha(opacity=70);
+    display: none;
 }
 
-#cont{
+#cont
+{
     position:fixed;
     float:left;
     background-color: white;
     border:5px solid black;
     text-align: center;
     z-index: 200;
-
 }
-
 
 #header
 {
@@ -189,13 +182,17 @@ div#blackwrapper {
     width:462px;
     height:50px;
 }
-#hdncont1{
+
+#hdncont1
+{
     padding-top:1px;    
     position:relative;
     width:462px;
     height:50px;
 }
-#pinfield{    
+
+#pinfield
+{    
     padding:2px;
     width:240px;
     height:25px;
@@ -204,16 +201,16 @@ div#blackwrapper {
     font-size:30px;
     font-weight: bold;
     color:white;
-/*    border-radius: 20px;
-    behavior:url(../css/PIE/PIE.htc);*/
-}
-input[type=text],input[type=password]{
-    
-        background-color:#404040;
-        color:white;
 }
 
-#ubfield{    
+input[type=text],input[type=password]
+{
+    background-color:#404040;
+    color:white;
+}
+
+#ubfield
+{    
     padding:2px;
     width:300px;
     height:50px;
@@ -223,47 +220,46 @@ input[type=text],input[type=password]{
     font-weight: bold;
     color:white;
     background-color:#404040;
-/*    border-radius: 20px;
-    behavior:url(../css/PIE/PIE.htc); */
-}
-#newPinField{    
-    padding:2px;
-    width:200px;
-    height:50px;
-    padding-top: 5px;
-    text-align: center;
-    font-size:30px;
-    font-weight: bold;
-    color:white;
-    background-color:#404040;
-  
-}
-#rnewPinField{    
-    padding:2px;
-    width:200px;
-    height:50px;
-    padding-top: 5px;
-    text-align: center;
-    font-size:30px;
-    font-weight: bold;
-    color:white;
-    background-color:#404040;
-   
 }
 
-div#buttcont{
+#newPinField
+{    
+    padding:2px;
+    width:200px;
+    height:50px;
+    padding-top: 5px;
+    text-align: center;
+    font-size:30px;
+    font-weight: bold;
+    color:white;
+    background-color:#404040;
+}
+
+#rnewPinField
+{    
+    padding:2px;
+    width:200px;
+    height:50px;
+    padding-top: 5px;
+    text-align: center;
+    font-size:30px;
+    font-weight: bold;
+    color:white;
+    background-color:#404040;
+}
+
+div#buttcont
+{
     border:1px solid black;
     background:white;
     position:relative;
-
     text-align: center;
     width:450px;
     height:150px;
-    
 }
 
-div#buttcont2{
-    
+div#buttcont2
+{
     border:1px solid black;
     background:white;
     position:relative;
@@ -273,20 +269,20 @@ div#buttcont2{
     z-index:500;
 }
 
-table{
-    
+table
+{
     width: 10%;
     border-collapse:collapse;
     font-family: sans-serif;
-    
-   
 }
 
 a:hover
 {
     cursor: pointer;
 }
-button{
+
+button
+{
     margin:2px; 
     width:50px;
     font-weight: bold;
@@ -294,13 +290,13 @@ button{
     border:1px solid black;
     text-align: center;
     z-index:200;
-       
 }
-button.clr,button.dne,button.back,button.shift{
-    
+
+button.clr,button.dne,button.back,button.shift
+{
     background-color:gray;
-    
 }
+
 .clr,.shift
 {
     text-align: center;
@@ -314,26 +310,22 @@ button.clr,button.dne,button.back,button.shift{
     font-weight: bold;       
 }
 
-button:hover{
+button:hover
+{
     color: #06c;
 }
-p{
+
+p
+{
     color: black;
     font-size: 20px;
     z-index: 300;
-    
-}
+ }
+
 p,input,a,span,table
 {
     font-family: sans-serif;
 }
-
-
-
-
-
-
-
 
 /*
 To change this license header, choose License Headers in Project Properties.
@@ -346,164 +338,169 @@ and open the template in the editor.
 */
 
 /*Strip the ul of padding and list styling*/
-ul {
-        list-style-type:none;
-        margin:0;
-        padding:0;
-        position: relative;
-        float:right;
+ul 
+{
+    list-style-type:none;
+    margin:0;
+    padding:0;
+    position: relative;
+    float:right;
 }
 
 /*Create a horizontal list with spacing*/
-li {
-        display:inline-block;
-        float: right;
-        margin-right: 1px;
+li 
+{
+    display:inline-block;
+    float: right;
+    margin-right: 1px;
 }
 
 /*Style for menu links*/
-li a {
-        display:block;
-        min-width:140px;
-        height: 50px;
-        text-align: center;
-        line-height: 50px;
-        font-family: sans-serif;
-        color: #fff;
-        background: #2f3036;
-        text-decoration: none;
+li a 
+{
+    display:block;
+    min-width:140px;
+    height: 50px;
+    text-align: center;
+    line-height: 50px;
+    font-family: sans-serif;
+    color: #fff;
+    background: #2f3036;
+    text-decoration: none;
 }
 
 /*Hover state for top level links*/
-li:hover a {
-        background: #19c589;
+li:hover a 
+{
+    background: #19c589;
 }
 
 /*Style for dropdown links*/
-li:hover ul a {
-        background: #f3f3f3;
-        color: #2f3036;
-        height: 40px;
-        line-height: 40px;
+li:hover ul a 
+{
+    background: #f3f3f3;
+    color: #2f3036;
+    height: 40px;
+    line-height: 40px;
 }
 
 /*Hover state for dropdown links*/
-li:hover ul a:hover {
-        background: #19c589;
-        color: #fff;
+li:hover ul a:hover 
+{
+    background: #19c589;
+    color: #fff;
 }
 
 /*Hide dropdown links until they are needed*/
-li ul {
-        display: none;
-}
-
-/*Make dropdown links vertical*/
-li ul li {
-        display: block;
-        float: none;
-}
-
-/*Prevent text wrapping*/
-li ul li a {
-        width: auto;
-        min-width: 100px;
-        padding: 0 20px;
-}
-
-/*Display the dropdown on hover*/
-ul li a:hover + .hidden, .hidden:hover {
-        display: block;
-}
-
-
-/*Hide checkbox*/
-/*input[type=checkbox]{
+li ul 
+{
     display: none;
 }
 
-Show menu when invisible checkbox is checked
-input[type=checkbox]:checked ~ #menu{
+/*Make dropdown links vertical*/
+li ul li 
+{
     display: block;
-}*/
+    float: none;
+}
 
+/*Prevent text wrapping*/
+li ul li a 
+{
+    width: auto;
+    min-width: 100px;
+    padding: 0 20px;
+}
+
+/*Display the dropdown on hover*/
+ul li a:hover + .hidden, .hidden:hover 
+{
+    display: block;
+}
 
 /*Responsive Styles*/
 
-@media screen and (max-width : 760px){
-        /*Make dropdown links appear inline*/
-        ul {
-                position: static;
-                display: none;
-        }
-        /*Create vertical spacing*/
-        li {
-                margin-bottom: 1px;
-        }
-        /*Make all menu links full width*/
-        ul li, li a {
-                width: 100%;
-        }
-        /*Display 'show menu' link*/
-        .show-menu {
-                display:block;
-        }
-       
-}
-div#blackOut {
-	position: fixed;
-	top: 0;
-	left: 0;
-	height:100%;
-	width: 100%;
-	background-color: #000;
-                    background: url(../images/lobby_background.png) no-repeat; 
-                    overflow: hidden; 
-                    background-size: 100%;
-	z-index: 300;
-/*        filter: alpha(opacity=70);*/
-        display:none;
+@media screen and (max-width : 760px)
+{
+    /*Make dropdown links appear inline*/
+    ul 
+    {
+        position: static;
+        display: none;
+    }
+    /*Create vertical spacing*/
+    li 
+    {
+        margin-bottom: 1px;
+    }
+    /*Make all menu links full width*/
+    ul li, li a 
+    {
+        width: 100%;
+    }
+    /*Display 'show menu' link*/
+    .show-menu 
+    {
+        display:block;
+    }
 }
 
-div#whiteBox {
-	position:fixed;
-	top: 50%;
-        left: 50%;
-        background-color:white;
-        background: rgba(0, 0, 0, .8);
-        background:transparent;
-        filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#B3181818,endColorstr=#B3181818); 
-        zoom: 1;
-        border:2px solid black;
-	z-index: 400;
-        padding:10px;
-        display:none;  
+div#blackOut
+{
+    position: fixed;
+    top: 0;
+    left: 0;
+    height:100%;
+    width: 100%;
+    background-color: #000;
+    background: url(../images/lp-bg.jpg) no-repeat; 
+    overflow: hidden; 
+    background-size: 100%;
+    z-index: 300;
+    display:none;
+}
+
+div#whiteBox 
+{
+    position:fixed;
+    top: 50%;
+    left: 50%;
+    background-color:white;
+    background: rgba(0, 0, 0, .8);
+    background:transparent;
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#B3181818,endColorstr=#B3181818); 
+    zoom: 1;
+    border:2px solid black;
+    z-index: 400;
+    padding:10px;
+    display:none;  
 }
 
 div#loadingBox
 {
-        position:fixed;
-	top: 50%;
-        left: 50%;
-	z-index: 400;
-        padding:10px;
-        display:none;  
+    position:fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 400;
+    padding:10px;
+    display:none;  
 }
 
 #prompt
 {
-        position: absolute;
-	z-index: 600;
-        padding:10px;
-        background-color: white;
-        border:1px solid black;
-        text-align: center;
-        font-weight: bold;
-        display:none;  
-        font-family: sans-serif;
+    position: absolute;
+    z-index: 600;
+    padding:10px;
+    background-color: white;
+    border:1px solid black;
+    text-align: center;
+    font-weight: bold;
+    display:none;  
+    font-family: sans-serif;
 }
 
-#kew{
+#kew
+{
     width:300px;
     height:50px;
     font-size: 20px;
@@ -517,10 +514,8 @@ div#loadingBox
     height:600px;
     overflow: auto;
     overflow-x:hidden;
-   
-  
-
 }
+
 #formUI
 {
     position:relative;
@@ -528,7 +523,6 @@ div#loadingBox
     height:600px;
 
 }
-
 
 #kewCont
 { 
@@ -538,16 +532,19 @@ div#loadingBox
     text-align: left;
 }
 
-#eSafetcheader{
+#eSafetcheader
+{
     font-size: 20px;
 }
 
-#eSafetcheader2{
+#eSafetcheader2
+{
     font-size: 16px;
     font-weight: bold;
 }
 
-#eSafetcbody{
+#eSafetcbody
+{
     width: 490px;
 }
 
@@ -562,7 +559,6 @@ CSS FOR FORM FIELDS
     margin: 0 auto;
     width:auto;
 }
-
 
 #label 
 {
@@ -602,14 +598,15 @@ h1
     right:15px;
 }
 
-div#infoBut{
-    
+div#infoBut
+{
     position:relative;
     margin-left:-20px;
     z-index:100;
 }
 
-a.boxclose{
+a.boxclose
+{
     float:right;
     margin-top:-10px;
     margin-right:-10px;
@@ -623,22 +620,18 @@ a.boxclose{
     line-height: 3px;
     padding: 5px 5px; 
     text-decoration: none;
-
 }
 
-.boxclose:before {
+.boxclose:before 
+{
     content: "×";
 }   
 
-
- 
 #formCardNumber,#formPassword,#formNewPIN,#formRePIN
 {
-    
    text-align: center;
    font-size: 20px;
    font-weight: bold;
-    
 }
 
 #content
@@ -659,8 +652,6 @@ a.boxclose{
 {
     margin-top:10px;
     height:400px;
-/*    width: 850px;
-    margin: auto;*/
     display: none;
 }
 
@@ -669,41 +660,31 @@ a.boxclose{
     margin:auto;
     width:462px;
     height:400px;
-    /*height:320px;*/
     background-color: white;
-    /*background: rgb(255, 255, 255);  Fall-back for browsers that don't support rgba */
     background: rgba(0, 0, 0, .8);
-
     background:transparent;
     filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#B3181818,endColorstr=#B3181818);     
     zoom: 1;
-
-/*  background: url(../images/invibox.png) no-repeat;
-  background-size: 462px 350px;*/
 }
 
 #right
 {
    width:512px;
    height:600px;
-
 }
 
 p
 {
     color:black;
 }
-
+/*
 #eWalletbut
 {
-    
- 
     bottom:0;
     width:100%;
     height:100px;   
-    
-}
-
+ }
+*/
 #Login
 {
     width:250px;
@@ -711,11 +692,12 @@ p
     font-weight: bold;
     font-size:20px;
 }
-
+/*
 #casinowrap
 {
     margin:5px;
 }
+*/
 #casino
 {
     width:250px;
@@ -723,14 +705,18 @@ p
     font-weight: bold;
     font-size:20px;
 }
-hr {
+
+hr 
+{
     padding: 0;
     border: none;
     border-top: medium double #333;
     color: #333;
     text-align: center;
 }
-hr:after {
+
+hr:after 
+{
     display: inline-block;
     position: relative; 
     top: -0.7em;  
@@ -738,47 +724,47 @@ hr:after {
     padding: 0 0.25em;
     background: white;
 }
+
 #agree
 {
     float:right;
     margin-right:10px;
     font-weight: bold;
     font-family: sans-serif;
-    
-}
-
+ }
+/*
 tr.second
 {
   position:absolute;
   margin-left: 15px;
 }
+
 tr.third
 {
   position:absolute;
   margin-top:15px;
 }
-
+*/
 tr.fourth
 {
   position:absolute;
   margin-left: 25px;
 }
+/*
 #under21logo
 {
     margin-top:-170px;
 }
-
+*/
 #changePinModule
 {
     margin-top: 50px;
     width: 100%;
 }
 
-#changePINUB,#changeUserPIN,#changeNPIN,#changeRNPIN{
-    
+#changePINUB,#changeUserPIN,#changeNPIN,#changeRNPIN
+{
     padding:2px;
-/*    width:300px;
-    height:50px;*/
     width:240px;
     height:25px;
     padding-top: 5px;
@@ -806,7 +792,6 @@ tr.fourth
 
 #portalLabel
 {
-    /*font-weight:bold;*/
     font-style: italic;
     font-size: 12px;
     padding:0px;
@@ -815,43 +800,30 @@ tr.fourth
     font-family: sans-serif;
 }
 
-#tdpad {
+#tdpad 
+{
     padding: 5px;
 }
 
-/*#padbut:hover
+.btnplatinum
 {
-    font-weight: bold;
-    font-size:12px;
-    color:black;
-}*/
-
-/*.myButtonStyle{
-    position:relative;
-    width:200px;
-    height:60px;
-    font-weight: bold;
-    font-size:20px;
-}*/
-
-.btnplatinum{
     position:relative;
     font-weight: bold;
     font-size:20px;
     margin-top: 10px;
 }
 
-.btnnonplatinum{
+.btnnonplatinum
+{
     position:relative;
     font-weight: bold;
     font-size:20px;
 }
-#lobby2 {
+
+#lobby2 
+{
     display: block;
     width:850px;
-/*    height:390px;
-    height:150px;*/
-    /*background-color: white;*/
     display: none;
 }
 

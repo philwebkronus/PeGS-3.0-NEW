@@ -1,50 +1,97 @@
-.lightboxButton{width: 100px; height: 30px}
+/* .lightboxButton{width: 100px; height: 30px} */
 
 body{background-color:#0e0209;}
-#page{width: 914px; color:#FFFFFF; margin: 90px auto 0; background: url(../images/bg_.jpg) top no-repeat; height: 444px;}
-#egames-logo-container{height: 45px; width: 159px; margin-left: 375px; margin-top: 4px;}
-#casinogames-wrapper{margin-top: 36px; height: 124px;}
-#magic-macau{margin-left:85px; width: 183px; height:152px; float:left;}
-#slots-world{margin-left:96px; width: 183px; height:152px; float:left;}
-#vibrant-vegas{margin-left:99px; width: 183px; height:152px;  float:left;}
+/* #page{width: 914px; color:#FFFFFF; margin: 90px auto 0; background: url(../images/bg_.jpg) top no-repeat; height: 444px;} */
 
-#magic-macau a{background: url(../images/magic_macau.jpg) no-repeat; width: 183px; height: 152px; display: block}
-#magic-macau a:hover{background: url(../images/magic_macau_hover.jpg) no-repeat;}
+/* CCT ADDED latest launchpad design */
+.banner 
+{
+    background: url(../images/banner-ad.gif);
+    width: 1024px;
+    height: 90px; 
+    background-repeat: no-repeat;
+    float: center	
+}
 
-#slots-world a{background: url(../images/slots_world.jpg) no-repeat; width: 183px; height: 152px; display: block}
-#slots-world a:hover{background: url(../images/slots_world_hover.jpg) no-repeat;}
+#page 
+{
+    margin: 0 auto; width: 1024px; height: 768px;  color:#FFFFFF; 
+    background:url(../images/lp-bg.jpg); background-repeat: no-repeat;
+}
 
-#vibrant-vegas a{background: url(../images/vibrant_vegas.jpg) no-repeat; width: 183px; height: 152px; display: block}
-#vibrant-vegas a:hover{background: url(../images/vibrant_vegas_hover.jpg) no-repeat;}
+.wrapper 
+{
+    width: 100%;
+}
 
-#rockin-reno a{background: url(../images/rockin_reno.jpg) no-repeat; width: 183px; height: 152px; display: block}
-#rockin-reno a:hover{background: url(../images/rockin_reno_hover.jpg) no-repeat;}
+.games-logo-container 
+{
+    padding: 150px 0px 0px 120px;
+    position: fixed;
+}
 
-a:hover img{border:1px solid #000000;background: url(../images/magic_macau_hover.jpg) no-repeat;}
+/*
+.magicmacau-logo-btn 
+{
+    background: url(./img/magic-macau.png);
+    width: 244px;
+    height: 277px;
+    padding: 0px 30px 0px 20px;
+    background-repeat: no-repeat;
+    float: left;
+}
+*/
+
+.footer-logos 
+{
+    position: absolute;
+    background: url(../images/footer-logos.png);
+    width: 1024px;
+    height: 80px;
+    background-repeat: no-repeat;
+    bottom: 0; 
+}
+
+.sysversion /* CCT added for system version on the bottom */
+{
+    position: absolute;
+    width: 1024px;
+    height: 20px;
+    background-repeat: no-repeat;
+    bottom: 10px;
+}
+/* CCT ADDED latest launchpad design */
+
+/* #egames-logo-container{height: 45px; width: 159px; margin-left: 375px; margin-top: 4px;} */
+/* #casinogames-wrapper{margin-top: 36px; height: 124px;} */
+
+a:hover img{border:1px solid #000000;background: url(../images/magic-macau-hover.png) no-repeat;}
 a img{border:1px solid #480F00;}
 .clearer{clear:both;}
-#footer-wrapper{width: 914px; color:#FFFFFF; font-family: Arial;font-size: 11px; margin: 8px auto 0; text-align: center;}
-#logos{float:right;}
-#form-details{margin-top: 150px; color:#450122; margin-left: 285px; font-size: 14px;}
-.form-element{height: 18px; border:1px solid #450122; background-color: #fff; color: #000;}
+/* #footer-wrapper{width: 914px; color:#FFFFFF; font-family: Arial;font-size: 11px; margin: 8px auto 0; text-align: center;} */
+/* #logos{float:right;} */
+/* #form-details{margin-top: 150px; color:#450122; margin-left: 285px; font-size: 14px;} */
+/* .form-element{height: 18px; border:1px solid #450122; background-color: #fff; color: #000;}  */
 
-
-.link-container a, .link-container a:link, .link-container a:visited {
-display:block;
+.link-container a, .link-container a:link, .link-container a:visited 
+{
+    display:block;
 }
 
-.link-container img {
-width:40%;
-height:40%;
-border:0;
+.link-container img 
+{
+    width:40%; height:40%; border:0;
 }
 
-.link-container a:hover img {
-visibility:hidden;
+.link-container a:hover img 
+{
+    visibility:hidden;
 }
 
-.money{text-align: right}
+/* .money{text-align: right} */
 #fancybox-overlay{overflow: hidden;}
 body{overflow: hidden}
 .bolder{font-weight: bolder}
 
+/* CCT added for system version on the bottom */
+#system-version{color:#EEEEEE; font-family: Arial;font-size: 14px; text-align: center; font-style: italic;}
