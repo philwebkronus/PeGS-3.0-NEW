@@ -232,7 +232,9 @@
                     /*"width":lobby2imgW+"px",*/
                     /*"height":lobby2imgH+"px"*/
                     "width":"244px",
-                    "height":"277px"
+                    "height":"278px",
+                    "background-size": "100%"
+                
                 });
                 $("#link-vv").css(
                 {
@@ -240,8 +242,8 @@
                     /*"height":lobby2imgH+"px",*/
                     /*"background-size":lobby2imgW+"px "+lobby2imgH+"px"*/
                     "width":"244px",
-                    "height":"277px",
-                    "background-size":"244px 277px"
+                    "height":"278px",
+                    "background-size": "100%"
                 });
                 
                 $("#tdmm").css("display","block");
@@ -253,7 +255,8 @@
                     /*"width":lobby2imgW+"px",*/
                     /*"height":lobby2imgH+"px"*/
                     "width":"244px",
-                    "height":"277px"
+                    "height":"278px",
+                    "background-size": "100%"                    
                 });
                 $("#link-mm").css(
                 {
@@ -261,8 +264,8 @@
                     /*"height":lobby2imgH+"px",*/
                     /*"background-size":lobby2imgW+"px "+lobby2imgH+"px"*/
                     "width":"244px",
-                    "height":"277px",
-                    "background-size":"244px 277px"
+                    "height":"278px",
+                    "background-size": "100%"                    
                 });
                 
                 $("#tdss").css("display","block");
@@ -274,7 +277,8 @@
                     /*"width":lobby2imgW+"px",*/
                     /*"height":lobby2imgH+"px"*/
                     "width":"244px",
-                    "height":"277px"
+                    "height":"278px",
+                    "background-size": "100%"                    
                 });
                 $("#link-ss").css(
                 {
@@ -282,14 +286,10 @@
                     /*"height":lobby2imgH+"px",*/
                     /*"background-size":lobby2imgW+"px "+lobby2imgH+"px"*/
                     "width":"244px",
-                    "height":"277px",
-                    "background-size":"244px 277px"
+                    "height":"278px",
+                    "background-size": "100%"                    
                 });
                 /*
-                $("footer_logos").css(
-                {
-                    "margin-left":((screen_width - 1024) /2)+"px",
-                });
                 alert(screen_width);
                 */
                 /* CCT END added */
@@ -769,23 +769,23 @@
                     </div>
                 -->
                 <!-- CCT END COMMENT -->   
-                <table id="iptable" style="margin-top: 10px;">
+                <table id="iptable" style="margin-top: 10px;" align="center">
                     <!-- CCT BEGIN COMMENT and ADDED -->  
                     <tr>
-                        <td id="tdvv">
+                        <td id="tdvv" align="center">
                             <div id="link-vv" class="link-container">
                                 <!-- <a id='casinovv' ><img id="vvimg" src="../images/vv_v15_normal.png" /></a> -->
                                 <a id='casinovv' ><img id="vvimg" src="../images/viva-lasvegas.png" /></a>
                             </div>
                         </td>
-                        <td id="tdmm">
+                        <td id="tdmm" align="center">
                             <div id="link-mm" class="link-container">
                                 <!-- <a id='casinomm' ><img id="mmimg" src="../images/mm_v15_normal.png" /></a> -->
                                 <a id='casinomm' ><img id="mmimg" src="../images/magic-macau.png" /></a>
                             </div>
                         </td>
                         <!-- ADDED BEGIN -->
-                        <td id="tdss">
+                        <td id="tdss" align="center">
                             <div id="link-ss" class="link-container">
                                 <a id='casinoss'><img id="ssimg" src="../images/swinging-singapore.png" /></a>
                             </div>
