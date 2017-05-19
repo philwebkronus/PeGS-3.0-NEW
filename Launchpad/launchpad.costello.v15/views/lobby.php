@@ -224,51 +224,66 @@
                 
                 /* CCT BEGIN added */
                 $("#tdvv").css("display","block");
-                $("#link-vv").css("margin-right","25px");
-                $("#vvimg").css("margin-right","25px");
+                /*$("#link-vv").css("margin-right","25px");*/
+                /*$("#vvimg").css("margin-right","25px");*/
 
                 $("#vvimg").css(
                 {
-                    "width":lobby2imgW+"px",
-                    "height":lobby2imgH+"px"
+                    /*"width":lobby2imgW+"px",*/
+                    /*"height":lobby2imgH+"px"*/
+                    "width":"244px",
+                    "height":"277px"
                 });
                 $("#link-vv").css(
                 {
-                    "width":lobby2imgW+"px",
-                    "height":lobby2imgH+"px",
-                    "background-size":lobby2imgW+"px "+lobby2imgH+"px"
+                    /*"width":lobby2imgW+"px",*/
+                    /*"height":lobby2imgH+"px",*/
+                    /*"background-size":lobby2imgW+"px "+lobby2imgH+"px"*/
+                    "width":"244px",
+                    "height":"277px",
+                    "background-size":"244px 277px"
                 });
                 
                 $("#tdmm").css("display","block");
-                $("#link-mm").css("margin-right","25px");
-                $("#mmimg").css("margin-right","25px");
+                /*$("#link-mm").css("margin-right","25px");*/
+                /*$("#mmimg").css("margin-right","25px");*/
 
                 $("#mmimg").css(
                 {
-                    "width":lobby2imgW+"px",
-                    "height":lobby2imgH+"px"
+                    /*"width":lobby2imgW+"px",*/
+                    /*"height":lobby2imgH+"px"*/
+                    "width":"244px",
+                    "height":"277px"
                 });
                 $("#link-mm").css(
                 {
-                    "width":lobby2imgW+"px",
-                    "height":lobby2imgH+"px",
-                    "background-size":lobby2imgW+"px "+lobby2imgH+"px"
+                    /*"width":lobby2imgW+"px",*/
+                    /*"height":lobby2imgH+"px",*/
+                    /*"background-size":lobby2imgW+"px "+lobby2imgH+"px"*/
+                    "width":"244px",
+                    "height":"277px",
+                    "background-size":"244px 277px"
                 });
                 
                 $("#tdss").css("display","block");
-                $("#link-ss").css("margin-right","25px");
-                $("#ssimg").css("margin-right","25px");
+                /*$("#link-ss").css("margin-right","25px");*/
+                /*$("#ssimg").css("margin-right","25px");*/
                 
                 $("#ssimg").css(
                 {
-                    "width":lobby2imgW+"px",
-                    "height":lobby2imgH+"px"
+                    /*"width":lobby2imgW+"px",*/
+                    /*"height":lobby2imgH+"px"*/
+                    "width":"244px",
+                    "height":"277px"
                 });
                 $("#link-ss").css(
                 {
-                    "width":lobby2imgW+"px",
-                    "height":lobby2imgH+"px",
-                    "background-size":lobby2imgW+"px "+lobby2imgH+"px"
+                    /*"width":lobby2imgW+"px",*/
+                    /*"height":lobby2imgH+"px",*/
+                    /*"background-size":lobby2imgW+"px "+lobby2imgH+"px"*/
+                    "width":"244px",
+                    "height":"277px",
+                    "background-size":"244px 277px"
                 });
                 /*
                 $("footer_logos").css(
