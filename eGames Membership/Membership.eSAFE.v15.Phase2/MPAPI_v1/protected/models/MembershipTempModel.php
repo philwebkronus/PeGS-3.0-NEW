@@ -323,6 +323,7 @@ class MembershipTempModel {
                 $result = $command->execute();
 
                 try {
+                    /* CCT 05232017 BEGIN
                     $instanceURL = Yii::app()->params['instanceURL'];
                     $apiVersion = Yii::app()->params['apiVersion'];
                     $cKey = Yii::app()->params['cKey'];
@@ -375,6 +376,26 @@ class MembershipTempModel {
                     } else {
                         $startTrans->rollback();
                     }
+                    CCT 05232017 END
+                    */
+                    // CCT 05232017 BEGIN ADDED
+                    if ($gender == 1) 
+                    {
+                        $salutation = 'Mr.';
+                    } 
+                    else 
+                    {
+                        $salutation = 'Ms.';
+                    }
+
+                    $sfID = 0;
+                    $startTrans->commit();
+                    $recipient = $firstname . ' ' . $lastname;
+                    $helpers = new Helpers();
+                    $helpers->sendEmailVerification($email, $recipient, $tempCode);
+                    $MID = $mid;
+                    return array('MID' => $MID, 'SFID' => $sfID);
+                    // CCT 05232017 END ADDED
                 } catch (PDOException $e) {
                     $startTrans->rollback();
                     Utilities::log($e->getMessage());
@@ -422,6 +443,7 @@ class MembershipTempModel {
             try {
                 //start add - SF push 07272015 mcs
                 try {
+                    /* CCT 05232017 BEGIN
                     $instanceURL = Yii::app()->params['instanceURL'];
                     $apiVersion = Yii::app()->params['apiVersion'];
                     $cKey = Yii::app()->params['cKey'];
@@ -472,6 +494,25 @@ class MembershipTempModel {
                     } else {
                         $startTrans->rollback();
                     }
+                     CCT 05232017 END
+                     */
+                    // CCT 05232017 BEGIN ADDED
+                    if ($gender == 1) 
+                    {
+                        $salutation = 'Mr.';
+                    } 
+                    else 
+                    {
+                        $salutation = 'Ms.';
+                    }
+
+                    $MID = $result['@OUT_MID'];
+                    $startTrans->commit();
+                    $recipient = $firstname . ' ' . $lastname;
+                    $helpers = new Helpers();
+                    $helpers->sendEmailVerification($email, $recipient, $tempCode);
+                    return $MID;
+                    // CCT 05232017 END ADDED
                 } catch (PDOException $e) {
                     $startTrans->rollback();
                     Utilities::log($e->getMessage());
@@ -580,6 +621,7 @@ class MembershipTempModel {
                 $command2->execute();
 
                 try {
+                    /* CCT 05232017 BEGIN
                     $instanceURL = Yii::app()->params['instanceURL'];
                     $apiVersion = Yii::app()->params['apiVersion'];
                     $cKey = Yii::app()->params['cKey'];
@@ -632,6 +674,26 @@ class MembershipTempModel {
                     } else {
                         $startTrans->rollback();
                     }
+                    CCT 05232017 END
+                    */
+                    // CCT 05232017 BEGIN ADDED
+                    if ($gender == 1) 
+                    {
+                        $salutation = 'Mr.';
+                    } 
+                    else 
+                    {
+                        $salutation = 'Ms.';
+                    }
+
+                    $sfID = 0; 
+                    $startTrans->commit();
+                    $recipient = $firstname . ' ' . $lastname;
+                    $helpers = new Helpers();
+                    $helpers->sendEmailVerification($email, $recipient, $tempCode);
+                    $MID = $mid;
+                    return array('MID' => $MID, 'SFID' => $sfID);
+                    // CCT 05232017 END ADDED
                 } catch (PDOException $e) {
                     $startTrans->rollback();
                     Utilities::log($e->getMessage());
@@ -714,6 +776,7 @@ class MembershipTempModel {
 
             try {
                 //start add - SF push 07272015 mcs
+                /* CCT 05242017 BEGIN
                 try {
                     $instanceURL = Yii::app()->params['instanceURL'];
                     $apiVersion = Yii::app()->params['apiVersion'];
@@ -771,6 +834,25 @@ class MembershipTempModel {
                     Utilities::log($e->getMessage());
                     return $e->getMessage();
                 }
+                 CCT 05242017 END
+                 */
+                // CCT 05242017 BEGIN ADDED 
+                if ($gender == 1) 
+                {
+                    $salutation = 'Mr.';
+                } 
+                else 
+                {
+                    $salutation = 'Ms.';
+                }
+                
+                $MID = $result['@OUT_MID'];
+                $startTrans->commit();
+                $recipient = $firstname . ' ' . $lastname;
+                $helpers = new Helpers();
+                $helpers->sendEmailVerification($email, $recipient, $tempCode);
+                return $MID;
+                // CCT 05242017 END ADDED 
                 //end add - SF push 07272015 mcs
             } catch (PDOException $e) {
                 $startTrans->rollback();
@@ -843,6 +925,7 @@ class MembershipTempModel {
             $result = $command->queryRow(true);
             try {
                 //start add - SF push 07272015 mcs
+                /* CCT 05242017 BEGIN
                 try {
                     $instanceURL = Yii::app()->params['instanceURL'];
                     $apiVersion = Yii::app()->params['apiVersion'];
@@ -895,6 +978,13 @@ class MembershipTempModel {
                     Utilities::log($e->getMessage());
                     return $e->getMessage();
                 }
+                CCT 05242017 END
+                 */
+                // CCT 05242017 BEGIN ADDED
+                $MID = $result['@OUT_MID'];
+                $startTrans->commit();
+                return $MID;
+               // CCT 05242017 END ADDED
                 //end add - SF push 07272015 mcs
             } catch (PDOException $e) {
                 $startTrans->rollback();

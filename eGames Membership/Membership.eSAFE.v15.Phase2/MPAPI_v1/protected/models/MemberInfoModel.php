@@ -187,6 +187,7 @@ class MemberInfoModel {
             try {
                 $startTrans->commit();
                 //start add - SF push 07272015 mcs
+                /* CCT 05232017 BEGIN
                 if ($SFID != '0') {
                     $instanceURL = Yii::app()->params['instanceURL'];
                     $apiVersion = Yii::app()->params['apiVersion'];
@@ -212,7 +213,10 @@ class MemberInfoModel {
                 {
                     return 1;
                 }
+                CCT 05232017 END
+                */
                 //end add - SF push 07272015 mcs
+                return 1; // CCT 05232017 ADDED
             } catch (PDOException $e) {
                 $startTrans->rollback();
                 Utilities::log($e->getMessage());
@@ -363,6 +367,7 @@ class MemberInfoModel {
             try {
                 $startTrans->commit();
                 //start add - SF push 07272015 mcs
+                /* CCT 05232017 BEGIN
                 if ($SFID != '0') {
                     $instanceURL = Yii::app()->params['instanceURL'];
                     $apiVersion = Yii::app()->params['apiVersion'];
@@ -388,7 +393,10 @@ class MemberInfoModel {
                 {
                     return 1;
                 }
+                 CCT 05232017 END
+                 */
                 //end add - SF push 07272015 mcs
+                return 1; // CCT 05232017 ADDED
             } catch (PDOException $e) {
                 $startTrans->rollback();
                 Utilities::log($e->getMessage());
@@ -478,6 +486,7 @@ class MemberInfoModel {
             try {
                 $startTrans->commit();
                 //start add - SF push 07272015 mcs
+                /* CCT 05232017 BEGIN
                 if ($SFID != '0') {
                     $instanceURL = Yii::app()->params['instanceURL'];
                     $apiVersion = Yii::app()->params['apiVersion'];
@@ -503,7 +512,10 @@ class MemberInfoModel {
                 {
                     return 1;
                 }
+                 CCT 05232017 END
+                 */
                 //end add - SF push 07272015 mcs
+                 return 1; // CCT 05232017 ADDED
             } catch (PDOException $e) {
                 $startTrans->rollback();
                 Utilities::log($e->getMessage());
