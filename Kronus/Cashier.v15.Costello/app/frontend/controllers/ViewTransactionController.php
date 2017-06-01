@@ -165,9 +165,13 @@ class ViewTransactionController extends FrontendController {
             ''=>'Please select history type',
             $this->createUrl('viewtrans/overview')=>'Transaction History Per Cashier',
             $this->createUrl('viewtrans/overview2')=>'Transaction History Per Virtual Cashier',
+            // CCT BEGIN comment
+            /*
             $this->createUrl('viewtrans/ewalletPerSite')=>'e-SAFE Transaction History Per Site',
             $this->createUrl('viewtrans/ewalletPerCashier')=>'e-SAFE Transaction History Per Cashier',
             $this->createUrl('viewtrans/ewalletPerVCashier')=>'e-SAFE Transaction History Per Virtual Cashier',
+            */
+            // CCT END comment            
         );
         
         $sitesModel = new SitesModel();

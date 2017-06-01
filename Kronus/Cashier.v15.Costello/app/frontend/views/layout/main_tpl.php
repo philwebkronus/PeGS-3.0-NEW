@@ -44,8 +44,9 @@
                     <div id="head-spacer"><div>e-Games Station Manager</div></div>
                     <div id="main-menu">
                     <?php
+                    
+                    // CCT - BEGIN comment
                     /*
-                     * CCT - BEGIN
                         echo Menu::display(array(
                             'Terminal Monitoring'=>array('link'=>$this->createUrl('terminal/overview'),'act'=>'overview','con'=>'Terminal','attr'=>'desc="Terminal activity monitoring"'),
                             'Start Session'=>array('link'=>$this->createUrl('startsession'),'act'=>'overview','con'=>'StartSession','attr'=>'desc="Start a new player session"'),
@@ -55,9 +56,10 @@
                             'View Transaction History'=>array('link'=>$this->createUrl('viewtrans/history'),'act'=>'history','con'=>'ViewTransaction','attr'=>'desc="View Transactions History"'),
                             'e-SAFE Load & Withdraw'=>array('link'=>$this->createUrl('forcet'),'act'=>'overview','con'=>'ForceT','attr'=>'desc="Load and Withdraw"'),
                             'Refresh'=>array('link'=>'','attr'=>'desc="Refresh the page" id="refresh_getbal"','visible'=>$this->show_refresh)
-                     * CCT - END
                      */
-                    // CCT - BEGIN
+                     // CCT - END comment
+                     
+                    // CCT - BEGIN added
                         echo Menu::display(array(
                             'Terminal Monitoring'=>array('link'=>$this->createUrl('terminal/overview'),'act'=>'overview','con'=>'Terminal','attr'=>'desc="Terminal activity monitoring"'),
                             'Start Session'=>array('link'=>$this->createUrl('startsession'),'act'=>'overview','con'=>'StartSession','attr'=>'desc="Start a new player session"'),
@@ -66,7 +68,7 @@
                             'Reports'=>array('link'=>$this->createUrl('reports'),'act'=>'overview','con'=>'Reports','attr'=>'desc="List of all player session transactions"'),
                             'View Transaction History'=>array('link'=>$this->createUrl('viewtrans/history'),'act'=>'history','con'=>'ViewTransaction','attr'=>'desc="View Transactions History"'),
                             'Refresh'=>array('link'=>'','attr'=>'desc="Refresh the page" id="refresh_getbal"','visible'=>$this->show_refresh)
-                    // CCT - END
+                    // CCT - END added
                         )); 
                         
                     ?>

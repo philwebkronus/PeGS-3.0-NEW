@@ -20,8 +20,12 @@ class ReportsController extends FrontendController{
             $this->createUrl('reports/transactionhistory')=>'Transaction History Per Site',
             $this->createUrl('reports/transactionhistorypercashier')=>'Transaction History Per Cashier',
             $this->createUrl('reports/transactionhistorypervirtualcashier')=>'Transaction History Per Virtual Cashier',
+            // CCT BEGIN comment
+            /*
             $this->createUrl('reports/eWalletPerSite')=>'e-SAFE Transaction History Per Site',
             $this->createUrl('reports/eWalletPerCashier')=>'e-SAFE Transaction History Per Cashier',
+             */
+            // CCT END comment            
             $this->createUrl('reports/siteCashOnHand')=>'Site Cash On Hand'
         );
         $sitesModel = new SitesModel();
@@ -1388,11 +1392,6 @@ class ReportsController extends FrontendController{
             Mirage::loadModels(array('TransactionSummaryModel', 'EWalletTransModel'));
             $transactionSummaryModel = new TransactionSummaryModel();
             $eWalletTransModel = new EWalletTransModel();
-
-            $transdetails = $transactionSummaryModel->getTransactionDetailsForCOH($startdate, $enddate, $this->site_id);
-            $encashedtickets = $transactionSummaryModel->getEncashedTickets($startdate, $enddate, $this->site_id);
-            $esafeloads = $eWalletTransModel->geteSAFELoadsAndWithdrawals($startdate, $enddate, $this->site_id);
-            $manualredemptions = $this->getmanualRedemptions($startdate, $enddate);
             
             $transdetails['LoadCash'] = 0;
             $transdetails['LoadCoupon'] = 0;
@@ -1400,6 +1399,11 @@ class ReportsController extends FrontendController{
             $transdetails['LoadTicket'] = 0;
             $transdetails['WCash'] = 0;
             $transdetails['WTicket'] = 0;
+            
+            $transdetails = $transactionSummaryModel->getTransactionDetailsForCOH($startdate, $enddate, $this->site_id);
+            $encashedtickets = $transactionSummaryModel->getEncashedTickets($startdate, $enddate, $this->site_id);
+            $esafeloads = $eWalletTransModel->geteSAFELoadsAndWithdrawals($startdate, $enddate, $this->site_id);
+            $manualredemptions = $this->getmanualRedemptions($startdate, $enddate);
 
             $transdetails['LoadCash'] += (float)$esafeloads['eSAFELoadCash'];
             $transdetails['LoadCoupon'] += (float)$esafeloads['eSAFELoadCoupon'];
