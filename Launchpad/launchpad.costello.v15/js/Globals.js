@@ -1,7 +1,7 @@
 
 // UI variables
 
-var screen_defaultWidth = 1024;
+var screen_defaultWidth = 1028;
 var screen_defaultHeight = 800;
 
 var screen_width = screen.width;

@@ -233,6 +233,7 @@
                     /*"height":lobby2imgH+"px"*/
                     "width":"244px",
                     "height":"278px",
+                    "list-style-type":"none",
                     "background-size": "100%"
                 
                 });
@@ -243,6 +244,7 @@
                     /*"background-size":lobby2imgW+"px "+lobby2imgH+"px"*/
                     "width":"244px",
                     "height":"278px",
+                    "list-style-type":"none",
                     "background-size": "100%"
                 });
                 
@@ -256,6 +258,7 @@
                     /*"height":lobby2imgH+"px"*/
                     "width":"244px",
                     "height":"278px",
+                    "list-style-type":"none",
                     "background-size": "100%"                    
                 });
                 $("#link-mm").css(
@@ -265,6 +268,7 @@
                     /*"background-size":lobby2imgW+"px "+lobby2imgH+"px"*/
                     "width":"244px",
                     "height":"278px",
+                    "list-style-type":"none",
                     "background-size": "100%"                    
                 });
                 
@@ -278,6 +282,7 @@
                     /*"height":lobby2imgH+"px"*/
                     "width":"244px",
                     "height":"278px",
+                    "list-style-type":"none",
                     "background-size": "100%"                    
                 });
                 $("#link-ss").css(
@@ -287,6 +292,7 @@
                     /*"background-size":lobby2imgW+"px "+lobby2imgH+"px"*/
                     "width":"244px",
                     "height":"278px",
+                    "list-style-type":"none",
                     "background-size": "100%"                    
                 });
                 /*

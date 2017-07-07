@@ -11,58 +11,19 @@ body
     background-size: cover;
 }
 
-/* #page-wrapper{width: 100%; color:#FFFFFF; margin: 90px auto 0; background: url(../images/main_bg.jpg) top no-repeat; height: 475px;} */
-/* #wood-background{width: 100%; color:#FFFFFF; margin: 0 auto;background: url(../images/wood_texture.jpg) top no-repeat; height: 86px;} */
-
 #virtual-ecity-logo-container{text-align: center;}
 #bars-container{width: 612px; margin: auto; padding-top: 8px;}
     
-/*#copyright img{margin: 0 10px;}*/
-/* #casino-games-wrapper{height: 339px; margin: 0 auto 0 auto; text-align: center;} */
-/* #casino-games-container{text-align: center; margin: auto; display: inline-block;} */
-
-/* #magic-macau-container{height:277px; float:left; background:url(../images/magic-macau.png) no-repeat;} */
-/* #vibrant-vegas-container{height:277px; float:left; background:url(../images/viva-lasvegas.png) no-repeat;} */
-/* #swinging-singapore-container{height:277px; float:left; background:url(../images/swinging-singapore.png) no-repeat;} */
-
 .disabled{display:none;}
-/* #egames-logo-container{height: 45px; width: 159px; margin:4px auto 0 auto;} */
-/* #footer-wrapper{width: 914px; color:#FFFFFF; font-family: Arial;font-size: 10px; margin: 12px auto 0; text-align: center;} */
-/*#copyright{width: 910px; margin:0 auto;}*/
-
 .clearer{clear:both;}
-/* #copies-container{width: 704px; margin: 12px auto;} */
 
-/* #progressive-jackpot-container{font-family: Calibri, 'Verdana', Ariel, sans-serif;  background: url(../images/bar_top.png) no-repeat; width: 612px;height:36px;} */
-/* #prog-text{width:213px; float:left; text-align: center; margin-top: 8px; margin-left: 2px;} */
-/* #prog-text2{width:246px;margin-top: 8px; float:left; margin-left: 20px; text-align: center;} */
-/* #prog-text2 ul{list-style: none} */
-/* #prog-text2 ul li{text-align: left} */
-/* #prog-amount{width:130px; margin-top: 8px; float:left; text-align: right;} */
-
-/* #main-casino-game-container{width: 612px;} */
-/* #casino-game-container{font-family: Calibri, 'Verdana', Ariel, sans-serif;background: url(../images/bar_bottom.png) no-repeat; width:480px; height: 34px; float:left;}*/
-/* #casino-text{width:90px; float:left; text-align: center; margin-top: 4px; margin-left: 3px;} */
-/* #casino-text2{width:145px; float:left; text-align: center; margin-top: 4px;} */
-/* #casino-balance-text{width:100px; float:left; text-align: center; margin-top: 4px;} */
-/* #casino-balance{margin-left: 5px; width:120px; float:left; text-align: right; margin-top: 4px;} */
-
-/* #refresh-button{background:url(../images/refresh_button_hover.png) no-repeat; width: 130px; height:30px; float:left;} */
-/* #refresh-button a:hover img{visibility: hidden;} */
-/* #refresh-button a{display:block;} */
-
-/* #in-slots-world{width: 155px; height:155px; margin-left: 74px; background: url(../images/slots_world_hover.png) no-repeat;} */
-/* link-magic-macau{width: 244px; height:277px; background: url(../images/magic-macau-hover.png) no-repeat;} */
-/* #link-vibrant-vegas{width: 244px; height:277px; padding-top:5px; background: url(../images/viva-lasvegas.png) no-repeat;} */
-/* #link-swinging-singapore{width: 244px; height:277px;  background: url(../images/swinging-singapore.png) no-repeat;} */
 #link-endsession{width: 230px; height:40px;  background: url(../images/end_session_hover.png) no-repeat;}
-
-#link-non-platinum{width: 244px; height:278px; background: url(../images/magic-macau-hover.png) no-repeat;}
-#link-platinum-nonactive{width: 244px; height:278px; background: url(../images/magic-macau-hover.png) no-repeat;}
-#link-platinum-active{width: 244px; height:278px; background: url(../images/magic-macau-hover.png) no-repeat;}
-#link-mm{width: 244px; height:278px; background: url(../images/magic-macau-hover.png) no-repeat;}
-#link-vv{width: 244px; height:278px; background: url(../images/viva-lasvegas-hover.png) no-repeat;}
-#link-ss{width: 244px; height:278px; background: url(../images/swinging-singapore-hover.png) no-repeat;}
+#link-non-platinum{width: 244px; height:278px; list-style-type:none; background: url(../images/magic-macau-hover.png) no-repeat;}
+#link-platinum-nonactive{width: 244px; height:278px; list-style-type:none; background: url(../images/magic-macau-hover.png) no-repeat;}
+#link-platinum-active{width: 244px; height:278px; list-style-type:none; background: url(../images/magic-macau-hover.png) no-repeat;}
+#link-mm{width: 244px; height:278px; list-style-type:none; background: url(../images/magic-macau-hover.png) no-repeat;}
+#link-vv{width: 244px; height:278px; list-style-type:none; background: url(../images/viva-lasvegas-hover.png) no-repeat;}
+#link-ss{width: 244px; height:278px; list-style-type:none; background: url(../images/swinging-singapore-hover.png) no-repeat;}
 
 .link-container a, .link-container a:link, .link-container a:visited 
 {
@@ -78,33 +39,6 @@ body
 {
     visibility:hidden;
 }
-
-/************** SCREEN SAVER ******/
-/* #rotating-content-container{width:400px; margin-top: 30px; margin-left:320px; height: 160px; text-align: center;color: #fff; word-wrap:break-word;} */
-/* #rotating-content{margin: 12px 40px; font-size: 15px; height: 138px; overflow: hidden; word-wrap:break-word; width: 320px;} */
-
-/* #feedcontent{width: inherit} */
-/* #feedcontent li{word-wrap:break-word; } */
-
-/* #page-wrapper2{width: 1024px; height:764px; margin: 0 auto; background: url(../images/background.png) no-repeat;} */
-/* #logo-container{width: 160px; padding-top: 110px; margin: 0 auto;} */
-/* #footer-logos{width: 330px; margin: 20px auto; text-align: center;} */
-/* #refresh-button-container{width: 81px; margin: 60px auto 0px; background: url(../images/refresh_button_hover2.png) no-repeat; height:26px;} */
-/* 
-#refresh-button-container a, #refresh-button-container a:link, #refresh-button-container a:visited 
-{
-  display:block; width: 81px; height: 26px;
-}
-*/
-/* #copyright-container{width: 330px; margin: 20px auto; text-align: center; color: #fff} */
-/* #messages-and-announcement-container{margin-top: 109px; width: 400px; margin-left:320px; text-align: center;} */
-/* #messages-and-announcement-container h2{color: #fff} */
-/* 
-#refresh-button-container a:hover img 
-{
-  visibility:hidden;
-}
-*/
 
 #fancybox-overlay{overflow: hidden;}
 #fancybox-content{font-family: Calibri, 'Verdana', Ariel, sans-serif;}
