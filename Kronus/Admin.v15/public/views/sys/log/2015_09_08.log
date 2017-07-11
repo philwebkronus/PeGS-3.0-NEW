@@ -1,8 +1,0 @@
-[08-Sep-2015 09:11:38] PHP Notice:  Undefined index: CasinoArray in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessTopUp.php on line 774
-[08-Sep-2015 09:11:38] PHP Notice:  Undefined index: MID in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessTopUp.php on line 775
-[08-Sep-2015 09:19:34] PHP Notice:  Undefined variable: new_sessionid in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessTopUp.php on line 52
-[08-Sep-2015 09:19:34] PHP Fatal error:  Call to a member function prepare() on a non-object in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\sys\class\DbHandler.class.php on line 91
-[08-Sep-2015 09:19:40] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessLogin.php on line 95
-[08-Sep-2015 10:28:58] PHP Fatal error:  Call to a member function prepare() on a non-object in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\sys\class\DbHandler.class.php on line 91
-[08-Sep-2015 10:29:06] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessLogin.php on line 95
-[08-Sep-2015 15:32:34] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessLogin.php on line 95

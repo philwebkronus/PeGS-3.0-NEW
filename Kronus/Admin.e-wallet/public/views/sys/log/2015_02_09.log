@@ -1,2 +1,0 @@
-[09-Feb-2015 14:12:37] PHP Fatal error:  Call to a member function prepare() on a non-object in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\DbHandler.class.php on line 91
-[09-Feb-2015 15:02:15] PHP Fatal error:  Call to a member function prepare() on a non-object in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\DbHandler.class.php on line 91

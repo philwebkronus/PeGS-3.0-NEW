@@ -1,5 +1,0 @@
-[07-Apr-2015 13:42:15] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessLogin.php on line 95
-[07-Apr-2015 13:55:33] PHP Notice:  Undefined variable: count in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessTerminalMgmt.php on line 295
-[07-Apr-2015 13:55:33] PHP Notice:  Undefined variable: rterminalcode in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessTerminalMgmt.php on line 301
-[07-Apr-2015 13:55:33] PHP Notice:  Undefined variable: rterminalcode in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessTerminalMgmt.php on line 318
-[07-Apr-2015 14:03:31] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessLogin.php on line 95

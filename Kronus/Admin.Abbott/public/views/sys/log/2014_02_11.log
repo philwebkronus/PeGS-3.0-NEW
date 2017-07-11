@@ -1,1 +1,0 @@
-[11-Feb-2014 09:37:28] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\kronus_abbott\admin.abbott.version\public\views\process\ProcessLogin.php on line 85

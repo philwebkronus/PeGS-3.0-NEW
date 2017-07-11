@@ -1,5 +1,0 @@
-[26-Feb-2014 11:44:02] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\process\ProcessLogin.php on line 85
-[26-Feb-2014 11:44:18] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\process\ProcessLogin.php on line 85
-[26-Feb-2014 11:44:31] PHP Fatal error:  Call to undefined function curl_init() in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\sys\class\CasinoAPI\RealtimeGamingPlayerAPI.class.php on line 173
-[26-Feb-2014 11:47:09] PHP Fatal error:  Call to undefined function curl_init() in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\sys\class\CasinoAPI\RealtimeGamingPlayerAPI.class.php on line 173
-[26-Feb-2014 11:50:04] PHP Fatal error:  Call to undefined function curl_init() in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\sys\class\CasinoAPI\RealtimeGamingPlayerAPI.class.php on line 173

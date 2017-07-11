@@ -1,1 +1,0 @@
-[27-Aug-2015 13:31:26] PHP Fatal error:  Call to a member function prepare() on a non-object in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\sys\class\DbHandler.class.php on line 91

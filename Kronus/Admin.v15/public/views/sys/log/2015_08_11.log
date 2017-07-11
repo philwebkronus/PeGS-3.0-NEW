@@ -1,2 +1,0 @@
-[11-Aug-2015 14:56:48] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessLogin.php on line 95
-[11-Aug-2015 15:13:17] PHP Fatal error:  Call to a member function beginTransaction() on a non-object in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\DbHandler.class.php on line 120

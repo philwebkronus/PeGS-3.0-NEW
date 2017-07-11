@@ -1,1 +1,0 @@
-[2014-03-24 17:53:18.410708][ERROR] "Error: Failed to start session. TerminalID=957 ServiceID=19ErrorMessage = Session ID error" SiteID = 167 File: /var/www/Kronus_New/cashier.abbott.version/app/frontend/components/CommonStartSession.php LINE: 213

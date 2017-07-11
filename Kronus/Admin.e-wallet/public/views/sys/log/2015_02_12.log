@@ -1,8 +1,0 @@
-[12-Feb-2015 09:56:59] PHP Fatal error:  Call to a member function prepare() on a non-object in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\DbHandler.class.php on line 91
-[12-Feb-2015 10:27:22] PHP Fatal error:  Call to a member function prepare() on a non-object in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\DbHandler.class.php on line 91
-[12-Feb-2015 10:27:27] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessLogin.php on line 95
-[12-Feb-2015 10:30:19] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessLogin.php on line 95
-[12-Feb-2015 10:30:49] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessLogin.php on line 95
-[12-Feb-2015 13:29:29] PHP Fatal error:  Call to a member function prepare() on a non-object in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\DbHandler.class.php on line 91
-[12-Feb-2015 13:43:30] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessLogin.php on line 95
-[12-Feb-2015 13:49:56] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessLogin.php on line 95

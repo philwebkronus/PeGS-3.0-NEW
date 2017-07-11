@@ -1,7 +1,0 @@
-[06-May-2015 11:09:19] PHP Fatal error:  Call to a member function prepare() on a non-object in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\DbHandler.class.php on line 91
-[06-May-2015 11:09:27] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessLogin.php on line 95
-[06-May-2015 11:52:45] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessLogin.php on line 95
-[06-May-2015 11:53:29] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessLogin.php on line 95
-[06-May-2015 11:53:47] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessLogin.php on line 95
-[06-May-2015 11:54:38] PHP Warning:  mail() [<a href='0function.mail0'>function.mail0</a>]: Failed to connect to mailserver at &quot;localhost&quot; port 25, verify your &quot;SMTP&quot; and &quot;smtp_port&quot; setting in php.ini or use ini_set() in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessAccManagement.php on line 658
-[06-May-2015 13:44:15] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessLogin.php on line 95

@@ -1,4 +1,0 @@
-[2015-02-12 10:24:35.528958][REQUEST][ResetPIN] Input: {"CardNumber":"UB7NKKJ8","SystemUsername":"kadmin","AccessDate":"2015-02-12 10:24:35","Token":"6436dc4d035b7d6851128989e51170672ff00021","ActionCode":0}
-[2015-02-12 10:24:35.628958][RESPONSE][ResetPIN] Token: 6436dc4d035b7d6851128989e51170672ff00021, Output: {"changePin":{"TransactionMessage":"PIN reset successful.","ErrorCode":0}}
-[2015-02-12 10:25:49.222958][REQUEST][ResetPIN] Input: {"CardNumber":"UB7NKKJ8","SystemUsername":"kadmin","AccessDate":"2015-02-12 10:25:49","Token":"eb831eafc64d92d2a06879fba6103f4fc2d1e892","ActionCode":0}
-[2015-02-12 10:25:49.328958][RESPONSE][ResetPIN] Token: eb831eafc64d92d2a06879fba6103f4fc2d1e892, Output: {"changePin":{"TransactionMessage":"PIN reset successful.","ErrorCode":0}}

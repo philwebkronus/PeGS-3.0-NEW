@@ -1,8 +1,0 @@
-[14-May-2015 09:35:46] PHP Fatal error:  Call to a member function prepare() on a non-object in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\DbHandler.class.php on line 91
-[14-May-2015 09:35:52] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessLogin.php on line 95
-[14-May-2015 10:11:11] PHP Notice:  Undefined variable: start in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessTopUpPaginate.php on line 1347
-[14-May-2015 10:11:16] PHP Notice:  Undefined variable: start in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessTopUpPaginate.php on line 1347
-[14-May-2015 10:11:19] PHP Notice:  Undefined variable: start in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessTopUpPaginate.php on line 1347
-[14-May-2015 10:11:26] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessLogin.php on line 95
-[14-May-2015 10:11:31] PHP Notice:  Undefined variable: start in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessTopUpPaginate.php on line 1347
-[14-May-2015 10:11:35] PHP Notice:  Undefined variable: start in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessTopUpPaginate.php on line 1347
