@@ -1,1 +1,0 @@
-[2014-02-21 10:38:25.867782][NOTICE] "A session had already been started - ignoring session_start()" File: /var/www/Kronus_New/cashier.abbott.version/app/frontend/models/LoginFormModel.php Line: 527

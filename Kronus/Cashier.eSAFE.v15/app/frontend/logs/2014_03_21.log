@@ -1,4 +1,0 @@
-[2014-03-21 10:55:55.884149][ERROR] "Reload Session Failed. Please check if the terminal
-                            has a valid start session. TerminalID=957 ServiceID=19" SiteID = 167 File: /var/www/Kronus_New/cashier.abbott.version/app/frontend/components/CommonUBReload.php LINE: 77
-[2014-03-21 14:35:57.780182][ERROR] "Please choose the appropriate regular/vip terminal classification for this card." SiteID = 167 File: /var/www/Kronus_New/cashier.abbott.version/app/frontend/components/FrontendController.php LINE: 770
-[2014-03-21 14:57:12.61694][NOTICE] "A session had already been started - ignoring session_start()" File: /var/www/Kronus_New/cashier.abbott.version/app/frontend/models/LoginFormModel.php Line: 527

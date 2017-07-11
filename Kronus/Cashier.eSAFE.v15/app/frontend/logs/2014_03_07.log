@@ -1,8 +1,0 @@
-[2014-03-07 10:26:06.901585][NOTICE] "A session had already been started - ignoring session_start()" File: /var/www/Kronus_New/cashier.abbott.version/app/frontend/models/LoginFormModel.php Line: 527
-[2014-03-07 10:28:39.324462][ERROR] "Error: Can't get balance TerminalID=882 ServiceID=19 ErrorMessage=Response malformed" SiteID = 167 File: /var/www/Kronus_New/cashier.abbott.version/app/frontend/components/CasinoApiUB.php LINE: 215
-[2014-03-07 10:28:55.772306][ERROR] "Error: Can't get balance TerminalID=882 ServiceID=19 ErrorMessage=Response malformed" SiteID = 167 File: /var/www/Kronus_New/cashier.abbott.version/app/frontend/components/CasinoApiUB.php LINE: 215
-[2014-03-07 10:30:47.936618][ERROR] "Please choose the appropriate regular/vip terminal classification for this card." SiteID = 167 File: /var/www/Kronus_New/cashier.abbott.version/app/frontend/components/FrontendController.php LINE: 770
-[2014-03-07 10:31:07.632583][ERROR] "Reload Session Failed. Please check if the terminal
-                            has a valid start session. TerminalID=883 ServiceID=19" SiteID = 167 File: /var/www/Kronus_New/cashier.abbott.version/app/frontend/components/CommonUBReload.php LINE: 77
-[2014-03-07 13:45:18.790265][NOTICE] "A session had already been started - ignoring session_start()" File: /var/www/Kronus_New/cashier.abbott.version/app/frontend/models/LoginFormModel.php Line: 527
-[2014-03-07 14:05:09.418754][NOTICE] "A session had already been started - ignoring session_start()" File: /var/www/Kronus_New/cashier.abbott.version/app/frontend/models/LoginFormModel.php Line: 527

@@ -1,3 +1,0 @@
-[2014-03-11 11:07:34.287376][NOTICE] "Trying to get property of non-object" File: /var/www/Kronus_New/cashier.abbott.version/app/frontend/components/LoyaltyAPIWrapper.class.php Line: 98
-[2014-03-11 11:07:34.287806][NOTICE] "Trying to get property of non-object" File: /var/www/Kronus_New/cashier.abbott.version/app/frontend/components/LoyaltyAPIWrapper.class.php Line: 98
-[2014-03-11 15:43:11.138309][ERROR] "Please choose the appropriate regular/vip terminal classification for this card." SiteID = 167 File: /var/www/Kronus_New/cashier.abbott.version/app/frontend/components/FrontendController.php LINE: 770
