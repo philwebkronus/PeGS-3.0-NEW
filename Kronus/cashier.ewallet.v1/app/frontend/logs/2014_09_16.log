@@ -1,5 +1,0 @@
-[2014-09-16 11:00:46.873080][ERROR] "Please start a session using a Genesis Terminal." SiteID = 217 File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/components/FrontendController.php LINE: 533
-[2014-09-16 11:04:39.504248][ERROR] "Please start a session using a Genesis Terminal." SiteID = 217 File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/components/FrontendController.php LINE: 533
-[2014-09-16 11:06:11.755784][ERROR] "Please start a session using a Genesis Terminal." SiteID = 217 File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/components/FrontendController.php LINE: 533
-[2014-09-16 11:07:27.677386][ERROR] "Please start a session using a Genesis Terminal." SiteID = 217 File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/components/FrontendController.php LINE: 533
-[2014-09-16 11:12:38.951426][NOTICE] "session_start(): ps_files_cleanup_dir: opendir(/var/lib/php5) failed: Permission denied (13)" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/components/FrontendController.php Line: 6

@@ -1,6 +1,0 @@
-[2015-02-05 11:11:26.324351][NOTICE] "A session had already been started - ignoring session_start()" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\models\LoginFormModel.php Line: 527
-[2015-02-05 11:15:04.546833][NOTICE] "Undefined index: StartSessionFormModel" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\FrontendController.php Line: 156
-[2015-02-05 11:18:19.12956][NOTICE] "Undefined index: StartSessionFormModel" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\FrontendController.php Line: 156
-[2015-02-05 11:26:41.57671][NOTICE] "A session had already been started - ignoring session_start()" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\models\LoginFormModel.php Line: 527
-[2015-02-05 11:26:46.123961][NOTICE] "Undefined index: StartSessionFormModel" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\FrontendController.php Line: 156
-[2015-02-05 14:37:46.27430][NOTICE] "Undefined index: StartSessionFormModel" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\FrontendController.php Line: 156

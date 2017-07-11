@@ -1,4 +1,0 @@
-[2015-04-01 15:54:26.938137][NOTICE] "A session had already been started - ignoring session_start()" File: /var/www/kronusew.egamescasino.ph/app/frontend/models/LoginFormModel.php Line: 527
-[2015-04-01 15:55:48.176780][NOTICE] "A session had already been started - ignoring session_start()" File: /var/www/kronusew.egamescasino.ph/app/frontend/models/LoginFormModel.php Line: 527
-[2015-04-01 15:55:53.795920][NOTICE] "Undefined index: StartSessionFormModel" File: /var/www/kronusew.egamescasino.ph/app/frontend/components/FrontendController.php Line: 179
-[2015-04-01 15:56:47.48266][ERROR] "Error: Please end session first." SiteID = 233 File: /var/www/kronusew.egamescasino.ph/app/frontend/components/FrontendController.php LINE: 827
