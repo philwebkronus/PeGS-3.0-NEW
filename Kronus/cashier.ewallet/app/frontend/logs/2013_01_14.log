@@ -1,8 +1,0 @@
-[2013-01-14 13:39:34.919850][ERROR] "Error: Can't get balance TerminalID=851 ServiceID=18" SiteID = 167 File: /var/www/Kronus_UB/cashier2.pagcoregames.com/app/frontend/components/CasinoApi.php LINE: 202
-[2013-01-14 17:04:44.907884][NOTICE] "Undefined index: sessionID" File: /var/www/Kronus_UB/cashier2.pagcoregames.com/app/frontend/models/LoginFormModel.php Line: 504
-[2013-01-14 17:04:44.908514][NOTICE] "Undefined index: accID" File: /var/www/Kronus_UB/cashier2.pagcoregames.com/app/frontend/models/LoginFormModel.php Line: 505
-[2013-01-14 17:24:29.542792][NOTICE] "Undefined index: tranid" File: /var/www/Kronus_UB/cashier2.pagcoregames.com/app/frontend/components/CommonRedeem.php Line: 187
-[2013-01-14 17:24:29.543483][NOTICE] "Undefined index: status" File: /var/www/Kronus_UB/cashier2.pagcoregames.com/app/frontend/components/CommonRedeem.php Line: 188
-[2013-01-14 17:24:29.550547][ERROR] "Error: Request denied. Please try again. TerminalID=851 ServiceID=8" SiteID = 167 File: /var/www/Kronus_UB/cashier2.pagcoregames.com/app/frontend/components/CommonRedeem.php LINE: 222
-[2013-01-14 17:25:00.546994][NOTICE] "Undefined index: error" File: /var/www/Kronus_UB/cashier2.pagcoregames.com/app/frontend/components/PlayTechAPIWrapper.class.php Line: 177
-[2013-01-14 17:25:05.810532][ERROR] "" SiteID = 167 File: /var/www/Kronus_UB/cashier2.pagcoregames.com/app/frontend/components/CommonRedeem.php LINE: 256

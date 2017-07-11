@@ -1,2 +1,0 @@
-[2014-02-12 14:15:27.354695][NOTICE] "Undefined index: PID" File: /var/www/Kronus_New/cashier.abbott.version/app/frontend/components/CasinoCAPIHandlerUB.class.php Line: 397
-[2014-02-12 19:18:12.355214][ERROR] "Please use appropriate membership/temporary card for this casino" SiteID = 167 File: /var/www/Kronus_New/cashier.abbott.version/app/frontend/components/FrontendController.php LINE: 731

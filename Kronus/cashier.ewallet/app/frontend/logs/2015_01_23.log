@@ -1,1 +1,0 @@
-[2015-01-23 11:19:10.488753][NOTICE] "A session had already been started - ignoring session_start()" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\models\LoginFormModel.php Line: 527

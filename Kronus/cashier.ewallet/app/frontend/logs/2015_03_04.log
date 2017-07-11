@@ -1,3 +1,0 @@
-[2015-03-04 14:55:01.285822][NOTICE] "Undefined index: StartSessionFormModel" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\FrontendController.php Line: 179
-[2015-03-04 14:55:16.421688][NOTICE] "Undefined index: player_api" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\CasinoApi.php Line: 37
-[2015-03-04 14:55:17.284737][ERROR] "Error: Can't get balance TerminalID=1089 ServiceID=19 ErrorMessage=Response malformed" SiteID = 167 File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\CasinoApi.php LINE: 252

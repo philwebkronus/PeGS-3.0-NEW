@@ -1,2 +1,0 @@
-[2014-06-11 11:25:56.78813][NOTICE] "A session had already been started - ignoring session_start()" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/LoginFormModel.php Line: 527
-[2014-06-11 16:08:25.489502][ERROR] "Error: Can't get balance TerminalID=1773 ServiceID=19 ErrorMessage=Response malformed" SiteID = 216 File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/components/CasinoApiUB.php LINE: 215
