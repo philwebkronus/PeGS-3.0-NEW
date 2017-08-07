@@ -531,7 +531,8 @@ class MemberInfo extends BaseEntity {
      * @param type $HiddenMID
      * @param type $arrMemberInfo
      */
-    public function updateMemberProfileSP($HiddenMID, $arrMemberInfo, $forRedemption = null){
+    public function updateMemberProfileSP($HiddenMID, $arrMemberInfo, $forRedemption = null)
+    {
         //Get SalesForce Credentials
 	include (App::getParam('sfApi'));
 
@@ -546,8 +547,8 @@ class MemberInfo extends BaseEntity {
 
         // get SalesForce ID
         $SFID = $this->getSF($HiddenMID);
-
-        if (is_null($forRedemption)) {
+        if (is_null($forRedemption)) 
+        {
             $FirstName = $arrMemberInfo['FirstName'];
             $MiddleName = $arrMemberInfo['MiddleName'];
             $LastName = $arrMemberInfo['LastName'];
@@ -569,8 +570,10 @@ class MemberInfo extends BaseEntity {
             $field_to_update = 'FirstName,MiddleName,LastName,NickName,Email,AlternateEmail,MobileNumber,AlternateMobileNumber,Address1,Address2,IdentificationNumber';
             $query = "CALL membership.sp_update_data(1, 1, 'MID', $HiddenMID, '$field_to_update','$FirstName;$MiddleName;$LastName;$NickName;$Email;$AlternateEmail;$MobileNumber;$AlternateMobileNumber;$Address1;$Address2;$IdentificationNumber', @OUT_intResultCode, @OUT_intResultMsg)";
             $result = parent::ExecuteQuery($query);
-            if (count($result > 0)){
-                if ($result[0]['OUT_intResultCode'] == 0) {
+            if (count($result > 0))
+            {
+                if ($result[0]['OUT_intResultCode'] == 0) 
+                {
                     $query2 = "UPDATE membership.memberinfo SET Birthdate = '$Birthdate',
                                                                 Gender = $Gender,
                                                                 NationalityID = $NationalityID,
@@ -581,24 +584,25 @@ class MemberInfo extends BaseEntity {
                     parent::ExecuteQuery($query2);
                 }
             }
-
-            //Update to SalesForce
-            $sfapi = new SalesforceAPI($instanceURL, $apiVersion, $cKey, $cSecret, $sRecordType);
-            $sfSuccessful = $sfapi->login($sfLogin, $sfPassword, $secToken);
-            if($sfSuccessful)
-            {
-                $newBaseUrl = $sfSuccessful->instance_url;
-                $accessToken = $sfSuccessful->access_token;
-
-                $isUpdated = $sfapi->update_account($SFID, $FirstName, $LastName, $Birthdate, null, null, null, $newBaseUrl, $accessToken);//changed $firstname and $lastname to null 07282015 mcs
-                return 1;
-            }
-            else
-            {
-                return 0;
-            }
+            return 1;
+//            //Update to SalesForce
+//            $sfapi = new SalesforceAPI($instanceURL, $apiVersion, $cKey, $cSecret, $sRecordType);
+//            $sfSuccessful = $sfapi->login($sfLogin, $sfPassword, $secToken);
+//            if($sfSuccessful)
+//            {
+//                $newBaseUrl = $sfSuccessful->instance_url;
+//                $accessToken = $sfSuccessful->access_token;
+//
+//                $isUpdated = $sfapi->update_account($SFID, $FirstName, $LastName, $Birthdate, null, null, null, $newBaseUrl, $accessToken);//changed $firstname and $lastname to null 07282015 mcs
+//                return 1;
+//            }
+//            else
+//            {
+//                return 0;
+//            }
         }
-        else {
+        else 
+        {
             $FirstName = $arrMemberInfo['FirstName'];
             $LastName = $arrMemberInfo['LastName'];
             $Birthdate = $arrMemberInfo['Birthdate'];
@@ -609,8 +613,10 @@ class MemberInfo extends BaseEntity {
             $field_to_update = 'FirstName,LastName,Email,MobileNumber,Address1';
             $query = "CALL membership.sp_update_data(1, 1, 'MID', $HiddenMID, '$field_to_update','$FirstName;$LastName;$Email;$MobileNumber;$Address1', @OUT_intResultCode, @OUT_intResultMsg)";
             $result = parent::ExecuteQuery($query);
-            if (count($result > 0)){
-                if ($result[0]['OUT_intResultCode'] == 0) {
+            if (count($result > 0))
+            {
+                if ($result[0]['OUT_intResultCode'] == 0) 
+                {
                     $query2 = "UPDATE membership.memberinfo SET Birthdate = '$Birthdate'
                                WHERE MID = $HiddenMID";
                     parent::ExecuteQuery($query2);
@@ -624,7 +630,6 @@ class MemberInfo extends BaseEntity {
             {
                 $newBaseUrl = $sfSuccessful->instance_url;
                 $accessToken = $sfSuccessful->access_token;
-
                 $isUpdated = $sfapi->update_account($SFID, $FirstName, $LastName, $Birthdate, null, null, null, $newBaseUrl, $accessToken);//changed $firstname and $lastname to null 07282015 mcs
                 return 1;
             }
@@ -632,9 +637,9 @@ class MemberInfo extends BaseEntity {
             {
                 return 0;
             }
-
         }
     }
+    
     private function getMIDByMemberInfoID ($MemInfoID) {
         $query = "SELECT MID FROM memberinfo WHERE MemberInfoID = $MemInfoID";
         $result = parent::RunQuery($query);
