@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Casino API Handler
  * Copyright (c) 2011. PhilWeb Corporation. WEBiTS
@@ -9,7 +8,6 @@
  * @modified elperez
  * with MG CAPI Integration
  */
-
 class CasinoCAPIHandler
 {
     /**
@@ -68,7 +66,6 @@ class CasinoCAPIHandler
      */
     private $_isDebug = FALSE;
     
-    
     private $_authLogin;
 
     private $_authPassword;
@@ -76,7 +73,6 @@ class CasinoCAPIHandler
     private $_playerName;
     
     private $_serverId;
-    
 
     /**
      * Class constructor
@@ -88,7 +84,6 @@ class CasinoCAPIHandler
     public function __construct( $gamingProvider, $configuration )
     {
         $this->_gamingProvider = $gamingProvider;
-
         $this->_URI = $configuration[ 'URI' ];
         $this->_isCaching = $configuration[ 'isCaching' ];
         $this->_isDebug = $configuration[ 'isDebug' ];
@@ -114,7 +109,9 @@ class CasinoCAPIHandler
                 $casinoName = $configuration['pt_casino_name'];
                 $secretKey = $configuration['pt_secret_key'];
                 $this->_API = new PlayTechAPIWrapper($this->_URI, $casinoName, $secretKey);
-            } else {
+            } 
+            else 
+            {
                 $this->_URIPID = $configuration[ 'URI_RBAPI' ];
                 $certFilePath = $configuration['certFilePath'];
                 $keyFilePath = $configuration['keyFilePath'];
@@ -128,22 +125,29 @@ class CasinoCAPIHandler
             $certFilePath = $configuration[ 'certFilePath' ];
             $keyFilePath = $configuration[ 'keyFilePath' ];
             
-            if($configuration['APIType'] == 2){
-                    $this->_API = new RealtimeGamingUBAPIWrapper( $this->_URIPID, RealtimeGamingUBAPIWrapper::GAME_API, $certFilePath, $keyFilePath, $this->_isCaching );
-            } else if($configuration['APIType'] == 0){
-                if($configuration['CasinoService'] == 'v12'){
+            if($configuration['APIType'] == 2)
+            {
+                $this->_API = new RealtimeGamingUBAPIWrapper( $this->_URIPID, RealtimeGamingUBAPIWrapper::GAME_API, $certFilePath, $keyFilePath, $this->_isCaching );
+            } 
+            else if($configuration['APIType'] == 0)
+            {
+                if($configuration['CasinoService'] == 'v12')
+                {
                     $this->_API = new RealtimeGamingAPIWrapper( $this->_URI, RealtimeGamingAPIWrapper::CASHIER_API, $certFilePath, $keyFilePath, $this->_isCaching );
                 }
-                else{
+                else
+                {
                     $this->_API = new RealtimeGamingUBAPIWrapper( $this->_URI, RealtimeGamingUBAPIWrapper::CASHIER_API, $certFilePath, $keyFilePath, $this->_isCaching );
                 }
-                    
-            } else{
-                if($configuration['CasinoService'] == 'v12'){
+            } 
+            else
+            {
+                if($configuration['CasinoService'] == 'v12')
+                {
                     $this->_API = new RealtimeGamingAPIWrapper( $this->_URIPID2, RealtimeGamingAPIWrapper::PLAYER_API, $certFilePath, $keyFilePath, $this->_isCaching );
                 }
-                else{
-                    
+                else
+                {
                      $this->_API = new RealtimeGamingUBAPIWrapper( $this->_URIPID2, RealtimeGamingAPIWrapper::PLAYER_API, $certFilePath, $keyFilePath, $this->_isCaching );
                 }        
             }
@@ -159,12 +163,17 @@ class CasinoCAPIHandler
             $certFilePath = $configuration[ 'certFilePath' ];
             $keyFilePath = $configuration[ 'keyFilePath' ];
             
-            if($configuration['APIType'] == 2){
-                    $this->_API = new RealtimeGamingUBAPIWrapper( $this->_URIPID, RealtimeGamingUBAPIWrapper::GAME_API, $certFilePath, $keyFilePath, $this->_isCaching );
-            } else if($configuration['APIType'] == 0){
-                    $this->_API = new RealtimeGamingUBAPIWrapper( $this->_URI, RealtimeGamingUBAPIWrapper::CASHIER_API, $certFilePath, $keyFilePath, $this->_isCaching );
-            } else{
-                    $this->_API = new RealtimeGamingUBAPIWrapper( $this->_URIPID2, RealtimeGamingAPIWrapper::PLAYER_API, $certFilePath, $keyFilePath, $this->_isCaching );
+            if($configuration['APIType'] == 2)
+            {
+                $this->_API = new RealtimeGamingUBAPIWrapper( $this->_URIPID, RealtimeGamingUBAPIWrapper::GAME_API, $certFilePath, $keyFilePath, $this->_isCaching );
+            } 
+            else if($configuration['APIType'] == 0)
+            {
+                $this->_API = new RealtimeGamingUBAPIWrapper( $this->_URI, RealtimeGamingUBAPIWrapper::CASHIER_API, $certFilePath, $keyFilePath, $this->_isCaching );
+            } 
+            else
+            {
+                $this->_API = new RealtimeGamingUBAPIWrapper( $this->_URIPID2, RealtimeGamingAPIWrapper::PLAYER_API, $certFilePath, $keyFilePath, $this->_isCaching );
             }
 
             $this->_API->SetDebug( $this->_isDebug );
@@ -264,9 +273,13 @@ class CasinoCAPIHandler
             return $this->_API->Deposit( $login, $terminalPassword, $amount, $transaction_id, $event_id, $transaction_id);        
         
         if ( $this->_gamingProvider == self::RTG )
-            if(!empty($locatorname)){
+            if(!empty($locatorname))
+            {
+                
                 return $this->_API->Deposit( $login, $amount, $tracking1, $tracking2, $tracking3, $tracking4,  $terminalPassword, $locatorname);
-            } else {
+            } 
+            else 
+            {
                 return $this->_API->Deposit( $login, $amount, $tracking1, $tracking2, $tracking3, $tracking4,  $terminalPassword);
             }
         
@@ -275,7 +288,6 @@ class CasinoCAPIHandler
         
         if ( $this->_gamingProvider == self::PT )
             return $this->_API->Deposit($login, $terminalPassword, $amount, $tracking1);
-        
     }
     
     /**
@@ -331,9 +343,7 @@ class CasinoCAPIHandler
         
         if ( $this->_gamingProvider == self::PT )
             return $this->_API->CheckTransaction( $tracking1 );
-        
     }
-    
     
     public function GetMyBalance()
     {
@@ -341,7 +351,6 @@ class CasinoCAPIHandler
         {
             return $this->_API->GetMyBalance();
         }
-        
     }
     
     /**
@@ -404,7 +413,8 @@ class CasinoCAPIHandler
     
     public function UnlockUserAccount($login)
     {
-        if($this->_gamingProvider == self::MG){
+        if($this->_gamingProvider == self::MG)
+        {
             return $this->_API->UnlockUserAccount($login);
         }
     }
@@ -415,7 +425,8 @@ class CasinoCAPIHandler
      * @param int $status 
      * @return object
      */
-    public function ChangeAccountStatus($login, $status){
+    public function ChangeAccountStatus($login, $status)
+    {
         if($this->_gamingProvider == self::PT) 
             return $this->_API->FreezePlayer($login, $status);
     }
@@ -425,7 +436,8 @@ class CasinoCAPIHandler
      * @param type $login
      * @return object 
      */
-    public function KickPlayer($login) {
+    public function KickPlayer($login) 
+    {
         if($this->_gamingProvider == self::PT)
             return $this->_API->KickPlayer($login);
     }
@@ -435,7 +447,8 @@ class CasinoCAPIHandler
      * @param type $pid
      * @return object 
      */
-    public function LogoutPlayer($pid) {
+    public function LogoutPlayer($pid) 
+    {
         if($this->_gamingProvider == self::RTG)
             return $this->_API->LogoutPlayer($pid);
     }
@@ -452,7 +465,6 @@ class CasinoCAPIHandler
         
         if ( $this->_gamingProvider == self::RTG2 )
             return $this->_API->GetPendingGamesByPID($PID);
-
     }
     
     /**
@@ -469,13 +481,25 @@ class CasinoCAPIHandler
             $pidResults =  $this->_API->GetPIDUsingLogin($login);
         
             return $pidResults["PID"];
-
     }
     
-    public function RevertBrokenGamesAPI( $username, $playerMode, $revertMode ){
+    public function RevertBrokenGamesAPI( $username, $playerMode, $revertMode )
+    {
         return $this->_API->RevertBrokenGames( $username, $playerMode, $revertMode );
     }
 
+    // CCT BEGIN added 
+    public function ChangePlayerClassification($pid, $playerClassID) 
+    {       
+        if($this->_gamingProvider == self::RTG)
+            return $this->_API->ChangePlayerClassification($pid, $playerClassID);
+    }
+    
+    public function GetPlayerClassification($pid) 
+    {       
+        if($this->_gamingProvider == self::RTG)
+            return $this->_API->GetPlayerClassification($pid);
+    }
+    // CCT END added 
 }
-
 ?>

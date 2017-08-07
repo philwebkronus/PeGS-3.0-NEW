@@ -8,7 +8,6 @@ Mirage::loadComponents(array(
     'checkhost.class',
     'common.class',
     'Array2XML.class'));
-
 /**
  * Date Created 11 4, 11 9:41:13 AM <pre />
  * Date Modified May 6, 2013
@@ -17,39 +16,64 @@ Mirage::loadComponents(array(
  * @author Edson Perez <elperez@philweb.com.ph>
  * @version Kronus UB
  */
-class CasinoApi {
-    
+class CasinoApi 
+{
     /**
      * Description: Configure for RTG
      * @param int $terminal_id
      * @param int $serverid
      * @return object $_CasinoAPIHandler
      */
-    public function configureRTG($terminal_id,$serverid,$APIType = 0) {
-        
-        if(strpos(Mirage::app()->param['service_api'][$serverid - 1], 'ECFTEST') !== false) {
-            Mirage::app()->param['deposit_method_id'] = 502;
-            Mirage::app()->param['withdrawal_method_id'] = 503;
+    public function configureRTG($terminal_id,$serverid,$APIType = 0) 
+    {
+        if(strpos(Mirage::app()->param['service_api'][$serverid - 1], 'ECFTEST') !== false) 
+        {
+            Mirage::app()->param['deposit_method_id'] = 503; //502
+            Mirage::app()->param['withdrawal_method_id'] = 502; //503
         }  
-        if(strpos(Mirage::app()->param['service_api'][$serverid - 1], 'PHPCOSTELLO') !== false) {
-            Mirage::app()->param['deposit_method_id'] = 502;
-            Mirage::app()->param['withdrawal_method_id'] = 503;
+        
+        if(strpos(Mirage::app()->param['service_api'][$serverid - 1], 'PHPCOSTELLO') !== false) 
+        {
+            Mirage::app()->param['deposit_method_id'] = 503; //502
+            Mirage::app()->param['withdrawal_method_id'] = 502; //503
         }     
         
         $CVcounter = 0;
         $CPVcounter = 0;
-        while ($CVcounter < count(Mirage::app()->param['CasinoVersions'])) {
+        while ($CVcounter < count(Mirage::app()->param['CasinoVersions'])) 
+        {
             $CasinoVersions = Mirage::app()->param['CasinoVersions'][$CVcounter];
             $CPVarray = Mirage::app()->param['CasinoPerVersion'][$CasinoVersions];
-            if (in_array($serverid, $CPVarray)) {
+            if (in_array($serverid, $CPVarray)) 
+            {
                 $CPV = $CasinoVersions;
                 break;
-            } else {
+            } 
+            else 
+            {
                 $CVcounter++;
             }
         }
 
-        $configuration = array( 'URI' =>Mirage::app()->param['service_api'][$serverid - 1],
+        //CCT BEGIN added
+        if ($APIType == 1) // Player API
+        {
+            $configuration = array( 'URI' =>Mirage::app()->param['service_api'][$serverid - 1],
+                    'URI_PID' =>Mirage::app()->param['game_api'][$serverid - 1],
+                    'URI_PID2' =>Mirage::app()->param['player_api'][$serverid - 1],
+                    'isCaching' => FALSE,
+                    'isDebug' => TRUE,
+                    'certFilePath' => Mirage::app()->param['rtg_cert_dir'] . $serverid . '/cert-key.pem',
+                    'keyFilePath' => Mirage::app()->param['rtg_cert_dir'] . $serverid . '/cert-key.pem',
+                    'depositMethodId' => Mirage::app()->param['deposit_method_id'],
+                    'withdrawalMethodId' => Mirage::app()->param['withdrawal_method_id'],
+                    'CasinoService' => $CPV,
+                    'APIType' => $APIType);            
+        }
+        else
+        {
+        //CCT END added
+            $configuration = array( 'URI' =>Mirage::app()->param['service_api'][$serverid - 1],
                     'URI_PID' =>Mirage::app()->param['game_api'][$serverid - 1],
                     'URI_PID2' =>Mirage::app()->param['player_api'][$serverid - 1],
                     'isCaching' => FALSE,
@@ -60,11 +84,15 @@ class CasinoApi {
                     'withdrawalMethodId' => Mirage::app()->param['withdrawal_method_id'],
                     'CasinoService' => $CPV,
                     'APIType' => $APIType);
+        //CCT BEGIN added            
+        }
+        //CCT END added
         
          $_CasinoAPIHandler = new CasinoCAPIHandler( CasinoCAPIHandler::RTG, $configuration );
          
         // check if connected
-        if (!(bool)$_CasinoAPIHandler->IsAPIServerOK()) {
+        if (!(bool)$_CasinoAPIHandler->IsAPIServerOK()) 
+        {
             $message = 'Can\'t connect to RTG';
             logger($message . ' TerminalID=' . $terminal_id . ' ServiceID='.$serverid);
             self::throwError($message);
@@ -80,16 +108,18 @@ class CasinoApi {
      * @param int $serverid
      * @return object $_CasinoAPIHandler
      */
-    public function configureRTG2($terminal_id,$serverid,$APIType = 0) {
-        
-        if(strpos(Mirage::app()->param['service_api'][$serverid - 1], 'ECFTEST') !== false) {
-            Mirage::app()->param['deposit_method_id'] = 502;
-            Mirage::app()->param['withdrawal_method_id'] = 503;
+    public function configureRTG2($terminal_id,$serverid,$APIType = 0) 
+    {
+        if(strpos(Mirage::app()->param['service_api'][$serverid - 1], 'ECFTEST') !== false) 
+        {
+            Mirage::app()->param['deposit_method_id'] = 503; //502
+            Mirage::app()->param['withdrawal_method_id'] = 502; //503
         }   
         
-        if(strpos(Mirage::app()->param['service_api'][$serverid - 1], 'PHPCOSTELLO') !== false) {
-            Mirage::app()->param['deposit_method_id'] = 502;
-            Mirage::app()->param['withdrawal_method_id'] = 503;
+        if(strpos(Mirage::app()->param['service_api'][$serverid - 1], 'PHPCOSTELLO') !== false) 
+        {
+            Mirage::app()->param['deposit_method_id'] = 503; //502
+            Mirage::app()->param['withdrawal_method_id'] = 502; //503
         }  
         
         $configuration = array( 'URI' =>Mirage::app()->param['service_api'][$serverid - 1],
@@ -106,7 +136,8 @@ class CasinoApi {
          $_CasinoAPIHandler = new CasinoCAPIHandler( CasinoCAPIHandler::RTG2, $configuration );
          
         // check if connected
-        if (!(bool)$_CasinoAPIHandler->IsAPIServerOK()) {
+        if (!(bool)$_CasinoAPIHandler->IsAPIServerOK()) 
+        {
             $message = 'Can\'t connect to RTG';
             logger($message . ' TerminalID=' . $terminal_id . ' ServiceID='.$serverid);
             self::throwError($message);
@@ -136,11 +167,13 @@ class CasinoApi {
         $_CasinoAPIHandler = new CasinoCAPIHandler(CasinoCAPIHandler::MG, $configuration);
         
         // check if connected
-        if (!(bool)$_CasinoAPIHandler->IsAPIServerOK()) {
+        if (!(bool)$_CasinoAPIHandler->IsAPIServerOK()) 
+        {
             $message = 'Can\'t connect to MG';
             logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$serverid);
             self::throwError($message);
         }
+        
         return $_CasinoAPIHandler;
     }
     
@@ -150,61 +183,63 @@ class CasinoApi {
      * @param type $server_id
      * @return CasinoCAPIHandler
      */
-    public function configurePT($terminal_id, $server_id, $isRevert = 0){
-        if($isRevert == 0){
-                $url = Mirage::app()->param['service_api'][$server_id -1];
-                $configuration = array('URI'=>$url,
-                                       'isCaching'=>FALSE,
-                                       'isDebug'=>TRUE,
-                                       'pt_casino_name'=>  Mirage::app()->param['pt_casino_name'],
-                                       'pt_secret_key'=>  Mirage::app()->param['pt_secret_key']
-                                      );
+    public function configurePT($terminal_id, $server_id, $isRevert = 0)
+    {
+        if($isRevert == 0)
+        {
+            $url = Mirage::app()->param['service_api'][$server_id -1];
+            $configuration = array('URI'=>$url,
+                                   'isCaching'=>FALSE,
+                                   'isDebug'=>TRUE,
+                                   'pt_casino_name'=>  Mirage::app()->param['pt_casino_name'],
+                                   'pt_secret_key'=>  Mirage::app()->param['pt_secret_key']
+                                  );
 
-                $_CasinoAPIHandler = new CasinoCAPIHandler(CasinoCAPIHandler::PT, $configuration);
-                
-                // check if connected
-                if (!(bool)$_CasinoAPIHandler->IsAPIServerOK()) {
-                    $message = 'Can\'t connect to PT';
-                    logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$server_id);
-                    self::throwError($message);
-                }
-                
-        } else {
-                $url = Mirage::app()->param['revertbroken_api']['URI'];
-                $configuration = array('URI'=>'',
-                                       'URI_RBAPI'=>$url,
-                                       'isCaching'=>FALSE,
-                                       'isDebug'=>TRUE,
-                                       'REVERT_BROKEN_GAME_MODE' => Mirage::app()->param['revertbroken_api']['REVERT_BROKEN_GAME_MODE'],
-                                       'CASINO_NAME' => Mirage::app()->param['revertbroken_api']['CASINO_NAME'],
-                                       'PLAYER_MODE' => Mirage::app()->param['revertbroken_api']['PLAYER_MODE'],
-                                       'certFilePath' => Mirage::app()->param['pt_cert_dir'].$server_id.'/cert.pem',
-                                       'keyFilePath' => Mirage::app()->param['pt_cert_dir'].$server_id.'/key.pem' 
-                                      );
+            $_CasinoAPIHandler = new CasinoCAPIHandler(CasinoCAPIHandler::PT, $configuration);
 
-                $_CasinoAPIHandler = new CasinoCAPIHandler(CasinoCAPIHandler::PT, $configuration);
-                
-                
-                // check if connected
-                if (!(bool)$_CasinoAPIHandler->IsAPIServerOK2()) {
-                    $message = 'Can\'t connect to PT';
-                    logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$server_id);
-                    self::throwError($message);
-                }
+            // check if connected
+            if (!(bool)$_CasinoAPIHandler->IsAPIServerOK()) 
+            {
+                $message = 'Can\'t connect to PT';
+                logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$server_id);
+                self::throwError($message);
+            }
+        } 
+        else 
+        {
+            $url = Mirage::app()->param['revertbroken_api']['URI'];
+            $configuration = array('URI'=>'',
+                                   'URI_RBAPI'=>$url,
+                                   'isCaching'=>FALSE,
+                                   'isDebug'=>TRUE,
+                                   'REVERT_BROKEN_GAME_MODE' => Mirage::app()->param['revertbroken_api']['REVERT_BROKEN_GAME_MODE'],
+                                   'CASINO_NAME' => Mirage::app()->param['revertbroken_api']['CASINO_NAME'],
+                                   'PLAYER_MODE' => Mirage::app()->param['revertbroken_api']['PLAYER_MODE'],
+                                   'certFilePath' => Mirage::app()->param['pt_cert_dir'].$server_id.'/cert.pem',
+                                   'keyFilePath' => Mirage::app()->param['pt_cert_dir'].$server_id.'/key.pem' 
+                                  );
+
+            $_CasinoAPIHandler = new CasinoCAPIHandler(CasinoCAPIHandler::PT, $configuration);
+
+            // check if connected
+            if (!(bool)$_CasinoAPIHandler->IsAPIServerOK2()) 
+            {
+                $message = 'Can\'t connect to PT';
+                logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$server_id);
+                self::throwError($message);
+            }
         }
-      
         
         return $_CasinoAPIHandler;
-        
     }
-    
     
     /**
      * Get Balance method for user-based
      * Purpose : to separate logic from terminal based for future changes
      */
     public function getBalanceUB($terminal_id, $site_id, $transtype='D', $service_id = '', $acct_id = '', 
-            $casinoUsername= ' ', $casinoPassword = '', $casinoHashedPwd = ''){
+            $casinoUsername= ' ', $casinoPassword = '', $casinoHashedPwd = '')
+    {
         Mirage::loadModels(array('TerminalSessionsModel','TerminalsModel',
                                  'RefServicesModel','TransactionRequestLogsModel'));
         
@@ -220,16 +255,19 @@ class CasinoApi {
             $service_id = $terminalSessionsModel->getServiceId($terminal_id);
         
         //verify if terminal has an active session
-        if($transtype == 'R' || $transtype == 'W'){
+        if($transtype == 'R' || $transtype == 'W')
+        {
             $is_terminal_active = $terminalSessionsModel->isSessionActive($terminal_id);
 
-            if($is_terminal_active === false) {
+            if($is_terminal_active === false) 
+            {
                 $message = 'Error: Can\'t get status.';
                 logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
                 CasinoApi::throwError($message);
             }
 
-            if($is_terminal_active < 1) {
+            if($is_terminal_active < 1) 
+            {
                 $message = 'Error: Terminal has no active session.';
                 logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
                 CasinoApi::throwError($message);
@@ -238,19 +276,23 @@ class CasinoApi {
         
         $service_name = $refServicesModel->getServiceNameById($service_id);
         
-        if(strpos($service_name, 'RTG') !== false) {
+        if(strpos($service_name, 'RTG') !== false) 
+        {
             $service_name = 'RTG';
         }
 
-        if(strpos($service_name, 'MG') !== false){
+        if(strpos($service_name, 'MG') !== false)
+        {
            $service_name = 'MG';
         }
         
-        if(strpos($service_name, 'PT') !== false){
+        if(strpos($service_name, 'PT') !== false)
+        {
             $service_name = 'PT';
         }
         
-        switch($service_name) {
+        switch($service_name) 
+        {
             // RTG Magic Macau
             case 'RTG':
                 $casinoApiHandler = $this->configureRTG($terminal_id,$service_id);
@@ -269,7 +311,8 @@ class CasinoApi {
                 break;
         }
         
-       if(!isset($balanceinfo['BalanceInfo']['Balance'])) {
+        if(!isset($balanceinfo['BalanceInfo']['Balance'])) 
+        {
             $message = 'Error: Can\'t get balance';
             logger($message. ' TerminalID='.$terminal_id . ' ServiceID='.$service_id.
                              ' ErrorMessage='.$balanceinfo['ErrorMessage']);
@@ -278,19 +321,26 @@ class CasinoApi {
         
         $terminal_balance = $balanceinfo['BalanceInfo']['Balance'];
         $redeemable_amount = 0;
-        if(isset($balanceinfo['BalanceInfo']['Redeemable'])) {
+        if(isset($balanceinfo['BalanceInfo']['Redeemable'])) 
+        {
             $redeemable_amount = $balanceinfo['BalanceInfo']['Redeemable'];
-        } else {
+        } 
+        else 
+        {
             $redeemable_amount = $terminal_balance;
         }
         
         $currentbet = 0;
         
         //For PT --> denied redemption if there was a current bet
-        if($service_name == 'PT'&& $transtype == 'W') {
-            if($balanceinfo['BalanceInfo']['CurrentBet'] > 0) {
+        if($service_name == 'PT'&& $transtype == 'W') 
+        {
+            if($balanceinfo['BalanceInfo']['CurrentBet'] > 0) 
+            {
                 $currentbet = $balanceinfo['BalanceInfo']['CurrentBet'];
-            } else {
+            } 
+            else 
+            {
                 $currentbet = 0;
             }
         }
@@ -300,7 +350,8 @@ class CasinoApi {
     }
     
     public function getBalanceForceT($terminal_id, $site_id, $transtype='D', $service_id = '', $acct_id = '', 
-            $casinoUsername= ' ', $casinoPassword = '', $casinoHashedPwd = ''){
+            $casinoUsername= ' ', $casinoPassword = '', $casinoHashedPwd = '')
+    {
         Mirage::loadModels(array('TerminalSessionsModel','TerminalsModel',
                                  'RefServicesModel','TransactionRequestLogsModel'));
         
@@ -312,19 +363,23 @@ class CasinoApi {
         
         $service_name = $refServicesModel->getServiceNameById($service_id);
         
-        if(strpos($service_name, 'RTG') !== false) {
+        if(strpos($service_name, 'RTG') !== false) 
+        {
             $service_name = 'RTG';
         }
 
-        if(strpos($service_name, 'MG') !== false){
+        if(strpos($service_name, 'MG') !== false)
+        {
            $service_name = 'MG';
         }
         
-        if(strpos($service_name, 'PT') !== false){
+        if(strpos($service_name, 'PT') !== false)
+        {
             $service_name = 'PT';
         }
         
-        switch($service_name) {
+        switch($service_name) 
+        {
             // RTG Magic Macau
             case 'RTG':
                 $casinoApiHandler = $this->configureRTG($terminal_id,$service_id);
@@ -343,7 +398,8 @@ class CasinoApi {
                 break;
         }
         
-       if(!isset($balanceinfo['BalanceInfo']['Balance'])) {
+        if(!isset($balanceinfo['BalanceInfo']['Balance'])) 
+        {
             $message = 'Error: Can\'t get balance';
             logger($message. ' TerminalID='.$terminal_id . ' ServiceID='.$service_id.
                              ' ErrorMessage='.$balanceinfo['ErrorMessage']);
@@ -352,19 +408,26 @@ class CasinoApi {
         
         $terminal_balance = $balanceinfo['BalanceInfo']['Balance'];
         $redeemable_amount = 0;
-        if(isset($balanceinfo['BalanceInfo']['Redeemable'])) {
+        if(isset($balanceinfo['BalanceInfo']['Redeemable'])) 
+        {
             $redeemable_amount = $balanceinfo['BalanceInfo']['Redeemable'];
-        } else {
+        } 
+        else 
+        {
             $redeemable_amount = $terminal_balance;
         }
         
         $currentbet = 0;
         
         //For PT --> denied redemption if there was a current bet
-        if($service_name == 'PT'&& $transtype == 'W') {
-            if($balanceinfo['BalanceInfo']['CurrentBet'] > 0) {
+        if($service_name == 'PT'&& $transtype == 'W') 
+        {
+            if($balanceinfo['BalanceInfo']['CurrentBet'] > 0) 
+            {
                 $currentbet = $balanceinfo['BalanceInfo']['CurrentBet'];
-            } else {
+            } 
+            else 
+            {
                 $currentbet = 0;
             }
         }
@@ -380,7 +443,8 @@ class CasinoApi {
      * @param int $service_id
      * @return array  array($terminal_balance,$service_name,$terminalSessionsModel,$transReqLogsModel,$redeemable_amount,$casinoApiHandler,$mgaccount)
      */
-    public function getBalance($terminal_id,$site_id,$transtype='D',$service_id= '',$userMode = '', $CPV ='', $acct_id= '') {
+    public function getBalance($terminal_id,$site_id,$transtype='D',$service_id= '',$userMode = '', $CPV ='', $acct_id= '') 
+    {
         Mirage::loadModels(array('TerminalSessionsModel','TerminalsModel',
                                  'RefServicesModel','TransactionRequestLogsModel'));
         
@@ -397,16 +461,19 @@ class CasinoApi {
             $service_id = $terminalSessionsModel->getServiceId($terminal_id);
         
         //verify if terminal has an active session
-        if($transtype == 'R' || $transtype == 'W'){
+        if($transtype == 'R' || $transtype == 'W')
+        {
             $is_terminal_active = $terminalSessionsModel->isSessionActive($terminal_id);
 
-            if($is_terminal_active === false) {
+            if($is_terminal_active === false) 
+            {
                 $message = 'Error: Can\'t get status.';
                 logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
                 CasinoApi::throwError($message);
             }
 
-            if($is_terminal_active < 1) {
+            if($is_terminal_active < 1) 
+            {
                 $message = 'Error: Terminal has no active session.';
                 logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
                 CasinoApi::throwError($message);
@@ -433,14 +500,18 @@ class CasinoApi {
 //            $service_name = 'PT';
 //        }
         
-        switch($service_name) {
+        switch($service_name) 
+        {
             // RTG Magic Macau
             case 'RTG':
-                if(($userMode == 0 || $userMode == 2)  && $CPV == 'v12'){
+                if(($userMode == 0 || $userMode == 2)  && $CPV == 'v12')
+                {
                     $casinoApiHandler = $this->configureRTG($terminal_id,$service_id);
                     MI_Database::close();
                     $balanceinfo = $casinoApiHandler->GetBalance($terminal_name);                    
-                }else{
+                }
+                else
+                {
                     $casinoApiHandler = $this->configureRTG2($terminal_id,$service_id);
                     MI_Database::close();
                     $balanceinfo = $casinoApiHandler->GetBalance($terminal_name);                    
@@ -463,7 +534,8 @@ class CasinoApi {
                 break;
         }
         
-       if(!isset($balanceinfo['BalanceInfo']['Balance'])) {
+        if(!isset($balanceinfo['BalanceInfo']['Balance'])) 
+        {
             $message = 'Error: Can\'t get balance';
             logger($message. ' TerminalID= '.$terminal_id .' ServiceID= '.$service_id.
                              ' ErrorMessage='.$balanceinfo['ErrorMessage']);
@@ -472,19 +544,26 @@ class CasinoApi {
         
         $terminal_balance = $balanceinfo['BalanceInfo']['Balance'];
         $redeemable_amount = 0;
-        if(isset($balanceinfo['BalanceInfo']['Redeemable'])) {
+        if(isset($balanceinfo['BalanceInfo']['Redeemable'])) 
+        {
             $redeemable_amount = $balanceinfo['BalanceInfo']['Redeemable'];
-        } else {
+        } 
+        else 
+        {
             $redeemable_amount = $terminal_balance;
         }
         
         $currentbet = 0;
         
         //For PT --> denied redemption if there was a current bet
-        if($service_name == 'PT'&& $transtype == 'W') {
-            if($balanceinfo['BalanceInfo']['CurrentBet'] > 0) {
+        if($service_name == 'PT'&& $transtype == 'W') 
+        {
+            if($balanceinfo['BalanceInfo']['CurrentBet'] > 0) 
+            {
                 $currentbet = $balanceinfo['BalanceInfo']['CurrentBet'];
-            } else {
+            } 
+            else 
+            {
                 $currentbet = 0;
             }
                 
@@ -503,7 +582,8 @@ class CasinoApi {
      * @param int $service_id
      * @return array array($terminal_balance,$service_name,$terminalSessionsModel,$transReqLogsModel,$redeemable_amount,$casinoApiHandler,$mgaccount) 
      */
-    public function getBalanceContinue($terminal_id,$site_id,$transtype='D',$service_id=null,$acct_id=null) {
+    public function getBalanceContinue($terminal_id,$site_id,$transtype='D',$service_id=null,$acct_id=null) 
+    {
         Mirage::loadModels(array('TerminalSessionsModel','TerminalsModel','RefServicesModel',
                                  'TransactionRequestLogsModel'));
         
@@ -523,7 +603,8 @@ class CasinoApi {
         $terminal_name = $terminalsModel->getTerminalName($terminal_id);
         $service_name = $refServicesModel->getAliasById($service_id);
         
-        switch($service_name) {
+        switch($service_name) 
+        {
             // RTG
             case 'Magic Macau':
                 $casinoApiHandler = $this->configureRTG($terminal_id,$service_id);
@@ -542,15 +623,19 @@ class CasinoApi {
                 break;
         }    
         
-        if(!isset($balanceinfo['BalanceInfo']['Balance'])) {
+        if(!isset($balanceinfo['BalanceInfo']['Balance'])) 
+        {
             return false;
         }
         
         $terminal_balance = $balanceinfo['BalanceInfo']['Balance']; 
         $redeemable_amount = 0;
-        if(isset($balanceinfo['BalanceInfo']['Redeemable'])) {
+        if(isset($balanceinfo['BalanceInfo']['Redeemable'])) 
+        {
             $redeemable_amount = $balanceinfo['BalanceInfo']['Redeemable'];
-        } else {
+        }
+        else 
+        {
             $redeemable_amount = $terminal_balance;
         }
         
@@ -610,8 +695,8 @@ class CasinoApi {
      *                    $redeemable_amount,$casinoApiHandler,$mgaccount) 
      */
     public function getUBBalanceContinue($terminal_id, $site_id, $transtype='D', $service_id = '', $acct_id = '', 
-            $casinoUsername= ' ', $casinoPassword = '') {
-        
+            $casinoUsername= ' ', $casinoPassword = '') 
+    {
         Mirage::loadModels(array('TerminalSessionsModel','RefServicesModel',
                                  'TransactionRequestLogsModel'));
         
@@ -629,7 +714,8 @@ class CasinoApi {
         // get terminalname or terminal code
         $service_name = $refServicesModel->getAliasById($service_id);
         
-        switch($service_name) {
+        switch($service_name) 
+        {
             // RTG
             case 'Magic Macau':
                 $casinoApiHandler = $this->configureRTG2($terminal_id,$service_id);
@@ -648,15 +734,19 @@ class CasinoApi {
                 break;
         }    
         
-        if(!isset($balanceinfo['BalanceInfo']['Balance'])) {
+        if(!isset($balanceinfo['BalanceInfo']['Balance'])) 
+        {
             return false;
         }
         
         $terminal_balance = $balanceinfo['BalanceInfo']['Balance']; 
         $redeemable_amount = 0;
-        if(isset($balanceinfo['BalanceInfo']['Redeemable'])) {
+        if(isset($balanceinfo['BalanceInfo']['Redeemable'])) 
+        {
             $redeemable_amount = $balanceinfo['BalanceInfo']['Redeemable'];
-        } else {
+        } 
+        else 
+        {
             $redeemable_amount = $terminal_balance;
         }
         
@@ -667,7 +757,8 @@ class CasinoApi {
     /**
      * Description: end the program and send a message with a header of 404
      */
-    public static function throwError($message) {
+    public static function throwError($message) 
+    {
         header('HTTP/1.0 404 Not Found');
             echo $message;
             Mirage::app()->end();
@@ -679,7 +770,8 @@ class CasinoApi {
      * @param string $utimestamp
      * @return string date 
      */
-    public static function udate($format, $utimestamp = null) {
+    public static function udate($format, $utimestamp = null) 
+    {
         if (is_null($utimestamp))
             $utimestamp = microtime(true);
 
@@ -696,19 +788,20 @@ class CasinoApi {
      */
     public function _doCasinoRules($terminal_id, $service_id,$username = '')
     {
-        
         Mirage::loadModels(array('TerminalsModel','RefServicesModel'));
-        if($username == null) {
-                $terminalModels = new TerminalsModel();
-                $username = $terminalModels->getTerminalName($terminal_id);
+        
+        if($username == null) 
+        {
+            $terminalModels = new TerminalsModel();
+            $username = $terminalModels->getTerminalName($terminal_id);
         }
 
         $refservicesmodel = new RefServicesModel();
         $service_name = $refservicesmodel->getServiceNameById($service_id);
 
         //if PT, freeze and force logout its account
-        if(strpos($service_name, 'PT') !== false || strpos($service_name, 'Rockin\' Reno') !== false) {
-
+        if(strpos($service_name, 'PT') !== false || strpos($service_name, 'Rockin\' Reno') !== false) 
+        {
             $casinoApiHandler = $this->configurePT($terminal_id, $service_id);
             MI_Database::close();
 
@@ -716,13 +809,15 @@ class CasinoApi {
             
             $changeStatusResult = $casinoApiHandler->ChangeAccountStatus($username, 1);
 
-            if(!$changeStatusResult['IsSucceed']){
+            if(!$changeStatusResult['IsSucceed'])
+            {
                 $message = $changeStatusResult['ErrorMessage'];
                 logger($message);
                 CasinoApi::throwError($message);
             }
 
-            if(!$kickPlayerResult['IsSucceed']){
+            if(!$kickPlayerResult['IsSucceed'])
+            {
                 $message = $kickPlayerResult['ErrorMessage'];
                 logger($message);
                 CasinoApi::throwError($message);
@@ -737,7 +832,8 @@ class CasinoApi {
      * @param str $PID
      * @return obj
      */
-    public function GetPendingGames($terminal_id, $serverid, $PID){
+    public function GetPendingGames($terminal_id, $serverid, $PID)
+    {
         $casinoAPIHandler = $this->configureRTG($terminal_id, $serverid,2);
         $pendingGames = $casinoAPIHandler->GetPendingGames($PID);
         return $pendingGames;
@@ -768,12 +864,11 @@ class CasinoApi {
      * @param str $login_pwd
      * @param int $service_id
      */
-    public function callSpyderAPI($commandId, $terminal_id, $login_uname, $login_pwd,
-                                     $service_id)
+    public function callSpyderAPI($commandId, $terminal_id, $login_uname, $login_pwd, $service_id)
     {
         //if spyder call was enabled in cashier config, call SAPI
-        if($_SESSION['spyder_enabled'] == 1){
-            
+        if($_SESSION['spyder_enabled'] == 1)
+        {
             Mirage::loadComponents('AsynchronousRequest.class');
             Mirage::loadModels(array('TerminalsModel','SpyderRequestLogsModel'));
             
@@ -802,9 +897,27 @@ class CasinoApi {
      * @param str $PID
      * @return obj
      */
-    public function LogoutPlayer($terminal_id, $serverid, $PID){
+    public function LogoutPlayer($terminal_id, $serverid, $PID)
+    {
         $casinoAPIHandler = $this->configureRTG($terminal_id, $serverid,3);
         $pendingGames = $casinoAPIHandler->LogoutPlayer($PID);
         return $pendingGames;
     }
+    
+    
+    // CCT BEGIN added    
+    public function GetPlayerClassification($terminal_id, $service_id, $pid)
+    {
+        $casinoApiHandler = $this->configureRTG($terminal_id, $service_id, 1); // Player API
+        $response = $casinoApiHandler->GetPlayerClassification($pid);
+        return $response;
+    }
+    
+    public function ChangePlayerClassification($terminal_id, $service_id, $pid, $playerClassID)
+    {
+        $casinoApiHandler = $this->configureRTG($terminal_id, $service_id, 1); // Player API
+        $response = $casinoApiHandler->ChangePlayerClassification($pid, $playerClassID);
+        return $response;
+    }
+    // CCT END added    
 }

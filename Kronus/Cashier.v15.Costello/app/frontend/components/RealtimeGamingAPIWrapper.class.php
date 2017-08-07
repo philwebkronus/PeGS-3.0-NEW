@@ -1,19 +1,14 @@
 <?php
-
 /*
-
 Change Log History
-
 1.0 2011-11-09 - Login method, get password plain text and convert to SHA1 instead of hashedPassword
-
 */
-
 //require_once( ROOT_DIR . 'sys/class/CasinoAPI/RealtimeGamingCashierAPI2.class.php' );
 //Mirage::loadComponents('CasinoAPI/RealtimeGamingCashierAPI2.class');
 
 Mirage::loadComponents(array('CasinoAPI/RealtimeGamingCashierAPI2.class',
-                                                             'CasinoAPI/RealtimeGamingCasinoGamesAPI.class','CasinoAPI/RealtimeGamingPlayerAPI.class'));
-
+                             'CasinoAPI/RealtimeGamingCasinoGamesAPI.class',
+                             'CasinoAPI/RealtimeGamingPlayerAPI.class')); 
 class RealtimeGamingAPIWrapper
 {
     const CASHIER_API = 0;
@@ -22,28 +17,28 @@ class RealtimeGamingAPIWrapper
     
     private $_API;
     private $_debug = FALSE;
-    private $_depositMethodId = 502; // 503
-    private $_withdrawMethodId = 503; // 502
+    private $_depositMethodId = 503; // 502
+    private $_withdrawMethodId = 502; // 503
     
     public function __construct( $URI, $API, $certFilePath, $keyFilePath,$caching = '' )
     {
         switch ($API)
         {
             case self::CASHIER_API:
-                {
-                    $this->_API = new RealtimeGamingCashierAPI( $URI, $certFilePath, $keyFilePath, $caching);       
-                    break;
-                }
+            {
+                $this->_API = new RealtimeGamingCashierAPI( $URI, $certFilePath, $keyFilePath, $caching);       
+                break;
+            }
             case self::GAME_API:
-                {
-                    $this->_API = new RealtimeGamingCasinoGamesAPI($URI, $certFilePath, $keyFilePath, $caching); 
-                    break;
-                }
+            {
+                $this->_API = new RealtimeGamingCasinoGamesAPI($URI, $certFilePath, $keyFilePath, $caching); 
+                break;
+            }
             case self::PLAYER_API:
-                {
-                    $this->_API = new RealtimeGamingPlayerAPI($URI, $certFilePath, $keyFilePath, ''); 
-                    break;
-                }
+            {
+                $this->_API = new RealtimeGamingPlayerAPI($URI, $certFilePath, $keyFilePath, ''); 
+                break;
+            }
         }        
     }
 
@@ -105,7 +100,6 @@ class RealtimeGamingAPIWrapper
         }
     }
 
-    
     public function GetBalance( $login )
     {
         $GetPIDFromLoginResult = $this->_GetPIDFromLogin( $login );
@@ -196,7 +190,6 @@ class RealtimeGamingAPIWrapper
         {
             if ( $GetPIDFromLoginResult[ 'IsSucceed'] == true )
             {
-
                 $PID = $GetPIDFromLoginResult[ 'PID' ];
 
                 $sessionId = $this->Login( $login, $password );
@@ -289,7 +282,8 @@ class RealtimeGamingAPIWrapper
             {
                 $PID = $response[ 'PID' ];
 
-                if($password == ''){
+                if($password == '')
+                {
                     $response = $this->_GetAccountInfoByPID( $PID );
                 
                     if ( !is_null( $response ) )
@@ -313,7 +307,8 @@ class RealtimeGamingAPIWrapper
                         }
                     }
                 }
-                else{
+                else
+                {
                     $hashedPassword = sha1( $password );
 
                     $response = $this->_API->Login( 1, $PID, $hashedPassword, 1, $_SERVER[ 'HTTP_HOST' ] );
@@ -327,10 +322,8 @@ class RealtimeGamingAPIWrapper
                         }
                     }
                 }
-                
             }
         }        
-        
         return NULL;
     }    
     
@@ -341,40 +334,94 @@ class RealtimeGamingAPIWrapper
     
     public function GetPendingGamesByPID($PID)
     {
-                    
-                    $response = $this->_API->GetPendingGamesByPID( $PID );
+        $response = $this->_API->GetPendingGamesByPID( $PID );
 
-                    if ( !$this->_API->GetError() )
-                    {           
-                        if(!is_null($response['GetPendingGamesByPIDResult'])){
-                            if (is_array($response) )
-                            {
-                                return array( 'IsSucceed' => true, 'ErrorCode' => 0, 'ErrorMessage' => null, 
-                                                                            'PendingGames' => $response);
-                            }
-                            else
-                            {
-                                return array( 'IsSucceed' => false, 'ErrorCode' => 30, 'ErrorMessage' => 'Response malformed' );
-                            }
-                        } else {
-                            return array( 'IsSucceed' => false, 'ErrorCode' => 66, 'ErrorMessage' => 'No Pending Game Bet.' );
-                        }
-                    }
-                    else
-                    {            
-                        return array( 'IsSucceed' => false, 'ErrorCode' => 31, 'ErrorMessage' => 'API Error: ' . $this->_API->GetError() );
-                    }
-        
+        if ( !$this->_API->GetError() )
+        {           
+            if(!is_null($response['GetPendingGamesByPIDResult']))
+            {
+                if (is_array($response) )
+                {
+                    return array( 'IsSucceed' => true, 'ErrorCode' => 0, 'ErrorMessage' => null, 'PendingGames' => $response);
+                }
+                else
+                {
+                    return array( 'IsSucceed' => false, 'ErrorCode' => 30, 'ErrorMessage' => 'Response malformed' );
+                }
+            } 
+            else 
+            {
+                return array( 'IsSucceed' => false, 'ErrorCode' => 66, 'ErrorMessage' => 'No Pending Game Bet.' );
+            }
+        }
+        else
+        {            
+            return array( 'IsSucceed' => false, 'ErrorCode' => 31, 'ErrorMessage' => 'API Error: ' . $this->_API->GetError() );
+        }
         return null;
     }
     
-    public function GetPIDUsingLogin($login){
+    public function GetPIDUsingLogin($login)
+    {
         return $this->_GetPIDFromLogin($login);
     }
     
-    public function LogoutPlayer($PID){
+    public function LogoutPlayer($PID)
+    {
         return $response = $this->_API->logoutPlayer($PID);
     }
+    
+    // CCT BEGIN added
+    public function ChangePlayerClassification($pid, $playerClassID)
+    {
+        $changePlayerClassResult = $this->_API->changePlayerClasification($pid, $playerClassID);
+        if(!is_null($changePlayerClassResult))
+        {
+            if(isset($changePlayerClassResult['ChangePlayerClassResult']['HasErrors']))
+            {
+                $response = $changePlayerClassResult['ChangePlayerClassResult']['HasErrors'];
+                if($response == false)
+                {
+                    return array('IsSucceed'=>true, 'ErrorMessage'=>'RTG: Player Classification was successfully updated');
+                }
+                else
+                {
+                    $errorcoderesult = $changePlayerClassResult['ChangePlayerClassResult']['ErrorCode'];
+                    $errormessage = $changePlayerClassResult['ChangePlayerClassResult']['Message'];
+                    return array('IsSucceed'=>false, 'ErrorCode'=>$errorcoderesult,'ErrorMessage'=>$errormessage);
+                }
+            }
+        }
+        else
+        {
+            return array('IsSucceed'=>false, 'ErrorMessage'=>'Change player classification error');
+        }
+    }
+    
+    public function GetPlayerClassification($pid)
+    {
+        $getPlayerClassResult = $this->_API->getPlayerClasification($pid);
+        if(!is_null($getPlayerClassResult))
+        {
+            $response = $getPlayerClassResult['GetPlayerClassResult']['Data'];
+            if($response == false)
+            {
+                $errormessage = $response['GetPlayerClassResult']['Data']['PlayerClass']['ClassID'];
+                //return array('IsSucceed'=>true, 'ErrorMessage'=>'RTG: Get player classification was successfully retrieved');
+                return array('IsSucceed'=>true, 'ErrorMessage'=>$errormessage);
+            }
+            else
+            {
+                $errorcoderesult = $getPlayerClassResult['GetPlayerClassResult']['ErrorCode'];
+                $errormessage = $getPlayerClassResult['GetPlayerClassResult']['Message'];
+                return array('IsSucceed'=>false, 'ErrorCode'=>$errorcoderesult,'ErrorMessage'=>$errormessage);
+            }
+        }
+        else
+        {
+            return array('IsSucceed'=>false, 'ErrorMessage'=>'Get player classification error');
+        }
+    }
+    // CCT END added
 }
-
 ?>

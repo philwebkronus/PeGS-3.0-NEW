@@ -1,5 +1,4 @@
 <?php
-
 /**
  * For Terminal Based Transaction
  * Common start session for TerminalMonitoring. Stand-alone and Hotkey
@@ -9,8 +8,8 @@
  * @date 03/14/13 - supports Terminal Based
  * @author Bryan Salazar, elperez
  */
-class CommonStartSession {
-    
+class CommonStartSession 
+{
     /**
      * @param int $terminal_id
      * @param int $site_id
@@ -21,10 +20,11 @@ class CommonStartSession {
      * @param int $acctid
      * @return array 
      */
-    public function start($terminal_id,$site_id, $trans_type, $paymentType, $service_id, $bcf, 
-                          $initial_deposit, $acctid, $loyalty_card='', $voucher_code = '', 
-                          $trackingid = '',  $casinoUsername = '', $casinoPassword = '', $casinoHashedPassword = '',
-                          $casinoServiceID = '', $mid = '', $userMode = '', $traceNumber='', $referenceNumber='', $locatorname = '', $CPV= '') {
+    public function start($terminal_id,$site_id, $trans_type, $paymentType, $service_id, $bcf, $initial_deposit, $acctid, 
+        $loyalty_card='', $voucher_code = '', $trackingid = '',  $casinoUsername = '', $casinoPassword = '', 
+        $casinoHashedPassword = '', $casinoServiceID = '', $mid = '', $userMode = '', $traceNumber='', $referenceNumber='', 
+        $locatorname = '', $CPV= '', $viptype = 0) // CCT added viptype
+    {
         
         Mirage::loadComponents(array('CasinoApi','PCWSAPI.class'));
         Mirage::loadModels(array('TerminalsModel','EgmSessionsModel','SiteBalanceModel','CommonTransactionsModel',
@@ -39,67 +39,80 @@ class CommonStartSession {
         $pcwsapi = new PCWSAPI();
         $bankTransactionLogs = new BankTransactionLogsModel();
         
-        if($mid == ''){
+        if($mid == '')
+        {
             $mid = null;
         }
         
-        if($userMode == 2){
+        if($userMode == 2)
+        {
             $loyalty_card = $terminal_id;
             $mid = $terminal_id;
         }
          
-        if($terminalsModel->isPartnerAlreadyStarted($terminal_id)) {
+        if($terminalsModel->isPartnerAlreadyStarted($terminal_id)) 
+        {
             $message = 'Error: '. $terminalsModel->terminal_code . ' terminal already started';
             logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
             CasinoApi::throwError($message);
         }
         
-        list($terminal_balance,$service_name,$terminalSessionsModel,
-                $transReqLogsModel,$redeemable_amount,$casinoApiHandler,$mgaccount) = $casinoApi->getBalance($terminal_id, $site_id,'D',$service_id,$userMode,$CPV);
-        
+        list($terminal_balance,$service_name,$terminalSessionsModel,$transReqLogsModel,$redeemable_amount,
+            $casinoApiHandler,$mgaccount) = $casinoApi->getBalance($terminal_id, $site_id,'D',$service_id,$userMode,$CPV);
         
         $is_terminal_active = $terminalSessionsModel->isSessionActive($terminal_id);
         
-        if($is_terminal_active === false) {
+        if($is_terminal_active === false) 
+        {
             $message = 'Error: Can\'t get status.';
             logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
             CasinoApi::throwError($message);
         }
         
-        if($is_terminal_active != 0) {
+        if($is_terminal_active != 0) 
+        {
             $message = 'Error: Terminal is already active.';
             logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
             CasinoApi::throwError($message);
         }
         
-        if($terminal_balance != 0) {
+        if($terminal_balance != 0) 
+        {
             $message = 'Error: Please inform customer service for manual redemption.';
             logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
             CasinoApi::throwError($message);
         }
          
-        if(($bcf - $initial_deposit) < 0) {
+        if(($bcf - $initial_deposit) < 0) 
+        {
             $message = 'Error: BCF is not enough.';
             logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
             CasinoApi::throwError($message);
         }
         
-        if($mgaccount != '') {
+        if($mgaccount != '') 
+        {
             $terminal_name = $mgaccount;
-        } else {
+        } 
+        else 
+        {
             $terminal_name = $terminalsModel->getTerminalName($terminal_id);
         }
         
         //get last transaction ID if service is MG
-        if(strpos($service_name, 'MG') !== false) {
+        if(strpos($service_name, 'MG') !== false) 
+        {
             $trans_origin_id = 0; //cashier origin Id
             $transaction_id = $terminalsModel->insertserviceTransRef($service_id, $trans_origin_id);
-            if(!$transaction_id){
+            if(!$transaction_id)
+            {
                 $message = "Error: Failed to insert record in transaction table [0001].";
                 logger($message);
                 CasinoApi::throwError($message);
             }
-        } else {
+        } 
+        else 
+        {
             $transaction_id = '';
         }
         
@@ -112,11 +125,13 @@ class CommonStartSession {
         //check terminal type if Genesis = 1
         $terminaltype = $terminalsModel->checkTerminalType($terminal_id);
         
-        if($terminaltype == 1){
+        if($terminaltype == 1)
+        {
             //insert egm session
             $egmsessionsresult = $egmSessionsModel->insert($mid, $terminal_id, $service_id, $_SESSION['accID']);
 
-            if(!$egmsessionsresult){
+            if(!$egmsessionsresult)
+            {
                 $message = 'Error: The terminal has an ongoing terminal deposit session.';
                 logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
                 CasinoApi::throwError($message);
@@ -125,7 +140,8 @@ class CommonStartSession {
         
         $checkegmsession = $egmSessionsModel->checkEgmSession($service_id, $mid);
         
-        if(!empty($checkegmsession)){
+        if(!empty($checkegmsession))
+        {
                 $message = 'Error: User has an ongoing EGM deposit session.';
                 logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
                 CasinoApi::throwError($message);
@@ -134,11 +150,12 @@ class CommonStartSession {
         //insert into terminalsessions, throw error if there is existing session 
         //this terminal / user
         $trans_summary_max_id = null;
-        $is_terminal_exist = $terminalSessionsModel->insert($terminal_id, $service_id, 
-                               $initial_deposit, $trans_summary_max_id, $loyalty_card, $mid,
-                               $userMode, $casinoUsername, $casinoPassword, $casinoHashedPassword);
+        $is_terminal_exist = $terminalSessionsModel->insert($terminal_id, $service_id, $initial_deposit, 
+                $trans_summary_max_id, $loyalty_card, $mid, $userMode, $casinoUsername, $casinoPassword, 
+                $casinoHashedPassword, $viptype); // CCT added viptype
         
-        if(!$is_terminal_exist){
+        if(!$is_terminal_exist)
+        {
             $message = 'Error: Terminal / User has an existing session.';
             logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
             CasinoApi::throwError($message);
@@ -146,11 +163,11 @@ class CommonStartSession {
         
         //insert into transaction request log
         $bankTransactionStatus = null;
-        $trans_req_log_last_id = $transReqLogsModel->insert($udate, $initial_deposit, 'D', $paymentType,
-            $terminal_id, $site_id, $service_id,$loyalty_card, $mid, $userMode, 
-            $trackingid, $voucher_code, $transaction_id);
+        $trans_req_log_last_id = $transReqLogsModel->insert($udate, $initial_deposit, 'D', $paymentType, $terminal_id, 
+            $site_id, $service_id,$loyalty_card, $mid, $userMode, $trackingid, $voucher_code, $transaction_id);
         
-        if(!$trans_req_log_last_id) {
+        if(!$trans_req_log_last_id) 
+        {
             $pendingTerminalTransactionCountModel->updatePendingTerminalCount($terminal_id);
             $message = 'There was a pending transaction for this user / terminal.';
             $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
@@ -159,13 +176,16 @@ class CommonStartSession {
             CasinoApi::throwError($message);
         }
         
-        if($traceNumber!='' && $referenceNumber!=''){
-            if($trans_req_log_last_id){
+        if($traceNumber!='' && $referenceNumber!='')
+        {
+            if($trans_req_log_last_id)
+            {
                 $bankTransactionStatus = $bankTransactionLogs->insertBankTransaction($trans_req_log_last_id, $traceNumber, $referenceNumber, $paymentType);
             }
         }
         
-        if($bankTransactionStatus===false){
+        if($bankTransactionStatus===false)
+        {
             $message = 'Bank Transaction Failed.';
             $transReqLogsModel->update($trans_req_log_last_id, 'false', 2,null,$terminal_id);
             $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
@@ -174,7 +194,6 @@ class CommonStartSession {
             CasinoApi::throwError($message);
         }
         
-        
         $tracking1 = $trans_req_log_last_id;
         $tracking2 = 'D';
         $tracking3 = $terminal_id;
@@ -182,7 +201,8 @@ class CommonStartSession {
         $event_id = Mirage::app()->param['mgcapi_event_id'][0]; //Event ID for Deposit
         
         // check if casino's reply is busy, added 05/17/12
-        if (!(bool)$casinoApiHandler->IsAPIServerOK()) {
+        if (!(bool)$casinoApiHandler->IsAPIServerOK()) 
+        {
             $transReqLogsModel->update($trans_req_log_last_id, 'false', 2,null,$terminal_id);
             $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
             $egmSessionsModel->deleteEgmSessionById($terminal_id);
@@ -192,9 +212,11 @@ class CommonStartSession {
         }
         
         //if PT, unfreeze its account
-        if(strpos($service_name, 'PT') !== false) {
+        if(strpos($service_name, 'PT') !== false) 
+        {
             $changeStatusResult = $casinoApiHandler->ChangeAccountStatus($terminal_name, 0);
-            if(!$changeStatusResult['IsSucceed']){
+            if(!$changeStatusResult['IsSucceed'])
+            {
                 $transReqLogsModel->update($trans_req_log_last_id, 'false', 2,null,$terminal_id);
                 $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
                 $egmSessionsModel->deleteEgmSessionById($terminal_id);
@@ -205,14 +227,15 @@ class CommonStartSession {
         }
         
         /************************* DEPOSIT ************************************/
-        $resultdeposit = $casinoApiHandler->Deposit($terminal_name, $initial_deposit, 
-            $tracking1, $tracking2, $tracking3, $tracking4, $terminal_pwd, $event_id, $transaction_id,$locatorname);
+        $resultdeposit = $casinoApiHandler->Deposit($terminal_name, $initial_deposit, $tracking1, $tracking2, 
+            $tracking3, $tracking4, $terminal_pwd, $event_id, $transaction_id,$locatorname);
            
         //check if Deposit API reply is null
-        if(is_null($resultdeposit)){
-            
+        if(is_null($resultdeposit))
+        {
             // check again if Casino Server is busy
-            if (!(bool)$casinoApiHandler->IsAPIServerOK()) {
+            if (!(bool)$casinoApiHandler->IsAPIServerOK()) 
+            {
                 $transReqLogsModel->update($trans_req_log_last_id, 'false', 2,null,$terminal_id);
                 $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
                 $egmSessionsModel->deleteEgmSessionById($terminal_id);
@@ -222,8 +245,8 @@ class CommonStartSession {
             }
             
             //execute TransactionSearchInfo API Method
-            $transSearchInfo = $casinoApiHandler->TransactionSearchInfo($terminal_name, 
-                               $tracking1 , $tracking2 , $tracking3, $tracking4, $transaction_id);
+            $transSearchInfo = $casinoApiHandler->TransactionSearchInfo($terminal_name, $tracking1, $tracking2, 
+                $tracking3, $tracking4, $transaction_id);
             
             //check if TransactionSearchInfo API is not successful
             if(isset($transSearchInfo['IsSucceed']) && $transSearchInfo['IsSucceed'] == false)
@@ -260,10 +283,12 @@ class CommonStartSession {
                     $apiresult = $transSearchInfo['TransactionInfo']['PT']['status'];
                 }
             }
-        } else {
-            
+        } 
+        else 
+        {
             //check if TransactionSearchInfo API is not successful
-            if(isset($resultdeposit['IsSucceed']) && $resultdeposit['IsSucceed'] == false) {
+            if(isset($resultdeposit['IsSucceed']) && $resultdeposit['IsSucceed'] == false) 
+            {
                 $transReqLogsModel->update($trans_req_log_last_id, 'false', 2,null,$terminal_id);
                 $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
                 $egmSessionsModel->deleteEgmSessionById($terminal_id);
@@ -273,7 +298,8 @@ class CommonStartSession {
             }
 
             //check Deposit API Result
-            if(isset($resultdeposit['TransactionInfo'])){
+            if(isset($resultdeposit['TransactionInfo']))
+            {
                 //RTG / Magic Macau
                 if(isset($resultdeposit['TransactionInfo']['DepositGenericResult'])) {
                     $transrefid = $resultdeposit['TransactionInfo']['DepositGenericResult']['transactionID'];
@@ -281,13 +307,15 @@ class CommonStartSession {
                     $apierrmsg = $resultdeposit['TransactionInfo']['DepositGenericResult']['errorMsg'];
                 } 
                 //MG / Vibrant Vegas
-                else if(isset($resultdeposit['TransactionInfo']['MG'])) {
+                else if(isset($resultdeposit['TransactionInfo']['MG'])) 
+                {
                     $transrefid = $resultdeposit['TransactionInfo']['MG']['TransactionId'];
                     $apiresult = $resultdeposit['TransactionInfo']['MG']['TransactionStatus'];
                     $apierrmsg = $resultdeposit['ErrorMessage'];
                 }
                 //Rockin Reno
-                else if(isset($resultdeposit['TransactionInfo']['PT'])) {
+                else if(isset($resultdeposit['TransactionInfo']['PT'])) 
+                {
                     $transrefid = $resultdeposit['TransactionInfo']['PT']['TransactionId'];
                     $apiresult = $resultdeposit['TransactionInfo']['PT']['TransactionStatus'];
                     $apierrmsg = $resultdeposit['TransactionInfo']['PT']['TransactionStatus'];
@@ -295,18 +323,21 @@ class CommonStartSession {
             }
         }
         
-        if($apiresult == 'TRANSACTIONSTATUS_APPROVED' || $apiresult == 'true' || $apiresult == 'approved') {
+        if($apiresult == 'TRANSACTIONSTATUS_APPROVED' || $apiresult == 'true' || $apiresult == 'approved') 
+        {
             $transstatus = '1';
-        } else {
+        } 
+        else 
+        {
             $transstatus = '2';
         }
         
         //if Deposit / TransactionSearchInfo API status is approved
-        if ($apiresult == "true" || $apiresult == 'TRANSACTIONSTATUS_APPROVED' || $apiresult == 'approved'){
- 
+        if ($apiresult == "true" || $apiresult == 'TRANSACTIONSTATUS_APPROVED' || $apiresult == 'approved')
+        {
             //this will return the transaction summary ID
-            $trans_summary_id = $commonTransactionsModel->startTransaction($site_id, $terminal_id, 
-                                    $initial_deposit, $acctid, $udate, 'D', $paymentType, $service_id, $transstatus,$loyalty_card, $mid);
+            $trans_summary_id = $commonTransactionsModel->startTransaction($site_id, $terminal_id, $initial_deposit, 
+                $acctid, $udate, 'D', $paymentType, $service_id, $transstatus,$loyalty_card, $mid, $viptype); // CCT added viptype
             
             $transReqLogsModel->update($trans_req_log_last_id, $apiresult, $transstatus,$transrefid,$terminal_id);
             
@@ -325,18 +356,37 @@ class CommonStartSession {
             //Call AddCompPoints API for terminal based casinos.
 //            $systemusername = $systemusername = Mirage::app()->param['pcwssysusername'];
 //            $pcwsapi->AddCompPoints($systemusername, $loyalty_card, $site_id, $service_id, $initial_deposit);
-
-            $message = 'New player session started.The player initial playing balance is PhP ' . toMoney($initial_deposit);
+// ------------------------------------>
+            // CCT BEGIN added
+            //
+            if (($viptype == 1) || $viptype == 2)  // If VIP, call ChangePlayerClassification
+            {
+                if(strpos($service_name, 'RTG') !== false) 
+                {
+                    $PID = $casinoApiHandler->GetPIDLogin($terminal_name);
+                    //$getPlayerClassResult = $casinoApi->GetPlayerClassification($terminal_id, $service_id, $PID);
+                    $changePlayerClassResult = $casinoApi->ChangePlayerClassification($terminal_id, $service_id, $PID, $viptype);    
+                    //logger("Here");
+                    //CasinoApi::throwError($getPlayerClassResult);
+                }
+            }
+// ------------------------------------>
+            // CCT END added
             
+            $message = 'New player session started.The player initial playing balance is PhP ' . toMoney($initial_deposit);
+
             return array('message'=>$message,'newbcf'=> toMoney($newbal),'initial_deposit'=>toMoney($initial_deposit),
                 'udate'=>$udate,'terminal_name'=>$terminal_name,'trans_ref_id'=>$transrefid,'trans_summary_id'=>$trans_summary_id["trans_summary_max_id"],
                 'trans_details_id' => $trans_summary_id["transdetails_max_id"]);
-        } else {
-            
+        } 
+        else 
+        {
             //if PT and failed in start session, freeze its account
-            if(strpos($service_name, 'PT') !== false) {
+            if(strpos($service_name, 'PT') !== false) 
+            {
                 $changeStatusResult = $casinoApiHandler->ChangeAccountStatus($terminal_name, 1);
-                if(!$changeStatusResult['IsSucceed']){
+                if(!$changeStatusResult['IsSucceed'])
+                {
                     $message = $changeStatusResult['ErrorMessage'];
                     logger($message);
                     CasinoApi::throwError($message);

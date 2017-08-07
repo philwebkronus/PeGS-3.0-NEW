@@ -5,12 +5,13 @@
  * Description of TransactionSummaryModel
  * @author Bryan Salazar
  */
-class TransactionSummaryModel extends MI_Model{
-    
-    public function insert($site_id,$terminal_id,$amount,$acctid) {
-        $sql = 'INSERT INTO transactionsummary (SiteID, TerminalID, Deposit, DateStarted, DateEnded, CreatedByAID) VALUES ' . 
-                '(:site_id, :terminal_id, :amount, now(6), \'0\', :acctid)';
-        $param = array(':site_id'=>$site_id,':terminal_id'=>$terminal_id,':amount'=>$amount,':acctid'=>$acctid);
+class TransactionSummaryModel extends MI_Model
+{
+    public function insert($site_id,$terminal_id,$amount,$acctid, $vip_type = 0) // CCT Added vip_type
+    {
+        $sql = 'INSERT INTO transactionsummary (SiteID, TerminalID, Deposit, DateStarted, DateEnded, CreatedByAID, OptionID1) ' .
+                'VALUES (:site_id, :terminal_id, :amount, now(6), \'0\', :acctid, :vip_type)'; // CCT added vip_type and OptionID1
+        $param = array(':site_id'=>$site_id,':terminal_id'=>$terminal_id,':amount'=>$amount,':acctid'=>$acctid, ':vip_type'=>vip_type);
         return $this->exec($sql,$param);
     }
     
@@ -20,7 +21,8 @@ class TransactionSummaryModel extends MI_Model{
      * @param type $terminal_id
      * @return type 
      */
-    public function getTransactionSummaryDetail($site_id,$terminal_id) {
+    public function getTransactionSummaryDetail($site_id,$terminal_id) 
+    {
         $sql = 'SELECT TransactionsSummaryID, Reload, Withdrawal FROM transactionsummary WHERE SiteID = :site_id AND TerminalID = :terminal_id AND DateEnded = \'0\' ORDER BY TransactionsSummaryID DESC LIMIT 1';
         $param = array(':site_id'=>$site_id,':terminal_id'=>$terminal_id);
         $this->exec($sql,$param);
@@ -39,28 +41,25 @@ class TransactionSummaryModel extends MI_Model{
         return $this->exec($sql,$param);
     }
    
-    public function getAllTransactionSummary($site_id,$site_code,$date,$enddate) {
+    public function getAllTransactionSummary($site_id,$site_code,$date,$enddate) 
+    {
         $len = strlen($site_code) + 1;
-
         $cutoff_time = Mirage::app()->param['cut_off'];
         $sql = "select tr.TransactionSummaryID,ts.DateStarted,ts.DateEnded,tr.DateCreated, tr.TerminalID,tr.SiteID, " . 
-                 "SUBSTR(t.TerminalCode,$len) as TerminalCode,if(ts.DateStarted < '$date $cutoff_time', ts.Deposit = 0,ts.Deposit) as Deposit," . 
-                 "ts.Reload,ts.Withdrawal,tr.DateCreated from transactiondetails tr left join transactionsummary ts " . 
-                 "on ts.TransactionsSummaryID = tr.TransactionSummaryID inner join terminals t on t.TerminalID = tr.TerminalID " . 
-                 "where tr.SiteID = :site_id AND tr.DateCreated >= :start_date and tr.DateCreated < :end_date AND tr.Status IN (1,4) " . 
-                 "group by ts.TransactionsSummaryID order by tr.TerminalID,tr.DateCreated Desc";
-        
-        $param = array(
-                    ':site_id'=>$site_id,
-                    ':start_date'=>$date . ' ' . $cutoff_time,
-                    ':end_date'=>$enddate . ' ' . $cutoff_time,
-                );
+                "SUBSTR(t.TerminalCode,$len) as TerminalCode,if(ts.DateStarted < '$date $cutoff_time', ts.Deposit = 0,ts.Deposit) as Deposit," . 
+                "ts.Reload,ts.Withdrawal,tr.DateCreated from transactiondetails tr left join transactionsummary ts " . 
+                "on ts.TransactionsSummaryID = tr.TransactionSummaryID inner join terminals t on t.TerminalID = tr.TerminalID " . 
+                "where tr.SiteID = :site_id AND tr.DateCreated >= :start_date and tr.DateCreated < :end_date AND tr.Status IN (1,4) " . 
+                "group by ts.TransactionsSummaryID order by tr.TerminalID,tr.DateCreated Desc";
+        $param = array(':site_id'=>$site_id,
+                ':start_date'=>$date . ' ' . $cutoff_time,
+                ':end_date'=>$enddate . ' ' . $cutoff_time,);
         $this->exec($sql, $param);
         return $this->findAll();
     }
     
-
-    public function getTransSummaryPaging($site_id,$site_code,$date,$enddate,$start,$limit) {
+    public function getTransSummaryPaging($site_id,$site_code,$date,$enddate,$start,$limit) 
+    {
         $len = strlen($site_code) + 1;
 
         $cutoff_time = Mirage::app()->param['cut_off'];
@@ -192,23 +191,25 @@ class TransactionSummaryModel extends MI_Model{
               AND tr.Status IN(1,4)
             GROUP By tr.TransactionType, tr.TransactionSummaryID
             ORDER BY tr.TerminalID, tr.DateCreated DESC;";
-        $param = array(
-                ':start_date'=>$date . ' ' . $cutoff_time,
+        $param = array(':start_date'=>$date . ' ' . $cutoff_time,
                 ':end_date'=>$enddate . ' ' . $cutoff_time,
-                ':site_id'=>$site_id,
-            );
+                ':site_id'=>$site_id,);
         $this->exec($sql,$param);
         $result = $this->findAll();
         
         $new_result = array();
-        foreach($result as $value) {
-            if($value['TerminalType'] == 1){
+        foreach($result as $value) 
+        {
+            if($value['TerminalType'] == 1)
+            {
                 $terminalCode = 'G'.$value['TerminalCode'];
             }
-            else{
+            else
+            {
                 $terminalCode = $value['TerminalCode']; 
             }
-            if(!isset($new_result[$value['TransactionSummaryID']])) {
+            if(!isset($new_result[$value['TransactionSummaryID']])) 
+            {
                 $new_result[$value['TransactionSummaryID']] = array(
                     'TransactionSummaryID'=>$value['TransactionSummaryID'],
                     'DateStarted'=>$value['DateStarted'],
@@ -225,37 +226,35 @@ class TransactionSummaryModel extends MI_Model{
                 );
             }
             $merge_array = array();
-            switch ($value['TransactionType']) {
+            switch ($value['TransactionType']) 
+            {
                 case 'W':
-                    if($value['RedemptionCashier'] > 0){
+                    if($value['RedemptionCashier'] > 0)
+                    {
                         $merge_array = array('WCashier'=>$value['RedemptionCashier']);
                     }
                     
-                    if($value['RedemptionGenesis'] > 0){
+                    if($value['RedemptionGenesis'] > 0)
+                    {
                         $merge_array = array('WGenesis'=>$value['RedemptionGenesis']);
                     }
                     break;
                 case 'D':
-                        $merge_array = array('DCash'=>$value['DepositCash'], 'DTicket'=>$value['DepositTicket'],'DCoupon'=>$value['DepositCoupon'] );
-                    
+                    $merge_array = array('DCash'=>$value['DepositCash'], 'DTicket'=>$value['DepositTicket'],'DCoupon'=>$value['DepositCoupon'] );
                     break;
                 case 'R':
-                        $merge_array = array('RCash'=>$value['ReloadCash'],'RTicket'=>$value['ReloadTicket'],'RCoupon'=>$value['ReloadCoupon']);
-                    
+                    $merge_array = array('RCash'=>$value['ReloadCash'],'RTicket'=>$value['ReloadTicket'],'RCoupon'=>$value['ReloadCoupon']);
                     break;
             }
             $new_result[$value['TransactionSummaryID']] = array_merge($new_result[$value['TransactionSummaryID']],$merge_array);
-            
-            
-           
         }
         $res = array();
-        foreach($new_result as $value) {
+        foreach($new_result as $value) 
+        {
             $res[] = $value;
         }
         //$res = array_slice($res, $start, $limit);
         return $res;
-        
         
 //        $sql = "select tr.TransactionSummaryID,ts.DateStarted,ts.DateEnded,tr.DateCreated, tr.TerminalID,tr.SiteID, " . 
 //                 "SUBSTR(t.TerminalCode,$len) as TerminalCode,if(ts.DateStarted < '$date $cutoff_time', ts.Deposit = 0,ts.Deposit) as Deposit," . 
@@ -263,24 +262,19 @@ class TransactionSummaryModel extends MI_Model{
 //                 "on ts.TransactionsSummaryID = tr.TransactionSummaryID inner join terminals t on t.TerminalID = tr.TerminalID " . 
 //                 "where tr.SiteID = :site_id AND tr.DateCreated > :start_date and tr.DateCreated <= :end_date " . 
 //                 "group by ts.TransactionsSummaryID order by tr.TerminalID,tr.DateCreated Desc LIMIT :start, :limit";
-//        
-//        $param = array(
-//                    ':site_id'=>$site_id,
+//        $param = array(':site_id'=>$site_id,
 //                    ':start_date'=>$date . ' ' . $cutoff_time,
 //                    ':end_date'=>$enddate . ' ' . $cutoff_time,
 //                    ':start'=>$start,
-//                    ':limit'=>$limit,
-//                );
+//                    ':limit'=>$limit,);
 //        $this->exec($sql, $param);
 //        $result = $this->findAll();
 //        MI_Logger::log($result, E_ERROR);
-//        
 //        return $result;
     }
     
-    
-    
-    public function _getTransSummaryPaging($site_id,$site_code,$date,$enddate,$start,$limit) {
+    public function _getTransSummaryPaging($site_id,$site_code,$date,$enddate,$start,$limit) 
+    {
         $len = strlen($site_code) + 1;
 
         $cutoff_time = Mirage::app()->param['cut_off'];
@@ -314,28 +308,35 @@ class TransactionSummaryModel extends MI_Model{
               AND tr.Status IN(1,4)
             GROUP By tr.TransactionType, tr.TransactionSummaryID
             ORDER BY tr.TerminalID, tr.DateCreated DESC;";
-        $param = array(
-                ':start_date'=>$date . ' ' . $cutoff_time,
+        $param = array( ':start_date'=>$date . ' ' . $cutoff_time,
                 ':end_date'=>$enddate . ' ' . $cutoff_time,
-                ':site_id'=>$site_id,
-            );
+                ':site_id'=>$site_id, );
         $this->exec($sql,$param);
         $result = $this->findAll();
         
         $new_result = array();
-        foreach($result as $value) {
-            if($value['TerminalType'] == 1){
+        foreach($result as $value) 
+        {
+            if($value['TerminalType'] == 1)
+            {
                 $terminalCode = 'G'.$value['TerminalCode'];
             }
-            else{
+            else
+            {
                 $terminalCode = $value['TerminalCode']; 
             }
             
-            if($value['AccountTypeID'] == 17){
+            if($value['AccountTypeID'] == 17)
+            {
                 $IseSAFETrans = 1;
-            } else { $IseSAFETrans = 0; }
+            } 
+            else 
+            { 
+                $IseSAFETrans = 0; 
+            }
 
-            if(!isset($new_result[$value['TransactionSummaryID']])) {
+            if(!isset($new_result[$value['TransactionSummaryID']])) 
+            {
                 $new_result[$value['TransactionSummaryID']] = array(
                     'TransactionSummaryID'=>$value['TransactionSummaryID'],
                     'DateStarted'=>$value['DateStarted'],
@@ -351,21 +352,24 @@ class TransactionSummaryModel extends MI_Model{
                     'WalletReloads'=>$value['WalletReloads'],
                     'AccountTypeID'=>$value['AccountTypeID'],
                 );
-            } else {
+            } 
+            else 
+            {
                 $new_result[$value['TransactionSummaryID']]['TotalTransDeposit'] +=$value['TotalDeposit'];
                 $new_result[$value['TransactionSummaryID']]['TotalTransReload'] +=$value['TotalReload'];
                 $new_result[$value['TransactionSummaryID']]['TotalTransRedemption'] +=$value['TotalRedemption'];
             }
-           
         }
         $res = array();
-        foreach($new_result as $value) {
+        foreach($new_result as $value) 
+        {
             $res[] = $value;
         }
         return $res;
     }
     
-    public function getTransSummaryPagingWithTerminalID($site_id,$site_code,$terminal_id,$trans_sum_id,$date,$enddate,$start,$limit) {
+    public function getTransSummaryPagingWithTerminalID($site_id,$site_code,$terminal_id,$trans_sum_id,$date,$enddate,$start,$limit) 
+    {
         $len = strlen($site_code) + 1;
 
         $cutoff_time = Mirage::app()->param['cut_off'];
@@ -499,30 +503,37 @@ class TransactionSummaryModel extends MI_Model{
               AND tr.TransactionSummaryID = :trans_sum_id
             GROUP By tr.TransactionType, tr.TransactionSummaryID
             ORDER BY tr.TerminalID, tr.DateCreated DESC;";
-        $param = array(
-                ':start_date'=>$date . ' ' . $cutoff_time,
+        $param = array(':start_date'=>$date . ' ' . $cutoff_time,
                 ':end_date'=>$enddate . ' ' . $cutoff_time,
                 ':site_id'=>$site_id,
                 ':terminal_id'=>$terminal_id,
-                ':trans_sum_id'=>$trans_sum_id,
-            );
+                ':trans_sum_id'=>$trans_sum_id,);
         $this->exec($sql,$param);
         $result = $this->findAll();
         
         $new_result = array();
-        foreach($result as $value) {
-            if($value['TerminalType'] == 1){
+        foreach($result as $value) 
+        {
+            if($value['TerminalType'] == 1)
+            {
                 $terminalCode = 'G'.$value['TerminalCode'];
             }
-            else{
+            else
+            {
                 $terminalCode = $value['TerminalCode']; 
             }
             
-            if($value['AccountTypeID'] == 17){
+            if($value['AccountTypeID'] == 17)
+            {
                 $IseSAFETrans = 1;
-            } else { $IseSAFETrans = 0; }
+            } 
+            else 
+            { 
+                $IseSAFETrans = 0; 
+            }
             
-            if(!isset($new_result[$value['TransactionSummaryID']])) {
+            if(!isset($new_result[$value['TransactionSummaryID']])) 
+            {
                 $new_result[$value['TransactionSummaryID']] = array(
                     'TransactionSummaryID'=>$value['TransactionSummaryID'],
                     'DateStarted'=>$value['DateStarted'],
@@ -544,38 +555,38 @@ class TransactionSummaryModel extends MI_Model{
                 );
             }
             $merge_array = array();
-            switch ($value['TransactionType']) {
+            switch ($value['TransactionType']) 
+            {
                 case 'W':
-                    if($value['RedemptionCashier'] > 0){
+                    if($value['RedemptionCashier'] > 0)
+                    {
                         $merge_array = array('WCashier'=>$value['RedemptionCashier']);
                     }
                     
-                    if($value['RedemptionGenesis'] > 0){
+                    if($value['RedemptionGenesis'] > 0)
+                    {
                         $merge_array = array('WGenesis'=>$value['RedemptionGenesis']);
                     }
                     break;
                 case 'D':
-                        $merge_array = array('DCash'=>$value['DepositCash'], 'DTicket'=>$value['DepositTicket'],'DCoupon'=>$value['DepositCoupon'] );
-                    
+                    $merge_array = array('DCash'=>$value['DepositCash'], 'DTicket'=>$value['DepositTicket'],'DCoupon'=>$value['DepositCoupon'] );
                     break;
                 case 'R':
-                        $merge_array = array('RCash'=>$value['ReloadCash'],'RTicket'=>$value['ReloadTicket'],'RCoupon'=>$value['ReloadCoupon']);
-                    
+                    $merge_array = array('RCash'=>$value['ReloadCash'],'RTicket'=>$value['ReloadTicket'],'RCoupon'=>$value['ReloadCoupon']);
                     break;
             }
             $new_result[$value['TransactionSummaryID']] = array_merge($new_result[$value['TransactionSummaryID']],$merge_array);
-
         }
         $res = array();
-        foreach($new_result as $value) {
+        foreach($new_result as $value) 
+        {
             $res[] = $value;
         }
-
         return $res;
     }
     
-    
-    public function getTransSummaryTotalsPerCG($site_id,$site_code,$date,$enddate,$start,$limit) {
+    public function getTransSummaryTotalsPerCG($site_id,$site_code,$date,$enddate,$start,$limit) 
+    {
         $len = strlen($site_code) + 1;
 
         $cutoff_time = Mirage::app()->param['cut_off'];
@@ -598,35 +609,43 @@ class TransactionSummaryModel extends MI_Model{
                     AND tr.SiteID = :site_id AND tr.Status IN(1,4) 
                     GROUP BY tr.TransactionType,tr.TransactionSummaryID,tr.PaymentType 
                     ORDER BY tr.TerminalID,tr.DateCreated DESC";
-        $param = array(
-                ':start_date'=>$date . ' ' . $cutoff_time,
+        $param = array(':start_date'=>$date . ' ' . $cutoff_time,
                 ':end_date'=>$enddate . ' ' . $cutoff_time,
-                ':site_id'=>$site_id,
-            );
+                ':site_id'=>$site_id,);
         $this->exec($sql,$param);
         $result = $this->findAll();
         
         $new_result = array();
-        foreach($result as $value) {
-            if($value['TerminalType'] == 1){
+        foreach($result as $value) 
+        {
+            if($value['TerminalType'] == 1)
+            {
                 $terminalCode = 'G'.$value['TerminalCode'];
             }
-            else{
+            else
+            {
                 $terminalCode = $value['TerminalCode']; 
             }
             
-            if($value['AccountTypeID'] == 17){
+            if($value['AccountTypeID'] == 17)
+            {
                 $IseSAFETrans = 1;
             } else { $IseSAFETrans = 0; }
             
             /*if($value['StackerSumm'] != ''){
                 $IsEGM = 1;
             } else { $IsEGM = 0; }*/
-            if($value['TerminalType'] == 1){
+            if($value['TerminalType'] == 1)
+            {
                 $IsEGM = 1;
-            } else { $IsEGM = 0; }
+            } 
+            else 
+            {   
+                $IsEGM = 0; 
+            }
             
-            if(!isset($new_result[$value['TransactionSummaryID']])) {
+            if(!isset($new_result[$value['TransactionSummaryID']])) 
+            {
                 $new_result[$value['TransactionSummaryID']] = array(
                     'TransactionSummaryID'=>$value['TransactionSummaryID'],
                     'DateStarted'=>$value['DateStarted'],
@@ -658,12 +677,16 @@ class TransactionSummaryModel extends MI_Model{
                 );
             }
             $merge_array = array();
-            if($value['amount'] == NULL){
+            if($value['amount'] == NULL)
+            {
                 $value['amount'] = '0.00';
             }
-            if($value['StackerSumm'] == null || $value['StackerSumm'] == ''){
-                if($value['PaymentType'] == 1){
-                    switch ($value['TransactionType']) {
+            if($value['StackerSumm'] == null || $value['StackerSumm'] == '')
+            {
+                if($value['PaymentType'] == 1)
+                {
+                    switch ($value['TransactionType']) 
+                    {
                         case 'W':
                             $merge_array = array('WCashier'=>$value['amount']);
                             break;
@@ -675,8 +698,10 @@ class TransactionSummaryModel extends MI_Model{
                             break;
                     }
                 }
-                else{
-                    switch ($value['TransactionType']) {
+                else
+                {
+                    switch ($value['TransactionType']) 
+                    {
                         case 'W':
                             $merge_array = array('WCashier'=>$value['amount']);
                             break;
@@ -688,135 +713,125 @@ class TransactionSummaryModel extends MI_Model{
                             break;
                     }
                 }
-               
                 $new_result[$value['TransactionSummaryID']] = array_merge($new_result[$value['TransactionSummaryID']],$merge_array);
-                
             }
-            else{
-                
-                if($value['eSAFEStatus'] != NULL ){
-                    if($value['eSAFEStatus'] != 1){
-                        if($value['eSAFEStatus'] != 3){
+            else
+            {
+                if($value['eSAFEStatus'] != NULL )
+                {
+                    if($value['eSAFEStatus'] != 1)
+                    {
+                        if($value['eSAFEStatus'] != 3)
+                        {
                             continue;
                         }
                     }
                 }
                 
-                if($value['TransactionType'] == 'W'){
+                if($value['TransactionType'] == 'W')
+                {
                     $merge_arrays = array('WGenesis'=>$value['amount']);
-                    
                     $new_result[$value['TransactionSummaryID']] = array_merge($new_result[$value['TransactionSummaryID']],$merge_arrays);
                 }
-                elseif($value['TransactionType'] == 'D'){
+                elseif($value['TransactionType'] == 'D')
+                {
                     $sql2 = "SELECT DISTINCT(PaymentType) FROM stackermanagement.stackerdetails WHERE StackerSummaryID = :stackersummaryid AND TransactionType = :transtype;";
-                    $param2 = array(
-                            ':stackersummaryid'=>$value['StackerSumm'],
-                            ':transtype'=>1,
-                        );
+                    $param2 = array(':stackersummaryid'=>$value['StackerSumm'], 
+                        ':transtype'=>1,);
                     $this->exec2($sql2,$param2);
                     $result2 = $this->findAll2();
                     
-                    foreach ($result2 as $value2) {
+                    foreach ($result2 as $value2) 
+                    {
                         $pymnttype = $value2['PaymentType'];
-                        if($pymnttype == '0'){
+                        if($pymnttype == '0')
+                        {
                             $sql3 = "SELECT SUM(Amount) AS Amount FROM stackermanagement.stackerdetails WHERE StackerSummaryID = :stackersummaryid AND TransactionType = :transtype AND PaymentType = :paymenttype;";
-                            $param3 = array(
-                                    ':stackersummaryid'=>$value['StackerSumm'],
+                            $param3 = array(':stackersummaryid'=>$value['StackerSumm'],
                                     ':transtype'=>1,
-                                    ':paymenttype'=>0
-                                );
+                                    ':paymenttype'=>0);
                             $this->exec2($sql3,$param3);
                             $result3 = $this->findAll2();
                             
-                            foreach ($result3 as $value3) {
+                            foreach ($result3 as $value3) 
+                            {
                                 $amt = $value3['Amount'];
                             }
-                            
-                            
                             $merge_arrays = array('GenDCash'=>$amt);
-                            
                         }
-                        else{
+                        else
+                        {
                             $sql4 = "SELECT SUM(Amount) AS Amount FROM stackermanagement.stackerdetails WHERE StackerSummaryID = :stackersummaryid AND TransactionType = :transtype AND PaymentType = :paymenttype;";
-                            $param4 = array(
-                                    ':stackersummaryid'=>$value['StackerSumm'],
+                            $param4 = array(':stackersummaryid'=>$value['StackerSumm'],
                                     ':transtype'=>1,
-                                    ':paymenttype'=>2
-                                );
+                                    ':paymenttype'=>2);
                             $this->exec2($sql4,$param4);
                             $result4 = $this->findAll2();
                             
-                            foreach ($result4 as $value4) {
+                            foreach ($result4 as $value4) 
+                            {
                                 $amt1 = $value4['Amount'];
                             }
-                            
                             $merge_arrays = array('GenDTicket'=>$amt1);
                         }
-                        
                         $new_result[$value['TransactionSummaryID']] = array_merge($new_result[$value['TransactionSummaryID']],$merge_arrays); 
-                        
                     }
-                    
                 }
-                elseif($value['TransactionType'] == 'R'){
+                elseif($value['TransactionType'] == 'R')
+                {
                     $sql2 = "SELECT DISTINCT(PaymentType) FROM stackermanagement.stackerdetails WHERE StackerSummaryID = :stackersummaryid AND TransactionType = :transtype;";
-                    $param2 = array(
-                            ':stackersummaryid'=>$value['StackerSumm'],
-                            ':transtype'=>2,
-                        );
+                    $param2 = array(':stackersummaryid'=>$value['StackerSumm'],
+                            ':transtype'=>2, );
                     $this->exec2($sql2,$param2);
                     $result2 = $this->findAll2();
                     
-                    foreach ($result2 as $value2) {
-                        if($value2['PaymentType'] == '0'){
+                    foreach ($result2 as $value2) 
+                    {
+                        if($value2['PaymentType'] == '0')
+                        {
                             $sql3 = "SELECT SUM(Amount) AS Amount FROM stackermanagement.stackerdetails WHERE StackerSummaryID = :stackersummaryid AND TransactionType = :transtype AND PaymentType = :paymenttype;";
-                            $param3 = array(
-                                    ':stackersummaryid'=>$value['StackerSumm'],
+                            $param3 = array(':stackersummaryid'=>$value['StackerSumm'],
                                     ':transtype'=>2,
-                                    ':paymenttype'=>0
-                                );
+                                    ':paymenttype'=>0 );
                             $this->exec2($sql3,$param3);
                             $result3 = $this->findAll2();
                             
-                            foreach ($result3 as $value3) {
+                            foreach ($result3 as $value3) 
+                            {
                                 $amt2 = $value3['Amount'];
                             }
-                            
                             $merge_arrays = array('GenRCash'=>$amt2);
                         }
-                        else{
+                        else
+                        {
                             $sql4 = "SELECT SUM(Amount) AS Amount FROM stackermanagement.stackerdetails WHERE StackerSummaryID = :stackersummaryid AND TransactionType = :transtype AND PaymentType = :paymenttype;";
-                            $param4 = array(
-                                    ':stackersummaryid'=>$value['StackerSumm'],
+                            $param4 = array(':stackersummaryid'=>$value['StackerSumm'],
                                     ':transtype'=>2,
-                                    ':paymenttype'=>2
-                                );
+                                    ':paymenttype'=>2);
                             $this->exec2($sql4,$param4);
                             $result4 = $this->findAll2();
                             
-                            foreach ($result4 as $value4) {
+                            foreach ($result4 as $value4) 
+                            {
                                 $amt3 = $value4['Amount'];
                             }
-                            
                             $merge_arrays = array('GenRTicket'=>$amt3);
                         }
-                        
                         $new_result[$value['TransactionSummaryID']] = array_merge($new_result[$value['TransactionSummaryID']],$merge_arrays); 
                     }
                 }
-               
             }
         }
-        
         $res = array();
-        foreach($new_result as $value) {
+        foreach($new_result as $value) 
+        {
             $res[] = $value;
         }
-        
         return $res;
     }
         
-    public function _getTransSummaryTotalsPerCG($site_id,$site_code,$date,$enddate,$start,$limit) {
+    public function _getTransSummaryTotalsPerCG($site_id,$site_code,$date,$enddate,$start,$limit) 
+    {
         $len = strlen($site_code) + 1;
 
         $cutoff_time = Mirage::app()->param['cut_off'];
@@ -826,11 +841,9 @@ class TransactionSummaryModel extends MI_Model{
             INNER JOIN terminals t ON t.TerminalID = tr.TerminalID  WHERE tr.DateCreated >= :start_date 
             AND tr.DateCreated < :end_date AND tr.SiteID = :site_id AND tr.Status IN(1,4) 
             GROUP BY tr.TransactionType,tr.TransactionSummaryID,tr.PaymentType ORDER BY tr.TerminalID,tr.DateCreated DESC";
-        $param = array(
-                ':start_date'=>$date . ' ' . $cutoff_time,
+        $param = array(':start_date'=>$date . ' ' . $cutoff_time,
                 ':end_date'=>$enddate . ' ' . $cutoff_time,
-                ':site_id'=>$site_id,
-            );
+                ':site_id'=>$site_id,);
         $this->exec($sql,$param);
         $result = $this->findAll();
         
@@ -839,8 +852,10 @@ class TransactionSummaryModel extends MI_Model{
         $res[0]['TotalTransReload'] = 0;
         $res[0]['TotalTransRedemption'] = 0;
         
-        foreach($result as $value) {
-            switch ($value['TransactionType']) {
+        foreach($result as $value) 
+        {
+            switch ($value['TransactionType']) 
+            {
                 case 'D':
                     $res[0]['TotalTransDeposit'] += $value['amount'];
                     break;
@@ -852,11 +867,11 @@ class TransactionSummaryModel extends MI_Model{
                     break;
             }
         }
-        
         return $res;
     }
     
-    public function getTransSummaryTotalsPerCGWithTerminalID($site_id,$site_code,$terminal_id,$trans_sum_id,$date,$enddate,$start,$limit) {
+    public function getTransSummaryTotalsPerCGWithTerminalID($site_id,$site_code,$terminal_id,$trans_sum_id,$date,$enddate,$start,$limit) 
+    {
         $len = strlen($site_code) + 1;
 
         $cutoff_time = Mirage::app()->param['cut_off'];
@@ -866,25 +881,27 @@ class TransactionSummaryModel extends MI_Model{
             INNER JOIN terminals t ON t.TerminalID = tr.TerminalID  WHERE tr.DateCreated >= :start_date 
             AND tr.DateCreated < :end_date AND tr.SiteID = :site_id AND tr.Status IN(1,4) AND tr.TerminalID = :terminal_id AND tr.TransactionSummaryID = :trans_sum_id
             GROUP BY tr.TransactionType,tr.TransactionSummaryID,tr.PaymentType ORDER BY tr.TerminalID,tr.DateCreated DESC";
-        $param = array(
-                ':start_date'=>$date . ' ' . $cutoff_time,
+        $param = array(':start_date'=>$date . ' ' . $cutoff_time,
                 ':end_date'=>$enddate . ' ' . $cutoff_time,
                 ':site_id'=>$site_id,
                 ':terminal_id'=>$terminal_id,
-                ':trans_sum_id'=>$trans_sum_id,
-            );
+                ':trans_sum_id'=>$trans_sum_id,);
         $this->exec($sql,$param);
         $result = $this->findAll();
         
         $new_result = array();
-        foreach($result as $value) {
-            if($value['TerminalType'] == 1){
+        foreach($result as $value) 
+        {
+            if($value['TerminalType'] == 1)
+            {
                 $terminalCode = 'G'.$value['TerminalCode'];
             }
-            else{
+            else
+            {
                 $terminalCode = $value['TerminalCode']; 
             }
-            if(!isset($new_result[$value['TransactionSummaryID']])) {
+            if(!isset($new_result[$value['TransactionSummaryID']])) 
+            {
                 $new_result[$value['TransactionSummaryID']] = array(
                     'TransactionSummaryID'=>$value['TransactionSummaryID'],
                     'DateStarted'=>$value['DateStarted'],
@@ -911,14 +928,16 @@ class TransactionSummaryModel extends MI_Model{
                 );
             }
             $merge_array = array();
-            if($value['amount'] == NULL){
+            if($value['amount'] == NULL)
+            {
                 $value['amount'] = '0.00';
             }
-            if($value['StackerSummaryID'] == null || $value['StackerSummaryID'] == ''){
-                
-                
-                if($value['PaymentType'] == 1){
-                    switch ($value['TransactionType']) {
+            if($value['StackerSummaryID'] == null || $value['StackerSummaryID'] == '')
+            {
+                if($value['PaymentType'] == 1)
+                {
+                    switch ($value['TransactionType']) 
+                    {
                         case 'W':
                             $merge_array = array('WCashier'=>$value['amount']);
                             break;
@@ -930,8 +949,10 @@ class TransactionSummaryModel extends MI_Model{
                             break;
                     }
                 }
-                else{
-                    switch ($value['TransactionType']) {
+                else
+                {
+                    switch ($value['TransactionType']) 
+                    {
                         case 'W':
                             $merge_array = array('WCashier'=>$value['amount']);
                             break;
@@ -943,130 +964,114 @@ class TransactionSummaryModel extends MI_Model{
                             break;
                     }
                 }
-               
                 $new_result[$value['TransactionSummaryID']] = array_merge($new_result[$value['TransactionSummaryID']],$merge_array);
-                
             }
-            else{
-                
-                
-                if($value['TransactionType'] == 'W'){
+            else
+            {
+                if($value['TransactionType'] == 'W')
+                {
                     $merge_arrays = array('WGenesis'=>$value['amount']);
-                    
                     $new_result[$value['TransactionSummaryID']] = array_merge($new_result[$value['TransactionSummaryID']],$merge_arrays);
                 }
-                elseif($value['TransactionType'] == 'D'){
+                elseif($value['TransactionType'] == 'D')
+                {
                     $sql2 = "SELECT DISTINCT(PaymentType) FROM stackermanagement.stackerdetails WHERE StackerSummaryID = :stackersummaryid AND TransactionType = :transtype;";
-                    $param2 = array(
-                            ':stackersummaryid'=>$value['StackerSummaryID'],
-                            ':transtype'=>1,
-                        );
+                    $param2 = array(':stackersummaryid'=>$value['StackerSummaryID'],
+                            ':transtype'=>1,);
                     $this->exec2($sql2,$param2);
                     $result2 = $this->findAll2();
                     
-                    foreach ($result2 as $value2) {
+                    foreach ($result2 as $value2) 
+                    {
                         $pymnttype = $value2['PaymentType'];
-                        if($pymnttype == '0'){
+                        if($pymnttype == '0')
+                        {
                             $sql3 = "SELECT SUM(Amount) AS Amount FROM stackermanagement.stackerdetails WHERE StackerSummaryID = :stackersummaryid AND TransactionType = :transtype AND PaymentType = :paymenttype;";
-                            $param3 = array(
-                                    ':stackersummaryid'=>$value['StackerSummaryID'],
+                            $param3 = array(':stackersummaryid'=>$value['StackerSummaryID'],
                                     ':transtype'=>1,
-                                    ':paymenttype'=>0
-                                );
+                                    ':paymenttype'=>0);
                             $this->exec2($sql3,$param3);
                             $result3 = $this->findAll2();
                             
-                            foreach ($result3 as $value3) {
+                            foreach ($result3 as $value3) 
+                            {
                                 $amt = $value3['Amount'];
                             }
-                            
-                            
                             $merge_arrays = array('GenDCash'=>$amt);
-                            
                         }
-                        else{
+                        else
+                        {
                             $sql4 = "SELECT SUM(Amount) AS Amount FROM stackermanagement.stackerdetails WHERE StackerSummaryID = :stackersummaryid AND TransactionType = :transtype AND PaymentType = :paymenttype;";
-                            $param4 = array(
-                                    ':stackersummaryid'=>$value['StackerSummaryID'],
+                            $param4 = array(':stackersummaryid'=>$value['StackerSummaryID'],
                                     ':transtype'=>1,
-                                    ':paymenttype'=>2
-                                );
+                                    ':paymenttype'=>2);
                             $this->exec2($sql4,$param4);
                             $result4 = $this->findAll2();
                             
-                            foreach ($result4 as $value4) {
+                            foreach ($result4 as $value4) 
+                            {
                                 $amt1 = $value4['Amount'];
                             }
-                            
                             $merge_arrays = array('GenDTicket'=>$amt1);
                         }
-                        
                         $new_result[$value['TransactionSummaryID']] = array_merge($new_result[$value['TransactionSummaryID']],$merge_arrays); 
-                        
                     }
-                    
                 }
-                elseif($value['TransactionType'] == 'R'){
+                elseif($value['TransactionType'] == 'R')
+                {
                     $sql2 = "SELECT DISTINCT(PaymentType) FROM stackermanagement.stackerdetails WHERE StackerSummaryID = :stackersummaryid AND TransactionType = :transtype;";
-                    $param2 = array(
-                            ':stackersummaryid'=>$value['StackerSummaryID'],
-                            ':transtype'=>2,
-                        );
+                    $param2 = array(':stackersummaryid'=>$value['StackerSummaryID'],
+                            ':transtype'=>2,);
                     $this->exec2($sql2,$param2);
                     $result2 = $this->findAll2();
                     
-                    foreach ($result2 as $value2) {
-                        if($value2['PaymentType'] == '0'){
+                    foreach ($result2 as $value2) 
+                    {
+                        if($value2['PaymentType'] == '0')
+                        {
                             $sql3 = "SELECT SUM(Amount) AS Amount FROM stackermanagement.stackerdetails WHERE StackerSummaryID = :stackersummaryid AND TransactionType = :transtype AND PaymentType = :paymenttype;";
-                            $param3 = array(
-                                    ':stackersummaryid'=>$value['StackerSummaryID'],
+                            $param3 = array(':stackersummaryid'=>$value['StackerSummaryID'],
                                     ':transtype'=>2,
-                                    ':paymenttype'=>0
-                                );
+                                    ':paymenttype'=>0);
                             $this->exec2($sql3,$param3);
                             $result3 = $this->findAll2();
                             
-                            foreach ($result3 as $value3) {
+                            foreach ($result3 as $value3) 
+                            {
                                 $amt2 = $value3['Amount'];
                             }
-                            
                             $merge_arrays = array('GenRCash'=>$amt2);
                         }
-                        else{
+                        else
+                        {
                             $sql4 = "SELECT SUM(Amount) AS Amount FROM stackermanagement.stackerdetails WHERE StackerSummaryID = :stackersummaryid AND TransactionType = :transtype AND PaymentType = :paymenttype;";
-                            $param4 = array(
-                                    ':stackersummaryid'=>$value['StackerSummaryID'],
+                            $param4 = array(':stackersummaryid'=>$value['StackerSummaryID'],
                                     ':transtype'=>2,
-                                    ':paymenttype'=>2
-                                );
+                                    ':paymenttype'=>2);
                             $this->exec2($sql4,$param4);
                             $result4 = $this->findAll2();
                             
-                            foreach ($result4 as $value4) {
+                            foreach ($result4 as $value4) 
+                            {
                                 $amt3 = $value4['Amount'];
                             }
-                            
                             $merge_arrays = array('GenRTicket'=>$amt3);
                         }
-                        
                         $new_result[$value['TransactionSummaryID']] = array_merge($new_result[$value['TransactionSummaryID']],$merge_arrays); 
                     }
                 }
-               
             }
         }
-        
         $res = array();
-        foreach($new_result as $value) {
+        foreach($new_result as $value) 
+        {
             $res[] = $value;
         }
-        
         return $res;
     }
     
-    
-    public function getTicketList($site_id, $date, $end_date){
-
+    public function getTicketList($site_id, $date, $end_date)
+    {
         $cutoff_time = Mirage::app()->param['cut_off'];
         $sql = "SELECT (SELECT IFNULL(SUM(stckr.Withdrawal), 0) FROM transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)  -- Printed Tickets through W
             INNER JOIN transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
@@ -1080,7 +1085,6 @@ class TransactionSummaryModel extends MI_Model{
               AND tr.StackerSummaryID IS NOT NULL
               AND stckr.CreatedByAID In (SELECT acct.AID FROM accounts acct WHERE acct.AccountTypeID = 15
               AND acct.AID IN (SELECT sacct.AID FROM siteaccounts sacct WHERE sacct.SiteID = :site_id1))) AS PrintedRedemptionTickets,
-
 
             (SELECT IFNULL(SUM(Amount), 0) AS Amount FROM
               (SELECT IFNULL(stckr.Withdrawal, 0) As Amount, stckr.TicketCode FROM transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)  -- Printed Tickets through W
@@ -1167,12 +1171,11 @@ class TransactionSummaryModel extends MI_Model{
             );
         $this->exec($sql,$param);
         $result = $this->findAll();
-        
         return $result;
     }
     
-    public function getActiveTicketsForTheDay($site_id, $date, $end_date){
-
+    public function getActiveTicketsForTheDay($site_id, $date, $end_date)
+    {
         $cutoff_time = Mirage::app()->param['cut_off'];
         $totalactiveticketsfortheday = 0;
         $getprintedtickets = "SELECT Amount, TicketCode FROM vouchermanagement.tickets WHERE DateCreated >= :start_date               -- Get Printed Tickets for the day 
@@ -1205,33 +1208,40 @@ class TransactionSummaryModel extends MI_Model{
         $this->exec($getencashedtickets,$param);
         $encashedTicketsresults = $this->findAll();
         
-        foreach ($printedTicketsresults as $key => $value1) {
-            foreach ($cancelledTicketsresults as $value2) {
-                if($value1['TicketCode'] == $value2['TicketCode']){
+        foreach ($printedTicketsresults as $key => $value1) 
+        {
+            foreach ($cancelledTicketsresults as $value2) 
+            {
+                if($value1['TicketCode'] == $value2['TicketCode'])
+                {
                     unset($printedTicketsresults[$key]);
                 }
             }
-            foreach ($usedTicketsresults as $value3) {
-                if($value1['TicketCode'] == $value3['TicketCode']){
+            foreach ($usedTicketsresults as $value3) 
+            {
+                if($value1['TicketCode'] == $value3['TicketCode'])
+                {
                     unset($printedTicketsresults[$key]);
                 }
             }
-            foreach ($encashedTicketsresults as $value4) {
-                if($value1['TicketCode'] == $value4['TicketCode']){
+            foreach ($encashedTicketsresults as $value4) 
+            {
+                if($value1['TicketCode'] == $value4['TicketCode'])
+                {
                     unset($printedTicketsresults[$key]);
                 }
             }
         }
         
-        foreach ($printedTicketsresults as $value) {
+        foreach ($printedTicketsresults as $value) 
+        {
             $totalactiveticketsfortheday += $value['Amount'];
         }
-        
         return $totalactiveticketsfortheday;
     }
     
-    public function getTicketListperCashier($site_id, $date, $end_date, $aid){
-        
+    public function getTicketListperCashier($site_id, $date, $end_date, $aid)
+    {
         $cutoff_time = Mirage::app()->param['cut_off'];
         $sql = "SELECT (SELECT IFNULL(SUM(stckr.Withdrawal), 0) FROM transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)  -- Printed Tickets through W
             INNER JOIN transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
@@ -1245,7 +1255,6 @@ class TransactionSummaryModel extends MI_Model{
               AND tr.StackerSummaryID IS NOT NULL
               AND stckr.CreatedByAID In (SELECT acct.AID FROM accounts acct WHERE acct.AccountTypeID = 15
               AND acct.AID = :aid1)) AS PrintedRedemptionTickets,
-
 
             (SELECT IFNULL(SUM(Amount), 0) AS Amount FROM
               (SELECT IFNULL(stckr.Withdrawal, 0) As Amount, stckr.TicketCode FROM transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)  -- Printed Tickets through W
@@ -1330,7 +1339,6 @@ class TransactionSummaryModel extends MI_Model{
             );
         $this->exec($sql,$param);
         $result = $this->findAll();
-        
         return $result;
     }
     
@@ -1344,8 +1352,8 @@ class TransactionSummaryModel extends MI_Model{
      * @param int aid
      * @return float
      */
-    public function getActiveTicketsForTheDayPerCashier($site_id, $date, $end_date, $aid){
-
+    public function getActiveTicketsForTheDayPerCashier($site_id, $date, $end_date, $aid)
+    {
         $cutoff_time = Mirage::app()->param['cut_off'];
         $totalactiveticketsfortheday = 0;
         $getprintedtickets = "SELECT Amount, TicketCode FROM vouchermanagement.tickets WHERE DateCreated >= :start_date               -- Get Printed Tickets for the day 
@@ -1360,8 +1368,7 @@ class TransactionSummaryModel extends MI_Model{
                                                     AND sa.SiteID = :siteid";
         $getusedtickets = "SELECT Amount,TicketCode FROM vouchermanagement.tickets WHERE DateCreated >= :start_date 
                                             AND DateCreated < :end_date AND CreatedByAID = :aid AND Status = 3 AND DateEncashed IS NULL AND SiteID = :siteid";
-        $param = array(
-                ':siteid'=>$site_id,
+        $param = array(':siteid'=>$site_id,
                 ':aid'=>$aid,
                 ':start_date'=>$date . ' ' . $cutoff_time,
                 ':end_date'=>$end_date . ' ' . $cutoff_time );
@@ -1374,23 +1381,28 @@ class TransactionSummaryModel extends MI_Model{
         $this->exec($getusedtickets,$param);
         $usedTicketsresults = $this->findAll();
         
-        foreach ($printedTicketsresults as $key => $value1) {
-            foreach ($cancelledTicketsresults as $value2) {
-                if($value1['TicketCode'] == $value2['TicketCode']){
+        foreach ($printedTicketsresults as $key => $value1) 
+        {
+            foreach ($cancelledTicketsresults as $value2) 
+            {
+                if($value1['TicketCode'] == $value2['TicketCode'])
+                {
                     unset($printedTicketsresults[$key]);
                 }
             }
-            foreach ($usedTicketsresults as $value3) {
-                if($value1['TicketCode'] == $value3['TicketCode']){
+            foreach ($usedTicketsresults as $value3) 
+            {
+                if($value1['TicketCode'] == $value3['TicketCode'])
+                {
                     unset($printedTicketsresults[$key]);
                 }
             }
         }
         
-        foreach ($printedTicketsresults as $value) {
+        foreach ($printedTicketsresults as $value) 
+        {
             $totalactiveticketsfortheday += (float)$value['Amount'];
         }
-        
         return $totalactiveticketsfortheday;
     }
     
@@ -1403,7 +1415,8 @@ class TransactionSummaryModel extends MI_Model{
      * @param int $siteid
      * @return array
      */
-    public function getEncashedTickets($startdate,$enddate,$siteid){
+    public function getEncashedTickets($startdate,$enddate,$siteid)
+    {
         $cutoff_time = Mirage::app()->param['cut_off'];
         $sql = "SELECT IFNULL(SUM(tckt.Amount), 0) as EncashedTickets FROM vouchermanagement.tickets tckt  -- Encashed Tickets
                     WHERE tckt.DateEncashed >= :startdate AND tckt.DateEncashed < :enddate 
@@ -1412,14 +1425,10 @@ class TransactionSummaryModel extends MI_Model{
                     AND tckt.TicketCode NOT IN (SELECT IFNULL(stsum.TicketCode,'') FROM stackermanagement.stackersummary stsum 
                     WHERE stsum.UpdatedByAID IN (SELECT acct.AID FROM accounts acct WHERE acct.AccountTypeID IN (15,17)
                     AND acct.AID IN (SELECT sacct.AID FROM siteaccounts sacct WHERE sacct.SiteID = :siteid2)) AND stsum.EwalletTransID IS NOT NULL)";
-        
-        $param = array(
-            ':startdate'=>$startdate.' '.$cutoff_time,
+        $param = array(':startdate'=>$startdate.' '.$cutoff_time,
             ':enddate'=>$enddate.' '.$cutoff_time,
             ':siteid1'=>$siteid,
-            ':siteid2'=>$siteid
-        );
-        
+            ':siteid2'=>$siteid);
         $this->exec($sql, $param);
         $result = $this->find();
         return isset($result['EncashedTickets'])?$result['EncashedTickets']:0;
@@ -1434,7 +1443,8 @@ class TransactionSummaryModel extends MI_Model{
      * @param int $siteid
      * @return array
      */
-    public function getEncashedTicketsPerCashier($startdate,$enddate,$siteid,$aid){
+    public function getEncashedTicketsPerCashier($startdate,$enddate,$siteid,$aid)
+    {
         $cutoff_time = Mirage::app()->param['cut_off'];
         $sql = "SELECT IFNULL(SUM(tckt.Amount), 0) as EncashedTickets FROM vouchermanagement.tickets tckt  -- Encashed Tickets
                     WHERE tckt.DateEncashed >= :startdate AND tckt.DateEncashed < :enddate 
@@ -1444,15 +1454,11 @@ class TransactionSummaryModel extends MI_Model{
                     AND tckt.TicketCode NOT IN (SELECT IFNULL(stsum.TicketCode,'') FROM stackermanagement.stackersummary stsum 
                     WHERE stsum.UpdatedByAID IN (SELECT acct.AID FROM accounts acct WHERE acct.AccountTypeID IN (15,17)
                     AND acct.AID IN (SELECT sacct.AID FROM siteaccounts sacct WHERE sacct.SiteID = :siteid2)) AND stsum.EwalletTransID IS NOT NULL)";
-        
-        $param = array(
-            ':startdate'=>$startdate.' '.$cutoff_time,
+        $param = array(':startdate'=>$startdate.' '.$cutoff_time,
             ':enddate'=>$enddate.' '.$cutoff_time,
             ':aid'=>$aid,
             ':siteid1'=>$siteid,
-            ':siteid2'=>$siteid
-        );
-        
+            ':siteid2'=>$siteid);
         $this->exec($sql, $param);
         $result = $this->find();
         return isset($result['EncashedTickets'])?$result['EncashedTickets']:0;
@@ -1468,7 +1474,8 @@ class TransactionSummaryModel extends MI_Model{
      * @param int $siteid
      * @return array
      */
-    public function getTransactionDetailsForCOH($startdate,$enddate,$siteid){
+    public function getTransactionDetailsForCOH($startdate,$enddate,$siteid)
+    {
         $cutoff_time = Mirage::app()->param['cut_off'];
         $result = array();
         $sql = "SELECT tdtls.ServiceID,
@@ -1482,7 +1489,7 @@ class TransactionSummaryModel extends MI_Model{
                                      CASE IFNULL(tdtls.StackerSummaryID, '')
                                        WHEN '' THEN 
                                             CASE -- Check if bancnet transaction
-                                                    WHEN (SELECT COUNT(*) FROM banktransactionlogs btls
+                                                    WHEN (SELECT COUNT(BankTransactionLogID) FROM banktransactionlogs btls
                                                             WHERE btls.TransactionRequestLogID = trl.TransactionRequestLogID) > 0
                                                     THEN 0 ELSE tdtls.Amount -- Cash
                                             END
@@ -1502,7 +1509,7 @@ class TransactionSummaryModel extends MI_Model{
                                      CASE IFNULL(tdtls.StackerSummaryID, '')
                                        WHEN '' THEN 
                                             CASE -- Check if bancnet transaction
-                                                    WHEN (SELECT COUNT(*) FROM banktransactionlogs btls
+                                                    WHEN (SELECT COUNT(BankTransactionLogID) FROM banktransactionlogs btls
                                                             WHERE btls.TransactionRequestLogID = trl.TransactionRequestLogID) > 0
                                                     THEN 0 ELSE tdtls.Amount -- Cash
                                             END
@@ -1517,8 +1524,6 @@ class TransactionSummaryModel extends MI_Model{
                             END
                     ELSE 0
                 END) As LoadCash,
-
-
 
                 -- LOAD COUPON --
                 SUM(CASE tdtls.TransactionType
@@ -1544,7 +1549,7 @@ class TransactionSummaryModel extends MI_Model{
                                      CASE IFNULL(tdtls.StackerSummaryID, '')
                                        WHEN '' THEN 
                                             CASE -- Check if bancnet transaction
-                                                    WHEN (SELECT COUNT(*) FROM banktransactionlogs btls
+                                                    WHEN (SELECT COUNT(BankTransactionLogID) FROM banktransactionlogs btls
                                                             WHERE btls.TransactionRequestLogID = trl.TransactionRequestLogID) > 0
                                                     THEN tdtls.Amount -- Bancnet
                                                     ELSE 0 -- Not Bancnet
@@ -1559,7 +1564,7 @@ class TransactionSummaryModel extends MI_Model{
                                      CASE IFNULL(tdtls.StackerSummaryID, '')
                                        WHEN '' THEN 
                                             CASE -- Check if bancnet transaction
-                                                    WHEN (SELECT COUNT(*) FROM banktransactionlogs btls
+                                                    WHEN (SELECT COUNT(BankTransactionLogID) FROM banktransactionlogs btls
                                                             WHERE btls.TransactionRequestLogID = trl.TransactionRequestLogID) > 0
                                                     THEN tdtls.Amount -- Bancnet
                                                     ELSE 0 -- Not Bancnet
@@ -1629,7 +1634,7 @@ class TransactionSummaryModel extends MI_Model{
         INNER JOIN transactionrequestlogs trl ON tdtls.TransactionReferenceID = trl.TransactionReferenceID
         INNER JOIN accounts a ON tdtls.CreatedByAID = a.AID
         WHERE tdtls.DateCreated >= :startdate AND tdtls.DateCreated < :enddate
-        AND tdtls.Status IN (1,4) AND tdtls.SiteID = :siteid
+        AND tdtls.Status IN (1,4) AND tdtls.SiteID = :siteid 
         AND trl.MID = tdtls.MID
 	AND trl.TerminalID = tdtls.TerminalID
 	AND trl.Amount = tdtls.Amount
@@ -1637,39 +1642,68 @@ class TransactionSummaryModel extends MI_Model{
 	AND trl.ServiceID = tdtls.ServiceID
         GROUP BY tdtls.ServiceID";
         
-        $param = array(
-                ':startdate'=>$startdate . ' ' . $cutoff_time,
+        $param = array(':startdate'=>$startdate . ' ' . $cutoff_time,
                 ':enddate'=>$enddate . ' ' . $cutoff_time,
-                ':siteid'=>$siteid
-            );
+                ':siteid'=>$siteid);
         $this->exec($sql,$param);
         $transdetails = $this->findAll();
         
-        foreach($transdetails as $value){
-            if(!isset($result['LoadCash'])){
+        foreach($transdetails as $value)
+        {
+            if(!isset($result['LoadCash']))
+            {
                 $result['LoadCash'] = (float)$value['LoadCash'];
-            }else{ $result['LoadCash'] += (float)$value['LoadCash']; }
-            if(!isset($result['LoadCoupon'])){
+            }
+            else
+            { 
+                $result['LoadCash'] += (float)$value['LoadCash']; 
+            }
+            if(!isset($result['LoadCoupon']))
+            {
                 $result['LoadCoupon'] = (float)$value['LoadCoupon'];
-            }else{ $result['LoadCoupon'] += (float)$value['LoadCoupon']; }
-            if(!isset($result['LoadTicket'])){
+            }
+            else
+            {   
+                $result['LoadCoupon'] += (float)$value['LoadCoupon']; 
+            }
+            if(!isset($result['LoadTicket']))
+            {
                 $result['LoadTicket'] = (float)$value['LoadTicket'];
-            }else{ $result['LoadTicket'] += (float)$value['LoadTicket']; }
-            if(!isset($result['LoadBancnet'])){
+            }
+            else
+            { 
+                $result['LoadTicket'] += (float)$value['LoadTicket']; 
+            }
+            if(!isset($result['LoadBancnet']))
+            {
                 $result['LoadBancnet'] = (float)$value['LoadBancnet'];
-            }else{ $result['LoadBancnet'] += (float)$value['LoadBancnet']; }
-            if(!isset($result['WCash'])){
+            }
+            else
+            { 
+                $result['LoadBancnet'] += (float)$value['LoadBancnet']; 
+            }
+            if(!isset($result['WCash']))
+            {
                 $result['WCash'] = (float)$value['WCash'];
-            }else{ $result['WCash'] += (float)$value['WCash']; }
-            if(!isset($result['WTicket'])){
+            }
+            else
+            { 
+                $result['WCash'] += (float)$value['WCash']; 
+            }
+            if(!isset($result['WTicket']))
+            {
                 $result['WTicket'] = (float)$value['WTicket'];
-            }else{ $result['WTicket'] += (float)$value['WTicket']; }
+            }
+            else
+            { 
+                $result['WTicket'] += (float)$value['WTicket']; 
+            }
         }
-        
         return $result;
     }
 
-    public function getTransSummaryStackersummaryW($site_id,$site_code,$date,$enddate,$start,$limit) {
+    public function getTransSummaryStackersummaryW($site_id,$site_code,$date,$enddate,$start,$limit) 
+    {
         $len = strlen($site_code) + 1;
 
         $cutoff_time = Mirage::app()->param['cut_off'];
@@ -1679,17 +1713,16 @@ class TransactionSummaryModel extends MI_Model{
             inner join terminals t on t.TerminalID = tr.TerminalID  where tr.SiteID = :site_id AND tr.TransactionType = 'W' AND tr.StackerSummaryID IS NOT NULL AND tr.StackerSummaryID != '' AND
             tr.DateCreated >= :start_date and tr.DateCreated < :end_date and tr.Status IN(1,4) 
             group by tr.TransactionType,tr.TransactionSummaryID order by tr.TerminalID,tr.DateCreated Desc";
-        $param = array(
-                ':site_id'=>$site_id,
+        $param = array(':site_id'=>$site_id,
                 ':start_date'=>$date . ' ' . $cutoff_time,
-                ':end_date'=>$enddate . ' ' . $cutoff_time,
-            );
+                ':end_date'=>$enddate . ' ' . $cutoff_time,);
         $this->exec($sql,$param);
         $result = $this->findAll();
         return $result;
     }    
     // SUM of depost, reload and withdrawal with no limit
-    public function getTransSummaryTotals($site_id,$site_code,$date,$enddate) {
+    public function getTransSummaryTotals($site_id,$site_code,$date,$enddate) 
+    {
         $len = strlen($site_code) + 1;
 
         $cutoff_time = Mirage::app()->param['cut_off'];
@@ -1699,11 +1732,9 @@ class TransactionSummaryModel extends MI_Model{
             inner join terminals t on t.TerminalID = tr.TerminalID  where tr.SiteID = :site_id AND 
             tr.DateCreated >= :start_date and tr.DateCreated < :end_date and tr.Status IN(1,4) 
             group by tr.TransactionType,tr.TransactionSummaryID order by tr.TerminalID,tr.DateCreated Desc";
-        $param = array(
-                ':site_id'=>$site_id,
+        $param = array(':site_id'=>$site_id,
                 ':start_date'=>$date . ' ' . $cutoff_time,
-                ':end_date'=>$enddate . ' ' . $cutoff_time,
-            );
+                ':end_date'=>$enddate . ' ' . $cutoff_time,);
         $this->exec($sql,$param);
         $result = $this->findAll();
         
@@ -1711,8 +1742,10 @@ class TransactionSummaryModel extends MI_Model{
         $total_deposit = 0;
         $total_reload = 0;
         $total_withdraw = 0;        
-        foreach($result as $value) {
-            switch ($value['TransactionType']) {
+        foreach($result as $value) 
+        {
+            switch ($value['TransactionType']) 
+            {
                 case 'W':
                     $total_withdraw += $value['amount'];
                     break;
@@ -1724,9 +1757,7 @@ class TransactionSummaryModel extends MI_Model{
                     break;
             }
 //            $new_result[$value['TransactionSummaryID']] = array_merge($new_result[$value['TransactionSummaryID']],$merge_array);
-           
         }
-        
         
 //        $sql = "select tr.TransactionSummaryID,ts.DateStarted,ts.DateEnded,tr.DateCreated, tr.TerminalID,tr.SiteID, " . 
 //                 "SUBSTR(t.TerminalCode,$len) as TerminalCode,if(ts.DateStarted < '$date $cutoff_time', ts.Deposit = 0,ts.Deposit) as Deposit," . 
@@ -1734,7 +1765,6 @@ class TransactionSummaryModel extends MI_Model{
 //                 "on ts.TransactionsSummaryID = tr.TransactionSummaryID inner join terminals t on t.TerminalID = tr.TerminalID " . 
 //                 "where tr.SiteID = :site_id AND tr.DateCreated > :start_date and tr.DateCreated <= :end_date " . 
 //                 "group by ts.TransactionsSummaryID order by tr.TerminalID,tr.DateCreated Desc";
-        
 //        $param = array(
 //                    ':site_id'=>$site_id,
 //                    ':start_date'=>$date . ' ' . $cutoff_time,
@@ -1753,7 +1783,6 @@ class TransactionSummaryModel extends MI_Model{
 //            $total_reload += $row['Reload'];
 //            $total_withdraw += $row['Withdrawal'];
 //        }
-        
         return array('totaldeposit'=>$total_deposit,'totalreload'=>$total_reload,'totalwithdrawal'=>$total_withdraw);
 //        $sql = 'SELECT SUM(ts.Deposit) AS totaldeposit, SUM(ts.Reload) AS totalreload, SUM(ts.Withdrawal) AS totalwithdrawal FROM transactionsummary ts ' . 
 //                'JOIN terminals tr ON ts.TerminalID = tr.TerminalID JOIN sites st ON ts.SiteID = st.SiteID ' . 
@@ -1769,7 +1798,6 @@ class TransactionSummaryModel extends MI_Model{
     }
     /************************ END TRANSACTION HISTORY *************************/
     
-    
     /********************** TRANSACTION SUMMARY PER CASHIER *******************/
 //    public function getTransactionSummaryperCashierCount($account_id,$start_date,$end_date) {
 //        $cutoff_time = Mirage::app()->param['cut_off'];
@@ -1779,12 +1807,9 @@ class TransactionSummaryModel extends MI_Model{
 //                 "on ts.TransactionsSummaryID = tr.TransactionSummaryID inner join terminals t on t.TerminalID = tr.TerminalID " . 
 //                 "WHERE tr.DateCreated >= :start_date AND tr.DateCreated < :end_date AND tr.CreatedByAID = :account_id AND tr.Status IN (1,4) " . 
 //                 "GROUP BY ts.TransactionsSummaryID ORDER BY tr.TerminalID,tr.DateCreated DESC) AS total";
-//        
-//        $param = array(
-//            ':account_id'=>$account_id,
+//        $param = array(':account_id'=>$account_id,
 //            ':start_date'=>$start_date . ' ' . Mirage::app()->param['cut_off'],
-//            ':end_date'=>$end_date . ' ' . Mirage::app()->param['cut_off']
-//        );
+//            ':end_date'=>$end_date . ' ' . Mirage::app()->param['cut_off']);
 //        $this->exec($sql, $param);
 //        $result = $this->find();
 //        return $result['cnt'];
@@ -1800,17 +1825,15 @@ class TransactionSummaryModel extends MI_Model{
 //                 "INNER JOIN siteaccounts sa ON sa.SiteID = ts.SiteID " .   
 //                 "where sa.AID = :account_id AND tr.DateCreated >= :start_date and tr.DateCreated < :end_date AND tr.Status IN (1,4) " . 
 //                 "group by ts.TransactionsSummaryID order by tr.TerminalID,tr.DateCreated Desc";
-//        
-//        $param = array(
-//            ':account_id'=>$account_id,
+//        $param = array(':account_id'=>$account_id,
 //            ':start_date'=>$start_date . ' ' . Mirage::app()->param['cut_off'],
-//            ':end_date'=>$end_date . ' ' . Mirage::app()->param['cut_off'],
-//        );
+//            ':end_date'=>$end_date . ' ' . Mirage::app()->param['cut_off'],);
 //        $this->exec($sql, $param);
 //        return $this->findAll();        
 //    }
     
-    public function getTransactionSummaryPerCashier($site_id,$account_id,$site_code,$start_date,$end_date,$start,$limit) {
+    public function getTransactionSummaryPerCashier($site_id,$account_id,$site_code,$start_date,$end_date,$start,$limit) 
+    {
         $len = strlen($site_code) + 1;
         $cutoff_time = Mirage::app()->param['cut_off'];
 //        $sql = "SELECT SUBSTR(t.TerminalCode,$len) AS tc,SUBSTR(t.TerminalCode,$len) as TerminalCode, td.TransactionDetailsID,td.SiteID,td.TerminalID,td.TransactionType,SUM(td.Amount) as totalamount,td.DateCreated from transactiondetails td " .
@@ -1966,25 +1989,27 @@ class TransactionSummaryModel extends MI_Model{
             GROUP By tr.TransactionType, tr.TransactionSummaryID
             ORDER BY tr.TerminalID, tr.DateCreated DESC;";
         //sa.AID tr.CreatedByAID
-        $param = array(
-            ':account_id'=>$account_id,
+        $param = array(':account_id'=>$account_id,
             ':site_id'=>$site_id,
             ':start_date'=>$start_date . ' ' . Mirage::app()->param['cut_off'],
-            ':end_date'=>$end_date . ' ' . Mirage::app()->param['cut_off'],
-        );
+            ':end_date'=>$end_date . ' ' . Mirage::app()->param['cut_off'],);
 
         $this->exec($sql, $param);
         $result = $this->findAll();
         
         $new_result = array();
-        foreach($result as $value) {
-            if($value['TerminalType'] == 1){
+        foreach($result as $value) 
+        {
+            if($value['TerminalType'] == 1)
+            {
                 $terminalCode = 'G'.$value['TerminalCode'];
             }
-            else{
+            else
+            {
                 $terminalCode = $value['TerminalCode']; 
             }
-            if(!isset($new_result[$value['TransactionSummaryID']])) {
+            if(!isset($new_result[$value['TransactionSummaryID']])) 
+            {
                 $new_result[$value['TransactionSummaryID']] = array(
                     'TransactionSummaryID'=>$value['TransactionSummaryID'],
                     'DateStarted'=>$value['DateStarted'],
@@ -2001,40 +2026,39 @@ class TransactionSummaryModel extends MI_Model{
                 );
             }
             $merge_array = array();
-            switch ($value['TransactionType']) {
+            switch ($value['TransactionType']) 
+            {
                 case 'W':
-                    if($value['RedemptionCashier'] > 0){
+                    if($value['RedemptionCashier'] > 0)
+                    {
                         $merge_array = array('WCashier'=>$value['RedemptionCashier']);
                     }
                     
-                    if($value['RedemptionGenesis'] > 0){
+                    if($value['RedemptionGenesis'] > 0)
+                    {
                         $merge_array = array('WGenesis'=>$value['RedemptionGenesis']);
                     }
                     break;
                 case 'D':
-                        $merge_array = array('DCash'=>$value['DepositCash'], 'DTicket'=>$value['DepositTicket'],'DCoupon'=>$value['DepositCoupon'] );
-                    
+                    $merge_array = array('DCash'=>$value['DepositCash'], 'DTicket'=>$value['DepositTicket'],'DCoupon'=>$value['DepositCoupon'] );
                     break;
                 case 'R':
-                        $merge_array = array('RCash'=>$value['ReloadCash'],'RTicket'=>$value['ReloadTicket'],'RCoupon'=>$value['ReloadCoupon']);
-                    
+                    $merge_array = array('RCash'=>$value['ReloadCash'],'RTicket'=>$value['ReloadTicket'],'RCoupon'=>$value['ReloadCoupon']);
                     break;
             }
             $new_result[$value['TransactionSummaryID']] = array_merge($new_result[$value['TransactionSummaryID']],$merge_array);
-            
-            
-           
         }
         $res = array();
-        foreach($new_result as $value) {
+        foreach($new_result as $value) 
+        {
             $res[] = $value;
         }
         //$res = array_slice($res, $start, $limit);
         return $res;
-        
     }    
     
-    public function _getTransactionSummaryPerCashier($site_id,$account_id,$site_code,$start_date,$end_date,$start,$limit) {
+    public function _getTransactionSummaryPerCashier($site_id,$account_id,$site_code,$start_date,$end_date,$start,$limit) 
+    {
         Mirage::loadModels(array('EWalletTransModel'));
         $eWalletTransModel = new EWalletTransModel();
 
@@ -2072,32 +2096,39 @@ class TransactionSummaryModel extends MI_Model{
             GROUP By tr.TransactionType, tr.TransactionSummaryID
             ORDER BY tr.TerminalID, tr.DateCreated DESC;";
         //sa.AID tr.CreatedByAID
-        $param = array(
-            ':account_id'=>$account_id,
+        $param = array(':account_id'=>$account_id,
             ':site_id'=>$site_id,
             ':start_date'=>$start_date . ' ' .$cutoff_time,
-            ':end_date'=>$end_date . ' ' .$cutoff_time,
-        );
+            ':end_date'=>$end_date . ' ' .$cutoff_time,);
 
         $this->exec($sql, $param);
         $result = $this->findAll();
         
         $new_result = array();
-        foreach($result as $value) {
-            if($value['TerminalType'] == 1){
+        foreach($result as $value) 
+        {
+            if($value['TerminalType'] == 1)
+            {
                 $terminalCode = 'G'.$value['TerminalCode'];
             }
-            else{
+            else
+            {
                 $terminalCode = $value['TerminalCode']; 
             }
             
-            if($value['AccountTypeID'] == 17){
+            if($value['AccountTypeID'] == 17)
+            {
                 $IseSAFETrans = 1;
-            } else { $IseSAFETrans = 0; }
+            } 
+            else 
+            { 
+                $IseSAFETrans = 0; 
+            }
             
-            if(!isset($new_result[$value['TransactionSummaryID']])) {
-                $new_result[$value['TransactionSummaryID']] = array(
-                    'TransactionSummaryID'=>$value['TransactionSummaryID'],
+            if(!isset($new_result[$value['TransactionSummaryID']])) 
+            {
+                $new_result[$value['TransactionSummaryID']] = array
+                    ('TransactionSummaryID'=>$value['TransactionSummaryID'],
                     'DateStarted'=>$value['DateStarted'],
                     'DateEnded'=>$value['DateEnded'],
                     'TerminalCode'=>$terminalCode,
@@ -2112,37 +2143,35 @@ class TransactionSummaryModel extends MI_Model{
                 );
             }
             $merge_array = array();
-            switch ($value['TransactionType']) {
+            switch ($value['TransactionType']) 
+            {
                 case 'W':
-                    if($value['TotalRedemption'] > 0){
+                    if($value['TotalRedemption'] > 0)
+                    {
                         $merge_array = array('TotalCTransRedemption'=>$value['TotalRedemption']);
                     }
                     break;
                 case 'D':
-                        $merge_array = array('TotalCTransDeposit'=>$value['TotalDeposit'], 'StartBalance' =>$value['StartBalance'],
-                                                                'EndBalance' =>$value['EndBalance'], 'WalletReloads' =>$value['WalletReloads'] );
-                    
+                    $merge_array = array('TotalCTransDeposit'=>$value['TotalDeposit'], 'StartBalance' =>$value['StartBalance'],
+                                   'EndBalance' =>$value['EndBalance'], 'WalletReloads' =>$value['WalletReloads'] );
                     break;
                 case 'R':
-                        $merge_array = array('TotalCTransReload'=>$value['TotalReload']);
-                    
+                    $merge_array = array('TotalCTransReload'=>$value['TotalReload']);
                     break;
             }
             $new_result[$value['TransactionSummaryID']] = array_merge($new_result[$value['TransactionSummaryID']],$merge_array);
-            
-            
-           
         }
         $res = array();
-        foreach($new_result as $value) {
+        foreach($new_result as $value) 
+        {
             $res[] = $value;
         }
         //$res = array_slice($res, $start, $limit);
         return $res;
-        
     }    
     
-    public function _getTransactionSummaryPerVCashier($site_id,$account_id,$site_code,$start_date,$end_date,$start,$limit) {
+    public function _getTransactionSummaryPerVCashier($site_id,$account_id,$site_code,$start_date,$end_date,$start,$limit) 
+    {
         Mirage::loadModels(array('EWalletTransModel'));
         $eWalletTransModel = new EWalletTransModel();
         
@@ -2180,30 +2209,37 @@ class TransactionSummaryModel extends MI_Model{
             GROUP By tr.TransactionType, tr.TransactionSummaryID
             ORDER BY tr.TerminalID, tr.DateCreated DESC;";
         //sa.AID tr.CreatedByAID
-        $param = array(
-            ':account_id'=>$account_id,
+        $param = array(':account_id'=>$account_id,
             ':site_id'=>$site_id,
             ':start_date'=>$start_date . ' ' . Mirage::app()->param['cut_off'],
-            ':end_date'=>$end_date . ' ' . Mirage::app()->param['cut_off'],
-        );
+            ':end_date'=>$end_date . ' ' . Mirage::app()->param['cut_off'],);
 
         $this->exec($sql, $param);
         $result = $this->findAll();
         
         $new_result = array();
-        foreach($result as $value) {
-            if($value['TerminalType'] == 1){
+        foreach($result as $value) 
+        {
+            if($value['TerminalType'] == 1)
+            {
                 $terminalCode = 'G'.$value['TerminalCode'];
             }
-            else{
+            else
+            {
                 $terminalCode = $value['TerminalCode']; 
             }
             
-            if($value['AccountTypeID'] == 17){
+            if($value['AccountTypeID'] == 17)
+            {
                 $IseSAFETrans = 1;
-            } else { $IseSAFETrans = 0; }
+            } 
+            else 
+            {   
+                $IseSAFETrans = 0; 
+            }
             
-            if(!isset($new_result[$value['TransactionSummaryID']])) {
+            if(!isset($new_result[$value['TransactionSummaryID']])) 
+            {
                 $new_result[$value['TransactionSummaryID']] = array(
                     'TransactionSummaryID'=>$value['TransactionSummaryID'],
                     'DateStarted'=>$value['DateStarted'],
@@ -2222,44 +2258,43 @@ class TransactionSummaryModel extends MI_Model{
                 );
             }
             $merge_array = array();
-            switch ($value['TransactionType']) {
+            switch ($value['TransactionType']) 
+            {
                 case 'W':
-                    if($value['TotalRedemption'] > 0){
+                    if($value['TotalRedemption'] > 0)
+                    {
                         $merge_array = array('TotalCTransRedemption'=>$value['TotalRedemption']);
                     }
                     break;
                 case 'D':
-                        $merge_array = array('TotalCTransDeposit'=>$value['TotalDeposit'], 'StartBalance' =>$value['StartBalance'],
-                                                                'EndBalance' =>$value['EndBalance'], 'WalletReloads' =>$value['WalletReloads']);
-                    
+                    $merge_array = array('TotalCTransDeposit'=>$value['TotalDeposit'], 'StartBalance' =>$value['StartBalance'],
+                                       'EndBalance' =>$value['EndBalance'], 'WalletReloads' =>$value['WalletReloads']);
                     break;
                 case 'R':
-                        $merge_array = array('TotalCTransReload'=>$value['TotalReload']);
-                    
+                    $merge_array = array('TotalCTransReload'=>$value['TotalReload']);
                     break;
             }
-            
             $new_result[$value['TransactionSummaryID']] = array_merge($new_result[$value['TransactionSummaryID']],$merge_array);
-           
         }
         
-        foreach ($new_result as $key => $value) {
+        foreach ($new_result as $key => $value) 
+        {
             $eWalletDeposits = $eWalletTransModel->getDepositSumPerVCashierPerTerminal($start_date, $end_date, $site_id, $account_id,$value['TransactionSummaryID'],$value['TerminalID']);
             $eWalletWithdrawals = $eWalletTransModel->getWithdrawalSumPerVCashierPerTerminal($start_date,$end_date, $site_id, $account_id,$value['TransactionSummaryID'],$value['TerminalID']);    
             $new_result[$key]['eWalletDeposits'] = $eWalletDeposits; 
             $new_result[$key]['eWalletWithdrawals'] = $eWalletWithdrawals; 
         }
-        
         $res = array();
-        foreach($new_result as $value) {
+        foreach($new_result as $value) 
+        {
             $res[] = $value;
         }
         //$res = array_slice($res, $start, $limit);
         return $res;
-        
     }   
     
-    public function getTransactionSummaryPerCashierWithTerminalID($site_id,$account_id,$site_code,$terminal_id,$trans_sum_id,$start_date,$end_date,$start,$limit) {
+    public function getTransactionSummaryPerCashierWithTerminalID($site_id,$account_id,$site_code,$terminal_id,$trans_sum_id,$start_date,$end_date,$start,$limit) 
+    {
         $len = strlen($site_code) + 1;
         $cutoff_time = Mirage::app()->param['cut_off'];
         $sql = "SELECT tr.TransactionSummaryID, SUBSTR(t.TerminalCode,$len) AS TerminalCode, tr.TransactionType, t.TerminalType,
@@ -2392,27 +2427,30 @@ class TransactionSummaryModel extends MI_Model{
             GROUP By tr.TransactionType, tr.TransactionSummaryID
             ORDER BY tr.TerminalID, tr.DateCreated DESC;";
         //sa.AID tr.CreatedByAID
-        $param = array(
-            ':account_id'=>$account_id,
+        $param = array(':account_id'=>$account_id,
             ':site_id'=>$site_id,
             ':start_date'=>$start_date . ' ' . Mirage::app()->param['cut_off'],
             ':end_date'=>$end_date . ' ' . Mirage::app()->param['cut_off'],
             ':terminal_id'=>$terminal_id,
-            ':trans_sum_id'=>$trans_sum_id
-        );
+            ':trans_sum_id'=>$trans_sum_id);
 
         $this->exec($sql, $param);
         $result = $this->findAll();
         
         $new_result = array();
-        foreach($result as $value) {
-            if($value['TerminalType'] == 1){
+        foreach($result as $value) 
+        {
+            if($value['TerminalType'] == 1)
+            {
                 $terminalCode = 'G'.$value['TerminalCode'];
             }
-            else{
+            else
+            {
                 $terminalCode = $value['TerminalCode']; 
             }
-            if(!isset($new_result[$value['TransactionSummaryID']])) {
+            
+            if(!isset($new_result[$value['TransactionSummaryID']])) 
+            {
                 $new_result[$value['TransactionSummaryID']] = array(
                     'TransactionSummaryID'=>$value['TransactionSummaryID'],
                     'DateStarted'=>$value['DateStarted'],
@@ -2432,42 +2470,39 @@ class TransactionSummaryModel extends MI_Model{
                 );
             }
             $merge_array = array();
-            switch ($value['TransactionType']) {
+            switch ($value['TransactionType']) 
+            {
                 case 'W':
-                    if($value['RedemptionCashier'] > 0){
+                    if($value['RedemptionCashier'] > 0)
+                    {
                         $merge_array = array('WCashier'=>$value['RedemptionCashier']);
                     }
-                    
-                    if($value['RedemptionGenesis'] > 0){
+                    if($value['RedemptionGenesis'] > 0)
+                    {
                         $merge_array = array('WGenesis'=>$value['RedemptionGenesis']);
                     }
-
                     break;
                 case 'D':
-                        $merge_array = array('DCash'=>$value['DepositCash'], 'DTicket'=>$value['DepositTicket'],'DCoupon'=>$value['DepositCoupon'],
-                                                                'StartBalance' => $value['StartBalance'], 'WalletReloads' => $value['WalletReloads'], 'EndBalance' => $value['EndBalance']);
-                    
-                    break;
+                    $merge_array = array('DCash'=>$value['DepositCash'], 'DTicket'=>$value['DepositTicket'],'DCoupon'=>$value['DepositCoupon'],
+                           'StartBalance' => $value['StartBalance'], 'WalletReloads' => $value['WalletReloads'], 'EndBalance' => $value['EndBalance']);
+                     break;
                 case 'R':
-                        $merge_array = array('RCash'=>$value['ReloadCash'],'RTicket'=>$value['ReloadTicket'],'RCoupon'=>$value['ReloadCoupon']);
-                    
-                    break;
+                    $merge_array = array('RCash'=>$value['ReloadCash'],'RTicket'=>$value['ReloadTicket'],'RCoupon'=>$value['ReloadCoupon']);
+                     break;
             }
             $new_result[$value['TransactionSummaryID']] = array_merge($new_result[$value['TransactionSummaryID']],$merge_array);
-            
-            
-           
         }
         $res = array();
-        foreach($new_result as $value) {
+        foreach($new_result as $value) 
+        {
             $res[] = $value;
         }
         //$res = array_slice($res, $start, $limit);
         return $res;
-        
     }    
     
-    public function getTransactionSummaryPerCashierTotals($site_id,$site_code,$account_id,$start_date,$end_date) {
+    public function getTransactionSummaryPerCashierTotals($site_id,$site_code,$account_id,$start_date,$end_date) 
+    {
         $len = strlen($site_code) + 1;
 
         $cutoff_time = Mirage::app()->param['cut_off'];
@@ -2477,24 +2512,26 @@ class TransactionSummaryModel extends MI_Model{
             INNER JOIN terminals t ON t.TerminalID = tr.TerminalID  WHERE tr.DateCreated >= :start_date AND tr.DateCreated < :end_date AND 
             tr.SiteID = :site_id AND tr.CreatedByAID = :account_id AND tr.Status IN(1,4) 
             group by tr.TransactionType,tr.TransactionSummaryID order by tr.TerminalID,tr.DateCreated DESC";
-        $param = array(
-                ':account_id'=>$account_id,
+        $param = array(':account_id'=>$account_id,
                 ':site_id'=>$site_id,
                 ':start_date'=>$start_date . ' ' . $cutoff_time,
-                ':end_date'=>$end_date . ' ' . $cutoff_time,
-            );
+                ':end_date'=>$end_date . ' ' . $cutoff_time,);
         $this->exec($sql,$param);
         $result = $this->findAll();
         
         $new_result = array();
-        foreach($result as $value) {
-            if($value['TerminalType'] == 1){
+        foreach($result as $value) 
+        {
+            if($value['TerminalType'] == 1)
+            {
                 $terminalCode = 'G'.$value['TerminalCode'];
             }
-            else{
+            else
+            {
                 $terminalCode = $value['TerminalCode']; 
             }
-            if(!isset($new_result[$value['TransactionSummaryID']])) {
+            if(!isset($new_result[$value['TransactionSummaryID']])) 
+            {
                 $new_result[$value['TransactionSummaryID']] = array(
                     'TransactionSummaryID'=>$value['TransactionSummaryID'],
                     'DateStarted'=>$value['DateStarted'],
@@ -2522,11 +2559,12 @@ class TransactionSummaryModel extends MI_Model{
             }
             $merge_array = array();
             
-            if($value['StackerSummaryID'] == null || $value['StackerSummaryID'] == ''){
-                
-                
-                if($value['PaymentType'] == 1){
-                    switch ($value['TransactionType']) {
+            if($value['StackerSummaryID'] == null || $value['StackerSummaryID'] == '')
+            {
+                if($value['PaymentType'] == 1)
+                {
+                    switch ($value['TransactionType']) 
+                    {
                         case 'W':
                             $merge_array = array('WCashier'=>$value['amount']);
                             break;
@@ -2538,8 +2576,10 @@ class TransactionSummaryModel extends MI_Model{
                             break;
                     }
                 }
-                else{
-                    switch ($value['TransactionType']) {
+                else
+                {
+                    switch ($value['TransactionType']) 
+                    {
                         case 'W':
                             $merge_array = array('WCashier'=>$value['amount']);
                             break;
@@ -2551,20 +2591,17 @@ class TransactionSummaryModel extends MI_Model{
                             break;
                     }
                 }
-                
                 $new_result[$value['TransactionSummaryID']] = array_merge($new_result[$value['TransactionSummaryID']],$merge_array);
-                
             }
-            else{
-                
+            else
+            {
                 $sql2 = "SELECT Deposit, Reload, TicketDeposit, TicketReload, Withdrawal FROM stackermanagement.stackersummary WHERE StackerSummaryID = :stackersummaryid;";
-                $param2 = array(
-                        ':stackersummaryid'=>$value['StackerSummaryID']
-                    );
+                $param2 = array(':stackersummaryid'=>$value['StackerSummaryID']);
                 $this->exec2($sql2,$param2);
                 $result2 = $this->findAll2();
                 
-                foreach ($result2 as $value2) {
+                foreach ($result2 as $value2) 
+                {
                     $ticketreload = $value2['TicketReload'];
                     $ticketdeposit = $value2['TicketDeposit'];
                     $reload = $value2['Reload'];
@@ -2572,28 +2609,34 @@ class TransactionSummaryModel extends MI_Model{
                     $ticketwithdraw = $value2['Withdrawal'];
                 }
                 
-                if($value['TransactionType'] == 'W'){
+                if($value['TransactionType'] == 'W')
+                {
                     $merge_arrays = array('WGenesis'=>$value['amount']);
                 }
-                
-                else  if($value['TransactionType'] == 'R' && $ticketreload > 0){
+                else  if($value['TransactionType'] == 'R' && $ticketreload > 0)
+                {
                     $merge_arrays = array('GenRTicket'=>$ticketreload);
                 }
-                
-                else if($value['TransactionType'] == 'D' && $ticketdeposit > 0){
+                else if($value['TransactionType'] == 'D' && $ticketdeposit > 0)
+                {
                     $merge_arrays = array('GenDTicket'=>$ticketdeposit);
                 }
-                
-                else{
-                    if($deposit > 0 && $ticketdeposit <= 0 && $value['TransactionType'] == 'D'){
+                else
+                {
+                    if($deposit > 0 && $ticketdeposit <= 0 && $value['TransactionType'] == 'D')
+                    {
                         $merge_arrays = array('GenDCash'=>$deposit);
                     }
-                    else if($reload > 0 && $ticketreload <= 0 && $value['TransactionType'] == 'R'){
+                    else if($reload > 0 && $ticketreload <= 0 && $value['TransactionType'] == 'R')
+                    {
                         $merge_arrays = array('GenRCash'=>$reload);
                     }
-                    else{
-                        if($value['PaymentType'] == 1){
-                            switch ($value['TransactionType']) {
+                    else
+                    {
+                        if($value['PaymentType'] == 1)
+                        {
+                            switch ($value['TransactionType']) 
+                            {
                                 case 'D':
                                     $merge_arrays = array('RegDCash'=>$value['amount']);
                                     break;
@@ -2602,8 +2645,10 @@ class TransactionSummaryModel extends MI_Model{
                                     break;
                             }
                         }
-                        else{
-                            switch ($value['TransactionType']) {
+                        else
+                        {
+                            switch ($value['TransactionType']) 
+                            {
                                 case 'D':
                                     $merge_arrays = array('RegDCoupon'=>$value['amount']);
                                     break;
@@ -2617,16 +2662,16 @@ class TransactionSummaryModel extends MI_Model{
                 $new_result[$value['TransactionSummaryID']] = array_merge($new_result[$value['TransactionSummaryID']],$merge_arrays);   
             }
         }
-        
         $res = array();
-        foreach($new_result as $value) {
+        foreach($new_result as $value) 
+        {
             $res[] = $value;
         }
-        
         return $res;
     }
     
-    public function _getTransactionSummaryPerCashierTotals($site_id,$site_code,$account_id,$start_date,$end_date) {
+    public function _getTransactionSummaryPerCashierTotals($site_id,$site_code,$account_id,$start_date,$end_date) 
+    {
         Mirage::loadModels(array('EWalletTransModel'));
         $eWalletTransModel = new EWalletTransModel();
         $len = strlen($site_code) + 1;
@@ -2641,27 +2686,29 @@ class TransactionSummaryModel extends MI_Model{
             WHERE tr.DateCreated >= :start_date AND tr.DateCreated < :end_date AND 
             tr.SiteID = :site_id AND tr.CreatedByAID = :account_id AND tr.Status IN(1,4) 
             GROUP BY tr.PaymentType, tr.TransactionType,tr.TransactionSummaryID ORDER BY tr.TerminalID,tr.DateCreated DESC";
-        $param = array(
-                ':account_id'=>$account_id,
+        $param = array(':account_id'=>$account_id,
                 ':site_id'=>$site_id,
                 ':start_date'=>$start_date . ' ' . $cutoff_time,
-                ':end_date'=>$end_date . ' ' . $cutoff_time,
-            );
+                ':end_date'=>$end_date . ' ' . $cutoff_time,);
         $this->exec($sql,$param);
         $result = $this->findAll();
         
         $new_result = array();
-        foreach($result as $value) {
-            if($value['TerminalType'] == 1){
+        foreach($result as $value) 
+        {
+            if($value['TerminalType'] == 1)
+            {
                 $terminalCode = 'G'.$value['TerminalCode'];
             }
-            else{
+            else
+            {
                 $terminalCode = $value['TerminalCode']; 
             }
             
             $IseSAFETrans = $eWalletTransModel->CheckIfeSAFETrans($value['TransactionSummaryID']);
             
-            if(!isset($new_result[$value['TransactionSummaryID']])) {
+            if(!isset($new_result[$value['TransactionSummaryID']])) 
+            {
                 $new_result[$value['TransactionSummaryID']] = array(
                     'TransactionSummaryID'=>$value['TransactionSummaryID'],
                     'DateStarted'=>$value['DateStarted'],
@@ -2687,11 +2734,12 @@ class TransactionSummaryModel extends MI_Model{
             }
             $merge_array = array();
             
-            if($value['StackerSummaryID'] == null || $value['StackerSummaryID'] == ''){
-                
-                
-                if($value['PaymentType'] == 1){
-                    switch ($value['TransactionType']) {
+            if($value['StackerSummaryID'] == null || $value['StackerSummaryID'] == '')
+            {
+                if($value['PaymentType'] == 1)
+                {
+                    switch ($value['TransactionType']) 
+                    {
                         case 'W':
                             $merge_array = array('WCashier'=>$value['amount']);
                             break;
@@ -2703,8 +2751,10 @@ class TransactionSummaryModel extends MI_Model{
                             break;
                     }
                 }
-                else{
-                    switch ($value['TransactionType']) {
+                else
+                {
+                    switch ($value['TransactionType']) 
+                    {
                         case 'W':
                             $merge_array = array('WCashier'=>$value['amount']);
                             break;
@@ -2716,28 +2766,25 @@ class TransactionSummaryModel extends MI_Model{
                             break;
                     }
                 }
-                
-                switch ($value['TransactionType']) {
+                switch ($value['TransactionType']) 
+                {
                     case 'D':
                         $merge_array['StartBalance'] = $value['StartBalance'];
                         $merge_array['WalletReloads'] = $value['WalletReloads'];
                         $merge_array['EndBalance'] = $value['EndBalance'];
                         break;
                 }
-               
                 $new_result[$value['TransactionSummaryID']] = array_merge($new_result[$value['TransactionSummaryID']],$merge_array);
-                
             }
-            else{
-                
+            else
+            {
                 $sql2 = "SELECT Deposit, Reload, TicketDeposit, TicketReload, Withdrawal FROM stackermanagement.stackersummary WHERE StackerSummaryID = :stackersummaryid;";
-                $param2 = array(
-                        ':stackersummaryid'=>$value['StackerSummaryID']
-                    );
+                $param2 = array(':stackersummaryid'=>$value['StackerSummaryID']);
                 $this->exec2($sql2,$param2);
                 $result2 = $this->findAll2();
                 
-                foreach ($result2 as $value2) {
+                foreach ($result2 as $value2) 
+                {
                     $ticketreload = $value2['TicketReload'];
                     $ticketdeposit = $value2['TicketDeposit'];
                     $reload = $value2['Reload'];
@@ -2745,28 +2792,34 @@ class TransactionSummaryModel extends MI_Model{
                     $ticketwithdraw = $value2['Withdrawal'];
                 }
                 
-                if($value['TransactionType'] == 'W'){
+                if($value['TransactionType'] == 'W')
+                {
                     $merge_arrays = array('WGenesis'=>$value['amount']);
                 }
-                
-                else  if($value['TransactionType'] == 'R' && $ticketreload > 0){
+                else  if($value['TransactionType'] == 'R' && $ticketreload > 0)
+                {
                     $merge_arrays = array('RTicket'=>$ticketreload);
                 }
-                
-                else if($value['TransactionType'] == 'D' && $ticketdeposit > 0){
+                else if($value['TransactionType'] == 'D' && $ticketdeposit > 0)
+                {
                     $merge_arrays = array('DTicket'=>$ticketdeposit);
                 }
-                
-                else{
-                    if($deposit > 0 && $ticketdeposit <= 0 && $value['TransactionType'] == 'D'){
+                else
+                {
+                    if($deposit > 0 && $ticketdeposit <= 0 && $value['TransactionType'] == 'D')
+                    {
                         $merge_arrays = array('DCash'=>$deposit);
                     }
-                    else if($reload > 0 && $ticketreload <= 0 && $value['TransactionType'] == 'R'){
+                    else if($reload > 0 && $ticketreload <= 0 && $value['TransactionType'] == 'R')
+                    {
                         $merge_arrays = array('RCash'=>$reload);
                     }
-                    else{
-                        if($value['PaymentType'] == 1){
-                            switch ($value['TransactionType']) {
+                    else
+                    {
+                        if($value['PaymentType'] == 1)
+                        {
+                            switch ($value['TransactionType']) 
+                            {
                                 case 'D':
                                     $merge_arrays = array('DCash'=>$value['amount']);
                                     break;
@@ -2775,8 +2828,10 @@ class TransactionSummaryModel extends MI_Model{
                                     break;
                             }
                         }
-                        else{
-                            switch ($value['TransactionType']) {
+                        else
+                        {
+                            switch ($value['TransactionType']) 
+                            {
                                 case 'D':
                                     $merge_arrays = array('DCoupon'=>$value['amount']);
                                     break;
@@ -2787,20 +2842,19 @@ class TransactionSummaryModel extends MI_Model{
                         }
                     }
                 }
-
                 $new_result[$value['TransactionSummaryID']] = array_merge($new_result[$value['TransactionSummaryID']],$merge_arrays);   
             }
         }
-        
         $res = array();
-        foreach($new_result as $value) {
+        foreach($new_result as $value) 
+        {
             $res[] = $value;
         }
-        
         return $res;
     }
     
-    public function getTransactionSummaryPerCashierWithTerminalIDTotals($site_id,$site_code,$account_id,$terminal_id,$trans_sum_id,$start_date,$end_date) {
+    public function getTransactionSummaryPerCashierWithTerminalIDTotals($site_id,$site_code,$account_id,$terminal_id,$trans_sum_id,$start_date,$end_date) 
+    {
         $len = strlen($site_code) + 1;
 
         $cutoff_time = Mirage::app()->param['cut_off'];
@@ -2810,26 +2864,28 @@ class TransactionSummaryModel extends MI_Model{
             INNER JOIN terminals t ON t.TerminalID = tr.TerminalID  WHERE tr.DateCreated >= :start_date AND tr.DateCreated < :end_date AND 
             tr.SiteID = :site_id AND tr.CreatedByAID = :account_id AND tr.Status IN(1,4) AND tr.TerminalID=:terminal_id AND tr.TransactionSummaryID=:trans_sum_id 
             GROUP BY tr.TransactionType,tr.TransactionSummaryID ORDER BY tr.TerminalID,tr.DateCreated DESC";
-        $param = array(
-                ':account_id'=>$account_id,
+        $param = array(':account_id'=>$account_id,
                 ':site_id'=>$site_id,
                 ':start_date'=>$start_date . ' ' . $cutoff_time,
                 ':end_date'=>$end_date . ' ' . $cutoff_time,
                 ':terminal_id'=>$terminal_id,
-                ':trans_sum_id'=>$trans_sum_id
-            );
+                ':trans_sum_id'=>$trans_sum_id);
         $this->exec($sql,$param);
         $result = $this->findAll();
         
         $new_result = array();
-        foreach($result as $value) {
-            if($value['TerminalType'] == 1){
+        foreach($result as $value) 
+        {
+            if($value['TerminalType'] == 1)
+            {
                 $terminalCode = 'G'.$value['TerminalCode'];
             }
-            else{
+            else
+            {
                 $terminalCode = $value['TerminalCode']; 
             }
-            if(!isset($new_result[$value['TransactionSummaryID']])) {
+            if(!isset($new_result[$value['TransactionSummaryID']])) 
+            {
                 $new_result[$value['TransactionSummaryID']] = array(
                     'TransactionSummaryID'=>$value['TransactionSummaryID'],
                     'DateStarted'=>$value['DateStarted'],
@@ -2857,11 +2913,12 @@ class TransactionSummaryModel extends MI_Model{
             }
             $merge_array = array();
             
-            if($value['StackerSummaryID'] == null || $value['StackerSummaryID'] == ''){
-                
-                
-                if($value['PaymentType'] == 1){
-                    switch ($value['TransactionType']) {
+            if($value['StackerSummaryID'] == null || $value['StackerSummaryID'] == '')
+            {
+                if($value['PaymentType'] == 1)
+                {
+                    switch ($value['TransactionType']) 
+                    {
                         case 'W':
                             $merge_array = array('WCashier'=>$value['amount']);
                             break;
@@ -2873,8 +2930,10 @@ class TransactionSummaryModel extends MI_Model{
                             break;
                     }
                 }
-                else{
-                    switch ($value['TransactionType']) {
+                else
+                {
+                    switch ($value['TransactionType']) 
+                    {
                         case 'W':
                             $merge_array = array('WCashier'=>$value['amount']);
                             break;
@@ -2886,20 +2945,17 @@ class TransactionSummaryModel extends MI_Model{
                             break;
                     }
                 }
-               
                 $new_result[$value['TransactionSummaryID']] = array_merge($new_result[$value['TransactionSummaryID']],$merge_array);
-                
             }
-            else{
-                
+            else
+            {
                 $sql2 = "SELECT Deposit, Reload, TicketDeposit, TicketReload, Withdrawal FROM stackermanagement.stackersummary WHERE StackerSummaryID = :stackersummaryid;";
-                $param2 = array(
-                        ':stackersummaryid'=>$value['StackerSummaryID']
-                    );
+                $param2 = array(':stackersummaryid'=>$value['StackerSummaryID']);
                 $this->exec2($sql2,$param2);
                 $result2 = $this->findAll2();
                 
-                foreach ($result2 as $value2) {
+                foreach ($result2 as $value2) 
+                {
                     $ticketreload = $value2['TicketReload'];
                     $ticketdeposit = $value2['TicketDeposit'];
                     $reload = $value2['Reload'];
@@ -2907,28 +2963,34 @@ class TransactionSummaryModel extends MI_Model{
                     $ticketwithdraw = $value2['Withdrawal'];
                 }
                 
-                if($value['TransactionType'] == 'W'){
+                if($value['TransactionType'] == 'W')
+                {
                     $merge_arrays = array('WGenesis'=>$value['amount']);
                 }
-                
-                else  if($value['TransactionType'] == 'R' && $ticketreload > 0){
+                else  if($value['TransactionType'] == 'R' && $ticketreload > 0)
+                {
                     $merge_arrays = array('GenRTicket'=>$ticketreload);
                 }
-                
-                else if($value['TransactionType'] == 'D' && $ticketdeposit > 0){
+                else if($value['TransactionType'] == 'D' && $ticketdeposit > 0)
+                {
                     $merge_arrays = array('GenDTicket'=>$ticketdeposit);
                 }
-                
-                else{
-                    if($deposit > 0 && $ticketdeposit <= 0 && $value['TransactionType'] == 'D'){
+                else
+                {
+                    if($deposit > 0 && $ticketdeposit <= 0 && $value['TransactionType'] == 'D')
+                    {
                         $merge_arrays = array('GenDCash'=>$deposit);
                     }
-                    else if($reload > 0 && $ticketreload <= 0 && $value['TransactionType'] == 'R'){
+                    else if($reload > 0 && $ticketreload <= 0 && $value['TransactionType'] == 'R')
+                    {
                         $merge_arrays = array('GenRCash'=>$reload);
                     }
-                    else{
-                        if($value['PaymentType'] == 1){
-                            switch ($value['TransactionType']) {
+                    else
+                    {
+                        if($value['PaymentType'] == 1)
+                        {
+                            switch ($value['TransactionType']) 
+                            {
                                 case 'D':
                                     $merge_arrays = array('RegDCash'=>$value['amount']);
                                     break;
@@ -2937,8 +2999,10 @@ class TransactionSummaryModel extends MI_Model{
                                     break;
                             }
                         }
-                        else{
-                            switch ($value['TransactionType']) {
+                        else
+                        {
+                            switch ($value['TransactionType']) 
+                            {
                                 case 'D':
                                     $merge_arrays = array('RegDCoupon'=>$value['amount']);
                                     break;
@@ -2952,12 +3016,11 @@ class TransactionSummaryModel extends MI_Model{
                 $new_result[$value['TransactionSummaryID']] = array_merge($new_result[$value['TransactionSummaryID']],$merge_arrays);   
             }
         }
-        
         $res = array();
-        foreach($new_result as $value) {
+        foreach($new_result as $value) 
+        {
             $res[] = $value;
         }
-        
         return $res;
     }
 }
