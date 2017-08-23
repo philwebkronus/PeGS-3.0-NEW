@@ -50,5 +50,23 @@ class BlackListsModel {
         
         return $result;    
     }
-    
+
+    //CCT ADDED BEGIN 
+    //@purpose check if member is blacklisted via SP
+    public function checkIfBlackListedWithSP($firstname, $lastname, $birthdate, $status) 
+    {
+        $sql = "CALL sp_select_data_mp(1, 4, 12, '$lastname,$firstname,$birthdate,$status', 'BlackListedID', @OUTRetCode,@OUTRetMessage, @OUTfldListRet)";
+        $command = $this->_connection->createCommand($sql);
+        $result = $command->queryRow(true);
+        //echo $sql;
+        if($result['OUTfldListRet'] == '')
+        {
+            return array();
+        }
+        else
+        {
+            return $result['OUTfldListRet'];        
+        }
+    }
+    //CCT ADDED END
 }

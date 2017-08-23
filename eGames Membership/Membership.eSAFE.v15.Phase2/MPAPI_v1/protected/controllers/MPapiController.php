@@ -1519,12 +1519,12 @@ class MPapiController extends Controller {
                 $blackListsModel = new BlackListsModel();
                 $emailAddress = trim($request['EmailAddress']);
                 $firstname = trim($request['FirstName']);
-                $firstname = str_replace(" ", "", $firstname);
+                //$firstname = str_replace(" ", "", $firstname);
                 $middlename = trim($request['MiddleName']);
                 if ($middlename == '')
                     $middlename = '';
                 $lastname = trim($request['LastName']);
-                $lastname = str_replace(" ", "", $lastname);
+                //$lastname = str_replace(" ", "", $lastname);
                 $nickname = trim($request['NickName']);
                 if ($nickname == '')
                     $nickname = '';
@@ -1568,7 +1568,17 @@ class MPapiController extends Controller {
                     $smsSubscription == '';
                 $refID = $firstname . ' ' . $lastname;
                 //check if member is blacklisted
-                $isBlackListed = $blackListsModel->checkIfBlackListed($firstname, $lastname, $birthdate, 3);
+
+                //CCT COMMENTED and CHANGED BEGIN
+                //$isBlackListed = $blackListsModel->checkIfBlackListed($firstname, $lastname, $birthdate, 3);
+                $isBlackListed = $blackListsModel->checkIfBlackListedWithSP($firstname, $lastname, $birthdate, 1);
+                //echo $isBlackListed;
+                if (is_null($isBlackListed))
+                {    
+                    $isBlackListed = 0;
+                }
+                //CCT COMMENTED and CHANGED END
+                
                 //check if email is active and existing in live membership db
                 //$activeEmail = $memberInfoModel->checkIfActiveVerifiedEmailWithSP($emailAddress);
                 $activeEmail = $memberInfoModel->getDetailsUsingEmailWithSP($emailAddress);
@@ -1590,7 +1600,12 @@ class MPapiController extends Controller {
                         $logger->log($logger->logdate, "[REGISTERMEMBER ERROR]: " . $request['FirstName'] . " || " . $request['LastName'] . " || " . $request['MobileNo'] . " || " . $request['EmailAddress'] . " || " . $request['Birthdate'] . " || ", $logMessage);
                     }
                     exit;
-                } else if ($isBlackListed['Count'] > 0) {
+                // CCT Commented and Changed BEGIN
+                //} else if ($isBlackListed['Count'] > 0) {
+                } 
+                else if ($isBlackListed > 0) 
+                {
+                // CCT Commented and Changed END
                     $transMsg = "Registration cannot proceed. Please contact Customer Service.";
                     $errorCode = 22;
                     Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
@@ -1764,14 +1779,14 @@ class MPapiController extends Controller {
                                             $smsresult2 = $membershipSMSApi->sendRegistration2($mobileno, $templateid2, $memberInfos["DateCreated"], $memberInfos["TemporaryAccountCode"], $trackingid2);
                                             if (isset($smsresult1['status']) && isset($smsresult2['status'])) {
                                                 if ($smsresult1['status'] != 1 && $smsresult2['status'] != 1) {
-                                                    $transMsg = 'Invalid Mobile Number.';
+                                                    $transMsg = 'Invalid Mobile Number. Error in sending SMS.';
                                                     $errorCode = 97;
                                                     Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
                                                     $data = CommonController::retMsgRegisterMember($module, $errorCode, $transMsg);
                                                     $message = "[" . $module . "] Output: " . CJSON::encode($data);
                                                     $appLogger->log($appLogger->logdate, "[response]", $message);
                                                     $this->_sendResponse(200, CJSON::encode($data));
-                                                    $logMessage = 'Invalid Mobile Number.';
+                                                    $logMessage = 'Invalid Mobile Number.  Error in sending SMS.';
                                                     $logger->log($logger->logdate, "[REGISTERMEMBER ERROR]: " . $request['FirstName'] . " || " . $request['LastName'] . " || " . $request['MobileNo'] . " || " . $request['EmailAddress'] . " || " . $request['Birthdate'] . " || ", $logMessage);
                                                     $apiDetails = 'REGISTERMEMBER-Failed: Invalid Mobile Number. MID = ' . $lastInsertedMID;
                                                     $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
@@ -4592,33 +4607,33 @@ class MPapiController extends Controller {
                     } else {
                         $result = $memberInfoModel->getEmailFNameUsingMIDWIthSP($MID);
                         $emailAddress = $result['Email'];
-                        //$memberDetails = $memberInfoModel->getDetailsUsingEmailWithSP($emailAddress);
+                        //$memberDetails = $memberInfoModel->getDetailsUsingEmailWithSP($emailAddress); // commented out in prod but not in staging
 
-                        if ($result) {
+                        if ($result) { // changed to result from prod codes, staging is memberdetails
                             $memberInfo = $memberInfoModel->getMemberInfoUsingMID($MID);
                             $memberPoints = $cardsModel->getMemberInfoUsingCardNumber($cardNumber);
-                            $firstname = $result['FirstName'];
-                            $middlename = $result['MiddleName'];
+                            $firstname = $result['FirstName']; // changed to result from prod codes, staging is memberdetails
+                            $middlename = $result['MiddleName']; // changed to result from prod codes, staging is memberdetails
                             if ($middlename == null)
                                 $middlename = '';
-                            $lastname = $result['LastName'];
-                            $nickname = $result['NickName'];
+                            $lastname = $result['LastName']; // changed to result from prod codes, staging is memberdetails
+                            $nickname = $result['NickName']; // changed to result from prod codes, staging is memberdetails
                             if ($nickname == null)
                                 $nickname = '';
-                            $permanentAddress = $result['Address1'];
-                            $mobileNumber = $result['MobileNumber'];
-                            $alternateMobileNumber = $result['AlternateMobileNumber'];
+                            $permanentAddress = $result['Address1']; // changed to result from prod codes, staging is memberdetails
+                            $mobileNumber = $result['MobileNumber']; // changed to result from prod codes, staging is memberdetails
+                            $alternateMobileNumber = $result['AlternateMobileNumber']; // changed to result from prod codes, staging is memberdetails
                             if ($alternateMobileNumber == null)
                                 $alternateMobileNumber = '';
                             //$emailAddress = $memberDetails['Email'];
-                            $alternateEmail = $result['AlternateEmail'];
+                            $alternateEmail = $result['AlternateEmail']; // changed to result from prod codes, staging is memberdetails
                             if ($alternateEmail == null)
                                 $alternateEmail = '';
                             $gender = $memberInfo['Gender'];
                             if ($gender == null)
                                 $gender = '';
                             $idPresented = $memberInfo['IdentificationID'];
-                            $idNumber = $result['IdentificationNumber'];
+                            $idNumber = $result['IdentificationNumber']; // changed to result from prod codes, staging is memberdetails
                             $nationality = $memberInfo['NationalityID'];
                             if ($nationality == null)
                                 $nationality = '';
@@ -5373,8 +5388,14 @@ class MPapiController extends Controller {
                 $tz = new DateTimeZone("Asia/Taipei");
                 $age = DateTime::createFromFormat('Y-m-d', $birthdate, $tz)->diff(new DateTime('now', $tz))->y;
                 $refID = $firstname . ' ' . $lastname;
-                //check if member is blacklisted
-                $isBlackListed = $blackListsModel->checkIfBlackListed($firstname, $lastname, $birthdate, 3);
+                
+                //CCT COMMENTED and CHANGED BEGIN
+                //$isBlackListed = $blackListsModel->checkIfBlackListed($firstname, $lastname, $birthdate, 3);
+                $isBlackListed = $blackListsModel->checkIfBlackListedWithSP($firstname, $lastname, $birthdate, 1);
+                if (is_null($isBlackListed))
+                    $isBlackListed = 0;
+                //CCT COMMENTED and CHANGED END                
+
                 //check if email is active and existing in live membership db
                 $activeEmail = $memberInfoModel->getDetailsUsingEmailWithSP($emailAddress);
 
@@ -5395,7 +5416,12 @@ class MPapiController extends Controller {
                         $logger->log($logger->logdate, "[REGISTERMEMBERBT ERROR]: " . $refID . " || ", $logMessage);
                     }
                     exit;
-                } else if ($isBlackListed['Count'] > 0) {
+                // CCT Commented and Changed BEGIN
+                //} else if ($isBlackListed['Count'] > 0) {
+                } 
+                else if ($isBlackListed > 0) 
+                {
+                // CCT Commented and Changed END                    
                     $transMsg = "Registration cannot proceed. Please contact Customer Service.";
                     $errorCode = 22;
                     Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
@@ -6303,8 +6329,18 @@ class MPapiController extends Controller {
                 $refID = $firstname . ' ' . $lastname;
 
                 //check if member is blacklisted
-                $isBlackListed = $blackListsModel->checkIfBlackListed($firstname, $lastname, $birthdate, 3);
-                if ($isBlackListed['Count'] > 0) {
+                //CCT COMMENTED and CHANGED BEGIN
+                //$isBlackListed = $blackListsModel->checkIfBlackListed($firstname, $lastname, $birthdate, 3);
+                $isBlackListed = $blackListsModel->checkIfBlackListedWithSP($firstname, $lastname, $birthdate, 1);
+                if (is_null($isBlackListed))
+                    $isBlackListed = 0;
+                //CCT COMMENTED and CHANGED END                
+
+                // CCT Commented and Changed BEGIN
+                //} if ($isBlackListed['Count'] > 0) {
+                if ($isBlackListed > 0) 
+                {
+                // CCT Commented and Changed END                    
                     $transMsg = "Registration cannot proceed. Please contact Customer Service.";
                     $errorCode = 22;
                     Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
@@ -7342,6 +7378,380 @@ class MPapiController extends Controller {
             }
 
             exit;
+        }
+    }
+    
+    /*
+     * Added 04-17-2016
+     * John Aaron Vida 
+     * @javida
+     */
+    
+    public function actionRedeemCompPoints() {
+        $request = $this->_readJsonRequest();
+        $transMsg = '';
+        $errorCode = '';
+        $module = 'RedeemCompPoints';
+        $apiMethod = 23;
+        //$result = '';
+        $appLogger = new AppLogger();
+        $paramval = CJSON::encode($request);
+        $message = "[" . $module . "] Input: " . $paramval;
+        $appLogger->log($appLogger->logdate, "[request]", $message);
+        //$redemption = array('Result' => $result);
+        $logger = new ErrorLogger();
+        $apiLogsModel = new APILogsModel();
+        $memberSessionsModel = new MemberSessionsModel();
+        $memberCardsModel = new MemberCardsModel();
+
+        $result = $memberCardsModel->getMIDUsingCard($request['CardNumber']);
+        if ($result) {
+            $MID = $result['MID'];
+        } else {
+            $MID = 'N/A';
+        }
+        if (isset($request['CardNumber']) && isset($request['Quantity']) && isset($request['Source']) && isset($request['MPSessionID'])) {
+            if (($request['CardNumber'] == '') || ($request['Quantity'] == '') || ($request['Source'] == '') || ($request['MPSessionID'] == '')) {
+                if (($request['MPSessionID'] == '')) {
+                    $transMsg = $transMsg . "[MPSessionID] ";
+                }
+                if (($request['CardNumber'] == '')) {
+                    $transMsg = $transMsg . "[CardNumber] ";
+                }
+                if (($request['Quantity'] == '')) {
+                    $transMsg = $transMsg . "[Quantity] ";
+                }
+                if (($request['Source'] == '')) {
+                    $transMsg = $transMsg . "[Source] ";
+                }
+
+                $transMsg = "One or more fields is not set or is blank. " . $transMsg;
+                $errorCode = 1;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $data = CommonController::retMsgCompPointsRedemption($module, $errorCode, $transMsg);
+                $message = "[" . $module . "] Output: " . CJSON::encode($data);
+                $appLogger->log($appLogger->logdate, "[response]", $message);
+                $this->_sendResponse(200, CJSON::encode($data));
+                $logMessage = "One or more fields is not set or is blank. " . $transMsg;
+                $logger->log($logger->logdate, "[REDEEMCOMPPOINTS ERROR]: MID " . $MID . " || ", $logMessage);
+                $apiDetails = 'REDEEMCOMPPOINTS-Failed: One or more fields is not set or is blank.';
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                if ($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, "[REDEEMCOMPPOINTS ERROR]: MID " . $MID . " || ", $logMessage);
+                }
+                exit;
+            }
+            $isValid = $this->_validateMPSession($request['MPSessionID']);
+            if (isset($isValid) && !$isValid) {
+                $transMsg = "MPSessionID does not exist.";
+                $errorCode = 13;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $data = CommonController::retMsgCompPointsRedemption($module, $errorCode, $transMsg);
+                $message = "[" . $module . "] Output: " . CJSON::encode($data);
+                $appLogger->log($appLogger->logdate, "[response]", $message);
+                $this->_sendResponse(200, CJSON::encode($data));
+                $logMessage = 'MPSessionID does not exist.';
+                $logger->log($logger->logdate, "[REDEEMCOMPPOINTS ERROR]: MID " . $MID . " || ", $logMessage);
+                $apiDetails = 'REDEEMCOMPPOINTS-Failed: MPSessionID does not exist. MID = ' . $MID;
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                if ($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, "[REDEEMCOMPPOINTS ERROR]: MID " . $MID . " || ", $logMessage);
+                } 
+                exit;
+            } else {
+                $cardNumber = trim($request['CardNumber']);
+                $quantity = trim($request['Quantity']);
+                $source = trim($request['Source']);
+                $mpSessionID = trim($request['MPSessionID']);
+                $config = trim(Yii::app()->params['config']);
+                $memberSessionsModel = new MemberSessionsModel();
+                $memberCardsModel = new MemberCardsModel();
+                $auditTrailModel = new AuditTrailModel();
+                $helpers = new Helpers();
+                $membersModel = new MembersModel();
+                $pcwsWrapper = new PcwsWrapper();
+
+                $result = $memberCardsModel->getMIDUsingCard($cardNumber);
+                if (!$result) {
+                    $transMsg = "Card is Invalid.";
+                    $errorCode = 10;
+                    Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                    $data = CommonController::retMsgCompPointsRedemption($module, $errorCode, $transMsg);
+                    $message = "[" . $module . "] Output: " . CJSON::encode($data);
+                    $appLogger->log($appLogger->logdate, "[response]", $message);
+                    $this->_sendResponse(200, CJSON::encode($data));
+                    $logMessage = 'Card is Invalid.';
+                    $logger->log($logger->logdate, "[REDEEMCOMPPOINTS ERROR]: MID " . $MID . " || ", $logMessage);
+                    $apiDetails = 'REDEEMCOMPPOINTS-Failed: Card is Invalid. CardNumber = ' . $cardNumber;
+                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                    if ($isInserted == 0) {
+                        $logMessage = "Failed to insert to APILogs.";
+                        $logger->log($logger->logdate, "[REDEEMCOMPPOINTS ERROR]: MID " . $MID . " || ", $logMessage);
+                    }
+                    exit;
+                }
+
+                if (!is_numeric($quantity)) {
+                    $transMsg = "Quantity must be integer.";
+                    $errorCode = 98;
+                    Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                    $data = CommonController::retMsgCompPointsRedemption($module, $errorCode, $transMsg);
+                    $message = "[" . $module . "] Output: " . CJSON::encode($data);
+                    $appLogger->log($appLogger->logdate, "[response]", $message);
+                    $this->_sendResponse(200, CJSON::encode($data));
+                    $logMessage = 'Quantity must be integer.';
+                    $logger->log($logger->logdate, "[REDEEMCOMPPOINTS ERROR]: MID " . $MID . " || ", $logMessage);
+                    $apiDetails = 'REDEEMCOMPPOINTS-Failed: Quantity must be integer. Quantity = ' . $quantity;
+                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                    if ($isInserted == 0) {
+                        $logMessage = "Failed to insert to APILogs.";
+                        $logger->log($logger->logdate, "[REDEEMCOMPPOINTS ERROR]: MID " . $MID . " || ", $logMessage);
+                    }
+                    exit;
+                }
+
+                $min_comppoints = trim(Yii::app()->params['min_comppoints']);
+                $max_comppoints = trim(Yii::app()->params['max_comppoints']);
+                $mod = $quantity % $min_comppoints;
+
+                if ($mod != 0) {
+                    $transMsg = 'Quantity must be divisible by ' . $min_comppoints;
+                    $errorCode = 99;
+                    Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                    $data = CommonController::retMsgCompPointsRedemption($module, $errorCode, $transMsg);
+                    $message = "[" . $module . "] Output: " . CJSON::encode($data);
+                    $appLogger->log($appLogger->logdate, "[response]", $message);
+                    $this->_sendResponse(200, CJSON::encode($data));
+                    $logMessage = 'Quantity must be divisible by ' . $min_comppoints;
+                    $logger->log($logger->logdate, "[REDEEMCOMPPOINTS ERROR]: MID " . $MID . " || ", $logMessage);
+                    $apiDetails = 'REDEEMCOMPPOINTS-Failed: Quantity must be divisible by ' . $min_comppoints . ' Quantity = ' . $quantity;
+                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                    if ($isInserted == 0) {
+                        $logMessage = "Failed to insert to APILogs.";
+                        $logger->log($logger->logdate, "[REDEEMCOMPPOINTS ERROR]: MID " . $MID . " || ", $logMessage);
+                    }
+                    exit;
+                }
+                
+                if ($quantity < $min_comppoints) {
+                    $transMsg = 'Quantity must be greater than or equal to ' . $min_comppoints;
+                    $errorCode = 100;
+                    Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                    $data = CommonController::retMsgCompPointsRedemption($module, $errorCode, $transMsg);
+                    $message = "[" . $module . "] Output: " . CJSON::encode($data);
+                    $appLogger->log($appLogger->logdate, "[response]", $message);
+                    $this->_sendResponse(200, CJSON::encode($data));
+                    $logMessage = 'Quantity must be greater than or equal to ' . $min_comppoints;
+                    $logger->log($logger->logdate, "[REDEEMCOMPPOINTS ERROR]: MID " . $MID . " || ", $logMessage);
+                    $apiDetails = 'REDEEMCOMPPOINTS-Failed: Quantity must be greater than or equal to ' . $min_comppoints . ' Quantity = ' . $quantity;
+                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                    if ($isInserted == 0) {
+                        $logMessage = "Failed to insert to APILogs.";
+                        $logger->log($logger->logdate, "[REDEEMCOMPPOINTS ERROR]: MID " . $MID . " || ", $logMessage);
+                    }
+                    exit;
+                }
+
+                if ($quantity > $max_comppoints) {
+                    $transMsg = 'Quantity must be less than or equal to ' . $max_comppoints;
+                    $errorCode = 101;
+                    Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                    $data = CommonController::retMsgCompPointsRedemption($module, $errorCode, $transMsg);
+                    $message = "[" . $module . "] Output: " . CJSON::encode($data);
+                    $appLogger->log($appLogger->logdate, "[response]", $message);
+                    $this->_sendResponse(200, CJSON::encode($data));
+                    $logMessage = 'Quantity must be less than or equal to ' . $max_comppoints;
+                    $logger->log($logger->logdate, "[REDEEMCOMPPOINTS ERROR]: MID " . $MID . " || ", $logMessage);
+                    $apiDetails = 'REDEEMCOMPPOINTS-Failed: Quantity must be less than or equal to ' . $max_comppoints . ' Quantity = ' . $quantity;
+                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                    if ($isInserted == 0) {
+                        $logMessage = "Failed to insert to APILogs.";
+                        $logger->log($logger->logdate, "[REDEEMCOMPPOINTS ERROR]: MID " . $MID . " || ", $logMessage);
+                    }
+                    exit;
+                }
+
+                $getCompPoints = $pcwsWrapper->getCompPoints($cardNumber, 1);
+                if ($getCompPoints["GetCompPoints"]['ErrorCode'] == 0) {
+                    if ($getCompPoints["GetCompPoints"]['CompBalance'] < $quantity) {
+                        $transMsg = 'Not enough CompPoints.';
+                        $errorCode = 102;
+                        Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                        $data = CommonController::retMsgCompPointsRedemption($module, $errorCode, $transMsg);
+                        $message = "[" . $module . "] Output: " . CJSON::encode($data);
+                        $appLogger->log($appLogger->logdate, "[response]", $message);
+                        $this->_sendResponse(200, CJSON::encode($data));
+                        $logMessage = 'Not enough CompPoints.';
+                        $logger->log($logger->logdate, "[REDEEMCOMPPOINTS ERROR]: MID " . $MID . " || ", $logMessage);
+                        $apiDetails = 'REDEEMCOMPPOINTS-Failed: Not enough CompPoints. Quantity = ' . $quantity;
+                        $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                        if ($isInserted == 0) {
+                            $logMessage = "Failed to insert to APILogs.";
+                            $logger->log($logger->logdate, "[REDEEMCOMPPOINTS ERROR]: MID " . $MID . " || ", $logMessage);
+                        }
+                        exit;
+                    }
+                }
+
+                $isExist = $memberSessionsModel->checkIfSessionExist($MID, $mpSessionID);
+                if (count($isExist) > 0) {
+                    $refID = $cardNumber . ';' . $MID . ';' . $quantity;
+                    if ($source == 1) {
+                        $deductResult = $pcwsWrapper->deductCompPointsToCredit($cardNumber, $quantity, $source, $MID, 1);
+                        if ($deductResult) {
+                            if ($deductResult['DeductCompToCredit']['ErrorCode'] == 0) {
+                                $trackingID = $deductResult['DeductCompToCredit']['TrackingNumber'];
+
+                                $depositResult = $pcwsWrapper->depositFromCompPoints($cardNumber, 3, $quantity, 1, $MID, $trackingID, 1);
+                                //var_dump($depositResult);exit;
+                                if($depositResult){
+                                    if ($depositResult['DepositFromComp']['ErrorCode'] == 0) {
+
+                                        $transMsg = "CompPoints Redemption Successful. ";
+                                        $errorCode = 0;
+                                        Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                                        $data = CommonController::retMsgCompPointsRedemption($module, $errorCode, $transMsg);
+                                        $message = "[" . $module . "] Output: " . CJSON::encode($data);
+                                        $appLogger->log($appLogger->logdate, "[response]", $message);
+                                        $this->_sendResponse(200, CJSON::encode($data));
+                                        $logMessage = 'CompPoints Redemption Successful.';
+                                        $logger->log($logger->logdate, "[REDEEMCOMPPOINTS ERROR]: " . $cardNumber . " || ", $logMessage);
+                                        $apiDetails = 'REDEEMCOMPPOINTS-Success: CompPoints Redemption Successful. Card Number = ' . $cardNumber . ' MID = ' . $MID . ' Quantity = ' . $quantity;
+                                        $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 1);
+                                        if ($isInserted == 0) {
+                                            $logMessage = "Failed to insert to APILogs.";
+                                            $logger->log($logger->logdate, "[REDEEMCOMPPOINTS ERROR]: " . $cardNumber . " || ", $logMessage);
+                                        }
+                                        exit;
+                                    }
+                                    else{
+                                        $transMsg = 'Deposit CompPoints Failed.';
+                                        $errorCode = 4;
+                                        Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                                        $data = CommonController::retMsgCompPointsRedemption($module, $errorCode, $transMsg);
+                                        $message = "[" . $module . "] Output: " . CJSON::encode($data);
+                                        $appLogger->log($appLogger->logdate, "[response]", $message);
+                                        $this->_sendResponse(200, CJSON::encode($data));
+                                        $logMessage = 'Deposit CompPoints Failed.';
+                                        $logger->log($logger->logdate, "[REDEEMCOMPPOINTS ERROR]: " . $cardNumber . " || ", $logMessage);
+                                        $apiDetails = 'REDEEMCOMPPOINTS-Failed: Deposit CompPoints Failed. Card Number = ' . $cardNumber;
+                                        $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                                        if ($isInserted == 0) {
+                                            $logMessage = "Failed to insert to APILogs.";
+                                            $logger->log($logger->logdate, "[REDEEMCOMPPOINTS ERROR]: " . $cardNumber . " || ", $logMessage);
+                                        }
+                                        exit;
+                                    }
+                                }
+                                else {
+                                    $transMsg = "Cannot access PCWS API.";
+                                    $errorCode = 120;
+                                    Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                                    $data = CommonController::retMsgCompPointsRedemption($module, $errorCode, $transMsg);
+                                    $message = "[" . $module . "] Output: " . CJSON::encode($data);
+                                    $appLogger->log($appLogger->logdate, "[response]", $message);
+                                    $this->_sendResponse(200, CJSON::encode($data));
+                                    $logMessage = 'Cannot access PCWS API.';
+                                    $logger->log($logger->logdate, "[REDEEMCOMPPOINTS ERROR]: " . $cardNumber . " || ", $logMessage);
+                                    $apiDetails = 'REDEEMCOMPPOINTS-Failed: Cannot access PCWS API. Card Number = ' . $cardNumber;
+                                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                                    if ($isInserted == 0) {
+                                        $logMessage = "Failed to insert to APILogs.";
+                                        $logger->log($logger->logdate, "[REDEEMCOMPPOINTS ERROR]: " . $cardNumber . " || ", $logMessage);
+                                    }
+                                    exit;
+                                }      
+                            } else {
+                                $transMsg = 'Deduct CompPoints failed.';
+                                $errorCode = 4;
+                                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                                $data = CommonController::retMsgCompPointsRedemption($module, $errorCode, $transMsg);
+                                $message = "[" . $module . "] Output: " . CJSON::encode($data);
+                                $appLogger->log($appLogger->logdate, "[response]", $message);
+                                $this->_sendResponse(200, CJSON::encode($data));
+                                $logMessage = 'Deduct CompPoints failed.';
+                                $logger->log($logger->logdate, "[REDEEMCOMPPOINTS ERROR]: " . $cardNumber . " || ", $logMessage);
+                                $apiDetails = 'REDEEMCOMPPOINTS-Failed: Deduct CompPoints failed. Card Number = ' . $cardNumber;
+                                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                                if ($isInserted == 0) {
+                                    $logMessage = "Failed to insert to APILogs.";
+                                    $logger->log($logger->logdate, "[REDEEMCOMPPOINTS ERROR]: " . $cardNumber . " || ", $logMessage);
+                                }
+                            }
+                        } else {
+                            $transMsg = "Cannot access PCWS API.";
+                            $errorCode = 120;
+                            Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                            $data = CommonController::retMsgCompPointsRedemption($module, $errorCode, $transMsg);
+                            $message = "[" . $module . "] Output: " . CJSON::encode($data);
+                            $appLogger->log($appLogger->logdate, "[response]", $message);
+                            $this->_sendResponse(200, CJSON::encode($data));
+                            $logMessage = 'Cannot access PCWS API.';
+                            $logger->log($logger->logdate, "[REDEEMCOMPPOINTS ERROR]: " . $cardNumber . " || ", $logMessage);
+                            $apiDetails = 'REDEEMCOMPPOINTS-Failed: Cannot access PCWS API. Card Number = ' . $cardNumber;
+                            $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                            if ($isInserted == 0) {
+                                $logMessage = "Failed to insert to APILogs.";
+                                $logger->log($logger->logdate, "[REDEEMCOMPPOINTS ERROR]: " . $cardNumber . " || ", $logMessage);
+                            }
+                            exit;
+                        }
+                    } else {
+                        $transMsg = "Please input 1 as source.";
+                        $errorCode = 97;
+                        Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                        $data = CommonController::retMsgCompPointsRedemption($module, $errorCode, $transMsg);
+                        $message = "[" . $module . "] Output: " . CJSON::encode($data);
+                        $appLogger->log($appLogger->logdate, "[response]", $message);
+                        $this->_sendResponse(200, CJSON::encode($data));
+                        $logMessage = 'Please input 3 as source.';
+                        $logger->log($logger->logdate, "[REDEEMCOMPPOINTS ERROR]: MID " . $MID . " || ", $logMessage);
+                        $apiDetails = 'REDEEMCOMPPOINTS-Failed: Please input 3 as source. Source = ' . $source;
+                        $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                        if ($isInserted == 0) {
+                            $logMessage = "Failed to insert to APILogs.";
+                            $logger->log($logger->logdate, "[REDEEMCOMPPOINTS ERROR]: MID " . $MID . " || ", $logMessage);
+                        }
+                        exit;
+                    }
+                } else {
+                    $transMsg = "MPSessionID does not exist.";
+                    $errorCode = 13;
+                    Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                    $data = CommonController::retMsgCompPointsRedemption($module, $errorCode, $transMsg);
+                    $message = "[" . $module . "] Output: " . CJSON::encode($data);
+                    $appLogger->log($appLogger->logdate, "[response]", $message);
+                    $this->_sendResponse(200, CJSON::encode($data));
+                    $logMessage = 'MPSessionID does not exist.';
+                    $logger->log($logger->logdate, "[REDEEMCOMPPOINTS ERROR]: MID " . $MID . " || ", $logMessage);
+                    $apiDetails = 'REDEEMCOMPPOINTS-Failed: There is no active session.';
+                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                    if ($isInserted == 0) {
+                        $logMessage = "Failed to insert to APILogs.";
+                        $logger->log($logger->logdate, "[REDEEMCOMPPOINTS ERROR]: MID " . $MID . " || ", $logMessage);
+                    }
+                    exit;
+                }
+            }
+        } else {
+
+            $transMsg = "One or more fields is not set or is blank. " . $transMsg;
+            $errorCode = 13;
+            Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+            $data = CommonController::retMsgCompPointsRedemption($module, $errorCode, $transMsg);
+            $message = "[" . $module . "] Output: " . CJSON::encode($data);
+            $appLogger->log($appLogger->logdate, "[response]", $message);
+            $this->_sendResponse(200, CJSON::encode($data));
+            $logMessage = "One or more fields is not set or is blank. ";
+            $logger->log($logger->logdate, "[REDEEMCOMPPOINTS ERROR]: MID " . $MID . " || ", $logMessage);
+            $apiDetails = 'REDEEMCOMPPOINTS-Failed: One or more fields is not set or is blank.';
+            $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+            if ($isInserted == 0) {
+                $logMessage = "Failed to insert to APILogs.";
+                $logger->log($logger->logdate, "[REDEEMCOMPPOINTS ERROR]: MID " . $MID . " || ", $logMessage);
+            }
         }
     }
 
