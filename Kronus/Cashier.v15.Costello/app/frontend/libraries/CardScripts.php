@@ -52,7 +52,7 @@ function identifyCard()
     {
         $('.hideControls').hide();
         // CCT - BEGIN added
-        $('.hideControlsVIP').hide();
+        //$('.hideControlsVIP').hide();
         // CCT - END added                       
         alert('Please select terminal');
         return false;
@@ -103,7 +103,7 @@ function identifyCard()
                            isEwalletSessionMode = true;
                            $('.hideControls').hide();
                            // CCT - BEGIN added
-                           $('.hideControlsVIP').hide();
+                           //$('.hideControlsVIP').hide();
                            // CCT - END added                                          
 //                                    }else if(IsEwallet==0 && serviceID==20){ //if card is not e-SAFE
 //                                       $('.hideControls').hide();
@@ -118,14 +118,14 @@ function identifyCard()
                             isValidated = true;
                             $('.hideControls').show(); 
                             // CCT - BEGIN added
-                            if($('#viptypeVIP').is(':checked') || $('#viptypeSVIP').is(':checked'))
-                            {
-                                $('.hideControlsVIP').show();
-                            }    
-                            else
-                            {
-                                $('.hideControlsVIP').hide();
-                            }
+                            //if($('#viptypeVIP').is(':checked') || $('#viptypeSVIP').is(':checked'))
+                            //{
+                            //    $('.hideControlsVIP').show();
+                            //}    
+                            //else
+                            //{
+                            //    $('.hideControlsVIP').hide();
+                            //}
                             // CCT - END added                                          
                         }
                         response = "false";
@@ -134,7 +134,7 @@ function identifyCard()
                     {
                         $('.hideControls').hide();
                         // CCT - BEGIN added
-                        $('.hideControlsVIP').hide();
+                        //$('.hideControlsVIP').hide();
                         // CCT - END added                                       
                         alert('More than 1 casinos are mapped in this terminal');
                     }
@@ -143,11 +143,10 @@ function identifyCard()
                 {
                     $('.hideControls').hide();
                     // CCT - BEGIN added
-                    $('.hideControlsVIP').hide();
+                    //$('.hideControlsVIP').hide();
                     // CCT - END added                                 
-                    updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Card is BANNED.</label>' + 
-                                    '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' + 
-                                    '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' + 
+                    updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Player is on the National Database of Restricted Persons List.</label>' + 
+                                    '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please ask Player to contact Customer Service Hotline.</label>' + 
                                     '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
                                     ''          
                     ); 
@@ -156,7 +155,7 @@ function identifyCard()
                 {
                     $('.hideControls').hide();
                     // CCT - BEGIN added
-                    $('.hideControlsVIP').hide();
+                    //$('.hideControlsVIP').hide();
                     // CCT - END added                                   
                     showLightbox(function()
                     {
@@ -363,9 +362,8 @@ function identifyCard2()
                 } 
                 else if (StatusValue == 'Banned Card')
                 {
-                    updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Card is BANNED.</label>' + 
-                                    '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' + 
-                                    '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' + 
+                    updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Player is on the National Database of Restricted Persons List.</label>' + 
+                                    '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please ask Player to contact Customer Service Hotline.</label>' + 
                                     '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
                                     ''          
                     ); 
@@ -582,9 +580,8 @@ function identifyCard3()
                 } 
                 else if (StatusValue == 'Banned Card')
                 {
-                    updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Card is BANNED.</label>' + 
-                                    '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' + 
-                                    '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' + 
+                    updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Player is on the National Database of Restricted Persons List.</label>' + 
+                                    '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please ask Player to contact Customer Service Hotline.</label>' + 
                                     '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" onclick="javascript: removeDisabled();" class="btnClose" />', 
                                     ''          
                     );  

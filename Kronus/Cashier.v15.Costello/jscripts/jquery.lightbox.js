@@ -93,7 +93,9 @@ function getMemInfo(){
                         );
                     });
                 } else if(StatusValue == "Banned Card") {
-                        message = "<p style='color:red;'>Card is BANNED.</p>";
+                        //message = "<p style='color:red;'>Card is BANNED.</p>";
+                        message = "<p style='color:red;'>Player is on the National Database of Restricted Persons List.</p>" + 
+                                  "<p style='color:red;'>Please ask Player to contact Customer Service Hotline.</p>";                                                    
                         $(".btnProceed").attr('disabled','disabled');
                         $("#statusvalue").val(StatusValue);
                         $("#cardStatus").html(message);
@@ -218,11 +220,13 @@ function btnSubmit(){
                             ); 
                         }
                     } else if(StatusValue == "Banned Card") {
-                        updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Card is BANNED.</label>' + 
-                                                        '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' + 
-                                                        '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' + 
-                                                        '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
-                                                        ''          
+                            updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Player is on the National</label>' + 
+                                                '<br /><label  style="font-size: 24px; color: red; font-weight: bold;">Database of Restricted Persons</label>' +
+                                                '<br /><label  style="font-size: 24px; color: red; font-weight: bold;">List.</label>' +                                    
+                                                '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please ask Player to contact Customer</label>' + 
+                                                '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 236-5858.</label></center>' + 
+                                                '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
+                                                ''          
                         ); 
                     } else {
                         showLightbox(function(){                            

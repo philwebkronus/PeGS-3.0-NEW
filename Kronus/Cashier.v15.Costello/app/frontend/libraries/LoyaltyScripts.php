@@ -106,9 +106,8 @@
                                 } 
                                 else if (StatusValue == 'Banned Card')
                                 {
-                                    updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Card is BANNED.</label>' + 
-                                                    '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' + 
-                                                    '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' + 
+                                    updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Player is on the National Database of Restricted Persons List.</label>' + 
+                                                    '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please ask Player to contact Customer Service Hotline.</label>' + 
                                                     '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
                                                     ''          
                                     ); 
@@ -246,9 +245,8 @@
                                 } 
                                 else if (StatusValue == 'Banned Card')
                                 {
-                                    updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Card is BANNED.</label>' + 
-                                                    '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' + 
-                                                    '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' + 
+                                    updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Player is on the National Database of Restricted Persons List.</label>' + 
+                                                    '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please ask Player to contact Customer Service Hotline.</label>' + 
                                                     '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
                                                     ''          
                                     ); 
@@ -386,9 +384,8 @@
                                 } 
                                 else if (StatusValue == 'Banned Card')
                                 {
-                                    updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Card is BANNED.</label>' + 
-                                                    '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' + 
-                                                    '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' + 
+                                    updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Player is on the National Database of Restricted Persons List.</label>' + 
+                                                    '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please ask Player to contact Customer Service Hotline.</label>' + 
                                                     '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
                                                     ''          
                                     ); 
@@ -460,9 +457,9 @@
                 // CCT - END uncomment
                 $('.bankContainer').hide();
                 // CCT - BEGIN added
-                $('.hideControlsVIP').hide();
-                $('#StartSessionFormModel_vip_type').val(0);  
-                $('#StartSessionFormModel_lvip_type').val(0);                   
+                //$('.hideControlsVIP').hide();
+                //$('#StartSessionFormModel_vip_type').val(0);  
+                //$('#StartSessionFormModel_lvip_type').val(0);                   
                 // CCT - END added
                 isEwalletSessionMode = false;
                 isValidated = false;
