@@ -1606,14 +1606,14 @@ class MPapiController extends Controller {
                 else if ($isBlackListed > 0) 
                 {
                 // CCT Commented and Changed END
-                    $transMsg = "Registration cannot proceed. Please contact Customer Service.";
+                    $transMsg = "Applicant is on the National Database of Restricted Persons List. Please ask Player to contact Customer Service Hotline.";
                     $errorCode = 22;
                     Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
                     $data = CommonController::retMsgRegisterMember($module, $errorCode, $transMsg);
                     $message = "[" . $module . "] Output: " . CJSON::encode($data);
                     $appLogger->log($appLogger->logdate, "[response]", $message);
                     $this->_sendResponse(200, CJSON::encode($data));
-                    $logMessage = 'Registration cannot proceed. Please contact Customer Service.';
+                    $logMessage = 'Applicant is on the National Database of Restricted Persons List. Please ask Player to contact Customer Service Hotline.';
                     $logger->log($logger->logdate, "[REGISTERMEMBER ERROR]: " . $request['FirstName'] . " || " . $request['LastName'] . " || " . $request['MobileNo'] . " || " . $request['EmailAddress'] . " || " . $request['Birthdate'] . " || ", $logMessage);
                     $apiDetails = 'REGISTERMEMBER-Failed: Player is blacklisted. Name = ' . $firstname . ' ' . $lastname . ', Birthdate = ' . $birthdate;
                     $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
@@ -5422,14 +5422,14 @@ class MPapiController extends Controller {
                 else if ($isBlackListed > 0) 
                 {
                 // CCT Commented and Changed END                    
-                    $transMsg = "Registration cannot proceed. Please contact Customer Service.";
+                    $transMsg = "Applicant is on the National Database of Restricted Persons List. Please ask Player to contact Customer Service Hotline.";
                     $errorCode = 22;
                     Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
                     $data = CommonController::retMsgRegisterMemberBT($module, '', '', $errorCode, $transMsg);
                     $message = "[" . $module . "] Output: " . CJSON::encode($data);
                     $appLogger->log($appLogger->logdate, "[response]", $message);
                     $this->_sendResponse(200, CJSON::encode($data));
-                    $logMessage = 'Registration cannot proceed. Please contact Customer Service.';
+                    $logMessage = 'Applicant is on the National Database of Restricted Persons List. Please ask Player to contact Customer Service Hotline.';
                     $logger->log($logger->logdate, "[REGISTERMEMBERBT ERROR]: " . $refID . " || ", $logMessage);
                     $apiDetails = 'REGISTERMEMBERBT-Failed: Player is blacklisted. Name = ' . $firstname . ' ' . $lastname . ', Birthdate = ' . $birthdate;
                     $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
@@ -6341,14 +6341,14 @@ class MPapiController extends Controller {
                 if ($isBlackListed > 0) 
                 {
                 // CCT Commented and Changed END                    
-                    $transMsg = "Registration cannot proceed. Please contact Customer Service.";
+                    $transMsg = "Applicant is on the National Database of Restricted Persons List. Please ask Player to contact Customer Service Hotline.";
                     $errorCode = 22;
                     Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
                     $data = CommonController::retMsgRegisterMemberBTNoEmail($module, '', '', $errorCode, $transMsg);
                     $message = "[" . $module . "] Output: " . CJSON::encode($data);
                     $appLogger->log($appLogger->logdate, "[response]", $message);
                     $this->_sendResponse(200, CJSON::encode($data));
-                    $logMessage = 'Registration cannot proceed. Please contact Customer Service.';
+                    $logMessage = 'Applicant is on the National Database of Restricted Persons List. Please ask Player to contact Customer Service Hotline.';
                     $logger->log($logger->logdate, "[REGISTERMEMBERBTNOEMAIL ERROR]: " . $refID . " || ", $logMessage);
                     $apiDetails = 'REGISTERMEMBERBTNOEMAIL-Failed: Player is blacklisted. Name = ' . $firstname . ' ' . $lastname . ', Birthdate = ' . $birthdate;
                     $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
