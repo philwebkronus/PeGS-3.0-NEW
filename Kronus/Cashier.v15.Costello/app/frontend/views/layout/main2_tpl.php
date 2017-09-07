@@ -1,13 +1,23 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
     <head>
+        <!-- CCT BEGIN for IE 10 and IE 11 support -->
+        <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8" />
+        <!-- CCT END for IE 10 and IE 11 support -->
         <title><?php echo $this->title; ?></title>
+        <meta http-equiv="Page-Enter" content="blendTrans(duration=0)" />
+        <meta http-equiv="Page-Exit" content="blendTrans(duration=0)" />
         <link rel="stylesheet" type="text/css" media="screen" href="css/default.css" />
         <!--[if IE]>
             <link rel="stylesheet" href="css/ie.css" type="text/css" media="screen, projection">
         <![endif]-->
         <link rel="stylesheet" type="text/css" media="screen" href="jscripts/fancybox/jquery.fancybox-1.3.4.css" />
-        
+        <style>
+            html 
+            {
+                filter: expression(document.execCommand("BackgroundImageCache", false, true));
+            }
+        </style>
         <script type="text/javascript" src="jscripts/jquery.min.js"></script>
         <script type="text/javascript" src="jscripts/fancybox/jquery.mousewheel-3.0.4.pack.js"></script>
         <script type="text/javascript" src="jscripts/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
@@ -15,6 +25,15 @@
         <script type="text/javascript" src="jscripts/accounting.min.js"></script>
         <script type="text/javascript" src="jscripts/jquery.helpers.js"></script>
         <script type="text/javascript" src="jscripts/autoNumeric-1.6.2.js"></script>
+        <script type="text/javascript">
+            try 
+            {
+                document.execCommand('BackgroundImageCache', false, true);
+            }
+            catch(e) 
+            {
+            };
+        </script>
 <!--        <script type="text/javascript" src="https://getfirebug.com/firebug-lite.js"></script>-->
     </head>
     <body lang="en">
@@ -42,12 +61,9 @@
                         <div id="user-details">
                             <?php echo $_SESSION['account_name'] . ' - ' . $_SESSION['site_code'] .' / '. $_SESSION['pos_account']; ?>    
                         </div>
-                    
                     <?php //debug($_SESSION); ?>    
                     </div> 
-                    <div id="menu-description">
-                        
-                    </div>
+                    <div id="menu-description"></div>
                 </div>
             </div>
             <div class="clear"></div>
@@ -64,21 +80,29 @@
             <?php echo clock('head-time'); ?>
         </script>
         <script>
-        $(document).ready(function(){                    
-            $('#btnLogout').click(function(){
-                if (confirm('Are you sure you want to logout?')) {
+        $(document).ready(function()
+        {                    
+            $('#btnLogout').click(function()
+            {
+                if (confirm('Are you sure you want to logout?')) 
+                {
                     document.location = '<?php echo Mirage::app()->param['logout_page'] ?>';
                 }
             })
             var hearbeatAjax = null;
-            setInterval(function(){
-                if(hearbeatAjax == null) {
-                    hearbeatAjax = $.ajax({
+            setInterval(function()
+            {
+                if(hearbeatAjax == null) 
+                {
+                    hearbeatAjax = $.ajax(
+                    {
                         url:'<?php echo Mirage::app()->createUrl('terminal/ping') ?>',
-                        success:function(){
+                        success:function()
+                        {
                             hearbeatAjax = null
                         },
-                        error:function(){
+                        error:function()
+                        {
                             hearbeatAjax = null;
                         }
                     });
@@ -86,9 +110,11 @@
             }, <?php echo Mirage::app()->param['heartbeat_rate'] ?>);
             
             <?php if($_SESSION['spyder_enabled'] == 0): ?>
-            try {
+            try 
+            {
                 var axo = new ActiveXObject("PEGS.StationManager.ActiveX.Controller");
-            } catch(e) {
+            } catch(e) 
+            {
                 $.fancybox("<?php echo Mirage::app()->param['pegsstationerrormsg'] ?>",{modal:false});
             }
             <?php endif; ?>

@@ -2025,8 +2025,9 @@ class FrontendController extends MI_Controller
                                                 $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID];
                                             }   
                                         }
-// --> VIP TYPE
+// --> SVIP/VIP TYPE
                                         // CCT BEGIN added
+                                        /*
                                         if ($isVIP == 0)
                                         {
                                             $viptype = 0;
@@ -2035,11 +2036,13 @@ class FrontendController extends MI_Controller
                                         {
                                             $viptype = $startSessionFormModel->lvip_type;                                            
                                          }
+                                         */
                                         // CCT END added
                                         $result = $commonStartSession->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino,
                                                   toInt($this->getSiteBalance()),toInt($amount),$accid,$loyaltyCardNo, 
                                                   $startSessionFormModel->voucher_code,$trackingId, $casinoUsername,
-                                                  $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'],$traceNumber,$referenceNumber,$locatorname,$CPV,$viptype); // CCT added viptype;
+                                                  $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'],$traceNumber,$referenceNumber,$locatorname,$CPV); 
+                                                  //$casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'],$traceNumber,$referenceNumber,$locatorname,$CPV,$viptype); // CCT added viptype;
                                         //checking if casino is terminal based
                                     }
                                     else if (($ref_service['UserMode'] == 0 || $ref_service['UserMode'] == 2) && $CPV == 'v12') 
@@ -2053,8 +2056,9 @@ class FrontendController extends MI_Controller
                                         $login_acct = $terminalname;
                                         $terminal_pwd = $terminalsmodel->getTerminalPassword($terminal_id, $startSessionFormModel->casino);
                                         $login_pwd = $terminal_pwd['HashedServicePassword'];
-// --> VIP TYPE                                        
+// --> SVIP/VIP TYPE
                                         // CCT BEGIN added
+                                        /*
                                         if ($isVIP == 0)
                                         {
                                             $viptype = 0;
@@ -2062,12 +2066,14 @@ class FrontendController extends MI_Controller
                                         else
                                         {
                                             $viptype = $startSessionFormModel->lvip_type;                                            
-                                        }                 
+                                        } 
+                                         */                
                                         // CCT END added                                        
                                         $result = $commonStartSession->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino,
                                                    toInt($this->getSiteBalance()),toInt($amount),$accid,$loyaltyCardNo, 
                                                    $startSessionFormModel->voucher_code, $trackingId, $casinoUsername,
-                                                   $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'],$traceNumber,$referenceNumber,$locatorname,$CPV,$viptype); // CCT added viptype;
+                                                   $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'],$traceNumber,$referenceNumber,$locatorname,$CPV);
+                                                   //$casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'],$traceNumber,$referenceNumber,$locatorname,$CPV,$viptype); // CCT added viptype;
 
                                         //checking if casino is user based
                                     }
@@ -2400,8 +2406,9 @@ class FrontendController extends MI_Controller
                                     $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID];
                                 }   
                             }
-// --> VIP TYPE                            
+// --> SVIP/VIP TYPE
                            // CCT BEGIN added
+                            /*
                             if ($isVIP == 0)
                             {
                                 $viptype = 0;
@@ -2409,12 +2416,14 @@ class FrontendController extends MI_Controller
                             else
                             {
                                 $viptype = $startSessionFormModel->lvip_type;                                            
-                            }                 
+                            } 
+                             */                
                             // CCT END added                            
                             $result = $commonStartSession->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino,
                                        toInt($this->getSiteBalance()),toInt($amount),$accid,$loyaltyCardNo, 
                                        $startSessionFormModel->voucher_code,$trackingId, $casinoUsername,
-                                       $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'],$traceNumber,$referenceNumber,$locatorname,$CPV,$viptype); // CCT added viptype;
+                                       $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'],$traceNumber,$referenceNumber,$locatorname,$CPV);
+                                       //$casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'],$traceNumber,$referenceNumber,$locatorname,$CPV,$viptype); // CCT added viptype;
                         }
                         //checking if casino is terminal based
                         else if (($ref_service['UserMode'] == 0 || $ref_service['UserMode'] == 2) && $CPV == 'v12') 
@@ -2428,8 +2437,9 @@ class FrontendController extends MI_Controller
                             $terminal_pwd = $terminalsmodel->getTerminalPassword($terminal_id, $startSessionFormModel->casino);
                             $login_pwd = $terminal_pwd['HashedServicePassword'];
                             $locatorname = '';
-// --> VIP TYPE                                       
+// --> SVIP/VIP TYPE
                            // CCT BEGIN added
+                            /*
                             if ($isVIP == 0)
                             {
                                 $viptype = 0;
@@ -2437,12 +2447,14 @@ class FrontendController extends MI_Controller
                             else
                             {
                                 $viptype = $startSessionFormModel->lvip_type;                                            
-                            }                 
+                            } 
+                             */                
                             // CCT END added                            
                             $result = $commonStartSession->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino,
                                        toInt($this->getSiteBalance()),toInt($amount),$accid,$loyaltyCardNo, 
                                        $startSessionFormModel->voucher_code, $trackingId, $casinoUsername,
-                                       $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'],$traceNumber,$referenceNumber,$locatorname,$CPV,$viptype); // CCT added viptype;
+                                       $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'],$traceNumber,$referenceNumber,$locatorname,$CPV); 
+                                       //$casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'],$traceNumber,$referenceNumber,$locatorname,$CPV,$viptype); // CCT added viptype;
                         } 
                         //checking if casino is user based
                         else if($ref_service['UserMode'] == 1 && $CPV == 'v15')
@@ -2719,8 +2731,9 @@ class FrontendController extends MI_Controller
             $login_acct = $terminalname;
             $terminal_pwd = $terminalsmodel->getTerminalPassword($terminal_id, $UnlockTerminalFormModel->casino);
             $login_pwd = $terminal_pwd['HashedServicePassword'];
-// --> VIP TYPE                       
+// --> SVIP/VIP TYPE
            // CCT BEGIN added
+            /*
             if ($isVIP == 0)
             {
                 $viptype = 0;
@@ -2729,10 +2742,12 @@ class FrontendController extends MI_Controller
             {
                 $viptype = $startSessionFormModel->lvip_type;                                            
              }
+             */
             // CCT END added            
             $result = $commonStartSession->start($terminal_id, $siteid, 'D', $paymentType, $UnlockTerminalFormModel->casino,
                       toInt($this->getSiteBalance()),toInt($amount),$accid,$card_number, $vouchercode, $trackingId, 
-                      $casinoUsername, $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'],'', '', '', '',$viptype); // CCT added viptype;
+                      $casinoUsername, $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'],'', '', '', '');
+                      //$casinoUsername, $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'],'', '', '', '',$viptype); // CCT added viptype;
         } 
 
         //checking if casino is user based
