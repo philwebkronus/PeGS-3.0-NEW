@@ -366,7 +366,8 @@ $(document).ready(function()
                         $('#loyalty_card_tr').css('display','none');
                         $('#btnInitailDepositHk').attr("mode",json.usermode);
                         $('.hideControls').show();
-                        // CCT - BEGIN added
+                        // CCT - BEGIN added VIP
+                        /*
                         if($('#viptypeVIP').is(':checked') || $('#viptypeSVIP').is(':checked'))
                         {
                             $('.hideControlsVIP').show();
@@ -375,7 +376,8 @@ $(document).ready(function()
                         {
                             $('.hideControlsVIP').hide();
                         }
-                        // CCT - END added
+                        */
+                        // CCT - END added VIP
                     } 
                     else 
                     {
@@ -384,7 +386,8 @@ $(document).ready(function()
                         // CCT - BEGIN uncomment
                          $('.hideControls').hide();
                         // CCT - END uncomment
-                        // CCT - BEGIN added
+                        // CCT - BEGIN added VIP
+                        /*
                         if($('#viptypeVIP').is(':checked') || $('#viptypeSVIP').is(':checked'))
                         {
                             $('.hideControlsVIP').show();
@@ -393,7 +396,8 @@ $(document).ready(function()
                         {
                             $('.hideControlsVIP').hide();
                         }
-                        // CCT - END added                        
+                        */
+                        // CCT - END added VIP                        
                     }
                     
                     $('#StartSessionFormModel_max_deposit').val(json.max_denomination);

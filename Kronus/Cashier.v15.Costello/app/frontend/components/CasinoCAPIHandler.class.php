@@ -488,18 +488,18 @@ class CasinoCAPIHandler
         return $this->_API->RevertBrokenGames( $username, $playerMode, $revertMode );
     }
 
-    // CCT BEGIN added 
-    public function ChangePlayerClassification($pid, $playerClassID) 
-    {       
-        if($this->_gamingProvider == self::RTG)
-            return $this->_API->ChangePlayerClassification($pid, $playerClassID);
-    }
+    // CCT BEGIN added VIP
+    //public function ChangePlayerClassification($pid, $playerClassID) 
+    //{       
+    //    if($this->_gamingProvider == self::RTG)
+    //        return $this->_API->ChangePlayerClassification($pid, $playerClassID);
+    //}
     
-    public function GetPlayerClassification($pid) 
-    {       
-        if($this->_gamingProvider == self::RTG)
-            return $this->_API->GetPlayerClassification($pid);
-    }
-    // CCT END added 
+    //public function GetPlayerClassification($pid) 
+    //{       
+    //    if($this->_gamingProvider == self::RTG)
+    //        return $this->_API->GetPlayerClassification($pid);
+    //}
+    // CCT END added VIP
 }
 ?>

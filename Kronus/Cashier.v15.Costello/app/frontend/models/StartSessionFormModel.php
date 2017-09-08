@@ -18,10 +18,10 @@ class StartSessionFormModel extends MI_Model
     public $approval_code;
     public $trace_number;
     public $reference_number;
-    // CCT BEGIN added
-    public $vip_type;
-    public $lvip_type;
-    // CCT END added
+    // CCT BEGIN added VIP
+    //public $vip_type;
+    //public $lvip_type;
+    // CCT END added VIP
     protected static $_custom_validation = null;
 
     protected function _validation() 

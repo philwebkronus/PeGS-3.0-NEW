@@ -225,19 +225,19 @@ class RealtimeGamingPlayerAPI
         return json_decode( $json, TRUE );
     }
     
-    // CCT BEGIN added
+    // CCT BEGIN added VIP
     /**
      * Formats a XML string to convert into an array
      * @param type $xmlString
      * @return type
      * FOR: RTG Player API using PHP SOAP Client Method
     */
-    private function XML2ArrayPHP( $xmlString )
-    {
-        $json = json_encode( $xmlString );
-
-        return json_decode( $json, TRUE );
-    }
+    //private function XML2ArrayPHP( $xmlString )
+    //{
+    //    $json = json_encode( $xmlString );
+    //
+    //    return json_decode( $json, TRUE );
+    //}
     
     /**
      * submit request via SOAP method in PHP
@@ -247,50 +247,50 @@ class RealtimeGamingPlayerAPI
      * @return object | array api response
      * FOR: RTG Player API using PHP SOAP Client Method
      */
-    private function submitRequestPHP( $url, $data, $method )
-    {
-        header( 'Content-Type: text/plain' );
-
-        $soapArr = array(
-                'trace' => true,
-                'exceptions' => true,
-                'local_cert' => $this->_certFilePath, 
-                'passphrase' => ''//,
-                //'ssl_method' => 'SOAP_SSL_METHOD_TLS'
-        );
-        $response = array();
-        try
-        {
-            $client = new SoapClient( $url, $soapArr );
-            
-            $response = $client->$method($data);
-            
-        } catch (Exception $e)
-        {
-            $this->_error = "Bad request. Check if API configurations are correct";
-        }
-        return $response;
-    }
+    //private function submitRequestPHP( $url, $data, $method )
+    //{
+    //    header( 'Content-Type: text/plain' );
+    //
+    //    $soapArr = array(
+    //            'trace' => true,
+    //            'exceptions' => true,
+    //            'local_cert' => $this->_certFilePath, 
+    //            'passphrase' => ''//,
+    //            //'ssl_method' => 'SOAP_SSL_METHOD_TLS'
+    //    );
+    //    $response = array();
+    //    try
+    //    {
+    //        $client = new SoapClient( $url, $soapArr );
+    //        
+    //        $response = $client->$method($data);
+    //        
+    //    } catch (Exception $e)
+    //    {
+    //        $this->_error = "Bad request. Check if API configurations are correct";
+    //    }
+    //    return $response;
+    //}
     
-    public function getPlayerClasification($pid)
-    {
-        $data = array('PID'=>$pid);
-        
-        $method = 'GetPlayerClass';
-        
-        $response = $this->submitRequestPHP($this->_url, $data, $method);
-
-        if (is_object($response) )
-        {
-            $this->_APIresponse = $this->XML2ArrayPHP( $response );
-        }
-        else
-        {
-            $this->_error = "Bad request. Check if API configurations are correct.";
-        }
-        
-        return $this->_APIresponse;
-    }
+    //public function getPlayerClasification($pid)
+    //{
+    //    $data = array('PID'=>$pid);
+    //    
+    //    $method = 'GetPlayerClass';
+    //    
+    //    $response = $this->submitRequestPHP($this->_url, $data, $method);
+    //
+    //    if (is_object($response) )
+    //    {
+    //        $this->_APIresponse = $this->XML2ArrayPHP( $response );
+    //    }
+    //    else
+    //    {
+    //        $this->_error = "Bad request. Check if API configurations are correct.";
+    //    }
+    //    
+    //    return $this->_APIresponse;
+    //}
     
     /**
      * Change player clasification (0-New Player, 1-High Roller)
@@ -300,25 +300,25 @@ class RealtimeGamingPlayerAPI
      * @return object | array api response
      * FOR: RTG Player API using PHP SOAP Client Method 
      */
-    public function changePlayerClasification($pid, $playerClassID)
-    {
-        $data = array('PID'=>$pid,'playerClassID'=>$playerClassID,'UserID'=>0);
-        
-        $method = 'ChangePlayerClass';
-        
-        $response = $this->submitRequestPHP($this->_url, $data, $method);
-
-        if (is_object($response) )
-        {
-            $this->_APIresponse = $this->XML2ArrayPHP( $response );
-        }
-        else
-        {
-            $this->_error = "Bad request. Check if API configurations are correct.";
-        }
-        
-        return $this->_APIresponse;
-    }
-    // CCT END added
+    //public function changePlayerClasification($pid, $playerClassID)
+    //{
+    //    $data = array('PID'=>$pid,'playerClassID'=>$playerClassID,'UserID'=>0);
+    //    
+    //    $method = 'ChangePlayerClass';
+    //    
+    //    $response = $this->submitRequestPHP($this->_url, $data, $method);
+    //
+    //    if (is_object($response) )
+    //    {
+    //        $this->_APIresponse = $this->XML2ArrayPHP( $response );
+    //    }
+    //    else
+    //    {
+    //        $this->_error = "Bad request. Check if API configurations are correct.";
+    //    }
+    //    
+    //    return $this->_APIresponse;
+    //}
+    // CCT END added VIP
 }
 ?>

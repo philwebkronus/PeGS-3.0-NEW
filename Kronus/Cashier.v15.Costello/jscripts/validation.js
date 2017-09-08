@@ -13,23 +13,23 @@ $(document).ready(function()
         var reference_number = $('#StartSessionFormModel_reference_number').val();
         var amount = '';
         var site_amount_info = $('#siteamountinfo').val();
-        // CCT BEGIN added
-        var vip_type = 0;
-        if($('#viptypeVIP').is(':checked'))
-        {
-           vip_type = 1;
-        }    
-        else
-        {
-           if($('#viptypeSVIP').is(':checked'))
-           {
-               vip_type = 2;
-           }
-        }
-        //$vip_type = vip_type;
-        $('#StartSessionFormModel_vip_type').val(vip_type);
-        $('#StartSessionFormModel_lvip_type').val(vip_type);        
-        // CCT END added
+        // CCT BEGIN added VIP
+        //var vip_type = 0;
+        //if($('#viptypeVIP').is(':checked'))
+        //{
+        //   vip_type = 1;
+        //}    
+        //else
+        //{
+        //   if($('#viptypeSVIP').is(':checked'))
+        //   {
+        //       vip_type = 2;
+        //   }
+        //}
+        ////$vip_type = vip_type;
+        //$('#StartSessionFormModel_vip_type').val(vip_type);
+        //$('#StartSessionFormModel_lvip_type').val(vip_type);        
+        // CCT END added VIP
 
         if (site_amount_info == 0)
         {
@@ -160,23 +160,23 @@ $(document).ready(function()
         var trace_number = $('#StartSessionFormModel_trace_number').val();
         var reference_number = $('#StartSessionFormModel_reference_number').val();
         var site_amount_info = $('#siteamountinfo').val();
-        // CCT BEGIN added
-        var vip_type = 0;
-        if($('#viptypeVIP').is(':checked'))
-        {
-           vip_type = 1;
-        }    
-        else
-        {
-           if($('#viptypeSVIP').is(':checked'))
-           {
-               vip_type = 2;
-           }
-        }
-        //$vip_type = vip_type;
-        $('#StartSessionFormModel_vip_type').val(vip_type);
-        $('#StartSessionFormModel_lvip_type').val(vip_type);        
-        // CCT END added
+        // CCT BEGIN added VIP
+        //var vip_type = 0;
+        //if($('#viptypeVIP').is(':checked'))
+        //{
+        //   vip_type = 1;
+        //}    
+        //else
+        //{
+        //   if($('#viptypeSVIP').is(':checked'))
+        //   {
+        //       vip_type = 2;
+        //   }
+        //}
+        ////$vip_type = vip_type;
+        //$('#StartSessionFormModel_vip_type').val(vip_type);
+        //$('#StartSessionFormModel_lvip_type').val(vip_type);        
+        // CCT END added VIP
         
         if (site_amount_info == 0)
         {
@@ -807,23 +807,23 @@ $(document).ready(function()
         var voucher_code = $('#StartSessionFormModel_voucher_code').val();
         var amount = '';
         var site_amount_info = $('#siteamountinfo').val();
-        // CCT BEGIN added
-        var vip_type = 0;
-        if($('#viptypeVIP').is(':checked'))
-        {
-           vip_type = 1;
-        }    
-        else
-        {
-           if($('#viptypeSVIP').is(':checked'))
-           {
-               vip_type = 2;
-           }
-        }
-        //$vip_type = vip_type;
-        $('#StartSessionFormModel_vip_type').val(vip_type);
-        $('#StartSessionFormModel_lvip_type').val(vip_type);        
-        // CCT END added
+        // CCT BEGIN added VIP
+        //var vip_type = 0;
+        //if($('#viptypeVIP').is(':checked'))
+        //{
+        //   vip_type = 1;
+        //}    
+        //else
+        //{
+        //   if($('#viptypeSVIP').is(':checked'))
+        //   {
+        //       vip_type = 2;
+        //   }
+        //}
+        ////$vip_type = vip_type;
+        //$('#StartSessionFormModel_vip_type').val(vip_type);
+        //$('#StartSessionFormModel_lvip_type').val(vip_type);        
+        // CCT END added VIP
         
         if (site_amount_info == 0)
         {
@@ -920,23 +920,23 @@ $(document).ready(function()
         var trace_number = $('#StartSessionFormModel_trace_number').val();
         var reference_number = $('#StartSessionFormModel_reference_number').val();
         var site_amount_info = $('#siteamountinfo').val();
-        // CCT BEGIN added
-        var vip_type = 0;
-        if($('#viptypeVIP').is(':checked'))
-        {
-           vip_type = 1;
-        }    
-        else
-        {
-           if($('#viptypeSVIP').is(':checked'))
-           {
-               vip_type = 2;
-           }
-        }
-        //$vip_type = vip_type;
-        $('#StartSessionFormModel_vip_type').val(vip_type);
-        $('#StartSessionFormModel_lvip_type').val(vip_type);        
-        // CCT END added
+        // CCT BEGIN added VIP
+        //var vip_type = 0;
+        //if($('#viptypeVIP').is(':checked'))
+        //{
+        //   vip_type = 1;
+        //}    
+        //else
+        //{
+        //   if($('#viptypeSVIP').is(':checked'))
+        //   {
+        //       vip_type = 2;
+        //   }
+        //}
+        ////$vip_type = vip_type;
+        //$('#StartSessionFormModel_vip_type').val(vip_type);
+        //$('#StartSessionFormModel_lvip_type').val(vip_type);        
+        // CCT END added VIP
 
         if (site_amount_info == 0)
         {

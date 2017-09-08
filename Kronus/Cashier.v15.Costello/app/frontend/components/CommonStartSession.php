@@ -23,7 +23,8 @@ class CommonStartSession
     public function start($terminal_id,$site_id, $trans_type, $paymentType, $service_id, $bcf, $initial_deposit, $acctid, 
         $loyalty_card='', $voucher_code = '', $trackingid = '',  $casinoUsername = '', $casinoPassword = '', 
         $casinoHashedPassword = '', $casinoServiceID = '', $mid = '', $userMode = '', $traceNumber='', $referenceNumber='', 
-        $locatorname = '', $CPV= '', $viptype = 0) // CCT added viptype
+        $locatorname = '', $CPV= '')
+        //$locatorname = '', $CPV= '', $viptype = 0) // CCT added viptype VIP
     {
         
         Mirage::loadComponents(array('CasinoApi','PCWSAPI.class'));
@@ -152,7 +153,8 @@ class CommonStartSession
         $trans_summary_max_id = null;
         $is_terminal_exist = $terminalSessionsModel->insert($terminal_id, $service_id, $initial_deposit, 
                 $trans_summary_max_id, $loyalty_card, $mid, $userMode, $casinoUsername, $casinoPassword, 
-                $casinoHashedPassword, $viptype); // CCT added viptype
+                $casinoHashedPassword); 
+                //$casinoHashedPassword, $viptype); // CCT added viptype VIP
         
         if(!$is_terminal_exist)
         {
@@ -337,7 +339,8 @@ class CommonStartSession
         {
             //this will return the transaction summary ID
             $trans_summary_id = $commonTransactionsModel->startTransaction($site_id, $terminal_id, $initial_deposit, 
-                $acctid, $udate, 'D', $paymentType, $service_id, $transstatus,$loyalty_card, $mid, $viptype); // CCT added viptype
+                $acctid, $udate, 'D', $paymentType, $service_id, $transstatus,$loyalty_card, $mid);
+                //$acctid, $udate, 'D', $paymentType, $service_id, $transstatus,$loyalty_card, $mid, $viptype); // CCT added viptype
             
             $transReqLogsModel->update($trans_req_log_last_id, $apiresult, $transstatus,$transrefid,$terminal_id);
             
@@ -357,21 +360,17 @@ class CommonStartSession
 //            $systemusername = $systemusername = Mirage::app()->param['pcwssysusername'];
 //            $pcwsapi->AddCompPoints($systemusername, $loyalty_card, $site_id, $service_id, $initial_deposit);
 // ------------------------------------>
-            // CCT BEGIN added
-            //
-            if (($viptype == 1) || $viptype == 2)  // If VIP, call ChangePlayerClassification
-            {
-                if(strpos($service_name, 'RTG') !== false) 
-                {
-                    $PID = $casinoApiHandler->GetPIDLogin($terminal_name);
-                    //$getPlayerClassResult = $casinoApi->GetPlayerClassification($terminal_id, $service_id, $PID);
-                    $changePlayerClassResult = $casinoApi->ChangePlayerClassification($terminal_id, $service_id, $PID, $viptype);    
-                    //logger("Here");
-                    //CasinoApi::throwError($getPlayerClassResult);
-                }
-            }
+            // CCT BEGIN added VIP
+            //if (($viptype == 1) || $viptype == 2)  // If VIP, call ChangePlayerClassification
+            //{
+            //    if(strpos($service_name, 'RTG') !== false) 
+            //    {
+            //        $PID = $casinoApiHandler->GetPIDLogin($terminal_name);
+            //        $changePlayerClassResult = $casinoApi->ChangePlayerClassification($terminal_id, $service_id, $PID, $viptype);    
+            //    }
+            //}
 // ------------------------------------>
-            // CCT END added
+            // CCT END added VIP
             
             $message = 'New player session started.The player initial playing balance is PhP ' . toMoney($initial_deposit);
 

@@ -12,11 +12,11 @@ $(document).ready(function()
     $('.bankContainer').hide();
      // CCT - BEGIN uncomment
     $('.hideControls').hide();
-    // CCT - BEGIN added
-    $('.hideControlsVIP').hide();
-    $('#StartSessionFormModel_vip_type').val(0);       
-    $('#StartSessionFormModel_lvip_type').val(0);      
-    // CCT - END added     
+    // CCT - BEGIN added VIP
+    //$('.hideControlsVIP').hide();
+    //$('#StartSessionFormModel_vip_type').val(0);       
+    //$('#StartSessionFormModel_lvip_type').val(0);      
+    // CCT - END added VIP    
         
     $('#StartSessionFormModel_loyalty_card').bind('keydown', function(event) 
     {
@@ -33,17 +33,17 @@ $(document).ready(function()
             {
                 $('.btnSubmit').focus();
                 $('#StartSessionFormModel_sel_amount').focus();
-                // CCT - BEGIN added
-                var terminalCode = $('#StartSessionFormModel_terminal_id > option:selected').html();
-                if (strpos(terminalCode, 'VIP') !== false) 
-                {
-                    if ($('#siteclassification').val() == 2) // Platinum
-                    {
-                        $('.hideControlsVIP').show();
-                        $('#viptypeVIP').attr('checked', 'checked');
-                    }
-                }
-                // CCT - END added                  
+                // CCT - BEGIN added VIP
+                //var terminalCode = $('#StartSessionFormModel_terminal_id > option:selected').html();
+                //if (strpos(terminalCode, 'VIP') !== false) 
+                //{
+                //    if ($('#siteclassification').val() == 2) // Platinum
+                //    {
+                //        $('.hideControlsVIP').show();
+                //        $('#viptypeVIP').attr('checked', 'checked');
+                //    }
+                //}
+                // CCT - END added VIP                 
                 return false;
             }
         }
@@ -51,11 +51,11 @@ $(document).ready(function()
         if(event.keyCode!=9)
         {
             $('.hideControls').hide();
-            // CCT - BEGIN added
-            $('.hideControlsVIP').hide();
-            $('#StartSessionFormModel_vip_type').val(0);
-            $('#StartSessionFormModel_lvip_type').val(0);                  
-            // CCT - END added             
+            // CCT - BEGIN added VIP
+            //$('.hideControlsVIP').hide();
+            //$('#StartSessionFormModel_vip_type').val(0);
+            //$('#StartSessionFormModel_lvip_type').val(0);                  
+            // CCT - END added VIP           
             $('.bankContainer').hide();
             isEwalletSessionMode = false;
             isValidated = false;
@@ -77,9 +77,9 @@ $(document).ready(function()
     <?php endif; ?>       
     <?php echo MI_HTML::inputHidden($startSessionFormModel, 'max_deposit'); ?>
     <?php echo MI_HTML::inputHidden($startSessionFormModel, 'min_deposit'); ?>
-    <!-- CCT BEGIN added -->
-    <?php echo MI_HTML::inputHidden($startSessionFormModel, 'lvip_type') ?> 
-    <!-- CCT END added -->
+    <!-- CCT BEGIN added VIP -->
+    <!-- <?php //echo MI_HTML::inputHidden($startSessionFormModel, 'lvip_type') ?> -->
+    <!-- CCT END added VIP-->
     <input type="hidden" name="acc_id" id="acc_id" value="<?php echo $_SESSION['accID'] ?>" />
     <input type="hidden" name="sitecode" id="sitecode" value="<?php echo $_SESSION['site_code'] ?>" />
     <input type="hidden" name="siteclassification" id="siteclassification" value="<?php echo $siteClassification; ?>" />
@@ -103,16 +103,18 @@ $(document).ready(function()
                 <!--<th colspan ="2"><center><a href="javascript:void(0);" id="get_info_card">Get Card Info</a></center></th>-->
                 <!--<td><b><a href="javascript:void(0);" id="register">Register</a></b></td>-->
             </tr>
-            <!-- CCT BEGIN ADDED -->
+            <!-- CCT BEGIN ADDED VIP -->
+            <!--
             <tr class='hideControlsVIP'>
-                <th><?php echo MI_HTML::label($startSessionFormModel, 'vip_type', 'VIP TYPE') ?></th>
+                <th><?php // echo MI_HTML::label($startSessionFormModel, 'vip_type', 'VIP TYPE') ?></th>
                 <td>
                     <div>
                         <input type="radio" id="viptypeVIP" name="vip_type" value="1"/> VIP <input type="radio" id="viptypeSVIP" name="vip_type" value="2"/> SVIP 
                     </div>
                 </td>
             </tr>
-            <!-- CCT END ADDED -->            
+            -->
+            <!-- CCT END ADDED VIP -->            
             <tr class='hideControls'>
                 <th><?php echo MI_HTML::label($startSessionFormModel, 'sel_amount', 'AMOUNT') ?></th>
                 <td>

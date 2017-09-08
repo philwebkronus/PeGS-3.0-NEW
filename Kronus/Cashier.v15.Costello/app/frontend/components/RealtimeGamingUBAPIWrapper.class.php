@@ -415,57 +415,57 @@ class RealtimeGamingUBAPIWrapper
         return $response = $this->_API->logoutPlayer( $PID );
     }
 
-    // CCT BEGIN added
-    public function GetPlayerClassification($pid)
-    {
-        $getPlayerClassResult = $this->_API->getPlayerClasification($pid);
-        if(!is_null($getPlayerClassResult))
-        {
-            $response = $getPlayerClassResult['GetPlayerClassResult']['Data'];
-            if($response == false)
-            {
-                $errormessage = $response['GetPlayerClassResult']['Data']['PlayerClass']['ClassID'];
-                //return array('IsSucceed'=>true, 'ErrorMessage'=>'RTG: Get player classification was successfully retrieved');
-                return array('IsSucceed'=>true, 'ErrorMessage'=>$errormessage);
-            }
-            else
-            {
-                $errorcoderesult = $getPlayerClassResult['GetPlayerClassResult']['ErrorCode'];
-                $errormessage = $getPlayerClassResult['GetPlayerClassResult']['Message'];
-                return array('IsSucceed'=>false, 'ErrorCode'=>$errorcoderesult,'ErrorMessage'=>$errormessage);
-            }
-        }
-        else
-        {
-            return array('IsSucceed'=>false, 'ErrorMessage'=>'Get player classification error');
-        }
-    }
+    // CCT BEGIN added VIP
+    //public function GetPlayerClassification($pid)
+    //{
+    //    $getPlayerClassResult = $this->_API->getPlayerClasification($pid);
+    //    if(!is_null($getPlayerClassResult))
+    //    {
+    //        $response = $getPlayerClassResult['GetPlayerClassResult']['Data'];
+    //        if($response == false)
+    //        {
+    //            $errormessage = $response['GetPlayerClassResult']['Data']['PlayerClass']['ClassID'];
+    //            //return array('IsSucceed'=>true, 'ErrorMessage'=>'RTG: Get player classification was successfully retrieved');
+    //            return array('IsSucceed'=>true, 'ErrorMessage'=>$errormessage);
+    //        }
+    //        else
+    //        {
+    //            $errorcoderesult = $getPlayerClassResult['GetPlayerClassResult']['ErrorCode'];
+    //            $errormessage = $getPlayerClassResult['GetPlayerClassResult']['Message'];
+    //            return array('IsSucceed'=>false, 'ErrorCode'=>$errorcoderesult,'ErrorMessage'=>$errormessage);
+    //        }
+    //    }
+    //    else
+    //    {
+    //        return array('IsSucceed'=>false, 'ErrorMessage'=>'Get player classification error');
+    //    }
+    //}
     
-    public function ChangePlayerClassification($pid, $playerClassID)
-    {
-        $changePlayerClassResult = $this->_API->changePlayerClasification($pid, $playerClassID);
-        if(!is_null($changePlayerClassResult))
-        {
-            if(isset($changePlayerClassResult['ChangePlayerClassResult']['HasErrors']))
-            {
-                $response = $changePlayerClassResult['ChangePlayerClassResult']['HasErrors'];
-                if($response == false)
-                {
-                    return array('IsSucceed'=>true, 'ErrorMessage'=>'RTG: Player Classification was successfully updated');
-                }
-                else
-                {
-                    $errorcoderesult = $changePlayerClassResult['ChangePlayerClassResult']['ErrorCode'];
-                    $errormessage = $changePlayerClassResult['ChangePlayerClassResult']['Message'];
-                    return array('IsSucceed'=>false, 'ErrorCode'=>$errorcoderesult,'ErrorMessage'=>$errormessage);
-                }
-            }
-        }
-        else
-        {
-            return array('IsSucceed'=>false, 'ErrorMessage'=>'Change player classification error');
-        }
-    }
-      // CCT END added
+    //public function ChangePlayerClassification($pid, $playerClassID)
+    //{
+    //    $changePlayerClassResult = $this->_API->changePlayerClasification($pid, $playerClassID);
+    //    if(!is_null($changePlayerClassResult))
+    //    {
+    //        if(isset($changePlayerClassResult['ChangePlayerClassResult']['HasErrors']))
+    //        {
+    //            $response = $changePlayerClassResult['ChangePlayerClassResult']['HasErrors'];
+    //            if($response == false)
+    //            {
+    //                return array('IsSucceed'=>true, 'ErrorMessage'=>'RTG: Player Classification was successfully updated');
+    //            }
+    //            else
+    //            {
+    //                $errorcoderesult = $changePlayerClassResult['ChangePlayerClassResult']['ErrorCode'];
+    //                $errormessage = $changePlayerClassResult['ChangePlayerClassResult']['Message'];
+    //                return array('IsSucceed'=>false, 'ErrorCode'=>$errorcoderesult,'ErrorMessage'=>$errormessage);
+    //            }
+    //        }
+    //    }
+    //    else
+    //    {
+    //        return array('IsSucceed'=>false, 'ErrorMessage'=>'Change player classification error');
+    //    }
+    //}
+      // CCT END added VIP
 }
 ?>

@@ -1,88 +1,3 @@
-<br />
-    <?php if($startSessionFormModel->error_count): ?>
-    <?php echo $startSessionFormModel->getErrorMessages(); ?>
-    <?php endif; ?>
-<form id="frmstartsessionsa">
-    <input type="hidden" name="mode" id="mode" />
-    <input type="hidden" name="acc_id" id="acc_id" value="<?php echo $_SESSION['accID'] ?>" />
-    <input type="hidden" name="sitecode" id="sitecode" value="<?php echo $_SESSION['site_code'] ?>" />
-    <input type="hidden" name="siteclassification" id="siteclassification" value="<?php echo $siteClassification; ?>" />
-    <input type="hidden" name="siteamountinfo" id="siteamountinfo" value="<?php echo $siteAmountInfo; ?>" />
-    <?php echo MI_HTML::inputHidden($startSessionFormModel, 'max_deposit') ?>
-    <?php echo MI_HTML::inputHidden($startSessionFormModel, 'min_deposit') ?>
-    <!-- CCT BEGIN added -->
-    <?php echo MI_HTML::inputHidden($startSessionFormModel, 'lvip_type') ?>
-    <!-- CCT END added -->    
-    <table class="standalonetbl">
-        <tr>
-            <th><?php echo MI_HTML::label($startSessionFormModel, 'terminal_id', 'Gaming Terminal'); ?></th>
-            <td><?php echo MI_HTML::dropDownArray($startSessionFormModel, 'terminal_id', $terminals, 'id', 'code', array(''=>'--Select Terminal--'), array(), array('class'=>'width204')) ?></td>
-        </tr>
-        <!--
-        // CCT - BEGIN uncomment
-        -->
-        <tr id="loyalty_card_tr">
-            <th><?php echo MI_HTML::label($startSessionFormModel, 'loyalty_card', 'Membership Card') ?></th>
-            <td><?php echo MI_HTML::inputPassword($startSessionFormModel, 'loyalty_card', array('class'=>'width200')) ?></td>
-        <!-- 
-        // CCT - END uncomment
-        -->        
-            <!--<td><a href="javascript:void(0);" id="get_info_card">Get Card Info</a><a style="display: none;" href="javascript:void(0);" id="register">Register</a></td>-->
-        <!--
-        // CCT - BEGIN uncomment
-        -->
-        </tr>
-        <!-- 
-        // CCT - END uncomment
-        -->
-        <!-- CCT BEGIN ADDED -->
-        <tr class='hideControlsVIP'>
-            <th><?php echo MI_HTML::label($startSessionFormModel, 'vip_type', 'VIP Type') ?></th>
-            <td>
-                <div>
-                    <input type="radio" id="viptypeVIP" name="vip_type" value="1"/> VIP <input type="radio" id="viptypeSVIP" name="vip_type" value="2"/> SVIP   
-                </div>
-            </td>
-        </tr>
-        <!-- CCT END ADDED -->         
-        <tr class='hideControls'>
-            <th><?php echo MI_HTML::label($startSessionFormModel, 'casino', 'Casino'); ?></th>
-            <td><?php echo MI_HTML::dropDown($startSessionFormModel, 'casino', array(''=>'Select Casino'), array(), array(), array('class'=>'width204'))  ?></td>
-        </tr>
-        <tr class='hideControls'>
-            <th><?php echo MI_HTML::label($startSessionFormModel, 'sel_amount', 'Initial Deposit'); ?></th>
-            <td><?php echo MI_HTML::dropDown($startSessionFormModel, 'sel_amount', array(''=>'Select Amount'),array(), array(), array('class'=>'width204')) ?></td>
-            <th>
-                <input type="checkbox" id="chkotheramount" disabled="disabled" name="chkotheramount"/>
-                <?php echo MI_HTML::label($startSessionFormModel, 'amount', 'Other Amount',array('id'=>'lblotheramount'))  ?>
-            </th>
-            <td><?php echo MI_HTML::inputText($startSessionFormModel, 'amount', array('disabled'=>'disabled','class'=>'auto','maxlength'=>8, 'class'=>'width200')) ?></td>
-        </tr>
-        <tr class="bankContainer hideControls">
-            <th>
-                <input type="checkbox" id="chkbancnet" disabled="disabled" name="chkbancnet"/>
-                <?php echo MI_HTML::label($startSessionFormModel, 'lblbancnet', 'Bancnet',array('id'=>'lblbancnet'))  ?>
-            </th>
-        </tr>
-        <tr class="bankContainer hideControls">
-            <th>
-                <?php echo MI_HTML::label($startSessionFormModel, 'lbl_traceNumber', 'Trace Number') ?>
-            </th>
-            <td><?php echo MI_HTML::inputText($startSessionFormModel, 'trace_number',array('class'=>'width200','maxlength'=>20, 'disabled'=>'disabled')); ?> <td>
-        </tr>
-        <tr class="bankContainer hideControls">
-            <th><?php echo MI_HTML::label($startSessionFormModel, 'lbl_refNumber', 'Reference Number') ?></th>
-            <td><?php echo MI_HTML::inputText($startSessionFormModel, 'reference_number',array('class'=>'width200','maxlength'=>20, 'disabled'=>'disabled')); ?><td>
-        </tr>
-        <tr class='hideControls'>
-            <th><?php echo MI_HTML::label($startSessionFormModel, 'voucher_code', 'Voucher Code') ?></th>
-            <td><?php echo MI_HTML::inputText($startSessionFormModel, 'voucher_code', array('maxlength'=>20,'class'=>'width200')) ?></td>
-        </tr>
-        <tr>
-            <td><input type="button" value="Start Session" id="btnstartsessionsa" class="btnSubmit"/></td>
-        </tr>
-    </table>
-</form>
 <?php Mirage::loadLibraries(array('CardScripts','LoyaltyScripts')); ?>
 <script type="text/javascript" src="jscripts/validation.js"></script> 
 <script type="text/javascript" src="jscripts/check_partner.js"></script>
@@ -104,17 +19,17 @@
                     
         if ($('#siteclassification').val() == 3)
         {
-              $('#loyalty_card_tr').css('display','none');
+            $('#loyalty_card_tr').css('display','none');
         }         
         
         // CCT - BEGIN uncomment
         $('.hideControls').hide();
         // CCT - END uncomment
-        // CCT - BEGIN added
-        $('.hideControlsVIP').hide();
-        $('#StartSessionFormModel_vip_type').val(0);           
-        $('#StartSessionFormModel_lvip_type').val(0);  
-        // CCT - END added    
+        // CCT - BEGIN added VIP
+        //$('.hideControlsVIP').hide();
+        //$('#StartSessionFormModel_vip_type').val(0);           
+        //$('#StartSessionFormModel_lvip_type').val(0);  
+        // CCT - END added VIP    
 
         $('#StartSessionFormModel_terminal_id').focus();
         $('#chkbancnet').removeAttr('disabled');
@@ -197,16 +112,23 @@
                     terminalCode = terminalCode.replace(/vip/i,'');
                     terminalCode = preffixCode+terminalCode;
 
+                    // CCT BEGIN Addded
+                    $('#btnstartsessionsa').attr('disabled','disabled'); 
+                    // CCT END Added
+
                     showLightbox(function()
                     {
                         url = '<?php echo Mirage::app()->createUrl('startsession') ?>';
                         data = $('#frmstartsessionsa').serialize();
-                        $.ajax({
+                        $.ajax(
+                        {
                             type : 'post',
                             data : data,
                             url : url,
-                            success : function(data){
-                                try {
+                            success : function(data)
+                            {
+                                try 
+                                {
                                     var json = $.parseJSON(data);
                                     <?php if($_SESSION['spyder_enabled'] == 0): ?>
                                     try 
@@ -236,7 +158,10 @@
                                 {
                                     alert('Oops! Something went wrong');
                                 }
-                                location.reload(true);
+                                //revised CCT BEGIN
+                                //location.reload(true);
+                                window.location.reload(true);
+                                //revised CCT END                                
                             },
                             error : function(e) 
                             {
@@ -250,8 +175,10 @@
         });
         
         // change denomination
-        $('#StartSessionFormModel_sel_amount').live('change',function(){
-            if($(this).val() != '--') {
+        $('#StartSessionFormModel_sel_amount').live('change',function()
+        {
+            if($(this).val() != '--') 
+            {
                 $('#StartSessionFormModel_amount').val($(this).children('option:selected').html());
                 if($(this).val() == '')
                     $('#StartSessionFormModel_amount').val('');
@@ -296,22 +223,22 @@
                             var json = $.parseJSON(data);
                             var casopt = '';
                             var opt = '';
-                            //alert(isvip);
+
                             if(json.usermode == 2)
                             {
                                 $('#loyalty_card_tr').css('display','none');
                                 $('#mode').val(json.usermode);
                                 $('.hideControls').show();
-                                // CCT - BEGIN added
-                                if($('#viptypeVIP').is(':checked') || $('#viptypeSVIP').is(':checked'))
-                                {
-                                    $('.hideControlsVIP').show();
-                                }    
-                                else
-                                {
-                                    $('.hideControlsVIP').hide();
-                                }
-                                // CCT - END added                                    
+                                // CCT - BEGIN added VIP
+                                //if($('#viptypeVIP').is(':checked') || $('#viptypeSVIP').is(':checked'))
+                                //{
+                                //    $('.hideControlsVIP').show();
+                                //}    
+                                //else
+                                //{
+                                //    $('.hideControlsVIP').hide();
+                                //}
+                                // CCT - END added VIP                                  
                             } 
                             else 
                             {
@@ -319,16 +246,16 @@
                                 // CCT - BEGIN uncomment
                                 $('.hideControls').hide();
                                 // CCT - END uncomment
-                                // CCT - BEGIN added
-                                if($('#viptypeVIP').is(':checked') || $('#viptypeSVIP').is(':checked'))
-                                {
-                                    $('.hideControlsVIP').show();
-                                }    
-                                else
-                                {
-                                    $('.hideControlsVIP').hide();
-                                }
-                                // CCT - END added                                    
+                                // CCT - BEGIN added VIP
+                                //if($('#viptypeVIP').is(':checked') || $('#viptypeSVIP').is(':checked'))
+                                //{
+                                //    $('.hideControlsVIP').show();
+                                //}    
+                                //else
+                                //{
+                                //    $('.hideControlsVIP').hide();
+                                //}
+                                // CCT - END added VIP                                   
                             }
                             $.each(json.denomination,function(k,v)
                             {
@@ -348,7 +275,10 @@
                         catch(e) 
                         {
                             alert('Oops! Something went wrong');
-                            location.reload(true);
+                            //revised CCT BEGIN
+                            //location.reload(true);
+                            window.location.reload(true);
+                            //revised CCT END                            
                         }
                     },
                     error : function(e)
@@ -363,9 +293,9 @@
             // CCT - BEGIN uncomment
             $('.hideControls').hide();
             // CCT - END uncomment
-            // CCT - BEGIN added
-            $('.hideControlsVIP').hide();
-            // CCT - END added    
+            // CCT - BEGIN added VIP
+            //$('.hideControlsVIP').hide();
+            // CCT - END added VIP   
         });
         
         $('#lblotheramount').click(function()
@@ -589,17 +519,17 @@
                 {
                     $('.btnSubmit').focus();
                     $('#StartSessionFormModel_sel_amount').focus();
-                    // CCT - BEGIN added
-                   var terminalCode = $('#StartSessionFormModel_terminal_id > option:selected').html();
-                   if (strpos(terminalCode, 'VIP') !== false) 
-                   {
-                        if ($('#siteclassification').val() == 2) // Platinum
-                        {
-                            $('.hideControlsVIP').show();
-                            $('#viptypeVIP').attr('checked', 'checked');
-                        }
-                   }
-                   // CCT - END added  
+                    // CCT - BEGIN added VIP
+                   //var terminalCode = $('#StartSessionFormModel_terminal_id > option:selected').html();
+                   //if (strpos(terminalCode, 'VIP') !== false) 
+                   //{
+                   //     if ($('#siteclassification').val() == 2) // Platinum
+                   //     {
+                   //         $('.hideControlsVIP').show();
+                   //         $('#viptypeVIP').attr('checked', 'checked');
+                   //     }
+                   //}
+                   // CCT - END added VIP
                     return false;
                 }
             }
@@ -608,11 +538,11 @@
             {
                 $('.hideControls').hide();
                 $('.bankContainer').hide();
-                // CCT - BEGIN added
-                $('.hideControlsVIP').hide();
-                $('#StartSessionFormModel_vip_type').val(0);                
-                $('#StartSessionFormModel_lvip_type').val(0);  
-                // CCT - END added                    
+                // CCT - BEGIN added VIP
+                //$('.hideControlsVIP').hide();
+                //$('#StartSessionFormModel_vip_type').val(0);                
+                //$('#StartSessionFormModel_lvip_type').val(0);  
+                // CCT - END added VIP         
                 isEwalletSessionMode = false;
                 isValidated = false;
 
@@ -635,6 +565,94 @@
                 document.getElementById('StartSessionFormModel_sel_amount').selectedIndex = 0;
             }
        });
-    // CCT - END uncomment
+       // CCT - END uncomment
     })
 </script>
+<br />
+<?php if($startSessionFormModel->error_count): ?>
+    <?php echo $startSessionFormModel->getErrorMessages(); ?>
+<?php endif; ?>
+<form id="frmstartsessionsa">
+    <input type="hidden" name="mode" id="mode" />
+    <input type="hidden" name="acc_id" id="acc_id" value="<?php echo $_SESSION['accID'] ?>" />
+    <input type="hidden" name="sitecode" id="sitecode" value="<?php echo $_SESSION['site_code'] ?>" />
+    <input type="hidden" name="siteclassification" id="siteclassification" value="<?php echo $siteClassification; ?>" />
+    <input type="hidden" name="siteamountinfo" id="siteamountinfo" value="<?php echo $siteAmountInfo; ?>" />
+    <?php echo MI_HTML::inputHidden($startSessionFormModel, 'max_deposit') ?>
+    <?php echo MI_HTML::inputHidden($startSessionFormModel, 'min_deposit') ?>
+    <!-- CCT BEGIN added VIP -->
+    <!-- <?php //echo MI_HTML::inputHidden($startSessionFormModel, 'lvip_type') ?> -->
+    <!-- CCT END added VIP -->    
+    <table class="standalonetbl">
+        <tr>
+            <th><?php echo MI_HTML::label($startSessionFormModel, 'terminal_id', 'Gaming Terminal'); ?></th>
+            <td><?php echo MI_HTML::dropDownArray($startSessionFormModel, 'terminal_id', $terminals, 'id', 'code', array(''=>'--Select Terminal--'), array(), array('class'=>'width204')) ?></td>
+        </tr>
+        <!--
+        // CCT - BEGIN uncomment
+        -->
+        <tr id="loyalty_card_tr">
+            <th><?php echo MI_HTML::label($startSessionFormModel, 'loyalty_card', 'Membership Card') ?></th>
+            <td><?php echo MI_HTML::inputPassword($startSessionFormModel, 'loyalty_card', array('class'=>'width200')) ?></td>
+        <!-- 
+        // CCT - END uncomment
+        -->        
+            <!--<td><a href="javascript:void(0);" id="get_info_card">Get Card Info</a><a style="display: none;" href="javascript:void(0);" id="register">Register</a></td>-->
+        <!--
+        // CCT - BEGIN uncomment
+        -->
+        </tr>
+        <!-- 
+        // CCT - END uncomment
+        -->
+        <!-- CCT BEGIN ADDED VIP -->
+        <!--
+        <tr class='hideControlsVIP'>
+            <th><?php //echo MI_HTML::label($startSessionFormModel, 'vip_type', 'VIP Type') ?></th>
+            <td>
+                <div>
+                    <input type="radio" id="viptypeVIP" name="vip_type" value="1"/> VIP <input type="radio" id="viptypeSVIP" name="vip_type" value="2"/> SVIP   
+                </div>
+            </td>
+        </tr>
+        -->
+        <!-- CCT END ADDED VIP -->         
+        <tr class='hideControls'>
+            <th><?php echo MI_HTML::label($startSessionFormModel, 'casino', 'Casino'); ?></th>
+            <td><?php echo MI_HTML::dropDown($startSessionFormModel, 'casino', array(''=>'Select Casino'), array(), array(), array('class'=>'width204'))  ?></td>
+        </tr>
+        <tr class='hideControls'>
+            <th><?php echo MI_HTML::label($startSessionFormModel, 'sel_amount', 'Initial Deposit'); ?></th>
+            <td><?php echo MI_HTML::dropDown($startSessionFormModel, 'sel_amount', array(''=>'Select Amount'),array(), array(), array('class'=>'width204')) ?></td>
+            <th>
+                <input type="checkbox" id="chkotheramount" disabled="disabled" name="chkotheramount"/>
+                <?php echo MI_HTML::label($startSessionFormModel, 'amount', 'Other Amount',array('id'=>'lblotheramount'))  ?>
+            </th>
+            <td><?php echo MI_HTML::inputText($startSessionFormModel, 'amount', array('disabled'=>'disabled','class'=>'auto','maxlength'=>8, 'class'=>'width200')) ?></td>
+        </tr>
+        <tr class="bankContainer hideControls">
+            <th>
+                <input type="checkbox" id="chkbancnet" disabled="disabled" name="chkbancnet"/>
+                <?php echo MI_HTML::label($startSessionFormModel, 'lblbancnet', 'Bancnet',array('id'=>'lblbancnet'))  ?>
+            </th>
+        </tr>
+        <tr class="bankContainer hideControls">
+            <th>
+                <?php echo MI_HTML::label($startSessionFormModel, 'lbl_traceNumber', 'Trace Number') ?>
+            </th>
+            <td><?php echo MI_HTML::inputText($startSessionFormModel, 'trace_number',array('class'=>'width200','maxlength'=>20, 'disabled'=>'disabled')); ?> <td>
+        </tr>
+        <tr class="bankContainer hideControls">
+            <th><?php echo MI_HTML::label($startSessionFormModel, 'lbl_refNumber', 'Reference Number') ?></th>
+            <td><?php echo MI_HTML::inputText($startSessionFormModel, 'reference_number',array('class'=>'width200','maxlength'=>20, 'disabled'=>'disabled')); ?><td>
+        </tr>
+        <tr class='hideControls'>
+            <th><?php echo MI_HTML::label($startSessionFormModel, 'voucher_code', 'Voucher Code') ?></th>
+            <td><?php echo MI_HTML::inputText($startSessionFormModel, 'voucher_code', array('maxlength'=>20,'class'=>'width200')) ?></td>
+        </tr>
+        <tr>
+            <!--<td><input type="button" value="Start Session" id="btnstartsessionsa" class="btnSubmit"/></td>-->
+            <td><input type="button" value="Start Session" id="btnstartsessionsa"/></td>
+        </tr>
+    </table>
+</form>

@@ -55,24 +55,24 @@ class CasinoApi
             }
         }
 
-        //CCT BEGIN added
-        if ($APIType == 1) // Player API
-        {
-            $configuration = array( 'URI' =>Mirage::app()->param['service_api'][$serverid - 1],
-                    'URI_PID' =>Mirage::app()->param['game_api'][$serverid - 1],
-                    'URI_PID2' =>Mirage::app()->param['player_api'][$serverid - 1],
-                    'isCaching' => FALSE,
-                    'isDebug' => TRUE,
-                    'certFilePath' => Mirage::app()->param['rtg_cert_dir'] . $serverid . '/cert-key.pem',
-                    'keyFilePath' => Mirage::app()->param['rtg_cert_dir'] . $serverid . '/cert-key.pem',
-                    'depositMethodId' => Mirage::app()->param['deposit_method_id'],
-                    'withdrawalMethodId' => Mirage::app()->param['withdrawal_method_id'],
-                    'CasinoService' => $CPV,
-                    'APIType' => $APIType);            
-        }
-        else
-        {
-        //CCT END added
+        //CCT BEGIN added VIP
+        //if ($APIType == 1) // Player API
+        //{
+        //    $configuration = array( 'URI' =>Mirage::app()->param['service_api'][$serverid - 1],
+        //            'URI_PID' =>Mirage::app()->param['game_api'][$serverid - 1],
+        //            'URI_PID2' =>Mirage::app()->param['player_api'][$serverid - 1],
+        //            'isCaching' => FALSE,
+        //            'isDebug' => TRUE,
+        //            'certFilePath' => Mirage::app()->param['rtg_cert_dir'] . $serverid . '/cert-key.pem',
+        //            'keyFilePath' => Mirage::app()->param['rtg_cert_dir'] . $serverid . '/cert-key.pem',
+        //            'depositMethodId' => Mirage::app()->param['deposit_method_id'],
+        //            'withdrawalMethodId' => Mirage::app()->param['withdrawal_method_id'],
+        //            'CasinoService' => $CPV,
+        //            'APIType' => $APIType);            
+        //}
+        //else
+        //{
+        //CCT END added VIP
             $configuration = array( 'URI' =>Mirage::app()->param['service_api'][$serverid - 1],
                     'URI_PID' =>Mirage::app()->param['game_api'][$serverid - 1],
                     'URI_PID2' =>Mirage::app()->param['player_api'][$serverid - 1],
@@ -84,9 +84,9 @@ class CasinoApi
                     'withdrawalMethodId' => Mirage::app()->param['withdrawal_method_id'],
                     'CasinoService' => $CPV,
                     'APIType' => $APIType);
-        //CCT BEGIN added            
-        }
-        //CCT END added
+        //CCT BEGIN added VIP         
+        //}
+        //CCT END added VIP
         
          $_CasinoAPIHandler = new CasinoCAPIHandler( CasinoCAPIHandler::RTG, $configuration );
          
@@ -904,20 +904,19 @@ class CasinoApi
         return $pendingGames;
     }
     
+    // CCT BEGIN added VIP
+    //public function GetPlayerClassification($terminal_id, $service_id, $pid)
+    //{
+    //    $casinoApiHandler = $this->configureRTG($terminal_id, $service_id, 1); // Player API
+    //    $response = $casinoApiHandler->GetPlayerClassification($pid);
+    //    return $response;
+    //}
     
-    // CCT BEGIN added    
-    public function GetPlayerClassification($terminal_id, $service_id, $pid)
-    {
-        $casinoApiHandler = $this->configureRTG($terminal_id, $service_id, 1); // Player API
-        $response = $casinoApiHandler->GetPlayerClassification($pid);
-        return $response;
-    }
-    
-    public function ChangePlayerClassification($terminal_id, $service_id, $pid, $playerClassID)
-    {
-        $casinoApiHandler = $this->configureRTG($terminal_id, $service_id, 1); // Player API
-        $response = $casinoApiHandler->ChangePlayerClassification($pid, $playerClassID);
-        return $response;
-    }
-    // CCT END added    
+    //public function ChangePlayerClassification($terminal_id, $service_id, $pid, $playerClassID)
+    //{
+    //    $casinoApiHandler = $this->configureRTG($terminal_id, $service_id, 1); // Player API
+    //    $response = $casinoApiHandler->ChangePlayerClassification($pid, $playerClassID);
+    //    return $response;
+    //}
+    // CCT END added VIP
 }

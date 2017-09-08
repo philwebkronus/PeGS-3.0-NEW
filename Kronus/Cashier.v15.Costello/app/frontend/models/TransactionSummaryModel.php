@@ -7,11 +7,17 @@
  */
 class TransactionSummaryModel extends MI_Model
 {
-    public function insert($site_id,$terminal_id,$amount,$acctid, $vip_type = 0) // CCT Added vip_type
+    public function insert($site_id,$terminal_id,$amount,$acctid)
+    //public function insert($site_id,$terminal_id,$amount,$acctid, $vip_type = 0) // CCT Added vip_type VIP
     {
-        $sql = 'INSERT INTO transactionsummary (SiteID, TerminalID, Deposit, DateStarted, DateEnded, CreatedByAID, OptionID1) ' .
-                'VALUES (:site_id, :terminal_id, :amount, now(6), \'0\', :acctid, :vip_type)'; // CCT added vip_type and OptionID1
-        $param = array(':site_id'=>$site_id,':terminal_id'=>$terminal_id,':amount'=>$amount,':acctid'=>$acctid, ':vip_type'=>vip_type);
+        //$sql = 'INSERT INTO transactionsummary (SiteID, TerminalID, Deposit, DateStarted, DateEnded, CreatedByAID, OptionID1) ' .
+        //        'VALUES (:site_id, :terminal_id, :amount, now(6), \'0\', :acctid, :vip_type)'; // CCT added vip_type and OptionID1
+
+        $sql = 'INSERT INTO transactionsummary (SiteID, TerminalID, Deposit, DateStarted, DateEnded, CreatedByAID) ' .
+                'VALUES (:site_id, :terminal_id, :amount, now(6), \'0\', :acctid)'; 
+
+        //$param = array(':site_id'=>$site_id,':terminal_id'=>$terminal_id,':amount'=>$amount,':acctid'=>$acctid, ':vip_type'=>vip_type);
+        $param = array(':site_id'=>$site_id,':terminal_id'=>$terminal_id,':amount'=>$amount,':acctid'=>$acctid);
         return $this->exec($sql,$param);
     }
     

@@ -88,7 +88,8 @@ class TerminalSessionsModel extends MI_Model
      * @return type
      */
     public function insert($terminal_id,$service_id,$amount,$trans_summary_id, $loyalty_card, $mid, $user_mode, 
-            $casino_login = '', $casino_pwd = '', $casinohashed_pwd = '', $vip_type = 0) // CCT Added vip_type
+            $casino_login = '', $casino_pwd = '', $casinohashed_pwd = '') 
+            //$casino_login = '', $casino_pwd = '', $casinohashed_pwd = '', $vip_type = 0) // CCT Added vip_type VIP
     {
 
         if($loyalty_card == '')
@@ -98,11 +99,17 @@ class TerminalSessionsModel extends MI_Model
         try 
         {
             $this->beginTransaction();
+            //$sql = 'INSERT INTO terminalsessions (TerminalID, ServiceID, DateStarted, LastBalance, LastTransactionDate, 
+            //    TransactionSummaryID, LoyaltyCardNumber, MID, UserMode, UBServiceLogin, UBServicePassword, 
+            //    UBHashedServicePassword, OptionID1) 
+            //    VALUES (:terminal_id, :service_id, now(6), :amount, now(6), :trans_summary_id, :loyalty_card, :mid, 
+            //    :user_mode, :casino_login, :casino_pwd, :casinohashed_pwd, :vip_type)'; // CCT added vip_type and OptionID1
+
             $sql = 'INSERT INTO terminalsessions (TerminalID, ServiceID, DateStarted, LastBalance, LastTransactionDate, 
                 TransactionSummaryID, LoyaltyCardNumber, MID, UserMode, UBServiceLogin, UBServicePassword, 
-                UBHashedServicePassword, OptionID1) 
+                UBHashedServicePassword) 
                 VALUES (:terminal_id, :service_id, now(6), :amount, now(6), :trans_summary_id, :loyalty_card, :mid, 
-                :user_mode, :casino_login, :casino_pwd, :casinohashed_pwd, :vip_type)'; // CCT added vip_type and OptionID1
+                :user_mode, :casino_login, :casino_pwd, :casinohashed_pwd)';
 
             $stmt = $this->dbh->prepare($sql);
 
@@ -116,9 +123,9 @@ class TerminalSessionsModel extends MI_Model
             $stmt->bindValue(':casino_login', $casino_login);
             $stmt->bindValue(':casino_pwd', $casino_pwd);
             $stmt->bindValue(':casinohashed_pwd', $casinohashed_pwd);
-            //CCT BEGIN added
-            $stmt->bindValue(':vip_type', $vip_type);
-            //CCT END added
+            //CCT BEGIN added VIP
+            //$stmt->bindValue(':vip_type', $vip_type);
+            //CCT END added VIP
             if($stmt->execute())
             {
                 try 

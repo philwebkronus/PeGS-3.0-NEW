@@ -22,16 +22,22 @@ class CommonTransactionsModel extends MI_Model{
      * @return int | boolean  $trans_summary_max_id
      */
     public function startTransaction($site_id,$terminal_id,$amount,$acctid, $trans_ref_id, $trans_type, $paymentType,
-             $service_id,$trans_status, $loyalty_card, $mid, $viptype = 0) // CCT added viptype
+             $service_id,$trans_status, $loyalty_card, $mid)
+             //$service_id,$trans_status, $loyalty_card, $mid, $viptype = 0) // CCT added viptype VIP
     {
         $beginTrans = $this->beginTransaction();
         
         try
         {
+            //$stmt = $this->dbh->prepare('INSERT INTO transactionsummary (SiteID, TerminalID, Deposit, DateStarted, DateEnded, 
+            //                            CreatedByAID, LoyaltyCardNumber,MID, OptionID1) 
+            //                            VALUES (:site_id, :terminal_id, :amount, now(6), \'0\', 
+            //                            :acctid, :loyalty_card, :mid, :viptype)'); // CCT added OptionID1, viptype VIP
+
             $stmt = $this->dbh->prepare('INSERT INTO transactionsummary (SiteID, TerminalID, Deposit, DateStarted, DateEnded, 
-                                        CreatedByAID, LoyaltyCardNumber,MID, OptionID1) 
+                                        CreatedByAID, LoyaltyCardNumber,MID) 
                                         VALUES (:site_id, :terminal_id, :amount, now(6), \'0\', 
-                                        :acctid, :loyalty_card, :mid, :viptype)'); // CCT added OptionID1, viptype
+                                        :acctid, :loyalty_card, :mid)');
             
             $stmt->bindValue(':site_id', $site_id);
             $stmt->bindValue(':terminal_id', $terminal_id);
@@ -39,9 +45,9 @@ class CommonTransactionsModel extends MI_Model{
             $stmt->bindValue(':acctid', $acctid);
             $stmt->bindValue(':loyalty_card', $loyalty_card);
             $stmt->bindValue(':mid', $mid);
-            // CCT BEGIN added
-            $stmt->bindValue(':viptype', $viptype);
-            // CCT END added
+            // CCT BEGIN added VIP
+            //$stmt->bindValue(':viptype', $viptype);
+            // CCT END added VIP
                     
             if($stmt->execute()) 
             {
