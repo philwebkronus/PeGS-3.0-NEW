@@ -116,7 +116,8 @@ if(isset($_SESSION['acctype']))
         <input type="button" value="Search" id="btnsearch"/>
     </div>
     <br />
-        <div  id="tblgrosshold" style="display: none;width: 1390px; overflow-x: scroll; overflow-y: hidden; height: 360px; ">
+        <!-- <div  id="tblgrosshold" style="display: none;width: 1390px; overflow-x: scroll; overflow-y: hidden; height: 360px; "> -->
+        <div  id="tblgrosshold" style="display: none;width: 1390px; overflow-x: scroll; overflow-y: hidden; height: 100%; "> 
                 <table id="tblgrossholdbody"></table>
         </div>
     <br/>
