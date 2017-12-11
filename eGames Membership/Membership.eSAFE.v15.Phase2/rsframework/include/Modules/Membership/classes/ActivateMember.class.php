@@ -139,7 +139,8 @@ class ActivateMember extends BaseEntity
         $arrMemberInfo['IsCompleteInfo'] = $result2[0]['IsCompleteInfo'];
         $arrMemberInfo['DateCreated'] = 'NOW(6)';
         $arrMemberInfo['DateVerified'] = $result[0]['DateVerified'];                
-        $arrMemberInfo['ReferrerCode'] = $result2[0]['ReferrerCode'];   
+        $arrMemberInfo['ReferrerCode'] = $result2[0]['ReferrerCode'];
+         
         try
         {
                 $IsInsert = $this->insertMembers($arrMembers, $arrMemberInfo);
@@ -182,7 +183,8 @@ class ActivateMember extends BaseEntity
                             if(!App::HasError())
                             {
                                 $this->CommitTransaction();
-
+/*                                
+ * CCT COMMENT 12/11/2017 - BEGIN
                                 $this->StartTransaction();
 
                                 App::LoadModuleClass("CasinoProvider", "PlayTechAPI");
@@ -478,6 +480,12 @@ class ActivateMember extends BaseEntity
                                 {
                                     return array("MID"=>$this->MID,"status"=>'error',"apierror"=>$apierror, "password"=>$accountpassword);
                                 }
+ * CCT COMMENT 12/11/2017 - END
+*/                          
+                            // CCT 12/11/2017 BEGIN - moved this here
+                            $apierror = '';
+                            return array("MID"=>$this->MID,"status"=>'OK',"apierror"=>$apierror, "password"=>$accountpassword);
+                            // CCT 12/11/2017 END - moved this here
                             }
                             else
                             {
