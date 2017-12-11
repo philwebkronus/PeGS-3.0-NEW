@@ -1941,9 +1941,9 @@ class TopUp extends DBHandler
             // CCT Added Status = Active filtering              
             $query = "SELECT s.SiteID, s.POSAccountNo, s.SiteName, IFNULL(sb.Balance, 0) AS BCF,
                         (SELECT IFNULL(SUM(mr.ActualAmount), 0)
-                         FROM sites s LEFT JOIN -- Added
+                         FROM -- sites s LEFT JOIN -- Added
                             manualredemptions mr
-                            ON s.SiteID = mr.SiteID
+                            -- ON s.SiteID = mr.SiteID
                          WHERE mr.TransactionDate >= ? AND mr.TransactionDate < ? 
                              AND s.Status = 1 -- Added
                              AND mr.SiteID = s.SiteID)  AS ManualRedemption,
