@@ -7,13 +7,13 @@ include 'BaseProcess.php';
  * modified by Edson L. Perez
  */
 
-
-class ProcessTopUpPaginate extends BaseProcess {
-    
+class ProcessTopUpPaginate extends BaseProcess 
+{
     /**
      * Gross Hold Monitoring Page Overview, pass list of sites on this page
      */
-    public function grossHoldMonitoring() {
+    public function grossHoldMonitoring() 
+    {
         include_once __DIR__.'/../sys/class/TopUp.class.php';
         $topup = new TopUp($this->getConnection());
         $topup->open();
@@ -22,7 +22,8 @@ class ProcessTopUpPaginate extends BaseProcess {
         $topup->close();
     }
     
-    public function grossHoldMonitoring2() {
+    public function grossHoldMonitoring2() 
+    {
         include_once __DIR__.'/../sys/class/TopUp.class.php';
         $topup = new TopUp($this->getConnection());
         $topup->open();
@@ -34,7 +35,8 @@ class ProcessTopUpPaginate extends BaseProcess {
     /**
      * Gross Hold Monitoring Page Overview, pass list of sites on this page
      */
-    public function pagcorGrossHoldMonitoring() {
+    public function pagcorGrossHoldMonitoring() 
+    {
         include_once __DIR__.'/../sys/class/TopUp.class.php';
         $topup = new TopUp($this->getConnection());
         $topup->open();
@@ -44,7 +46,8 @@ class ProcessTopUpPaginate extends BaseProcess {
     }
     
     //pagination for Gross Hold Monitoring
-    public function getdata() {
+    public function getdata() 
+    {
         include_once __DIR__.'/../sys/class/TopUp.class.php';
         
         $startdate = date('Y-m-d')." ".BaseProcess::$cutoff;
@@ -57,17 +60,16 @@ class ProcessTopUpPaginate extends BaseProcess {
 //            
         $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startdate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff; 
         
-        // to check if greater than 1 day
-        // since this program must support current cut-off,
-        // all dates GT or LT current cut-off
-        // must not permitted to retrieve data     
+        // to check if greater than 1 day, since this program must support current cut-off,
+        // all dates GT or LT current cut-off must not permitted to retrieve data     
         
         $topup = new TopUp($this->getConnection());
         $topup->open();
         $dir = $_GET['sord'];
         $sort = "POSAccountNo";
 
-        if(strlen($_GET['sidx']) > 0){
+        if(strlen($_GET['sidx']) > 0)
+        {
             $sort = $_GET['sidx'];
         }
         ob_get_clean();
@@ -77,7 +79,8 @@ class ProcessTopUpPaginate extends BaseProcess {
         ini_set('memory_limit', '-1'); 
         ini_set('max_execution_time', '220');
         $arrdetails = array();
-        foreach($rows as $id => $row) {
+        foreach($rows as $id => $row) 
+        {
             $gross_hold = ((($row['Deposit'] + $row['Reload']) - ($row['Redemption'])) - $row['ActualAmount']);
             $cashonhand =((($row['DepositCash'] + $row['ReloadCash']) - $row['RedemptionCashier']) - $row['ActualAmount']) - $row["EncashedTickets"];
             $endingbalance = ($cashonhand+$row['Replenishment']) - $row['Collection'];
@@ -105,28 +108,37 @@ class ProcessTopUpPaginate extends BaseProcess {
                         "Location"=>$row['Location'],
                     );        
             
-                    if($_GET['sellocation'] != '') {
-                        if($row['Location'] != $_GET['sellocation']) {
-                            continue;
-                        }
-                    }            
+            if($_GET['sellocation'] != '') 
+            {
+                if($row['Location'] != $_GET['sellocation']) 
+                {
+                    continue;
+                }
+            }            
 
             //check the amount range
-            if(isset($_GET['comp1']) && isset($_GET['comp2']) && $_GET['comp1'] != '' && $_GET['comp2'] != '') {
+            if(isset($_GET['comp1']) && isset($_GET['comp2']) && $_GET['comp1'] != '' && $_GET['comp2'] != '') 
+            {
                 $val1 = str_replace(',', '', $_GET['num1']);
                 $val2 = str_replace(',', '', $_GET['num2']);
                 $comp1 = $_GET['comp1'];
                 $comp2 = $_GET['comp2'];
-                if(eval("return \$gross_hold $comp1 \$val1;") && eval("return \$gross_hold $comp2 \$val2;")) {
+                if(eval("return \$gross_hold $comp1 \$val1;") && eval("return \$gross_hold $comp2 \$val2;")) 
+                {
                     $arrdetails[] = $temp;
                 }
-            } else if(isset($_GET['comp1']) && $_GET['comp1'] != '') {
+            } 
+            else if(isset($_GET['comp1']) && $_GET['comp1'] != '') 
+            {
                 $val1 = str_replace(',', '', $_GET['num1']);
                 $comp1 = $_GET['comp1'];
-                if(eval("return \$gross_hold $comp1 \$val1;")) {                    
+                if(eval("return \$gross_hold $comp1 \$val1;")) 
+                {                    
                     $arrdetails[] = $temp;
                 }               
-            } else {
+            } 
+            else 
+            {
                 $arrdetails[] = $temp;
             }
         }
@@ -138,8 +150,8 @@ class ProcessTopUpPaginate extends BaseProcess {
         exit;
     }
     
-    
-    public function getdata2() {
+    public function getdata2() 
+    {
         include_once __DIR__.'/../sys/class/TopUp.class.php';
         
         $startdate = date('Y-m-d')." ".BaseProcess::$cutoff;
@@ -152,19 +164,19 @@ class ProcessTopUpPaginate extends BaseProcess {
 //            
         $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startdate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff; 
         
-        // to check if greater than 1 day
-        // since this program must support current cut-off,
-        // all dates GT or LT current cut-off
-        // must not permitted to retrieve data     
+        // to check if greater than 1 day, since this program must support current cut-off,
+        // all dates GT or LT current cut-off must not permitted to retrieve data     
         
         $topup = new TopUp($this->getConnection());
         $topup->open();
         $dir = $_GET['sord'];
         $sort = "POSAccountNo";
-
-        if(strlen($_GET['sidx']) > 0){
+        
+        if(strlen($_GET['sidx']) > 0)
+        {
             $sort = $_GET['sidx'];
         }
+        
         ob_get_clean();
         
         //array containing complete details
@@ -173,23 +185,21 @@ class ProcessTopUpPaginate extends BaseProcess {
         ini_set('max_execution_time', '220');
         $arrdetails = array();
 
-        foreach($rows as $id => $row) {
+        foreach($rows as $id => $row) 
+        {
             $gross_hold = ((($row['Deposit'] + $row['Reload'] + $row['EwalletLoads']) - ($row['Redemption'] - $row['EwalletWithdrawal'])) - $row['ActualAmount']);
             /****************Grosshold Monitoring V1 Computation***********************/
-            if ($startdate < BaseProcess::$deploymentdate) {
-                  // echo "((".$regularCash ."+".$loadcoupon." + ". $esafeCash. "+". $ewalletloadcoupon.")". "-(". $redemptioncashier. "+". $ewalletwithdrawal.")". "-". $encashedtickets.")". "-". $manualredemption;exit;
-                 // var_dump( "((((".$row['DepositCash']. "+" .$row['Coupon']. "+" .$row['ReloadCash'] ."+". $row['EwalletCashLoads']. "+" .$row['ewalletCoupon'].") - (". $row['RedemptionCashier']."+". $row['RedemptionGenesis']."+". $row['EwalletWithdrawal'].") -".$row['ActualAmount'].") -". $row["EncashedTicketsV2"]); exit;
+            if ($startdate < BaseProcess::$deploymentdate) 
+            {
                 $cashonhand = (($row['DepositCash'] + $row['Coupon'] + $row['ReloadCash'] + $row['EwalletCashLoads'] + $row['ewalletCoupon']) - ($row['RedemptionCashier'] + $row['EwalletWithdrawal']) - $row['ActualAmount']) - $row["EncashedTicketsV2"];
                 $endingbalance = ($cashonhand + $row['Replenishment']) - $row['Collection'];    
             }
             /****************Grosshold Monitoring V2 Computation***********************/
-            else {
+            else 
+            {
                 $cashonhand = (($row['DepositCash'] + $row['Coupon'] + $row['ReloadCash'] + $row['EwalletCashLoads'] + $row['ewalletCoupon'] + $row['LoadTickets']) - ($row['TotalRedemption'] + $row['EwalletWithdrawal']) - $row['ActualAmount']) - $row["EncashedTicketsV2"];
                 $endingbalance = ($cashonhand + $row['Replenishment'] ) - $row['Collection'];
             }
-//            if($row['SiteID'] == 167){
-//                var_dump($row['Replenishment'],$row['Collection'],$endingbalance, $cashonhand, $row['DepositCash'],$row['ReloadCash'],$row['EwalletCashLoads'],$row['RedemptionCashier'],$row['ActualAmount'],$row["EncashedTickets"], $row['EwalletWithdrawal']);exit;
-//            }
             $temp = array(
                         "SiteName"=>$row['SiteName'],
 //                        "SiteCode"=>substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
@@ -214,28 +224,37 @@ class ProcessTopUpPaginate extends BaseProcess {
                         "Location"=>$row['Location'],
                     );        
             
-                    if($_GET['sellocation'] != '') {
-                        if($row['Location'] != $_GET['sellocation']) {
-                            continue;
-                        }
-                    }            
+            if($_GET['sellocation'] != '') 
+            {
+                if($row['Location'] != $_GET['sellocation']) 
+                {
+                    continue;
+                }
+            }            
 
             //check the amount range
-            if(isset($_GET['comp1']) && isset($_GET['comp2']) && $_GET['comp1'] != '' && $_GET['comp2'] != '') {
+            if(isset($_GET['comp1']) && isset($_GET['comp2']) && $_GET['comp1'] != '' && $_GET['comp2'] != '') 
+            {
                 $val1 = str_replace(',', '', $_GET['num1']);
                 $val2 = str_replace(',', '', $_GET['num2']);
                 $comp1 = $_GET['comp1'];
                 $comp2 = $_GET['comp2'];
-                if(eval("return \$gross_hold $comp1 \$val1;") && eval("return \$gross_hold $comp2 \$val2;")) {
+                if(eval("return \$gross_hold $comp1 \$val1;") && eval("return \$gross_hold $comp2 \$val2;")) 
+                {
                     $arrdetails[] = $temp;
                 }
-            } else if(isset($_GET['comp1']) && $_GET['comp1'] != '') {
+            } 
+            else if(isset($_GET['comp1']) && $_GET['comp1'] != '') 
+            {
                 $val1 = str_replace(',', '', $_GET['num1']);
                 $comp1 = $_GET['comp1'];
-                if(eval("return \$gross_hold $comp1 \$val1;")) {                    
+                if(eval("return \$gross_hold $comp1 \$val1;")) 
+                {                    
                     $arrdetails[] = $temp;
                 }               
-            } else {
+            } 
+            else 
+            {
                 $arrdetails[] = $temp;
             }
         }
@@ -247,8 +266,8 @@ class ProcessTopUpPaginate extends BaseProcess {
         exit;
     }
     
-    
-    public function getdataz3() {
+    public function getdataz3() 
+    {
         include_once __DIR__.'/../sys/class/TopUp2.class.php';
         
         $startdate = date('Y-m-d')." ".BaseProcess::$cutoff;
@@ -261,17 +280,16 @@ class ProcessTopUpPaginate extends BaseProcess {
 //            
         $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startdate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff; 
         
-        // to check if greater than 1 day
-        // since this program must support current cut-off,
-        // all dates GT or LT current cut-off
-        // must not permitted to retrieve data     
+        // to check if greater than 1 day, since this program must support current cut-off,
+        // all dates GT or LT current cut-off, must not permitted to retrieve data     
         
         $topup2 = new TopUp2($this->getConnection());
         $topup2->open();
         $dir = $_GET['sord'];
         $sort = "POSAccountNo";
 
-        if(strlen($_GET['sidx']) > 0){
+        if(strlen($_GET['sidx']) > 0)
+        {
             $sort = $_GET['sidx'];
         }
         ob_get_clean();
@@ -281,12 +299,10 @@ class ProcessTopUpPaginate extends BaseProcess {
         ini_set('memory_limit', '-1'); 
         ini_set('max_execution_time', '220');
         $arrdetails = array();
-        foreach($rows as $id => $row) {
+        foreach($rows as $id => $row) 
+        {
             $gross_hold = ((($row['Deposit'] + $row['Reload'] + $row['EwalletLoads']) - ($row['Redemption'] - $row['EwalletWithdrawal'])) - $row['ActualAmount']);
             $cashonhand =((($row['DepositCash'] + $row['ReloadCash'] + $row['EwalletCashLoads']) - $row['RedemptionCashier']) - $row['ActualAmount']) - $row["EncashedTickets"] - $row['EwalletWithdrawal'];
-//            if($row['SiteID'] == 167){
-//                var_dump($row['DepositCash'],$row['ReloadCash'],$row['EwalletCashLoads'],$row['RedemptionCashier'],$row['ActualAmount'],$row["EncashedTickets"], $row['EwalletWithdrawal']);exit;
-//            }
             $temp = array(
                         "SiteName"=>$row['SiteName'],
 //                        "SiteCode"=>substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
@@ -308,28 +324,37 @@ class ProcessTopUpPaginate extends BaseProcess {
                         "Location"=>$row['Location'],
                     );        
             
-                    if($_GET['sellocation'] != '') {
-                        if($row['Location'] != $_GET['sellocation']) {
-                            continue;
-                        }
-                    }            
+            if($_GET['sellocation'] != '') 
+            {
+                if($row['Location'] != $_GET['sellocation']) 
+                {
+                    continue;
+                }
+            }            
 
             //check the amount range
-            if(isset($_GET['comp1']) && isset($_GET['comp2']) && $_GET['comp1'] != '' && $_GET['comp2'] != '') {
+            if(isset($_GET['comp1']) && isset($_GET['comp2']) && $_GET['comp1'] != '' && $_GET['comp2'] != '') 
+            {
                 $val1 = str_replace(',', '', $_GET['num1']);
                 $val2 = str_replace(',', '', $_GET['num2']);
                 $comp1 = $_GET['comp1'];
                 $comp2 = $_GET['comp2'];
-                if(eval("return \$gross_hold $comp1 \$val1;") && eval("return \$gross_hold $comp2 \$val2;")) {
+                if(eval("return \$gross_hold $comp1 \$val1;") && eval("return \$gross_hold $comp2 \$val2;")) 
+                {
                     $arrdetails[] = $temp;
                 }
-            } else if(isset($_GET['comp1']) && $_GET['comp1'] != '') {
+            } 
+            else if(isset($_GET['comp1']) && $_GET['comp1'] != '') 
+            {
                 $val1 = str_replace(',', '', $_GET['num1']);
                 $comp1 = $_GET['comp1'];
-                if(eval("return \$gross_hold $comp1 \$val1;")) {                    
+                if(eval("return \$gross_hold $comp1 \$val1;")) 
+                {                    
                     $arrdetails[] = $temp;
                 }               
-            } else {
+            } 
+            else 
+            {
                 $arrdetails[] = $temp;
             }
         }
@@ -348,7 +373,8 @@ class ProcessTopUpPaginate extends BaseProcess {
     }
     
     //pagination for COH Adjustment History
-    public function getCohAdjustmentData() {
+    public function getCohAdjustmentData() 
+    {
         include_once __DIR__.'/../sys/class/TopUp.class.php';
         $topup = new TopUp($this->getConnection());
         $topup->open();
@@ -366,7 +392,8 @@ class ProcessTopUpPaginate extends BaseProcess {
         $jqgrid = $params['jqgrid'];
         $rows = $topup->getCohAdjustmentHistory($params['sort'], $params['dir'], $params['start'], $params['limit'],$startdate,$enddate);
         //$rows = $topup->getCohAdjustmentHistory($startdate,$enddate);
-        foreach($rows as $row) {
+        foreach($rows as $row) 
+        {
             $jqgrid->rows[] = array('id'=>$row['DateCreated'],'cell'=>array(
                 $row['SiteName'], // Site
                 $row['POSAccountNo'],
@@ -391,7 +418,8 @@ class ProcessTopUpPaginate extends BaseProcess {
     }
     
     //pagination for Collection History
-    public function getPostedDepositData() {
+    public function getPostedDepositData() 
+    {
         include_once __DIR__.'/../sys/class/TopUp.class.php';
         $topup = new TopUp($this->getConnection());
         $topup->open();
@@ -399,7 +427,6 @@ class ProcessTopUpPaginate extends BaseProcess {
         if(isset($_GET['startdate']))
             $startdate = $_GET['startdate'];
         
-
 //        if(isset($_GET['enddate']))
 //            $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($_GET['enddate'])) .BaseProcess::$gaddeddate));
         
@@ -412,7 +439,8 @@ class ProcessTopUpPaginate extends BaseProcess {
         $params = $this->getJqgrid($total_row, 'sr.DateCreated');
         $jqgrid = $params['jqgrid'];
         $rows = $topup->getBankDepositHistory($params['sort'], $params['dir'], $params['start'], $params['limit'],$startdate,$enddate);
-        foreach($rows as $row) {
+        foreach($rows as $row) 
+        {
             $jqgrid->rows[] = array('id'=>$row['DateCreated'],'cell'=>array(
                 $row['siteName'], // Site
                 $row['POSAccountNo'],
@@ -435,7 +463,8 @@ class ProcessTopUpPaginate extends BaseProcess {
     }
     
     //this will render to Top-up History Page
-    public function topUpHistoryOverview() {
+    public function topUpHistoryOverview() 
+    {
         include_once __DIR__.'/../sys/class/TopUp.class.php';
         $topup = new TopUp($this->getConnection());
         $topup->open();
@@ -445,7 +474,8 @@ class ProcessTopUpPaginate extends BaseProcess {
     }
     
     //pagination for Top-up History
-    public function getTopUpHistory() {
+    public function getTopUpHistory() 
+    {
         include_once __DIR__.'/../sys/class/TopUp.class.php';
         $topup = new TopUp($this->getConnection());
         $topup->open();
@@ -470,21 +500,21 @@ class ProcessTopUpPaginate extends BaseProcess {
         $jqgrid = $params['jqgrid'];
         //top-up history (Manual, Auto) details
         $rows = $topup->getTopUpHistory($params['sort'], $params['dir'], $params['start'], $params['limit'], $startdate, $enddate, $type,$_GET['site_code']);
-        foreach($rows as $row) {
+        foreach($rows as $row) 
+        {
             $jqgrid->rows[] = array('id'=>$row['TopupHistoryID'],'cell'=>array(
-
-                $row['SiteName'],
-                substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
-                $row['POSAccountNo'],
-                number_format($row['StartBalance'],2),
-                number_format($row['EndBalance'],2),
-                number_format($row['MinBalance'],2), 
-                number_format($row['MaxBalance'],2), 
-                $row['TopupCount'],
-                number_format($row['TopupAmount'],2), 
-                number_format($row['TotalTopupAmount'],2), 
-                $row['DateCreated'],
-                $this->_topupType($row['TopupTransactionType'])
+            $row['SiteName'],
+            substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
+            $row['POSAccountNo'],
+            number_format($row['StartBalance'],2),
+            number_format($row['EndBalance'],2),
+            number_format($row['MinBalance'],2), 
+            number_format($row['MaxBalance'],2), 
+            $row['TopupCount'],
+            number_format($row['TopupAmount'],2), 
+            number_format($row['TotalTopupAmount'],2), 
+            $row['DateCreated'],
+            $this->_topupType($row['TopupTransactionType'])
             ));
         }        
         echo json_encode($jqgrid); 
@@ -496,9 +526,12 @@ class ProcessTopUpPaginate extends BaseProcess {
     //this method will be called when defining Top-up Type
     private function _topupType($type) 
     {
-        if($type == 0) {
+        if($type == 0) 
+        {
             return 'Manual';
-        } else {
+        } 
+        else 
+        {
             return 'Auto';
         }
     }
@@ -524,13 +557,15 @@ class ProcessTopUpPaginate extends BaseProcess {
     }
     
     //this will render to Manual Top-up Reversal History
-    public function reversalManual() {
+    public function reversalManual() 
+    {
         include_once __DIR__.'/../sys/class/TopUp.class.php';
         $this->render('topup/topup_reversal_manual');        
     }
     
     //pagination for Manual Top-up Reversal History
-    public function getReversalManual() {
+    public function getReversalManual() 
+    {
         include_once __DIR__.'/../sys/class/TopUp.class.php';
         $startdate = date('Y-m-d');
         if(isset($_GET['startdate']))
@@ -549,7 +584,8 @@ class ProcessTopUpPaginate extends BaseProcess {
         //get topup history (Reversal) details
         $rows = $topup->getReversalManual($params['sort'], $params['dir'], $params['start'], $params['limit'],$startdate,$enddate);
 
-        foreach($rows as $row) {
+        foreach($rows as $row) 
+        {
             $jqgrid->rows[] = array('id'=>$row['TopupHistoryID'],'cell'=>array(
                 substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
                 $row['SiteName'],
@@ -584,26 +620,30 @@ class ProcessTopUpPaginate extends BaseProcess {
         $topup = new TopUp($this->getConnection());
         $topup->open();   
         $siteID = $_POST['siteID'];
-        if($siteID == 'all'){
+        if($siteID == 'all')
+        {
             $siteID = $_POST['siteID'];
             $terminalID = 'all';
             $vipTerminal = 'all';
-        } else {
+        } 
+        else 
+        {
             $siteID = $topup->getSiteID($siteID);
             $terminalID = isset($_POST['terminalID']) ? $_POST['terminalID']:'all';
-                    $siteCode = $topup->getSiteCodes($siteID);
+            $siteCode = $topup->getSiteCodes($siteID);
 
-                    if ($terminalID=='all')
-                    {
-                       $vipTerminal= 'all'; 
-                    }
-                    else{
-                        $code = $_POST['siteID'];
-                        $terminalCode = $topup->getTerminalCode($code, $terminalID);
-                        $terminal=$terminalCode."VIP";
-                        $terminalVip = $topup->getVipTerminal($code,$terminal);
-                        $vipTerminal = $terminalVip;
-                    }
+            if ($terminalID=='all')
+            {
+               $vipTerminal= 'all'; 
+            }
+            else
+            {
+                $code = $_POST['siteID'];
+                $terminalCode = $topup->getTerminalCode($code, $terminalID);
+                $terminal=$terminalCode."VIP";
+                $terminalVip = $topup->getVipTerminal($code,$terminal);
+                $vipTerminal = $terminalVip;
+            }
         }                   
         $count = $topup->getActiveSessionCount($siteID, $txtcardnumber = '', $terminalID, $vipTerminal);
         echo "$count";
@@ -611,32 +651,35 @@ class ProcessTopUpPaginate extends BaseProcess {
         unset($count);
     }
     
-    
     public function CountSessionTer() 
     {
         include_once __DIR__.'/../sys/class/TopUp.class.php';
         $topup = new TopUp($this->getConnection());
         $topup->open();
         $siteID = $_POST['siteID'];
-        if($siteID == 'all'){
+        if($siteID == 'all')
+        {
             $siteID = $_POST['siteID'];
             $terminalID = '';
             $vipTerminal = '';
-        } else {
+        } 
+        else 
+        {
             $siteID = $topup->getSiteID($siteID);
             $terminalID = isset($_POST['terminalID']) ? $_POST['terminalID']:'';
             $siteCode = $topup->getSiteCodes($siteID);
-                    if ($terminalID=='all')
-                    {
-                       $vipTerminal= 'all'; 
-                    }
-                    else{
-                        $code = $_POST['siteID'];
-                        $terminalCode = $topup->getTerminalCode($code, $terminalID);
-                        $terminal=$terminalCode."VIP";
-                        $terminalVip = $topup->getVipTerminal($code,$terminal);
-                        $vipTerminal = $terminalVip;
-                    }
+            if ($terminalID=='all')
+            {
+               $vipTerminal= 'all'; 
+            }
+            else
+            {
+                $code = $_POST['siteID'];
+                $terminalCode = $topup->getTerminalCode($code, $terminalID);
+                $terminal=$terminalCode."VIP";
+                $terminalVip = $topup->getVipTerminal($code,$terminal);
+                $vipTerminal = $terminalVip;
+            }
         }
         $usermode = 0;
         $count1 = $topup->getActiveSessionCountMod($siteID, $cardnumber = '', $usermode,$terminalID, $vipTerminal);
@@ -645,10 +688,8 @@ class ProcessTopUpPaginate extends BaseProcess {
         $count = $count1 + $count2;
         echo "$count";
         $topup->close();
-       
         unset($count);
     }
-    
     
     public function CountSessionUB() 
     {
@@ -656,25 +697,29 @@ class ProcessTopUpPaginate extends BaseProcess {
         $topup = new TopUp($this->getConnection());
         $topup->open();  
         $siteID = $_POST['siteID'];
-        if($siteID == 'all'){
+        if($siteID == 'all')
+        {
             $siteID = $_POST['siteID'];
             $terminalID = '';
             $vipTerminal = '';
-        } else {
+        } 
+        else 
+        {
             $siteID = $topup->getSiteID($siteID);
             $terminalID = isset($_POST['terminalID']) ? $_POST['terminalID']:'';
-                  $siteCode = $topup->getSiteCodes($siteID);
-                    if ($terminalID=='all')
-                    {
-                       $vipTerminal= 'all'; 
-                    }
-                    else{
-                        $code = $_POST['siteID'];
-                        $terminalCode = $topup->getTerminalCode($code, $terminalID);
-                        $terminal=$terminalCode."VIP";
-                        $terminalVip = $topup->getVipTerminal($code,$terminal);
-                        $vipTerminal = $terminalVip;
-                    }
+            $siteCode = $topup->getSiteCodes($siteID);
+            if ($terminalID=='all')
+            {
+               $vipTerminal= 'all'; 
+            }
+            else
+            {
+                $code = $_POST['siteID'];
+                $terminalCode = $topup->getTerminalCode($code, $terminalID);
+                $terminal=$terminalCode."VIP";
+                $terminalVip = $topup->getVipTerminal($code,$terminal);
+                $vipTerminal = $terminalVip;
+            }
         }
    
         $usermode = 1;
@@ -696,7 +741,6 @@ class ProcessTopUpPaginate extends BaseProcess {
         $topup->close();
         unset($count);
     }
-    
     
     public function CountSession1() 
     {
@@ -733,33 +777,36 @@ class ProcessTopUpPaginate extends BaseProcess {
         $topup->open();  
         $sitecode = $_POST['sitecode'];
         
-        if($sitecode == 'all'){
+        if($sitecode == 'all')
+        {
             $siteID = '';
-        } else {
+        } 
+        else 
+        {
             $siteID = $topup->getSiteID($sitecode);
         }
         
         $result = $topup->getlistofterminals($siteID);
 
-        if(count($result) > 0){
+        if(count($result) > 0)
+        {
             $terminals = array();
-            foreach($result as $row) {
+            foreach($result as $row) 
+            {
                 $rsitecode = $topup->getsitecode($row['SiteID']);
                 $rterminalID = $row['TerminalID'];
                 $rterminalName = $row['TerminalName'];
-
                 //remove the "icsa-[SiteCode]"
-                    $rterminalCode = substr($row['TerminalCode'], strlen($rsitecode['SiteCode']));
-
+                $rterminalCode = substr($row['TerminalCode'], strlen($rsitecode['SiteCode']));
                 //create a new array to populate the combobox
                 $newvalue = array("TerminalID" => $rterminalID, "TerminalCode" => $rterminalCode, "TerminalName" => $rterminalName);
                 array_push($terminals, $newvalue);
             }
         }
-            else {
-                    $terminals = array(0);
-            }
-
+        else 
+        {
+            $terminals = array(0);
+        }
         echo json_encode($terminals);
         $topup->close();
         unset($result);
@@ -774,7 +821,6 @@ class ProcessTopUpPaginate extends BaseProcess {
         $this->render('topup/topup_playing_balance_ub');     
         $topup->close();
     }
-    
     
     //check loyalty card number
     public function getCardNumber() 
@@ -793,64 +839,69 @@ class ProcessTopUpPaginate extends BaseProcess {
         
         $service_title = "Playing Balance per Membership Card";
 
-        if(isset($_POST['rstpin'])){
-            if($_POST['rstpin'] == "ResetPin"){
+        if(isset($_POST['rstpin']))
+        {
+            if($_POST['rstpin'] == "ResetPin")
+            {
                 $service_title = "Reset Player PIN";
             }
         } 
         
-        if($obj_result == NULL){
+        if($obj_result == NULL)
+        {
             $statuscode = 0;
         }
-        else{
+        else
+        {
             $statuscode = $obj_result->CardInfo->StatusCode;
         }
                     
         if(!is_null($statuscode) ||$statuscode == '')
         {
-                if($statuscode == 1 || $statuscode == 5)
-                {
-                   $casinoarray_count = count($obj_result->CardInfo->CasinoArray);
+            if($statuscode == 1 || $statuscode == 5)
+            {
+               $casinoarray_count = count($obj_result->CardInfo->CasinoArray);
 
-                   if($casinoarray_count != 0)
+               if($casinoarray_count != 0)
+               {
+                   for($ctr = 0; $ctr < $casinoarray_count;$ctr++) 
                    {
-                       for($ctr = 0; $ctr < $casinoarray_count;$ctr++) {
-                           $serviceid = $obj_result->CardInfo->CasinoArray[$ctr]->ServiceID;
-                           
-                           $servicename = $topup->getServiceName($serviceid);
-                           
-                           $cardnoinfos = array(
-                                     'UserName'  => $obj_result->CardInfo->MemberName,
-                                     'MobileNumber'  => $obj_result->CardInfo->MobileNumber,
-                                     'Email'  => $obj_result->CardInfo->Email,
-                                     'Birthdate' => $obj_result->CardInfo->Birthdate,
-                                     'Casino' => $servicename,
-                                     'CardNumber' => $obj_result->CardInfo->CardNumber,
-                                     'Login' => $obj_result->CardInfo->CasinoArray[$ctr]->ServiceUsername,
-                                     'StatusCode' => $obj_result->CardInfo->StatusCode,
-                            );
+                       $serviceid = $obj_result->CardInfo->CasinoArray[$ctr]->ServiceID;
 
-                           $_SESSION['ServiceUsername'] = $obj_result->CardInfo->CasinoArray[$ctr]->ServiceUsername;
-                           $_SESSION['MID'] = $obj_result->CardInfo->MemberID;
-                           
-                           array_push($casinoinfo, $cardnoinfos);
-                       }
-                       
-                       echo json_encode($casinoinfo);
-                  }
-                  else
-                  {
-                   $services = $service_title . " : Casino is empty";
-                   echo "$services";
-                  }
-               }
-               else
-               {  
-                   //check membership card status
-                   $statusmsg = $topup->membershipcardStatus($statuscode);
-                   $services = $service_title . " : ".$statusmsg;
-                   echo "$services";
-               }
+                       $servicename = $topup->getServiceName($serviceid);
+
+                       $cardnoinfos = array(
+                                 'UserName'  => $obj_result->CardInfo->MemberName,
+                                 'MobileNumber'  => $obj_result->CardInfo->MobileNumber,
+                                 'Email'  => $obj_result->CardInfo->Email,
+                                 'Birthdate' => $obj_result->CardInfo->Birthdate,
+                                 'Casino' => $servicename,
+                                 'CardNumber' => $obj_result->CardInfo->CardNumber,
+                                 'Login' => $obj_result->CardInfo->CasinoArray[$ctr]->ServiceUsername,
+                                 'StatusCode' => $obj_result->CardInfo->StatusCode,
+                        );
+
+                       $_SESSION['ServiceUsername'] = $obj_result->CardInfo->CasinoArray[$ctr]->ServiceUsername;
+                       $_SESSION['MID'] = $obj_result->CardInfo->MemberID;
+
+                       array_push($casinoinfo, $cardnoinfos);
+                   }
+
+                   echo json_encode($casinoinfo);
+              }
+              else
+              {
+               $services = $service_title . " : Casino is empty";
+               echo "$services";
+              }
+           }
+           else
+           {  
+               //check membership card status
+               $statusmsg = $topup->membershipcardStatus($statuscode);
+               $services = $service_title . " : ".$statusmsg;
+               echo "$services";
+           }
         }
         else
         {
@@ -860,16 +911,17 @@ class ProcessTopUpPaginate extends BaseProcess {
             $services = $service_title . " : ".$statusmsg;
             echo "$services";
         }
-     $topup->close();      
+        $topup->close();      
     }
     
      //pagination for Playing Balance: get active terminals only
-    public function getActiveTerminals() {
+    public function getActiveTerminals() 
+    {
         include_once __DIR__.'/../sys/class/TopUp.class.php';
         include_once __DIR__.'/../sys/class/LoyaltyUBWrapper.class.php';
         //include_once __DIR__.'/../sys/class/CasinoAPIHandler.class.php';
         include_once __DIR__.'/../sys/class/CasinoGamingCAPI.class.php';
-        
+
         $topup = new TopUp($this->getConnection());
         $loyalty = new LoyaltyUBWrapper();
         $cardinfo = BaseProcess::$cardinfo;
@@ -877,20 +929,21 @@ class ProcessTopUpPaginate extends BaseProcess {
         $sitecode = $_POST['sitecode'];
         $terminalID = isset($_POST['terminalID']) ? $_POST['terminalID']:'';
         if ($terminalID=='all')
-                    {
-                       $vipTerminal= 'all'; 
-                    }
-                    else{
-        $terminalCode = $topup->getTerminalCode($sitecode, $terminalID);
-        $terminal=$terminalCode."VIP";
-        $terminalVip = $topup->getVipTerminal($sitecode,$terminal);
-        $vipTerminal = $terminalVip;
-                    }
+        {
+            $vipTerminal= 'all'; 
+        }
+        else
+        {
+            $terminalCode = $topup->getTerminalCode($sitecode, $terminalID);
+            $terminal=$terminalCode."VIP";
+            $terminalVip = $topup->getVipTerminal($sitecode,$terminal);
+            $vipTerminal = $terminalVip;
+        }
  
         $rcount = $topup->countActiveTerminals2($sitecode,$terminalID,$vipTerminal);
 
-        
-        foreach ($rcount as $value) {
+        foreach ($rcount as $value) 
+        {
             $count = $value['rcount'];
         }
         
@@ -899,11 +952,15 @@ class ProcessTopUpPaginate extends BaseProcess {
         $sidx = $_POST['sidx']; // get index row - i.e. user click to sort
         $direction = $_POST['sord']; // get the direction
 
-        if($count > 0 ) {
+        if($count > 0 ) 
+        {
             $total_pages = ceil($count/$limit);
-        } else {
+        } 
+        else 
+        {
             $total_pages = 0;
         }
+        
         if ($page > $total_pages)
         {
             $page = $total_pages;
@@ -913,46 +970,56 @@ class ProcessTopUpPaginate extends BaseProcess {
         $limit = (int)$limit;   
         $rows = $topup->getActiveTerminals2($sitecode, $terminalID, $vipTerminal, $direction, $start, $limit);
         
-        if(count($rows) == 0){
+        if(count($rows) == 0)
+        {
             $jqgrid = array();
-        } else {
+        } 
+        else 
+        {
             $jqgrid->page = $page;
-            foreach($rows as $key => $row) {
+            foreach($rows as $key => $row) 
+            {
                 $balance = $this->getBalance($row);
                 /********************* GET BALANCE API ****************************/
-
-                if(is_string($balance['Balance']) && $balance['Balance'] != "Error: Cannot get balance") {
+                if(is_string($balance['Balance']) && $balance['Balance'] != "Error: Cannot get balance") 
+                {
                     $rows[$key]['PlayingBalance'] = number_format((double)$balance['Balance'],2, '.', ',');
-                }  else {
-                    if($balance['Balance'] != "Error: Cannot get balance"){
+                } 
+                else 
+                {
+                    if($balance['Balance'] != "Error: Cannot get balance")
+                    {
                         $rows[$key]['PlayingBalance'] = number_format($balance['Balance'],2, '.', ',');
-                    } else {
+                    } 
+                    else 
+                    {
                         $rows[$key]['PlayingBalance'] = $balance['Balance'];
                     }
                 }
             }
-            foreach($rows as $row) {
+            foreach($rows as $row) 
+            {
                 $temp_pbal = explode('.', $row['PlayingBalance']);
-                if(count($temp_pbal) != 2) {
-                    if(is_string($row['PlayingBalance'])) {
+                if(count($temp_pbal) != 2) 
+                {
+                    if(is_string($row['PlayingBalance'])) 
+                    {
                         $row['PlayingBalance'] = $row['PlayingBalance'];
                     }
                     else
                     {
                         $row['PlayingBalance'] = number_format($row['PlayingBalance'], 2, '.', ',');
                     }
-
                 }
 
-                if($row['PlayingBalance'] == "Error: Cannot get balance"){
-                        $row['PlayingBalance'] = "Error: Cannot get balance";
+                if($row['PlayingBalance'] == "Error: Cannot get balance")
+                {
+                    $row['PlayingBalance'] = "Error: Cannot get balance";
                 }
                 
                 $loyalty_result = json_decode($loyalty->getCardInfo2($row['LoyaltyCardNumber'], $cardinfo, 1));
-
                 $loyalty_result->CardInfo->IsEwallet == 1 ? $isEwallet = "Yes" : $isEwallet = "No";
                 $row['UserMode'] == 1 ? $row['UserMode'] = "User Based" : $row['UserMode'] = "Terminal Based";
-
                 
                 $jqgrid->rows[] = array('id'=>$row['TerminalID'],'cell'=>array(
                     substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
@@ -976,7 +1043,8 @@ class ProcessTopUpPaginate extends BaseProcess {
     }
     
      //pagination for Playing Balance: get active terminals only user based
-    public function getActiveTerminalsUb() {
+    public function getActiveTerminalsUb() 
+    {
         include_once __DIR__.'/../sys/class/TopUp.class.php';
         include_once __DIR__.'/../sys/class/LoyaltyUBWrapper.class.php';
         //include_once __DIR__.'/../sys/class/CasinoAPIHandler.class.php';
@@ -990,36 +1058,46 @@ class ProcessTopUpPaginate extends BaseProcess {
         $total_row = $topup->getActiveTerminalsTotalub();
         $params = $this->getJqgrid($total_row, 'ts.TerminalID');
         $jqgrid = $params['jqgrid'];
-        if(isset($_GET['sidx']) && $_GET['sidx'] !=  ''){
+        if(isset($_GET['sidx']) && $_GET['sidx'] !=  '')
+        {
              $sort = $_GET['sidx'];
         }
-        else{
+        else
+        {
             $sort = 't.TerminalCode';
         }
         $rows = $topup->getActiveTerminalsub($params['sort'], $params['dir'], $params['start'], $params['limit']);
         
-        foreach($rows as $key => $row) {
+        foreach($rows as $key => $row) 
+        {
             $balance = $this->getBalanceUB($row);
             /********************* GET BALANCE API ****************************/
-            
-            if(is_string($balance['Balance']) && $balance['Balance'] != "Error: Cannot get balance") {
+            if(is_string($balance['Balance']) && $balance['Balance'] != "Error: Cannot get balance") 
+            {
                 $rows[$key]['PlayingBalance'] = (float)$balance['Balance'];
-            }  else {
-                
-                if($balance['Balance'] != "Error: Cannot get balance"){
-                            $rows[$key]['PlayingBalance'] = number_format($balance['Balance'],2, '.', ',');
-                    } else {
-                        $rows[$key]['PlayingBalance'] = $balance['Balance'];
-                    }
+            }  
+            else 
+            {
+                if($balance['Balance'] != "Error: Cannot get balance")
+                {
+                    $rows[$key]['PlayingBalance'] = number_format($balance['Balance'],2, '.', ',');
+                } 
+                else 
+                {
+                    $rows[$key]['PlayingBalance'] = $balance['Balance'];
+                }
             }
         }
         
         $loyalty_result = json_decode($loyalty->getCardInfo2($_GET['cardnumber'], $cardinfo, 1));
         
-        foreach($rows as $row) {
+        foreach($rows as $row) 
+        {
             $temp_pbal = explode('.', $row['PlayingBalance']);
-            if(count($temp_pbal) != 2) {
-                if(is_string($row['PlayingBalance'])) {
+            if(count($temp_pbal) != 2) 
+            {
+                if(is_string($row['PlayingBalance'])) 
+                {
                     $row['PlayingBalance'] = $row['PlayingBalance'];
                 }
                 else
@@ -1027,7 +1105,8 @@ class ProcessTopUpPaginate extends BaseProcess {
                     $row['PlayingBalance'] = number_format($row['PlayingBalance'], 2, '.', ',');
                 }
                 
-                if($row['PlayingBalance'] == "Error: Cannot get balance"){
+                if($row['PlayingBalance'] == "Error: Cannot get balance")
+                {
                     $row['PlayingBalance'] = "N/A";
                 }
             }
@@ -1052,20 +1131,21 @@ class ProcessTopUpPaginate extends BaseProcess {
     }
     
     //this will render to betting credit page
-    public function bettingCredit() {
+    public function bettingCredit() 
+    {
         include_once __DIR__.'/../sys/class/TopUp.class.php';
         $topup = new TopUp($this->getConnection());
         $topup->open();   
         $param['sites'] = $topup->getAllSiteCode();
         $param['owner'] = $topup->getOwner();
         $param['report'] = $_GET['report'];
-        
         $this->render('topup/topup_betting_credit',$param);
         $topup->close();
     }
     
     //pagination: Betting Credit info
-    public function getBettingCredit() {
+    public function getBettingCredit() 
+    {
         include_once __DIR__.'/../sys/class/TopUp.class.php';
         $topup = new TopUp($this->getConnection());
         $topup->open(); 
@@ -1081,17 +1161,17 @@ class ProcessTopUpPaginate extends BaseProcess {
         $total = $topup->getBettingCreditTotal($_GET['bal'],$_GET['selcomp'],$owner,$site_id,$report);
         $total_row = 0 ;
         $total_balance = 0;
-        if(isset($total[0]['totalrow'])) {
+        if(isset($total[0]['totalrow'])) 
+        {
             $total_row = $total[0]['totalrow'];
             $total_balance = $total[0]['totalbalance'];
         }
         $params = $this->getJqgrid($total_row, 's.SiteCode');
         
-        
-       
         $rows = $topup->getBettingCredit($params['sort'], $params['dir'], $params['start'], $params['limit'],$_GET['bal'],$_GET['selcomp'],$owner,$site_id, $report);
         $jqgrid = $params['jqgrid'];
-        foreach($rows as $row) {
+        foreach($rows as $row) 
+        {
             $jqgrid->rows[] = array('id'=>$row['SiteID'],'cell'=>array(
                 substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
                 $row['SiteName'], 
@@ -1107,7 +1187,8 @@ class ProcessTopUpPaginate extends BaseProcess {
         exit;
     }
     
-    public function getSitesDetail() {
+    public function getSitesDetail() 
+    {
         include_once __DIR__.'/../sys/class/TopUp.class.php';
         $topup = new TopUp($this->getConnection());
         $topup->open();   
@@ -1131,12 +1212,14 @@ class ProcessTopUpPaginate extends BaseProcess {
     }
     
     //this will render to manual redemption page
-    public function manualRedemption() {
+    public function manualRedemption() 
+    {
         $this->render('topup/topup_manual_redemption');
     }
     
     //pagination: Manual Redemption Details
-    public function getManualRedemption() {
+    public function getManualRedemption() 
+    {
         include_once __DIR__.'/../sys/class/TopUp.class.php';
         $topup = new TopUp($this->getConnection());
         $topup->open(); 
@@ -1154,8 +1237,8 @@ class ProcessTopUpPaginate extends BaseProcess {
         // get manual redemption history details
         $rows = $topup->getManualRedemption($params['sort'], $params['dir'], $params['start'], $params['limit'],$startdate,$enddate);
         $jqgrid = $params['jqgrid'];
-        foreach($rows as $row) {
-            
+        foreach($rows as $row) 
+        {
             $jqgrid->rows[] = array('id'=>$row['ManualRedemptionsID'],'cell'=>array(
                 substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
                 $row['SiteName'], 
@@ -1177,7 +1260,8 @@ class ProcessTopUpPaginate extends BaseProcess {
     }
     
     //method for jqgrid plugin: parameters
-    protected function getJqgrid($total_row,$default_field) {
+    protected function getJqgrid($total_row,$default_field) 
+    {
         $jqgrid = new jQGrid();
         $jqgrid->page = $_GET['page']; 
         $limit = (int)$_GET['rows'];
@@ -1193,7 +1277,8 @@ class ProcessTopUpPaginate extends BaseProcess {
     }  
     
     //method for get balance through API (Playing Balance)
-    protected function getBalance($row) {
+    protected function getBalance($row) 
+    {
         include_once __DIR__.'/../sys/class/TopUp.class.php';
         include_once __DIR__.'/../sys/class/helper/common.class.php';
         $topup = new TopUp($this->getConnection());
@@ -1202,79 +1287,105 @@ class ProcessTopUpPaginate extends BaseProcess {
         
         switch ($providername)
         {
-                case "RTG":
-                    $url = self::$service_api[$row['ServiceID'] - 1];
-                    $capiusername = '';
-                    $capipassword = '';
-                    $capiplayername = '';
-                    $capiserverID = '';
-                    break;
-                case "RTG2":
-                    $url = self::$service_api[$row['ServiceID'] - 1];
-                    $capiusername = '';
-                    $capipassword = '';
-                    $capiplayername = '';
-                    $capiserverID = '';
-                    break;
-                case "MG":
-                    $_MGCredentials = self::$service_api[$row['ServiceID'] - 1];
-                    list($mgurl, $mgserverID) =  $_MGCredentials;
-                    $url = $mgurl;
-                    $capiusername = self::$capi_username;
-                    $capipassword = self::$capi_password;
-                    $capiplayername = self::$capi_player;
-                    $capiserverID = $mgserverID;
-                    break;
-                case "PT":
-                    $url = self::$player_api[$row['ServiceID'] - 1];
-                    $capiusername = self::$ptcasinoname;
-                    $capipassword = self::$ptSecretKey;
-                    $capiplayername = '';
-                    $capiserverID = '';
-                    break;
+// CCT BEGIN            
+            // CCT ADDED BEGIN 11/29/2017
+            case "HAB": 
+                $url = self::$service_api[$row['ServiceID'] - 1];
+                $capiusername = self::$habbrandid ;
+                $capipassword = self::$habapikey;
+                $capiplayername = '';
+                $capiserverID = '';
+                break;
+            // CCT ADDED END 11/29/2017
+// CCT END
+            case "RTG":
+                $url = self::$service_api[$row['ServiceID'] - 1];
+                $capiusername = '';
+                $capipassword = '';
+                $capiplayername = '';
+                $capiserverID = '';
+                break;
+            case "RTG2":
+                $url = self::$service_api[$row['ServiceID'] - 1];
+                $capiusername = '';
+                $capipassword = '';
+                $capiplayername = '';
+                $capiserverID = '';
+                break;
+            case "MG":
+                $_MGCredentials = self::$service_api[$row['ServiceID'] - 1];
+                list($mgurl, $mgserverID) =  $_MGCredentials;
+                $url = $mgurl;
+                $capiusername = self::$capi_username;
+                $capipassword = self::$capi_password;
+                $capiplayername = self::$capi_player;
+                $capiserverID = $mgserverID;
+                break;
+            case "PT":
+                $url = self::$player_api[$row['ServiceID'] - 1];
+                $capiusername = self::$ptcasinoname;
+                $capipassword = self::$ptSecretKey;
+                $capiplayername = '';
+                $capiserverID = '';
+                break;
         }
         $serviceusername = $topup->getUBServiceLogin($row['TerminalID']);
-       switch ($providername)
+        switch ($providername)
         {
-                case "RTG":
-                    $CasinoGamingCAPI = new CasinoGamingCAPI();
+// CCT BEGIN            
+            // CCT ADDED BEGIN 11/29/2017
+            case "HAB": 
+                $CasinoGamingCAPI = new CasinoGamingCAPI();
+                // Pass UB username and password
+                //$MIDResult = $topup->getMIDInfo($row['TerminalID'], $row['ServiceID']);            
+                //$serviceUBResult = $topup->getUBInfo($MIDResult['MID'], $row['ServiceID']);                   
+                //$login = $serviceUBResult['ServiceUserName'];
+                //$password = $serviceUBResult['ServicePassword'];
+                // Pass TB username and password
+                $servicePwdResult = $topup->getterminalcredentials($row['TerminalID'], $row['ServiceID']);
+                $login = $row['TerminalCode'];
+                $password =  $servicePwdResult['ServicePassword'];
+                
+                $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
+                    $login, $capiusername, $capipassword, $capiplayername, $capiserverID, $row['UserMode'], $password);
+                
+                break;
+            // CCT ADDED END 11/29/2017
+// CCT END            
+            case "RTG":
+                $CasinoGamingCAPI = new CasinoGamingCAPI();
+                $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
+                    $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, $capiserverID, $row['UserMode']);
+                if($balance == NULL) 
+                { // proceeed if certificate does not match
                     $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
-                        $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, 
-                        $capiserverID, $row['UserMode']);
-                    if($balance == NULL) { // proceeed if certificate does not match
-                        $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
-                                $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, 
-                                $capiserverID);
-                    }
-                    break;
-                case "RTG2":
-                    $CasinoGamingCAPI = new CasinoGamingCAPI();
-                    $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
-                        $serviceusername, $capiusername, $capipassword, $capiplayername, 
-                        $capiserverID);   
-                    break;
-                case "MG":
-                    $CasinoGamingCAPI = new CasinoGamingCAPI();
-                    $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
-                        $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, 
-                        $capiserverID);
-                    break;
-                case "PT":
-                    $CasinoGamingCAPI = new CasinoGamingCAPI();
-                    $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
-                        $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, 
-                        $capiserverID); 
-                    
-                    break;
-        }
+                        $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, $capiserverID);
+                }
+                break;
+            case "RTG2":
+                $CasinoGamingCAPI = new CasinoGamingCAPI();
+                $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
+                    $serviceusername, $capiusername, $capipassword, $capiplayername, $capiserverID);   
+                break;
+            case "MG":
+                $CasinoGamingCAPI = new CasinoGamingCAPI();
+                $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
+                    $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, $capiserverID);
+                break;
+            case "PT":
+                $CasinoGamingCAPI = new CasinoGamingCAPI();
+                $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
+                    $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, $capiserverID); 
 
+                break;
+        }
         return array("Balance"=>$balance, "Casino"=>$providername);    
         $topup->close();
     }
     
     //method for get balance through API (Playing Balance)
-    protected function getBalanceUB($row) {
-        
+    protected function getBalanceUB($row) 
+    {
         include_once __DIR__.'/../sys/class/helper/common.class.php';
         $topup = new TopUp($this->getConnection());
         $topup->open(); 
@@ -1282,85 +1393,110 @@ class ProcessTopUpPaginate extends BaseProcess {
         
         switch ($providername)
         {
-                case "RTG":
-                    $url = self::$service_api[$row['ServiceID'] - 1];
-                    $capiusername = '';
-                    $capipassword = '';
-                    $capiplayername = '';
-                    $capiserverID = '';
-                    break;
-                case "RTG2":
-                    $url = self::$service_api[$row['ServiceID'] - 1];
-                    $capiusername = '';
-                    $capipassword = '';
-                    $capiplayername = '';
-                    $capiserverID = '';
-                    break;
-                case"MG":
-                    $_MGCredentials = self::$service_api[$row['ServiceID'] - 1];
-                    list($mgurl, $mgserverID) =  $_MGCredentials;
-                    $url = $mgurl;
-                    $capiusername = self::$capi_username;
-                    $capipassword = self::$capi_password;
-                    $capiplayername = self::$capi_player;
-                    $capiserverID = $mgserverID;
-                    break;
-                case "PT":
-                    $url = self::$player_api[$row['ServiceID'] - 1];
-                    $capiusername = self::$ptcasinoname;
-                    $capipassword = self::$ptSecretKey;
-                    $capiplayername = '';
-                    $capiserverID = '';
-                    break;
+            case "RTG":
+                $url = self::$service_api[$row['ServiceID'] - 1];
+                $capiusername = '';
+                $capipassword = '';
+                $capiplayername = '';
+                $capiserverID = '';
+                break;
+            case "RTG2":
+                $url = self::$service_api[$row['ServiceID'] - 1];
+                $capiusername = '';
+                $capipassword = '';
+                $capiplayername = '';
+                $capiserverID = '';
+                break;
+            case"MG":
+                $_MGCredentials = self::$service_api[$row['ServiceID'] - 1];
+                list($mgurl, $mgserverID) =  $_MGCredentials;
+                $url = $mgurl;
+                $capiusername = self::$capi_username;
+                $capipassword = self::$capi_password;
+                $capiplayername = self::$capi_player;
+                $capiserverID = $mgserverID;
+                break;
+            case "PT":
+                $url = self::$player_api[$row['ServiceID'] - 1];
+                $capiusername = self::$ptcasinoname;
+                $capipassword = self::$ptSecretKey;
+                $capiplayername = '';
+                $capiserverID = '';
+                break;
+// CCT BEGIN            
+            // CCT ADDED BEGIN 12/18/2017
+            case "HAB": 
+                $url = self::$service_api[$row['ServiceID'] - 1];
+                $capiusername = self::$habbrandid ;
+                $capipassword = self::$habapikey;
+                $capiplayername = '';
+                $capiserverID = '';
+                break;
+            // CCT ADDED END 12/18/2017
+// CCT END            
         }
-        
         
         switch ($providername)
         {
-                case "RTG":
-                    $CasinoGamingCAPI = new CasinoGamingCAPI();
+// CCT BEGIN            
+            // CCT ADDED BEGIN 12/18/2017
+            case "HAB": 
+                $CasinoGamingCAPI = new CasinoGamingCAPI();
+                // Pass UB username and password
+                //$MIDResult = $topup->getMIDInfo($row['TerminalID'], $row['ServiceID']);            
+                //$serviceUBResult = $topup->getUBInfo($MIDResult['MID'], $row['ServiceID']);                   
+                //$login = $serviceUBResult['ServiceUserName'];
+                //$password = $serviceUBResult['ServicePassword'];
+                // Pass TB username and password
+                $servicePwdResult = $topup->getterminalcredentials($row['TerminalID'], $row['ServiceID']);
+                $login = $row['TerminalCode'];
+                $password =  $servicePwdResult['ServicePassword'];
+                
+                $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
+                    $login, $capiusername, $capipassword, $capiplayername, $capiserverID, $row['UserMode'], $password);
+                
+                break;
+            // CCT ADDED END 12/18/2017
+// CCT END                 
+            case "RTG":
+                $CasinoGamingCAPI = new CasinoGamingCAPI();
+                $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
+                    $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, $capiserverID, $row['UserMode']);
+                if($balance == NULL) 
+                { // proceeed if certificate does not match
                     $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
-                        $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, 
-                        $capiserverID, $row['UserMode']);
-                    if($balance == NULL) { // proceeed if certificate does not match
-                        $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
-                            $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, 
-                            $capiserverID);
-                    }
-                    break;
-                case "RTG2":
-                    $CasinoGamingCAPI = new CasinoGamingCAPI();
-                        $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
-                            $_SESSION['ServiceUsername'], $capiusername, $capipassword, $capiplayername, 
-                            $capiserverID);   
-                    break;
-                case "MG":
-                    $CasinoGamingCAPI = new CasinoGamingCAPI();
-                    $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
-                            $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, 
-                            $capiserverID);
-                    break;
-                case "PT":
-                    $CasinoGamingCAPI = new CasinoGamingCAPI();
-                        $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
-                            $_SESSION['ServiceUsername'], $capiusername, $capipassword, $capiplayername, 
-                            $capiserverID);  
-                    break;
+                        $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, $capiserverID);
+                }
+                break;
+            case "RTG2":
+                $CasinoGamingCAPI = new CasinoGamingCAPI();
+                $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
+                    $_SESSION['ServiceUsername'], $capiusername, $capipassword, $capiplayername, $capiserverID);   
+                break;
+            case "MG":
+                $CasinoGamingCAPI = new CasinoGamingCAPI();
+                $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
+                        $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, $capiserverID);
+                break;
+            case "PT":
+                $CasinoGamingCAPI = new CasinoGamingCAPI();
+                $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
+                    $_SESSION['ServiceUsername'], $capiusername, $capipassword, $capiplayername, $capiserverID);  
+                break;
         }
-      
-        
-       
         return array("Balance"=>$balance, "Casino"=>$providername);    
         $topup->close();
     }
     
     //this renders replenishment
-    public function replenishmentOverview() {
+    public function replenishmentOverview() 
+    {
         $this->render('topup/topup_replenish_overview');
     }
     
     //@date modified 03-03-2015
-    public function replenishment() {
+    public function replenishment() 
+    {
         include_once __DIR__.'/../sys/class/TopUp.class.php';
         include_once __DIR__.'/../sys/class/helper/common.class.php';
         $topup = new TopUp($this->getConnection());
@@ -1381,7 +1517,8 @@ class ProcessTopUpPaginate extends BaseProcess {
         //$params = $this->getJqgrid($total_row, 's.SiteCode'); //get jqgrid pagination
         $rows = $topup->getReplenishment($params['sort'], $params['dir'], $params['start'], $params['limit'],$startdate,$enddate);
         $jqgrid = $params['jqgrid'];
-        foreach($rows as $row) {
+        foreach($rows as $row) 
+        {
             $jqgrid->rows[] = array('id'=>$row['ReplenishmentID'],'cell'=>array(
                 substr($row['SiteCode'],strlen(BaseProcess::$sitecode)),
                 $row['POSAccountNo'],
@@ -1398,11 +1535,13 @@ class ProcessTopUpPaginate extends BaseProcess {
         exit;
     }
     
-    public function confirmationOverview() {
+    public function confirmationOverview() 
+    {
         $this->render('topup/topup_confirmation_overview');
     }
     
-    public function confirmation() {
+    public function confirmation() 
+    {
         include_once __DIR__.'/../sys/class/TopUp.class.php';
         include_once __DIR__.'/../sys/class/helper/common.class.php';
         $topup = new TopUp($this->getConnection());
@@ -1418,7 +1557,8 @@ class ProcessTopUpPaginate extends BaseProcess {
         $params = $this->getJqgrid($total_row, 's.SiteCode'); //get jqgrid pagination
         $rows = $topup->getConfirmation($params['sort'], $params['dir'], $params['start'], $params['limit'],$startdate,$enddate);
         $jqgrid = $params['jqgrid'];
-        foreach($rows as $row) {
+        foreach($rows as $row) 
+        {
             $jqgrid->rows[] = array('id'=>$row['GrossHoldConfirmationID'],'cell'=>array(
                 $row['UserName'],
                 substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
@@ -1436,7 +1576,8 @@ class ProcessTopUpPaginate extends BaseProcess {
         exit;
     }
     
-    public function grossHoldBalanceOverview() {
+    public function grossHoldBalanceOverview() 
+    {
         include_once __DIR__.'/../sys/class/TopUp.class.php';
         include_once __DIR__.'/../sys/class/helper/common.class.php';        
         $topup = new TopUp($this->getConnection());
@@ -1446,7 +1587,8 @@ class ProcessTopUpPaginate extends BaseProcess {
         $topup->close();
     }
     
-    public function grossHoldBalance() {
+    public function grossHoldBalance() 
+    {
         include_once __DIR__.'/../sys/class/TopUp.class.php';
         include_once __DIR__.'/../sys/class/helper/common.class.php';
         $topup = new TopUp($this->getConnection());
@@ -1481,10 +1623,13 @@ class ProcessTopUpPaginate extends BaseProcess {
         $page = $_GET['page']; // get the requested page
         $limit = $_GET['rows']; // get how many rows we want to have into the grid
         $count = count($rows); //count total rows
-        if($count > 0 ) {
-               $total_pages = ceil($count/$limit);
-        } else {
-              $total_pages = 0;
+        if($count > 0 ) 
+        {
+            $total_pages = ceil($count/$limit);
+        } 
+        else 
+        {
+            $total_pages = 0;
         }
 
         if ($page > $total_pages)
@@ -1496,7 +1641,8 @@ class ProcessTopUpPaginate extends BaseProcess {
         {
             $start = 0;
         }
-        else{
+        else
+        {
             $start = $limit * $page - $limit;   
         }
 
@@ -1505,20 +1651,19 @@ class ProcessTopUpPaginate extends BaseProcess {
         
         $params = $this->getJqgrid($count, 's.SiteCode'); //call jqgrid method to initialize start and limit
         $jqgrid = $params['jqgrid'];
-        foreach($rresult as $row) {
+        foreach($rresult as $row) 
+        {
             $grosshold = (($row['InitialDeposit'] + $row['Reload']) - $row['Redemption']) - $row['ManualRedemption'];
-//            var_dump($row['DepositCash'] + $row['EwalletCashLoads'] + $row['ReloadCash']);
-//            var_dump($row['DepositCash'] + $row['EwalletCashLoads'] + $row['ReloadCash'] + $row['DepositTicket'] + $row['ReloadTicket']);
-//            var_dump($row['RedemptionCashier'] + $row['EwalletWithdrawals'] + $row['ManualRedemption']);
-//            var_dump($row['EncashedTickets']);exit;
             /*************Cash on Hand V1 computation******************/
-            if ($startdate < BaseProcess::$deploymentdate) {
+            if ($startdate < BaseProcess::$deploymentdate) 
+            {
               
                 $cashonhand = (($row['DepositCash'] + $row['Coupon'] + $row['ReloadCash'] + $row['EwalletCashLoads'] + $row['ewalletCoupon']) - ($row['RedemptionCashier'] + $row['EwalletWithdraw']) - $row['ManualRedemption']) - $row["EncashedTicketsV15"];
                 //$cashonhand = ((((($row['DepositCash'] + $row['EwalletCashLoads'] + $row['ReloadCash'] + $row['Coupon']) - $row['RedemptionCashier'])) - $row['EwalletWithdrawals']) - $row['ManualRedemption']) - $row['EncashedTickets'];
             }
             /*************Cash on Hand V2 computation******************/
-            else {
+            else 
+            {
                 $cashonhand = (($row['DepositCash'] + $row['Coupon'] + $row['ReloadCash'] + $row['EwalletCashLoads'] + $row['ewalletCoupon'] + $row['LoadTickets']) - ($row['TotalRedemption'] + $row['EwalletWithdraw']) - $row['ManualRedemption']) - $row["EncashedTicketsV15"];
                 //$cashonhand = ((((($row['DepositCash'] + $row['EwalletCashLoads'] + $row['ReloadCash'] + $row['DepositTicket'] + $row['ReloadTicket'] + $row['EwalletTicketDeposit'] + $row['Coupon']) - $row['RedemptionCashier']) - $row['RedemptionGenesis']) - $row['EwalletWithdrawals']) - $row['ManualRedemption']) - $row['EncashedTicketsV15'];
             }
@@ -1554,7 +1699,8 @@ class ProcessTopUpPaginate extends BaseProcess {
         exit;
     }
     
-    public function grossHoldBalanceViewDetails($siteid, $startdate, $enddate) {
+    public function grossHoldBalanceViewDetails($siteid, $startdate, $enddate) 
+    {
         include_once __DIR__.'/../sys/class/TopUp.class.php';
         include_once __DIR__.'/../sys/class/helper/common.class.php';        
         $topup = new TopUp($this->getConnection());
@@ -1567,8 +1713,10 @@ class ProcessTopUpPaginate extends BaseProcess {
             $rows = $topup->getoldGHBalance($sort, $dir, $startdate, $enddate,$siteid); //get gross hold balance, (past)
         }
 
-        if(!empty($rows)){
-            foreach ($rows as $value) {
+        if(!empty($rows))
+        {
+            foreach ($rows as $value) 
+            {
                 $sitename = $value['SiteName'];
                 $sitecode = $value['SiteCode'];
                 $posaccnt = $value['POSAccountNo'];
@@ -1594,19 +1742,21 @@ class ProcessTopUpPaginate extends BaseProcess {
                 $cashonhand = ((($value['DepositCash'] + $value['ReloadCash']) - $value['RedemptionCashier']) - $value['ManualRedemption']) - $value['EncashedTickets'];
             
                 $this->render('topup/topup_ghbal_viewdetails',array('SiteID' => $siteid,'SiteName'=> $sitename, 'SiteCode' => $sitecode, 'POSAccountNo' => $posaccnt, 'CutOff'=> $cutoff,
-                                            'BegBal' => number_format($begbal,2), 'TotalDeposit' => number_format($totaldeposit,2), 
-                                            'DepositCash' => number_format($depositcash,2), 'DepositTicket' => number_format($depositticket,2),
-                                            'DepositCoupon' => number_format($depositcoupon,2), 'TotalReload' => number_format($totalreload,2), 
-                                            'ReloadCash' => number_format($reloadcash,2),'ReloadTicket' => number_format($reloadticket,2), 
-                                            'ReloadCoupon' => number_format($reloadcoupon,2), 'TotalRedemption' => number_format($totalredemption,2),
-                                            'RedemptionCashier' => number_format($redemptioncashier,2), 'RedemptionGenesis' => number_format($redemptiongenesis,2),
-                                            'ManualRedemption' => number_format($manualredemption,2), 'EncashedTickets' => number_format($encashedtickets,2), 
-                                            'Replenishment' => number_format($replenishment,2),'Collection' => number_format($collection,2), 'EndBal' => number_format($endbal,2), 
-                                            'GrossHold' => number_format($grosshold,2), 'CashOnHand' => number_format($cashonhand,2), 'StartDate' => $startdate, 'EndDate' => $enddate));
+                            'BegBal' => number_format($begbal,2), 'TotalDeposit' => number_format($totaldeposit,2), 
+                            'DepositCash' => number_format($depositcash,2), 'DepositTicket' => number_format($depositticket,2),
+                            'DepositCoupon' => number_format($depositcoupon,2), 'TotalReload' => number_format($totalreload,2), 
+                            'ReloadCash' => number_format($reloadcash,2),'ReloadTicket' => number_format($reloadticket,2), 
+                            'ReloadCoupon' => number_format($reloadcoupon,2), 'TotalRedemption' => number_format($totalredemption,2),
+                            'RedemptionCashier' => number_format($redemptioncashier,2), 'RedemptionGenesis' => number_format($redemptiongenesis,2),
+                            'ManualRedemption' => number_format($manualredemption,2), 'EncashedTickets' => number_format($encashedtickets,2), 
+                            'Replenishment' => number_format($replenishment,2),'Collection' => number_format($collection,2), 'EndBal' => number_format($endbal,2), 
+                            'GrossHold' => number_format($grosshold,2), 'CashOnHand' => number_format($cashonhand,2), 'StartDate' => $startdate, 'EndDate' => $enddate));
                 $topup->close();
                 break;
             }
-        } else {
+        } 
+        else 
+        {
             $sitename = 'N/A';
             $sitecode = 'N/A';
             $posaccnt = 'N/A';
@@ -1631,21 +1781,21 @@ class ProcessTopUpPaginate extends BaseProcess {
             $grosshold = '0.00';
             $cashonhand = '0.00';
             $this->render('topup/topup_ghbal_viewdetails',array('SiteID' => $siteid,'SiteName'=> $sitename, 'SiteCode' => $sitecode, 'POSAccountNo' => $posaccnt, 'CutOff'=> $cutoff,
-                                        'BegBal' => number_format($begbal,2), 'TotalDeposit' => number_format($totaldeposit,2), 
-                                        'DepositCash' => number_format($depositcash,2), 'DepositTicket' => number_format($depositticket,2),
-                                        'DepositCoupon' => number_format($depositcoupon,2), 'TotalReload' => number_format($totalreload,2), 
-                                        'ReloadCash' => number_format($reloadcash,2),'ReloadTicket' => number_format($reloadticket,2), 
-                                        'ReloadCoupon' => number_format($reloadcoupon,2), 'TotalRedemption' => number_format($totalredemption,2),
-                                        'RedemptionCashier' => number_format($redemptioncashier,2), 'RedemptionGenesis' => number_format($redemptiongenesis,2),
-                                        'ManualRedemption' => number_format($manualredemption,2), 'EncashedTickets' => number_format($encashedtickets,2), 
-                                        'Replenishment' => number_format($replenishment,2),'Collection' => number_format($collection,2), 'EndBal' => number_format($endbal,2), 
-                                        'GrossHold' => number_format($grosshold,2), 'CashOnHand' => number_format($cashonhand,2), 'StartDate' => $startdate, 'EndDate' => $enddate));
+                        'BegBal' => number_format($begbal,2), 'TotalDeposit' => number_format($totaldeposit,2), 
+                        'DepositCash' => number_format($depositcash,2), 'DepositTicket' => number_format($depositticket,2),
+                        'DepositCoupon' => number_format($depositcoupon,2), 'TotalReload' => number_format($totalreload,2), 
+                        'ReloadCash' => number_format($reloadcash,2),'ReloadTicket' => number_format($reloadticket,2), 
+                        'ReloadCoupon' => number_format($reloadcoupon,2), 'TotalRedemption' => number_format($totalredemption,2),
+                        'RedemptionCashier' => number_format($redemptioncashier,2), 'RedemptionGenesis' => number_format($redemptiongenesis,2),
+                        'ManualRedemption' => number_format($manualredemption,2), 'EncashedTickets' => number_format($encashedtickets,2), 
+                        'Replenishment' => number_format($replenishment,2),'Collection' => number_format($collection,2), 'EndBal' => number_format($endbal,2), 
+                        'GrossHold' => number_format($grosshold,2), 'CashOnHand' => number_format($cashonhand,2), 'StartDate' => $startdate, 'EndDate' => $enddate));
             $topup->close();
         }
-
     }
     
-    public function ewalletsitehistory() {
+    public function ewalletsitehistory() 
+    {
         include_once __DIR__.'/../sys/class/TopUp.class.php';
         include_once __DIR__.'/../sys/class/helper/common.class.php';        
         $topup = new TopUp($this->getConnection());
@@ -1655,7 +1805,8 @@ class ProcessTopUpPaginate extends BaseProcess {
         $topup->close();
     }
     
-     public function ewalletcardehistory() {
+    public function ewalletcardehistory() 
+    {
         include_once __DIR__.'/../sys/class/TopUp.class.php';
         include_once __DIR__.'/../sys/class/helper/common.class.php';        
 //        $topup = new TopUp($this->getConnection());
@@ -1665,7 +1816,8 @@ class ProcessTopUpPaginate extends BaseProcess {
 //        $topup->close();
     }
     
-    public function getewalletsitehistory(){
+    public function getewalletsitehistory()
+    {
         include_once __DIR__.'/../sys/class/TopUp.class.php';
         $topup = new TopUp($this->getConnection());
         $topup->open();    
@@ -1686,16 +1838,16 @@ class ProcessTopUpPaginate extends BaseProcess {
         if(isset($_GET['cmbsite']))
             $site = $_GET['cmbsite'];
         
-
-        
         $total_row=0;
         $total_row = $topup->getTotaleWalletTransactionHistory($site, $transType, $transStatus, $startDate, $endDate);
         $params = $this->getJqgrid($total_row, 'a.EwalletTransID'); 
         $result = $topup->geteWalletTransactionHistory($params['sort'], $params['dir'], $params['start'], $params['limit'],$site,$transType,$transStatus,$startDate,$endDate);
         $jqgrid = $params['jqgrid'];
-        foreach($result as $row) {
+        foreach($result as $row) 
+        {
             $trans_type = 'Withdraw';
-            if($row['TransType'] == 'D'){
+            if($row['TransType'] == 'D')
+            {
                 $trans_type = "Load";
             }
             if($row['Status']==0){$row['Status']="Pending";};
@@ -1720,19 +1872,19 @@ class ProcessTopUpPaginate extends BaseProcess {
         exit;
     }
     
-    public function getCardNumberStatus(){
+    public function getCardNumberStatus()
+    {
         include_once __DIR__.'/../sys/class/TopUp.class.php';
         $topup = new TopUp($this->getConnection());
         $topup->open();
         $cardNumber = $_GET['cardNum'];
-        
         $status = $topup->getCardNumberStatus($cardNumber);
         $topup->close();
-        
         print $status;
-        
     }
-    public function getewalletcardhistory(){
+
+    public function getewalletcardhistory()
+    {
          include_once __DIR__.'/../sys/class/TopUp.class.php';
         $topup = new TopUp($this->getConnection());
         $topup->open();    
@@ -1759,9 +1911,11 @@ class ProcessTopUpPaginate extends BaseProcess {
        
         $result = $topup->geteWalletTransactionCardHistory($params['sort'], $params['dir'], $params['start'], $params['limit'],$cardNumber,$transType,$transStatus,$startDate,$endDate);
         $jqgrid = $params['jqgrid'];
-        foreach($result as $row) {
+        foreach($result as $row) 
+        {
             $trans_type = 'Withdraw';
-            if($row['TransType'] == 'D'){
+            if($row['TransType'] == 'D')
+            {
                 $trans_type = "Load";
             }
             if($row['Status']==0){$row['Status']="Pending";};
@@ -1784,9 +1938,7 @@ class ProcessTopUpPaginate extends BaseProcess {
         $topup->close();
         unset($startDate, $endDate, $total_row, $params, $result, $jqgrid);
         exit;
-        
     }
-        
 }
 
 $process = new ProcessTopUpPaginate();

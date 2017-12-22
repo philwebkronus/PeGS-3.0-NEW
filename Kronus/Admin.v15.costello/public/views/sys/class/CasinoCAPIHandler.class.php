@@ -1,13 +1,11 @@
 <?php
-
 /**
  * Casino API Handler
  * Copyright (c) 2011. PhilWeb Corporation. WEBiTS
  *
  * @author  FTG
  * @version 0.1
- * @modified elperez
- * with MG CAPI Integration
+ * @modified elperez - with MG CAPI Integration
  */
 
 //require_once( ROOT_DIR . 'sys/class/nusoap/nusoap.php' );
@@ -18,7 +16,7 @@ require_once( ROOT_DIR . 'sys/class/RealtimeGamingAPIWrapper.class.php' );
 require_once( ROOT_DIR . 'sys/class/RealtimeGamingUBAPIWrapper.class.php' );
 require_once( ROOT_DIR . 'sys/class/helper/common.class.php' );
 require_once( ROOT_DIR . 'sys/class/PlayTechAPIWrapper.class.php' );
-
+require_once( ROOT_DIR . 'sys/class/HabaneroAPIWrapper.class.php' ); // ADDED CCT 11/24/2017
 
 class CasinoCAPIHandler
 {
@@ -29,6 +27,7 @@ class CasinoCAPIHandler
     const PT = 2;
     const MG = 3;    
     const RTG2 = 4;    
+    const HAB = 6; // ADDED CCT 11/24/2017
 
     /**
      * Default casino provider
@@ -89,7 +88,6 @@ class CasinoCAPIHandler
     public function __construct( $gamingProvider, $configuration )
     {
         $this->_gamingProvider = $gamingProvider;
-
         $this->_URI = $configuration[ 'URI' ];
         $this->_isCaching = $configuration[ 'isCaching' ];
         $this->_isDebug = $configuration[ 'isDebug' ];
@@ -124,7 +122,6 @@ class CasinoCAPIHandler
                 $keyFilePath = $configuration[ 'keyFilePath' ];
 
                 $this->_API = new RealtimeGamingAPIWrapper( $this->_URI, RealtimeGamingAPIWrapper::CASHIER_API, $certFilePath, $keyFilePath, $this->_isCaching );
-
                 $this->_API->SetDebug( $this->_isDebug );
                 $this->_API->SetDepositMethodId( $configuration[ 'depositMethodId' ] );
                 $this->_API->SetWithdrawalMethodId( $configuration[ 'withdrawalMethodId' ] );
@@ -135,11 +132,10 @@ class CasinoCAPIHandler
                 $keyFilePath = $configuration[ 'keyFilePath' ];
 
                 $this->_API = new RealtimeGamingAPIWrapper( $this->_URI, RealtimeGamingAPIWrapper::PLAYER_API, $certFilePath, $keyFilePath, $this->_isCaching );
-
                 $this->_API->SetDebug( $this->_isDebug );
             }
-            
-        } //For RTG Abbott
+        } 
+        //For RTG Abbott
         else if ( $this->_gamingProvider == self::RTG2 )
         {   
             if(isset ($configuration[ 'depositMethodId' ]) && isset($configuration[ 'withdrawalMethodId' ])) 
@@ -148,7 +144,6 @@ class CasinoCAPIHandler
                 $keyFilePath = $configuration[ 'keyFilePath' ];
 
                 $this->_API = new RealtimeGamingUBAPIWrapper( $this->_URI, RealtimeGamingUBAPIWrapper::CASHIER_API, $certFilePath, $keyFilePath, $this->_isCaching );
-
                 $this->_API->SetDebug( $this->_isDebug );
                 $this->_API->SetDepositMethodId( $configuration[ 'depositMethodId' ] );
                 $this->_API->SetWithdrawalMethodId( $configuration[ 'withdrawalMethodId' ] );
@@ -159,9 +154,17 @@ class CasinoCAPIHandler
                 $keyFilePath = $configuration[ 'keyFilePath' ];
 
                 $this->_API = new RealtimeGamingUBAPIWrapper( $this->_URI, RealtimeGamingUBAPIWrapper::PLAYER_API, $certFilePath, $keyFilePath, $this->_isCaching );
-
                 $this->_API->SetDebug( $this->_isDebug );
             }
+        }
+        //For Habanero ADDED CCT 11/24/2017
+        else if ($this->_gamingProvider == self::HAB)
+        {   
+            $brandID = $configuration['brandID'];
+            $apiKey = $configuration['apiKey'];
+            
+            $this->_API = new HabaneroAPIWrapper($this->_URI, $brandID, $apiKey);
+            $this->_API->SetDebug($this->_isDebug);
         }
     }
 
@@ -202,7 +205,8 @@ class CasinoCAPIHandler
      * @param string $login
      * @return array
      */
-    public function GetBalance( $login )
+    //public function GetBalance( $login )
+    public function GetBalance( $login , $password = "") // EDITED CCT 11/24/2017
     {
         if ( $this->_gamingProvider == self::MG )
         {
@@ -216,6 +220,10 @@ class CasinoCAPIHandler
         {            
            return $this->_API->GetBalance( $login ); 
         }
+        else if ( $this->_gamingProvider == self::HAB ) // Habanero ADDED CCT 11/24/2017
+        {            
+           return $this->_API->GetBalance( $login, $password ); 
+        }        
     }
 
     /**
@@ -256,7 +264,9 @@ class CasinoCAPIHandler
      * @param string $tracking4
      * @return array
      */
-    public function Withdraw( $login, $amount, $tracking1 = '', $tracking2 = '', $tracking3 = '', $tracking4 = '', $methodname = '', $locatorName = '' )
+    //public function Withdraw( $login, $amount, $tracking1 = '', $tracking2 = '', $tracking3 = '', $tracking4 = '', $methodname = '', $locatorName = '' ) 
+    public function Withdraw( $login, $amount, $tracking1 = '', $tracking2 = '', $tracking3 = '', $tracking4 = '', $methodname = '', $locatorName = '', $password = '') 
+            // EDITED CCT 11/27/2017
     {
         if ( $this->_gamingProvider == self::MG )
         {
@@ -270,6 +280,10 @@ class CasinoCAPIHandler
         {
             return $this->_API->Withdraw($login,$tracking1,$amount,$tracking2);
         }
+        else if ( $this->_gamingProvider === self::HAB ) // Habanero ADDED CCT 11/27/2017
+        {
+            return $this->_API->Withdraw($login, $amount, $password, $tracking1);
+        }        
     }
 
     /**
@@ -303,14 +317,12 @@ class CasinoCAPIHandler
         }
     }
     
-    
     public function GetMyBalance()
     {
         if ( $this->_gamingProvider == self::MG )
         {
             return $this->_API->GetMyBalance();
         }
-        
     }
     
     /**
@@ -382,6 +394,10 @@ class CasinoCAPIHandler
             return $this->_API->NewPlayer($login,$password,$email,$fname,$lname,$birthdate,
                     $addr1,$city,$country,$dayphone,$zip,$currency,$isVIP);
         }
+        else if ( $this->_gamingProvider == self::HAB) // Habanero  ADDED CCT 12/14/2017
+        {
+            return $this->_API->AddUser($login, $password, $isVIP);
+        }        
     }
     
     /**
@@ -410,6 +426,10 @@ class CasinoCAPIHandler
         {
             return $this->_API->ChangePassword($loginName,$newPassword);
         }
+        else if ( $this->_gamingProvider == self::HAB) // Habanero  ADDED CCT 12/14/2017
+        {
+            return $this->_API->ChangePassword($loginName, $newPassword);
+        }         
     }
     
     /**
@@ -417,7 +437,8 @@ class CasinoCAPIHandler
      * @param type $login
      * @return object 
      */
-    public function GetAccountInfo($login,$password){
+    public function GetAccountInfo($login,$password)
+    {
         if ( $this->_gamingProvider == self::RTG)
         {
             return $this->_API->GetAccountInfoByLogin($login);
@@ -434,6 +455,12 @@ class CasinoCAPIHandler
         {
             return $this->_API->GetPlayerInfo($login,$password);
         }
+        // ADDED CCT 12/14/2017 BEGIN
+        if( $this->_gamingProvider == self::HAB)
+        { 
+            return $this->_API->AccountExists($login, $password);
+        }
+        // ADDED CCT 12/14/2017 END
     }
     
     /**
@@ -442,7 +469,8 @@ class CasinoCAPIHandler
      * @param type $password
      * @return type 
      */
-    public function ResetPassword($login, $password){
+    public function ResetPassword($login, $password)
+    {
         if( $this->_gamingProvider == self::MG)
         {
             return $this->_API->ResetPassword($login, $password);
@@ -454,7 +482,8 @@ class CasinoCAPIHandler
      * @param type $login
      * @return type 
      */
-    public function unfreezePlayer($login, $frozen){
+    public function unfreezePlayer($login, $frozen)
+    {
         if( $this->_gamingProvider == self::PT)
         {
             return $this->_API->FreezePlayer($login, $frozen);
@@ -466,11 +495,9 @@ class CasinoCAPIHandler
         }
     }
     
-    
-    public function ChangeplayerClassification($pid, $playerClassID, $userID) {       
+    public function ChangeplayerClassification($pid, $playerClassID, $userID) 
+    {       
         return $this->_API->ChangeplayerClassification($pid, $playerClassID, $userID);
     }
-    
 }
-
 ?>

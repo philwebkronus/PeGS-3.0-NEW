@@ -1,7 +1,5 @@
 <?php
-
-/**
- * 
+/*
  *Created BY: Edson L. Perez
  *Date Created: September 22, 2011
  */
@@ -19,18 +17,19 @@ class RptOperator extends DBHandler
     //view all accounts --> 
     function viewsitebyowner($zaid)
     {
-        $stmt = "SELECT DISTINCT b.SiteID FROM accounts AS a INNER JOIN siteaccounts AS b 
-                 ON a.AID = b.AID WHERE a.AID = '".$zaid."' AND b.Status = 1";
+        $stmt = "SELECT DISTINCT b.SiteID 
+                FROM accounts AS a INNER JOIN siteaccounts AS b ON a.AID = b.AID 
+                WHERE a.AID = '".$zaid."' AND b.Status = 1";
         $this->executeQuery($stmt); 
         return $this->fetchAllData();
     }
     
     // for site transactions report
-	// for site transactions report
     function viewtransactionperday($zdateFROM, $zdateto, $zsiteID)
     {
         $listsite = array();
-        foreach ($zsiteID as $row) {
+        foreach ($zsiteID as $row) 
+        {
             array_push($listsite,$row);
         }
         $site = implode(',', $listsite);
@@ -45,13 +44,13 @@ class RptOperator extends DBHandler
                         tr.TransactionType, 
                         sum(tr.Amount) AS amount,
                         a.UserName 
-                from transactiondetails tr
-                inner join transactionsummary ts on ts.TransactionsSummaryID = tr.TransactionSummaryID
-                inner join terminals t on t.TerminalID = tr.TerminalID
-                inner join accounts a on a.AID = tr.CreatedByAID
-                where tr.SiteID IN(".$site.") AND
-                ts.DateStarted >= ? and ts.DateStarted < ? AND tr.Status IN(1,4)
-                and (tr.StackerSummaryID IS NULL OR trim(tr.StackerSummaryID) <> '')
+                from transactiondetails tr inner join transactionsummary ts on ts.TransactionsSummaryID = tr.TransactionSummaryID 
+                    inner join terminals t on t.TerminalID = tr.TerminalID 
+                    inner join accounts a on a.AID = tr.CreatedByAID 
+                where tr.SiteID IN(".$site.") 
+                    AND ts.DateStarted >= ? and ts.DateStarted < ? 
+                    AND tr.Status IN(1,4) 
+                    and (tr.StackerSummaryID IS NULL OR trim(tr.StackerSummaryID) <> '') 
                 group by tr.TransactionType,tr.TransactionSummaryID 
                 order by t.TerminalCode,ts.DateStarted Desc ";
         $this->prepare($stmt);
@@ -61,6 +60,7 @@ class RptOperator extends DBHandler
         unset($listsite);
         return $this->fetchAllData();
     }
+    
     /*function viewtransactionperday($zdateFROM, $zdateto, $zsiteID)
     {
         $listsite = array();
@@ -96,7 +96,6 @@ class RptOperator extends DBHandler
           $rsite = $row;
           array_push($listsite, "'".$rsite."'");
        }
-     
        $site = implode(',', $listsite); 
        $stmt = "SELECT SiteCode FROM sites WHERE SiteID IN (".$site.")";
        $this->prepare($stmt);
@@ -114,8 +113,8 @@ class RptOperator extends DBHandler
             array_push($listsites, "'".$row['SiteID']."'");
         }
         $siteID = implode(",",$listsites);
-        $stmt = "SELECT COUNT(*) as ctrbcf
-                 FROM sitebalance sb INNER JOIN sites s ON sb.SiteID = s.SiteID
+        $stmt = "SELECT COUNT(*) as ctrbcf 
+                 FROM sitebalance sb INNER JOIN sites s ON sb.SiteID = s.SiteID 
                  WHERE sb.SiteID IN (".$siteID.")";
         $this->prepare($stmt);
         $this->execute();
@@ -134,17 +133,16 @@ class RptOperator extends DBHandler
         $siteID = implode(",",$listsites);
         if($zstart == null && $zlimit == null)
         {
-            $stmt = "SELECT sb.SiteID, sb.Balance, sb.MinBalance, sb.MaxBalance, sb.LastTransactionDate,
-                     sb.TopUpType, sb.PickUpTag, s.SiteName, s.SiteCode, if(isnull(s.POSAccountNo), '0000000000', s.POSAccountNo) AS POS 
-                     FROM sitebalance sb 
-                     INNER JOIN sites s ON sb.SiteID = s.SiteID WHERE sb.SiteID IN (".$siteID.") ORDER BY s.SiteCode ASC";
+            $stmt = "SELECT sb.SiteID, sb.Balance, sb.MinBalance, sb.MaxBalance, sb.LastTransactionDate, 
+                        sb.TopUpType, sb.PickUpTag, s.SiteName, s.SiteCode, if(isnull(s.POSAccountNo), '0000000000', s.POSAccountNo) AS POS 
+                     FROM sitebalance sb INNER JOIN sites s ON sb.SiteID = s.SiteID 
+                     WHERE sb.SiteID IN (".$siteID.") ORDER BY s.SiteCode ASC";
         }
         else
         {
             $stmt = "SELECT sb.SiteID, sb.Balance, sb.MinBalance, sb.MaxBalance, sb.LastTransactionDate,
-                     sb.TopUpType, sb.PickUpTag, s.SiteName, s.SiteCode, if(isnull(s.POSAccountNo), '0000000000', s.POSAccountNo) AS POS
-                     FROM sitebalance sb 
-                     INNER JOIN sites s ON sb.SiteID = s.SiteID
+                        sb.TopUpType, sb.PickUpTag, s.SiteName, s.SiteCode, if(isnull(s.POSAccountNo), '0000000000', s.POSAccountNo) AS POS 
+                     FROM sitebalance sb INNER JOIN sites s ON sb.SiteID = s.SiteID 
                      WHERE sb.SiteID IN (".$siteID.") ORDER BY s.SiteCode ASC LIMIT ".$zstart.", ".$zlimit."";
         }
         
@@ -180,98 +178,61 @@ class RptOperator extends DBHandler
       * @return array
       * get active session count using siteid and cardnumber
       */
-    public final function getActiveSessionCount ($siteID, $cardnumber) {
-        if($siteID == ''){
-            $query = "
-                  SELECT  
-                    count(t.TerminalID) as ActiveSession
-                  FROM 
-                    terminalsessions ts
-                        INNER JOIN terminals t
-                        ON t.terminalID=ts.TerminalID
-                  WHERE
-                    ts.LoyaltyCardNumber = :cardnumber";
+    public final function getActiveSessionCount ($siteID, $cardnumber) 
+    {
+        if($siteID == '')
+        {
+            $query = "SELECT count(t.TerminalID) as ActiveSession 
+                  FROM terminalsessions ts INNER JOIN terminals t ON t.terminalID=ts.TerminalID 
+                  WHERE ts.LoyaltyCardNumber = :cardnumber";
         
-        $this->prepare($query);
-        
-        $this->bindParam(":cardnumber", $cardnumber);
+            $this->prepare($query);
+            $this->bindParam(":cardnumber", $cardnumber);
         }
-        else{
-            $query = "
-                  SELECT  
-                    count(t.TerminalID) as ActiveSession
-                  FROM 
-                    terminalsessions ts
-                        INNER JOIN terminals t
-                        ON t.terminalID=ts.TerminalID
-                  WHERE
-                    t.SiteID = :siteID";
-        
-        $this->prepare($query);
-        
-        $this->bindParam(":siteID", $siteID);
+        else
+        {
+            $query = "SELECT count(t.TerminalID) as ActiveSession 
+                  FROM terminalsessions ts INNER JOIN terminals t ON t.terminalID=ts.TerminalID 
+                  WHERE t.SiteID = :siteID";
+            $this->prepare($query);
+            $this->bindParam(":siteID", $siteID);
         }
-        
-        
         $this->execute();
-        
         $record = $this->fetchAllData();
-        
         return $record[0]["ActiveSession"];
-        
     }
-    
 
     /**
       * @author Gerardo V. Jagolino Jr.
       * @return array
       * get active session count using siteid and cardnumber and usermode
       */
-    public final function getActiveSessionCountMod ($cardnumber, $usermode, $siteID) {
-        if($siteID == ''){
-        $query = "
-                  SELECT  
-                    count(t.TerminalID) as ActiveSession
-                  FROM 
-                    terminalsessions ts
-                        INNER JOIN terminals t
-                        ON t.terminalID=ts.TerminalID
-                  WHERE
-                    ts.LoyaltyCardNumber = :cardnumber
-                    AND ts.UserMode = :usermode";
-        
-        $this->prepare($query);
-        
-        $this->bindParam(":cardnumber", $cardnumber);
-        $this->bindParam(":usermode", $usermode);
+    public final function getActiveSessionCountMod ($cardnumber, $usermode, $siteID) 
+    {
+        if($siteID == '')
+        {
+            $query = "SELECT  count(t.TerminalID) as ActiveSession 
+                  FROM terminalsessions ts INNER JOIN terminals t ON t.terminalID=ts.TerminalID 
+                  WHERE ts.LoyaltyCardNumber = :cardnumber 
+                        AND ts.UserMode = :usermode";
+            $this->prepare($query);
+            $this->bindParam(":cardnumber", $cardnumber);
+            $this->bindParam(":usermode", $usermode);
         }
-        else{
-        
-            $query = "
-                  SELECT  
-                    count(t.TerminalID) as ActiveSession
-                  FROM 
-                    terminalsessions ts
-                        INNER JOIN terminals t
-                        ON t.terminalID=ts.TerminalID
-                  WHERE
-                    t.SiteID = :siteID
-                    AND ts.UserMode = :usermode";
-        
-        $this->prepare($query);
-        
-        $this->bindParam(":siteID", $siteID);
-        $this->bindParam(":usermode", $usermode);
+        else
+        {
+            $query = "SELECT  count(t.TerminalID) as ActiveSession 
+                  FROM terminalsessions ts INNER JOIN terminals t ON t.terminalID=ts.TerminalID 
+                  WHERE t.SiteID = :siteID 
+                        AND ts.UserMode = :usermode";
+            $this->prepare($query);
+            $this->bindParam(":siteID", $siteID);
+            $this->bindParam(":usermode", $usermode);
         }
-        
         $this->execute();
-        
         $record = $this->fetchAllData();
-        
         return $record[0]["ActiveSession"];
-        
     }
-    
   
     /**
       * @author Gerardo V. Jagolino Jr.
@@ -288,9 +249,6 @@ class RptOperator extends DBHandler
 //        return $card;
 //    }
 
-
-    
-    
     /**
      *This method returns an array composed of:
      * 1. Terminal ID
@@ -309,8 +267,14 @@ class RptOperator extends DBHandler
      * @param String $_MicrogamingCurrency
      * @return Mixed 
      */
-    public final function getActiveSessionPlayingBalance ($cardinfo, $siteID, $_ServiceAPI,$_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, $_ptcasinoname,$_PlayerAPI,$_ptsecretkey) {
-        
+    public final function getActiveSessionPlayingBalance 
+            // CCT EDITED 12/13/2017 BEGIN
+            //($cardinfo, $siteID, $_ServiceAPI,$_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, $_ptcasinoname,
+            //$_PlayerAPI,$_ptsecretkey) 
+            ($cardinfo, $siteID, $_ServiceAPI,$_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, $_ptcasinoname,
+            $_PlayerAPI,$_ptsecretkey, $_HABbrandID = "", $_HABapiKey = "") 
+            // CCT EDITED 12/13/2017 END
+    {
         include_once __DIR__.'/../../sys/class/CasinoCAPIHandler.class.php';
         include_once __DIR__.'/../../sys/class/LoyaltyUBWrapper.class.php';
         
@@ -320,60 +284,41 @@ class RptOperator extends DBHandler
         
         $row->page = 1;
         
-        $query = "
-                  SELECT  
-                    t.TerminalID, 
-                    t.TerminalCode, 
+        $query = "SELECT t.TerminalID, t.TerminalCode, 
                     CASE t.TerminalType WHEN 0
                         THEN 'Regular'
                         WHEN 1
                         THEN 'Genesis'
                         ELSE 'e-SAFE'
                     END AS TerminalType, 
-                    rs.ServiceID,
-                    rs.ServiceName,
-                    ts.UBServiceLogin,
-                    ts.UserMode, 
-                    ts.LoyaltyCardNumber
-                  FROM 
-                  FROM 
-                    terminalsessions ts 
-                    INNER JOIN terminals t 
-                        ON t.TerminalID = ts.TerminalID
-                    INNER JOIN ref_services rs 
-                        ON rs.ServiceID = ts.ServiceID
-                  WHERE
-                    t.SiteID = :siteID
-                 
-                  ORDER BY
-                    t.TerminalID ASC";
-        
+                    rs.ServiceID, rs.ServiceName, ts.UBServiceLogin, ts.UserMode, ts.LoyaltyCardNumber 
+                  FROM terminalsessions ts INNER JOIN terminals t ON t.TerminalID = ts.TerminalID 
+                        INNER JOIN ref_services rs ON rs.ServiceID = ts.ServiceID 
+                  WHERE t.SiteID = :siteID 
+                  ORDER BY t.TerminalID ASC";
         $this->prepare($query);
-        
         $this->bindParam(":siteID", $siteID);
-        
         $this->execute();
-        
         $record = $this->fetchAllData();
-
         $newRecord = array();
-        
         $ctr = 0;
         
-        foreach($record as $r) {
-            
-            if(preg_match("/RTG/", $r["ServiceName"])) {
-                
+        foreach($record as $r) 
+        {
+            if(preg_match("/RTG/", $r["ServiceName"])) 
+            {
                 $configuration = self::getConfigurationForRTGCAPI(
                                     strpos($_ServiceAPI[(int)$r["ServiceID"]-1], "ECFTEST"), 
                                     $_ServiceAPI[(int)$r["ServiceID"]-1], 
                                     $r["ServiceID"]);
-                
                 $_CasinoAPIHandler = new CasinoCAPIHandler( CasinoCAPIHandler::RTG, $configuration );
                 
-                if($r["UserMode"] == 1){
+                if($r["UserMode"] == 1)
+                {
                     $data = $_CasinoAPIHandler->GetBalance($r["UBServiceLogin"]);
-                } else {
+                } 
+                else 
+                {
                     $data = $_CasinoAPIHandler->GetBalance($r["TerminalCode"]);
                 }
                 
@@ -381,46 +326,44 @@ class RptOperator extends DBHandler
                 {
                     $r["PlayingBalance"] = $data["BalanceInfo"]["Balance"];
                 }
-                else{
+                else
+                {
                     $r["PlayingBalance"] = 0;
                 }
                 
             }
-            else if (preg_match("/MG/", $r["ServiceName"])) {
-
+            else if (preg_match("/MG/", $r["ServiceName"])) 
+            {
                 $configuration = self::getConfigurationForMGCAPI($r["ServiceID"], 
                                 $_ServiceAPI, $_CAPIUsername, $_CAPIPassword, 
                                 $_CAPIPlayerName, $_MicrogamingCurrency);
-                
                 $_CasinoAPIHandler = new CasinoCAPIHandler( CasinoCAPIHandler::MG, $configuration );
-                
                 $data = $_CasinoAPIHandler->GetBalance($r["TerminalCode"]);
 
                 if(array_key_exists("BalanceInfo", $data))
                 {
                     $r["PlayingBalance"] = $data["BalanceInfo"]["Balance"];
                 } 
-                else{
+                else
+                {
                     $r["PlayingBalance"] = 0;
                 }
-                
             }
-            else if (preg_match("/PT/", $r["ServiceName"])) {
-          
+            else if (preg_match("/PT/", $r["ServiceName"])) 
+            {
                 $url = $_PlayerAPI[(int)$r["ServiceID"]-1];
                 $configuration = self::getConfigurationForPTCAPI( $url,$_ptcasinoname,$_ptsecretkey);
-                
                 $_CasinoAPIHandler = new CasinoCAPIHandler( CasinoCAPIHandler::PT, $configuration );
                 
                 //if user mode is terminal based, get each balances of each terminal
-                if($r["UserMode"] == 0 || $r["UserMode"] == 2){
+                if($r["UserMode"] == 0 || $r["UserMode"] == 2)
+                {
                     $data = $_CasinoAPIHandler->GetBalance($r["TerminalCode"]);
                 }
                 //if user mode is user based, get each balances of each casino mapped to a card
                 else
                 {
                     $serviceusername = $this->getLoyaltycardNumberLogin($r["TerminalID"]);   
-                    
                     $data = $_CasinoAPIHandler->GetBalance($serviceusername);
                 }    
                 
@@ -428,24 +371,64 @@ class RptOperator extends DBHandler
                 {
                     $r["PlayingBalance"] = $data["BalanceInfo"]["Balance"];
                 }
-                else{
+                else
+                {
                     $r["PlayingBalance"] = 0;
                 }
             }
+            // CCT ADDED 12/12/2017 BEGIN
+            else if (preg_match("/Habanero/", $r["ServiceName"])) 
+            {
+                $url = $_ServiceAPI[(int)$r["ServiceID"]-1];
+                $configuration = self::getConfigurationForHabaneroCAPI( $url,$_HABbrandID,$_HABapiKey);
+                $_CasinoAPIHandler = new CasinoCAPIHandler( CasinoCAPIHandler::HAB, $configuration );
+                        
+                //getterminalcredentials
+                $stmt = "SELECT ServicePassword FROM terminalservices 
+                        WHERE ServiceID = ? AND TerminalID = ? AND Status = 1 AND isCreated = 1";
+                $this->prepare($stmt);
+                $this->bindparameter(1, $r["ServiceID"]);
+                $this->bindparameter(2, $r["TerminalID"]);
+                $this->execute();
+                $servicePwdResult = $this->fetchData();   
+
+                //if user mode is terminal based, get each balances of each terminal
+                if($r["UserMode"] == 0 || $r["UserMode"] == 2)
+                {
+                    $data = $_CasinoAPIHandler->GetBalance($r["TerminalCode"], $servicePwdResult['ServicePassword']);
+                }
+                //if user mode is user based, get each balances of each casino mapped to a card
+                else
+                {
+                    $serviceusername = $this->getLoyaltycardNumberLogin($r["TerminalID"]);   
+                    $data = $_CasinoAPIHandler->GetBalance($serviceusername);
+                }    
+
+                if(array_key_exists("BalanceInfo", $data))
+                {
+                    $r["PlayingBalance"] = $data["BalanceInfo"]["Balance"];
+                }
+                else
+                {
+                    $r["PlayingBalance"] = 0;
+                }
+            }            
+            // CCT ADDED 12/12/2017 END
             
             $loyalty_result = json_decode($loyalty->getCardInfo2($r['LoyaltyCardNumber'], $cardinfo, 1));
-            
             $loyalty_result->CardInfo->IsEwallet == 1 ? $isEwallet = "Yes" : $isEwallet = "No";
+            
             $r['UserMode'] == 1 ? $r['UserMode'] = "User Based" : $r['UserMode'] = "Terminal Based";
             
-            if($r["PlayingBalance"] == 0){
+            if($r["PlayingBalance"] == 0)
+            {
                
                 $r["PlayingBalance"] = "N/A";
             }
-            else{
+            else
+            {
                 $r["PlayingBalance"] = number_format($r['PlayingBalance'], 2);
             }
-            
             
             $row->rows[$ctr]["id"] = $r["TerminalID"];
             
@@ -456,15 +439,10 @@ class RptOperator extends DBHandler
                 $r["UserMode"],
                 $isEwallet
             );
-            
             $ctr++;
-            
         }
-       
         return json_encode($row);
-        
     }
-    
     
     /**
      *This method returns an array composed of:
@@ -484,8 +462,14 @@ class RptOperator extends DBHandler
      * @param String $_MicrogamingCurrency
      * @return Mixed 
      */
-    public final function getPagcorActiveSessionPlayingBalance ($cardinfo, $siteID, $_ServiceAPI,$_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, $_ptcasinoname,$_PlayerAPI,$_ptsecretkey) {
-        
+    public final function getPagcorActiveSessionPlayingBalance 
+            // CCT EDITED 12/13/2017 BEGIN
+            //    ($cardinfo, $siteID, $_ServiceAPI,$_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, 
+            //    $_ptcasinoname,$_PlayerAPI,$_ptsecretkey) 
+                ($cardinfo, $siteID, $_ServiceAPI,$_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, 
+                $_ptcasinoname,$_PlayerAPI,$_ptsecretkey, $_HABbrandID = "", $_HABapiKey = "") 
+            // CCT EDITED 12/13/2017 END
+    {
         include_once __DIR__.'/../../sys/class/CasinoCAPIHandler.class.php';
         include_once __DIR__.'/../../sys/class/LoyaltyUBWrapper.class.php';
         
@@ -495,31 +479,18 @@ class RptOperator extends DBHandler
         
         $row->page = 1;
         
-        $query = "
-                SELECT  
-                t.TerminalID, 
-                t.TerminalCode,
+        $query = "SELECT t.TerminalID, t.TerminalCode,
                 CASE t.TerminalType WHEN 0
                         THEN 'Regular'
                         WHEN 1
                         THEN 'Genesis'
                         ELSE 'e-SAFE'
                     END AS TerminalType,
-                rs.ServiceID,
-                rs.ServiceName,
-                ts.UBServiceLogin,
-                ts.UserMode,
-                ts.LoyaltyCardNumber
-                FROM 
-                    terminalsessions ts 
-                    INNER JOIN terminals t 
-                        ON t.TerminalID = ts.TerminalID
-                    INNER JOIN ref_services rs 
-                        ON rs.ServiceID = ts.ServiceID
-                WHERE
-                t.SiteID = :siteID
-                ORDER BY
-                t.TerminalID ASC";
+                rs.ServiceID, rs.ServiceName, ts.UBServiceLogin, ts.UserMode, ts.LoyaltyCardNumber 
+                FROM  terminalsessions ts  INNER JOIN terminals t  ON t.TerminalID = ts.TerminalID 
+                        INNER JOIN ref_services rs ON rs.ServiceID = ts.ServiceID 
+                WHERE t.SiteID = :siteID 
+                ORDER BY t.TerminalID ASC";
         
         $this->prepare($query);
         
@@ -533,10 +504,10 @@ class RptOperator extends DBHandler
         
         $ctr = 0;
         
-        foreach($record as $r) {
-            
-            if(preg_match("/RTG/", $r["ServiceName"])) {
-                
+        foreach($record as $r) 
+        {
+            if(preg_match("/RTG/", $r["ServiceName"])) 
+            {
                 $configuration = self::getConfigurationForRTGCAPI(
                                     strpos($_ServiceAPI[(int)$r["ServiceID"]-1], "ECFTEST"), 
                                     $_ServiceAPI[(int)$r["ServiceID"]-1], 
@@ -544,9 +515,12 @@ class RptOperator extends DBHandler
                 
                 $_CasinoAPIHandler = new CasinoCAPIHandler( CasinoCAPIHandler::RTG, $configuration );
                 
-                if($r["UserMode"] == 1){
+                if($r["UserMode"] == 1)
+                {
                     $data = $_CasinoAPIHandler->GetBalance($r["UBServiceLogin"]);
-                } else {
+                } 
+                else 
+                {
                     $data = $_CasinoAPIHandler->GetBalance($r["TerminalCode"]);
                 }
                 
@@ -557,10 +531,9 @@ class RptOperator extends DBHandler
                 else{
                     $r["PlayingBalance"] = 0;
                 }
-                
             }
-            else if (preg_match("/MG/", $r["ServiceName"])) {
-
+            else if (preg_match("/MG/", $r["ServiceName"])) 
+            {
                 $configuration = self::getConfigurationForMGCAPI($r["ServiceID"], 
                                 $_ServiceAPI, $_CAPIUsername, $_CAPIPassword, 
                                 $_CAPIPlayerName, $_MicrogamingCurrency);
@@ -573,27 +546,27 @@ class RptOperator extends DBHandler
                 {
                     $r["PlayingBalance"] = $data["BalanceInfo"]["Balance"];
                 } 
-                else{
+                else
+                {
                     $r["PlayingBalance"] = 0;
                 }
-                
             }
-            else if (preg_match("/PT/", $r["ServiceName"])) {
-          
+            else if (preg_match("/PT/", $r["ServiceName"])) 
+            {
                 $url = $_PlayerAPI[(int)$r["ServiceID"]-1];
                 $configuration = self::getConfigurationForPTCAPI( $url,$_ptcasinoname,$_ptsecretkey);
                 
                 $_CasinoAPIHandler = new CasinoCAPIHandler( CasinoCAPIHandler::PT, $configuration );
                 
                 //if user mode is terminal based, get each balances of each terminal
-                if($r["UserMode"] == 0 || $r["UserMode"] == 2){
+                if($r["UserMode"] == 0 || $r["UserMode"] == 2)
+                {
                     $data = $_CasinoAPIHandler->GetBalance($r["TerminalCode"]);
                 }
                 //if user mode is user based, get each balances of each casino mapped to a card
                 else
                 {
                     $serviceusername = $this->getLoyaltycardNumberLogin($r["TerminalID"]);   
-                    
                     $data = $_CasinoAPIHandler->GetBalance($serviceusername);
                 }    
                 
@@ -601,24 +574,63 @@ class RptOperator extends DBHandler
                 {
                     $r["PlayingBalance"] = $data["BalanceInfo"]["Balance"];
                 }
-                else{
+                else
+                {
                     $r["PlayingBalance"] = 0;
                 }
             }
+            // CCT ADDED 12/12/2017 BEGIN
+            else if (preg_match("/Habanero/", $r["ServiceName"])) 
+            {
+                $url = $_ServiceAPI[(int)$r["ServiceID"]-1];
+                $configuration = self::getConfigurationForHabaneroCAPI( $url,$_HABbrandID,$_HABapiKey);
+                $_CasinoAPIHandler = new CasinoCAPIHandler( CasinoCAPIHandler::HAB, $configuration );
+                        
+                //getterminalcredentials
+                $stmt = "SELECT ServicePassword FROM terminalservices 
+                        WHERE ServiceID = ? AND TerminalID = ? AND Status = 1 AND isCreated = 1";
+                $this->prepare($stmt);
+                $this->bindparameter(1, $r["ServiceID"]);
+                $this->bindparameter(2, $r["TerminalID"]);
+                $this->execute();
+                $servicePwdResult = $this->fetchData();   
+
+                //if user mode is terminal based, get each balances of each terminal
+                if($r["UserMode"] == 0 || $r["UserMode"] == 2)
+                {
+                    $data = $_CasinoAPIHandler->GetBalance($r["TerminalCode"], $servicePwdResult['ServicePassword']);
+                }
+                //if user mode is user based, get each balances of each casino mapped to a card
+                else
+                {
+                    $serviceusername = $this->getLoyaltycardNumberLogin($r["TerminalID"]);   
+                    $data = $_CasinoAPIHandler->GetBalance($serviceusername);
+                }    
+
+                if(array_key_exists("BalanceInfo", $data))
+                {
+                    $r["PlayingBalance"] = $data["BalanceInfo"]["Balance"];
+                }
+                else
+                {
+                    $r["PlayingBalance"] = 0;
+                }
+            }            
+            // CCT ADDED 12/12/2017 END
             
             $loyalty_result = json_decode($loyalty->getCardInfo2($r['LoyaltyCardNumber'], $cardinfo, 1));
-            
             $loyalty_result->CardInfo->IsEwallet == 1 ? $isEwallet = "Yes" : $isEwallet = "No";
-            $r['UserMode'] == 1 ? $r['UserMode'] = "User Based" : $r['UserMode'] = "Terminal Based";
             
-            if($r["PlayingBalance"] == 0){
-               
+            $r['UserMode'] == 1 ? $r['UserMode'] = "User Based" : $r['UserMode'] = "Terminal Based";
+         
+            if($r["PlayingBalance"] == 0)
+            {
                 $r["PlayingBalance"] = 0;
             }
-            else{
+            else
+            {
                 $r["PlayingBalance"] = number_format($r['PlayingBalance'], 2);
             }
-            
             
             $row->rows[$ctr]["id"] = $r["TerminalID"];
             
@@ -629,15 +641,10 @@ class RptOperator extends DBHandler
                 $r["UserMode"],
                 $isEwallet,
             );
-            
             $ctr++;
-            
         }
-        
         return json_encode($row);
-        
     }
-    
     
     /**
      *This method returns an array composed of:
@@ -657,8 +664,12 @@ class RptOperator extends DBHandler
      * @param String $_MicrogamingCurrency
      * @return Mixed 
      */
-    public final function getActiveSessionPlayingBalanceub ($cardinfo, $cardnumber, $serviceusername, $_ServiceAPI,$_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, $_ptcasinoname,$_PlayerAPI,$_ptsecretkey) {
-        
+    // CCT EDITED 12/18/2017 BEGIN
+    //public final function getActiveSessionPlayingBalanceub ($cardinfo, $cardnumber, $serviceusername, $_ServiceAPI,$_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, $_ptcasinoname,$_PlayerAPI,$_ptsecretkey) 
+    public final function getActiveSessionPlayingBalanceub ($cardinfo, $cardnumber, $serviceusername, $_ServiceAPI, $_CAPIUsername, 
+            $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, $_ptcasinoname, $_PlayerAPI, $_ptsecretkey, $_HABbrandID = '',$_HABapiKey = '') 
+    // CCT EDITED 12/18/2017 END
+    {
         include_once __DIR__.'/../../sys/class/CasinoCAPIHandler.class.php';
         include_once __DIR__.'/../../sys/class/LoyaltyUBWrapper.class.php';
         
@@ -668,47 +679,32 @@ class RptOperator extends DBHandler
         
         $row->page = 1;
         
-        $query = "
-                  SELECT  
-                    t.TerminalID, 
-                    t.TerminalCode, 
+        $query = "SELECT t.TerminalID, t.TerminalCode, 
                     CASE t.TerminalType WHEN 0
                         THEN 'Regular'
                         WHEN 1
                         THEN 'Genesis'
                         ELSE 'e-SAFE'
                     END AS TerminalType, 
-                    rs.ServiceID,
-                    rs.ServiceName,
-                    ts.UBServiceLogin,
-                    ts.UserMode
-                  FROM 
-                    terminalsessions ts 
-                    INNER JOIN terminals t 
-                        ON t.TerminalID = ts.TerminalID
-                    INNER JOIN ref_services rs 
-                        ON rs.ServiceID = ts.ServiceID
-                  WHERE
-                    ts.LoyaltyCardNumber = :cardnum
-                  ORDER BY
-                    t.TerminalID ASC";
+                    rs.ServiceID, rs.ServiceName, ts.UBServiceLogin, ts.UserMode 
+                  FROM terminalsessions ts  INNER JOIN terminals t  ON t.TerminalID = ts.TerminalID 
+                        INNER JOIN ref_services rs ON rs.ServiceID = ts.ServiceID 
+                  WHERE ts.LoyaltyCardNumber = :cardnum 
+                  ORDER BY t.TerminalID ASC";
         
         $this->prepare($query);
-        
         $this->bindParam(":cardnum", $cardnumber);
-        
         $this->execute();
-        
         $record = $this->fetchAllData();
 
         $newRecord = array();
         
         $ctr = 0;
 
-        foreach($record as $r) {
-            
-            if(preg_match("/RTG/", $r["ServiceName"])) {
-                
+        foreach($record as $r) 
+        {
+            if(preg_match("/RTG/", $r["ServiceName"])) 
+            {
                 $configuration = self::getConfigurationForRTGCAPI(
                                     strpos($_ServiceAPI[(int)$r["ServiceID"]-1], "ECFTEST"), 
                                     $_ServiceAPI[(int)$r["ServiceID"]-1], 
@@ -716,9 +712,12 @@ class RptOperator extends DBHandler
                 
                 $_CasinoAPIHandler = new CasinoCAPIHandler( CasinoCAPIHandler::RTG, $configuration );
 
-                if($r["UserMode"] == 1){
+                if($r["UserMode"] == 1)
+                {
                     $data = $_CasinoAPIHandler->GetBalance($r["UBServiceLogin"]);
-                } else {
+                } 
+                else 
+                {
                     $data = $_CasinoAPIHandler->GetBalance($r["TerminalCode"]);
                 }
                 
@@ -726,13 +725,13 @@ class RptOperator extends DBHandler
                 {
                     $r["PlayingBalance"] = $data["BalanceInfo"]["Balance"];
                 }
-                else{
+                else
+                {
                     $r["PlayingBalance"] = 0;
                 }
-                
             }
-            else if (preg_match("/MG/", $r["ServiceName"])) {
-
+            else if (preg_match("/MG/", $r["ServiceName"])) 
+            {
                 $configuration = self::getConfigurationForMGCAPI($r["ServiceID"], 
                                 $_ServiceAPI, $_CAPIUsername, $_CAPIPassword, 
                                 $_CAPIPlayerName, $_MicrogamingCurrency);
@@ -745,19 +744,20 @@ class RptOperator extends DBHandler
                 {
                     $r["PlayingBalance"] = $data["BalanceInfo"]["Balance"];
                 } 
-                else{
+                else
+                {
                     $r["PlayingBalance"] = 0;
                 }
-                
             }
-            else if (preg_match("/PT/", $r["ServiceName"])) {
-                
+            else if (preg_match("/PT/", $r["ServiceName"])) 
+            {
                 $url = $_PlayerAPI[(int)$r["ServiceID"]-1];
                 $configuration = self::getConfigurationForPTCAPI( $url,$_ptcasinoname,$_ptsecretkey);
                 
                 $_CasinoAPIHandler = new CasinoCAPIHandler( CasinoCAPIHandler::PT, $configuration );
                 
-                if($r["UserMode"] == 0 || $r["UserMode"] == 2){
+                if($r["UserMode"] == 0 || $r["UserMode"] == 2)
+                {
                     $data = $_CasinoAPIHandler->GetBalance($r["TerminalCode"]);
                 }
                 else
@@ -769,25 +769,57 @@ class RptOperator extends DBHandler
                 {
                     $r["PlayingBalance"] = $data["BalanceInfo"]["Balance"];
                 }
-                else{
+                else
+                {
                     $r["PlayingBalance"] = 0;
                 }        
             }
+            // CCT ADDED 12/18/2017 BEGIN
+            else if (preg_match("/Habanero/", $r["ServiceName"])) 
+            {
+                $url = $_ServiceAPI[(int)$r["ServiceID"]-1];
+                $configuration = self::getConfigurationForHabaneroCAPI( $url,$_HABbrandID,$_HABapiKey);
+                $_CasinoAPIHandler = new CasinoCAPIHandler( CasinoCAPIHandler::HAB, $configuration );
+                        
+                //getterminalcredentials
+                $stmt = "SELECT ServicePassword FROM terminalservices 
+                        WHERE ServiceID = ? AND TerminalID = ? AND Status = 1 AND isCreated = 1";
+                $this->prepare($stmt);
+                $this->bindparameter(1, $r["ServiceID"]);
+                $this->bindparameter(2, $r["TerminalID"]);
+                $this->execute();
+                $servicePwdResult = $this->fetchData();   
+
+                //if user mode is terminal based, get each balances of each terminal
+                if($r["UserMode"] == 0 || $r["UserMode"] == 2)
+                {
+                    $data = $_CasinoAPIHandler->GetBalance($r["TerminalCode"], $servicePwdResult['ServicePassword']);
+                }
+
+                if(array_key_exists("BalanceInfo", $data))
+                {
+                    $r["PlayingBalance"] = $data["BalanceInfo"]["Balance"];
+                }
+                else
+                {
+                    $r["PlayingBalance"] = 0;
+                }
+            }            
+            // CCT ADDED 12/18/2017 END    
             
             $loyalty_result = json_decode($loyalty->getCardInfo2($cardnumber, $cardinfo, 1));
-            
             $loyalty_result->CardInfo->IsEwallet == 1 ? $isEwallet = "Yes" : $isEwallet = "No";
+            
             $r['UserMode'] == 1 ? $r['UserMode'] = "User Based" : $r['UserMode'] = "Terminal Based";
                 
-
-            if($r["PlayingBalance"] ==  0){
-
+            if($r["PlayingBalance"] ==  0)
+            {
                 $r["PlayingBalance"] == "N/A";
             }
-            else{
+            else
+            {
                 $r["PlayingBalance"] = number_format($r['PlayingBalance'], 2);
             }
-            
             
             $row->rows[$ctr]["id"] = $r["TerminalID"];
             
@@ -798,15 +830,10 @@ class RptOperator extends DBHandler
                 $r["UserMode"],
                 $isEwallet
             );
-            
             $ctr++;
-            
         }
-        
         return json_encode($row);
-        
     }
-    
     
     /**
      *This method returns an array composed of:
@@ -826,8 +853,12 @@ class RptOperator extends DBHandler
      * @param String $_MicrogamingCurrency
      * @return Mixed 
      */
-    public final function getPagcorActiveSessionPlayingBalanceub ($cardinfo, $cardnumber, $serviceusername, $_ServiceAPI,$_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, $_ptcasinoname,$_PlayerAPI,$_ptsecretkey) {
-        
+    // CCT EDITED 12/18/2017 BEGIN
+    //public final function getPagcorActiveSessionPlayingBalanceub ($cardinfo, $cardnumber, $serviceusername, $_ServiceAPI,$_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, $_ptcasinoname,$_PlayerAPI,$_ptsecretkey) 
+    public final function getPagcorActiveSessionPlayingBalanceub ($cardinfo, $cardnumber, $serviceusername, $_ServiceAPI, $_CAPIUsername, 
+            $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, $_ptcasinoname, $_PlayerAPI, $_ptsecretkey, $_HABbrandID = '',$_HABapiKey = '') 
+    // CCT EDITED 12/18/2017 END
+    {
         include_once __DIR__.'/../../sys/class/CasinoCAPIHandler.class.php';
         include_once __DIR__.'/../../sys/class/LoyaltyUBWrapper.class.php';
         
@@ -837,35 +868,21 @@ class RptOperator extends DBHandler
         
         $row->page = 1;
         
-        $query = "
-                  SELECT  
-                    t.TerminalID, 
-                    t.TerminalCode,
+        $query = "SELECT  t.TerminalID, t.TerminalCode, 
                     CASE t.TerminalType WHEN 0
                         THEN 'Regular'
                         WHEN 1
                         THEN 'Genesis'
                         ELSE 'e-SAFE'
                     END AS TerminalType, 
-                    rs.ServiceID,
-                    rs.ServiceName,
-                    ts.UBServiceLogin,
-                    ts.UserMode
-                  FROM 
-                    terminalsessions ts 
-                    INNER JOIN terminals t 
-                        ON t.TerminalID = ts.TerminalID
-                    INNER JOIN ref_services rs 
-                        ON rs.ServiceID = ts.ServiceID
-                  WHERE
-                    ts.LoyaltyCardNumber = :cardnum
-                  ORDER BY
-                    t.TerminalID ASC";
+                    rs.ServiceID, rs.ServiceName, ts.UBServiceLogin, ts.UserMode 
+                  FROM terminalsessions ts INNER JOIN terminals t ON t.TerminalID = ts.TerminalID 
+                        INNER JOIN ref_services rs ON rs.ServiceID = ts.ServiceID 
+                  WHERE ts.LoyaltyCardNumber = :cardnum 
+                  ORDER BY t.TerminalID ASC";
         
         $this->prepare($query);
-        
         $this->bindParam(":cardnum", $cardnumber);
-        
         $this->execute();
         
         $record = $this->fetchAllData();
@@ -874,10 +891,10 @@ class RptOperator extends DBHandler
         
         $ctr = 0;
         
-        foreach($record as $r) {
-            
-            if(preg_match("/RTG/", $r["ServiceName"])) {
-                
+        foreach($record as $r) 
+        {
+            if(preg_match("/RTG/", $r["ServiceName"])) 
+            {
                 $configuration = self::getConfigurationForRTGCAPI(
                                     strpos($_ServiceAPI[(int)$r["ServiceID"]-1], "ECFTEST"), 
                                     $_ServiceAPI[(int)$r["ServiceID"]-1], 
@@ -885,9 +902,12 @@ class RptOperator extends DBHandler
                 
                 $_CasinoAPIHandler = new CasinoCAPIHandler( CasinoCAPIHandler::RTG, $configuration );
                 
-                if($r["UserMode"] == 1){
+                if($r["UserMode"] == 1)
+                {
                     $data = $_CasinoAPIHandler->GetBalance($r["UBServiceLogin"]);
-                } else {
+                } 
+                else 
+                {
                     $data = $_CasinoAPIHandler->GetBalance($r["TerminalCode"]);
                 }
                 
@@ -895,13 +915,14 @@ class RptOperator extends DBHandler
                 {
                     $r["PlayingBalance"] = $data["BalanceInfo"]["Balance"];
                 }
-                else{
+                else
+                {
                     $r["PlayingBalance"] = 0;
                 }
                 
             }
-            else if (preg_match("/MG/", $r["ServiceName"])) {
-
+            else if (preg_match("/MG/", $r["ServiceName"])) 
+            {
                 $configuration = self::getConfigurationForMGCAPI($r["ServiceID"], 
                                 $_ServiceAPI, $_CAPIUsername, $_CAPIPassword, 
                                 $_CAPIPlayerName, $_MicrogamingCurrency);
@@ -914,19 +935,21 @@ class RptOperator extends DBHandler
                 {
                     $r["PlayingBalance"] = $data["BalanceInfo"]["Balance"];
                 } 
-                else{
+                else
+                {
                     $r["PlayingBalance"] = 0;
                 }
                 
             }
-            else if (preg_match("/PT/", $r["ServiceName"])) {
-                
+            else if (preg_match("/PT/", $r["ServiceName"])) 
+            {
                 $url = $_PlayerAPI[(int)$r["ServiceID"]-1];
                 $configuration = self::getConfigurationForPTCAPI( $url,$_ptcasinoname,$_ptsecretkey);
                 
                 $_CasinoAPIHandler = new CasinoCAPIHandler( CasinoCAPIHandler::PT, $configuration );
                 
-                if($r["UserMode"] == 0 || $r["UserMode"] == 2){
+                if($r["UserMode"] == 0 || $r["UserMode"] == 2)
+                {
                     $data = $_CasinoAPIHandler->GetBalance($r["TerminalCode"]);
                 }
                 else
@@ -938,28 +961,59 @@ class RptOperator extends DBHandler
                 {
                     $r["PlayingBalance"] = $data["BalanceInfo"]["Balance"];
                 }
-                else{
+                else
+                {
                     $r["PlayingBalance"] = 0;
                 }
-                
-                
             }
+            // CCT ADDED 12/18/2017 BEGIN
+            else if (preg_match("/Habanero/", $r["ServiceName"])) 
+            {
+                $url = $_ServiceAPI[(int)$r["ServiceID"]-1];
+                $configuration = self::getConfigurationForHabaneroCAPI( $url,$_HABbrandID,$_HABapiKey);
+                $_CasinoAPIHandler = new CasinoCAPIHandler( CasinoCAPIHandler::HAB, $configuration );
+                        
+                //getterminalcredentials
+                $stmt = "SELECT ServicePassword FROM terminalservices 
+                        WHERE ServiceID = ? AND TerminalID = ? AND Status = 1 AND isCreated = 1";
+                $this->prepare($stmt);
+                $this->bindparameter(1, $r["ServiceID"]);
+                $this->bindparameter(2, $r["TerminalID"]);
+                $this->execute();
+                $servicePwdResult = $this->fetchData();   
+
+                //if user mode is terminal based, get each balances of each terminal
+                if($r["UserMode"] == 0 || $r["UserMode"] == 2)
+                {
+                    $data = $_CasinoAPIHandler->GetBalance($r["TerminalCode"], $servicePwdResult['ServicePassword']);
+                }
+
+                if(array_key_exists("BalanceInfo", $data))
+                {
+                    $r["PlayingBalance"] = $data["BalanceInfo"]["Balance"];
+                }
+                else
+                {
+                    $r["PlayingBalance"] = 0;
+                }
+            }            
+            // CCT ADDED 12/18/2017 END               
             
             $loyalty_result = json_decode($loyalty->getCardInfo2($cardnumber, $cardinfo, 1));
 
             //check if user mode is terminal or user based
-            
             $loyalty_result->CardInfo->IsEwallet == 1 ? $isEwallet = "Yes" : $isEwallet = "No";
+            
             $r['UserMode'] == 1 ? $r['UserMode'] = "User Based" : $r['UserMode'] = "Terminal Based";
 
-            if($r["PlayingBalance"] ==  0){
-
+            if($r["PlayingBalance"] ==  0)
+            {
                 $r["PlayingBalance"] == "N/A";
             }
-            else{
+            else
+            {
                 $r["PlayingBalance"] = number_format($r['PlayingBalance'], 2);
             }
-            
             
             $row->rows[$ctr]["id"] = $r["TerminalID"];
             
@@ -970,16 +1024,11 @@ class RptOperator extends DBHandler
                 $r["UserMode"],
                 $isEwallet,
             );
-            
             $ctr++;
-            
         }
-        
         return json_encode($row);
-        
     }
-    
-    
+
     /**
      *This return the configuration RTG
      * 
@@ -988,18 +1037,17 @@ class RptOperator extends DBHandler
      * @param Int $serverID
      * @return Mixed 
      */
-    private static final function getConfigurationForRTGCAPI ($_isECFTEST, $serverURI, $serverID) {
-        
-        if(!$_isECFTEST) {
-            
-            $gdeposit = 502;
-            $gwithdraw = 503; 
-            
+    private static final function getConfigurationForRTGCAPI ($_isECFTEST, $serverURI, $serverID) 
+    {
+        if(!$_isECFTEST) 
+        {
+            $gdeposit = 503; // 502
+            $gwithdraw = 502; //503
         }
-        else {
-            
-            $gdeposit = 503;
-            $gwithdraw = 502;
+        else 
+        {
+            $gdeposit = 503; //503
+            $gwithdraw = 502; //502
         }
 
         $configuration = array( 'URI' => $serverURI,
@@ -1009,9 +1057,7 @@ class RptOperator extends DBHandler
                                 'keyFilePath' => RTGCerts_DIR . $serverID  . '/key.pem',
                                 'depositMethodId' =>$gdeposit ,
                                 'withdrawalMethodId' => $gwithdraw);
-        
         return $configuration;
-        
     }
     
     /**
@@ -1025,8 +1071,8 @@ class RptOperator extends DBHandler
      * @param String $_MicrogamingCurrency
      * @return Mixed 
      */
-    private static final function getConfigurationForMGCAPI ($serverID, $_ServiceAPI,$_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency) {
-        
+    private static final function getConfigurationForMGCAPI ($serverID, $_ServiceAPI,$_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency) 
+    {
         $_MGCredentials = $_ServiceAPI[$serverID -1]; 
         list($mgurl, $mgserverID) =  $_MGCredentials;
 
@@ -1038,22 +1084,30 @@ class RptOperator extends DBHandler
                             'playerName'=>$_CAPIPlayerName,
                             'serverID'=>$mgserverID,
                             'currency' => $_MicrogamingCurrency );
-        
         return $configuration;
-        
     }
     
-    private static final function getConfigurationForPTCAPI ($_ptURI, $_CAPIUsername,$_CAPISecretKey) {
-        
+    private static final function getConfigurationForPTCAPI ($_ptURI, $_CAPIUsername,$_CAPISecretKey) 
+    {
         $configuration = array( 'URI' => $_ptURI,
                             'isCaching' => FALSE,
                             'isDebug' => TRUE,
                             'authLogin'=>$_CAPIUsername,
                             'secretKey'=>$_CAPISecretKey );
-        
         return $configuration;
-        
     }
+     
+    // CCT ADDED 12/12/2017 BEGIN
+    private static final function getConfigurationForHabaneroCAPI ($_HabaneroURI, $_HABbrandID, $_HABapiKey) 
+    {
+        $configuration = array( 'URI' => $_HabaneroURI,
+                            'isCaching' => FALSE,
+                            'isDebug' => TRUE,
+                            'brandID'=>$_HABbrandID,
+                            'apiKey'=>$_HABapiKey );
+        return $configuration;
+    }    
+    // CCT ADDED 12/12/2017 END
     
     //fget service name
     function getServiceName($serviceID)
@@ -1066,8 +1120,8 @@ class RptOperator extends DBHandler
         return $servicename = $servicename['ServiceName'];
     }
     
-    
-    public function checkUserMode($casino){
+    public function checkUserMode($casino)
+    {
         $sql = "SELECT UserMode FROM ref_services WHERE ServiceName LIKE ?";
         $this->prepare($sql);
         $this->bindparameter(1, $casino);
@@ -1077,8 +1131,8 @@ class RptOperator extends DBHandler
         return $usermode;
     }
     
-    
-    function getCashOnHandDetails($datefrom, $dateto, $siteid) {
+    function getCashOnHandDetails($datefrom, $dateto, $siteid) 
+    {
         $listsite = array();
         $cohdata = array('TotalCashLoad' => 0, 
                          'TotalCashRedemption' => 0,
@@ -1094,7 +1148,10 @@ class RptOperator extends DBHandler
                          'TotalEwalletRedemption' => 0,
                          'TotalRedemption'=>0,
                          'TotalMR' => 0);
-        foreach ($siteid as $row){ array_push($listsite, "".$row.""); }
+        foreach ($siteid as $row)
+        { 
+            array_push($listsite, "".$row.""); 
+        }
         $site = implode(',', $listsite);
 
         $query1 = "SELECT tr.SiteID, tr.CreatedByAID,
@@ -1372,7 +1429,8 @@ class RptOperator extends DBHandler
         $this->execute();
         $rows1 = $this->fetchAllData();
         //Get the summation of total cash load and cash redemption
-        foreach ($rows1 as $value) {
+        foreach ($rows1 as $value) 
+        {
             $cohdata['TotalCashLoad'] += (float)$value['DepositCash'];
             $cohdata['TotalCashLoad'] += (float)$value['ReloadCash'];
             $cohdata['TotalTicketLoadGenesis'] += (float)$value['DepositTicket'];
@@ -1394,7 +1452,8 @@ class RptOperator extends DBHandler
         $rows2 = $this->fetchAllData();
         
         //Add the total e-SAFE cash load and e-SAFE cash redemption
-        foreach ($rows2 as $value) {
+        foreach ($rows2 as $value) 
+        {
             $cohdata['TotalCashLoadEwallet'] += (float)$value['EwalletCashDeposit'];
             $cohdata['TotalCashLoadEwallet'] += (float)$value['EwalletBancnetDeposit'];
             $cohdata['TotalEsafeTicketLoadGenesis'] += (float)$value['EwalletTicketLoad'];
@@ -1411,7 +1470,8 @@ class RptOperator extends DBHandler
         $rows3 = $this->fetchAllData();
         
         //Add the total e-SAFE cash load and e-SAFE cash redemption
-        foreach ($rows3 as $value) {
+        foreach ($rows3 as $value) 
+        {
             $cohdata['TotalMR'] += (float)$value['ManualRedemption'];
         }
 
@@ -1431,24 +1491,24 @@ class RptOperator extends DBHandler
             array_push($listsite, "'".$row."'");
         }
         $site = implode(',', $listsite);
-        $stmt1 = "SELECT EwalletTransID, SiteID, LoyaltyCardNumber, StartDate, EndDate, TransType,
-                  IFNULL(CASE WHEN TransType = 'D' THEN Amount END,0) AS EWLoads,
-                  IFNULL(CASE WHEN TransType = 'W' THEN Amount END,0) AS EWWithdrawals
-                  FROM ewallettrans
-                  WHERE SiteID IN(".$site.") AND
-                  StartDate >= ? AND StartDate < ? AND Status IN(1,3)";
-        
+        $stmt1 = "SELECT EwalletTransID, SiteID, LoyaltyCardNumber, StartDate, EndDate, TransType, 
+                    IFNULL(CASE WHEN TransType = 'D' THEN Amount END,0) AS EWLoads, 
+                    IFNULL(CASE WHEN TransType = 'W' THEN Amount END,0) AS EWWithdrawals 
+                  FROM ewallettrans 
+                  WHERE SiteID IN(".$site.") 
+                      AND StartDate >= ? AND StartDate < ? 
+                      AND Status IN(1,3)";
         $this->prepare($stmt1);
         $this->bindparameter(1, $zdateFROM);
         $this->bindparameter(2, $zdateto);
         $this->execute();
         $rows1 = $this->fetchAllData();
-       
         unset($listsite);
         return $rows1;
     }
     
-    function getTotalTicketEncashment($zdateFROM, $zdateto, $zsiteID) {
+    function getTotalTicketEncashment($zdateFROM, $zdateto, $zsiteID) 
+    {
         $listsite = array();
         $totalencashedtickets = 0;
         foreach ($zsiteID as $row)
@@ -1456,9 +1516,10 @@ class RptOperator extends DBHandler
             array_push($listsite, "'".$row."'");
         }
         $site = implode(',', $listsite);
-        $stmt = "SELECT SiteID, IFNULL(SUM(Amount), 0) AS EncashedTickets FROM vouchermanagement.tickets  -- Encashed Tickets
-                                WHERE DateEncashed >= ? AND DateEncashed < ?
-                                AND SiteID IN (".$site.") GROUP BY SiteID";
+        $stmt = "SELECT SiteID, IFNULL(SUM(Amount), 0) AS EncashedTickets 
+                FROM vouchermanagement.tickets  -- Encashed Tickets 
+                WHERE DateEncashed >= ? AND DateEncashed < ? 
+                        AND SiteID IN (".$site.") GROUP BY SiteID";
         $this->prepare($stmt);
         $this->bindparameter(1, $zdateFROM);
         $this->bindparameter(2, $zdateto);
@@ -1466,44 +1527,47 @@ class RptOperator extends DBHandler
         $rows = $this->fetchAllData();
         
         //combine total encashed tickets
-        foreach ($rows as $value) {
+        foreach ($rows as $value) 
+        {
             $totalencashedtickets += (float)$value['EncashedTickets'];
         }
-        
         return $totalencashedtickets;
     }
-    public function getSiteByAID($aid) {
-        $sql = "SELECT DISTINCT s.SiteID, s.SiteCode FROM siteaccounts sa 
-                INNER JOIN accounts a ON a.AID = sa.AID 
-                INNER JOIN sites s ON s.SiteID = sa.SiteID 
+    
+    public function getSiteByAID($aid) 
+    {
+        $sql = "SELECT DISTINCT s.SiteID, s.SiteCode 
+                FROM siteaccounts sa INNER JOIN accounts a ON a.AID = sa.AID 
+                    INNER JOIN sites s ON s.SiteID = sa.SiteID 
                 WHERE a.AID = ? AND sa.Status = 1 AND s.Status = 1";
         $this->prepare($sql);
         $this->bindparameter(1, $aid);
         $this->execute();
         $result = $this->fetchAllData();
-        
         return $result;
     }
     
-    public function getGrossHoldTB($siteID, $serviceGroupIDs, $transtype, $datefrom, $dateto) {
-        if ($transtype == "DR") {
+    public function getGrossHoldTB($siteID, $serviceGroupIDs, $transtype, $datefrom, $dateto) 
+    {
+        if ($transtype == "DR") 
+        {
             $sql = "SELECT IFNULL(SUM(td.Amount), 0) as Amount 
-                    FROM transactiondetails td 
-                    INNER JOIN ref_services rs ON rs.ServiceID = td.ServiceID 
-                    WHERE td.SiteID = ? AND 
-                    rs.ServiceGroupID IN (".implode(",", $serviceGroupIDs).") AND 
-                    td.TransactionType IN ('D', 'R') AND 
-                    td.Status IN (1, 4) AND 
-                    td.DateCreated >= ? AND td.DateCreated < ?"; 
+                    FROM transactiondetails td INNER JOIN ref_services rs ON rs.ServiceID = td.ServiceID 
+                    WHERE td.SiteID = ? 
+                        AND rs.ServiceGroupID IN (".implode(",", $serviceGroupIDs).") 
+                        AND td.TransactionType IN ('D', 'R') 
+                        AND td.Status IN (1, 4) 
+                        AND td.DateCreated >= ? AND td.DateCreated < ?"; 
         }
-        else if ($transtype == "W"){
-            $sql = "SELECT IFNULL(SUM(td.Amount), 0) as Amount FROM transactiondetails td 
-                    INNER JOIN ref_services rs ON rs.ServiceID = td.ServiceID 
-                    WHERE td.SiteID = ? AND 
-                    rs.ServiceGroupID IN (".implode(",", $serviceGroupIDs).") AND 
-                    td.TransactionType IN ('W') AND 
-                    td.Status IN (1, 4) AND 
-                    td.DateCreated >= ? AND td.DateCreated < ?"; 
+        else if ($transtype == "W")
+        {
+            $sql = "SELECT IFNULL(SUM(td.Amount), 0) as Amount 
+                    FROM transactiondetails td INNER JOIN ref_services rs ON rs.ServiceID = td.ServiceID 
+                    WHERE td.SiteID = ? 
+                        AND rs.ServiceGroupID IN (".implode(",", $serviceGroupIDs).") 
+                        AND td.TransactionType IN ('W') 
+                        AND td.Status IN (1, 4) 
+                        AND td.DateCreated >= ? AND td.DateCreated < ?"; 
         }
         $datefrom = $datefrom." 06:00:00";
         $dateto = $dateto." 06:00:00";
@@ -1514,49 +1578,45 @@ class RptOperator extends DBHandler
         $this->bindparameter(3, $dateto);
         $this->execute();
         $result = $this->fetchData();
-        
         return $result;
     }
+    
     /**
-     * 
      * @param type $siteID
      * @param type $serviceIDs
      * @param type $datefrom
      * @param type $dateto
      * @return type
      */
-    public function getManualRedemptionTrans($siteID, $serviceGroupIDs, $datefrom, $dateto) {
-        $sql = "SELECT IFNULL(SUM(ActualAmount), 0) as Amount FROM manualredemptions mr 
-                INNER JOIN ref_services rs ON rs.ServiceID = mr.ServiceID 
-                WHERE rs.ServiceGroupID IN (".implode(",", $serviceGroupIDs).") AND mr.Status = 1 
-                AND mr.SiteID = ?  
-                AND mr.TransactionDate >= ? AND mr.TransactionDate < ? 
+    public function getManualRedemptionTrans($siteID, $serviceGroupIDs, $datefrom, $dateto) 
+    {
+        $sql = "SELECT IFNULL(SUM(ActualAmount), 0) as Amount 
+                FROM manualredemptions mr INNER JOIN ref_services rs ON rs.ServiceID = mr.ServiceID 
+                WHERE rs.ServiceGroupID IN (".implode(",", $serviceGroupIDs).") 
+                    AND mr.Status = 1 
+                    AND mr.SiteID = ?  
+                    AND mr.TransactionDate >= ? AND mr.TransactionDate < ? 
                 ORDER BY mr.ManualRedemptionsID DESC";
         
         $datefrom = $datefrom." 06:00:00";
         $dateto = $dateto." 06:00:00";
-        
         $this->prepare($sql);
         $this->bindparameter(1, $siteID);
         $this->bindparameter(2, $datefrom);
         $this->bindparameter(3, $dateto);
         $this->execute();
         $result = $this->fetchData();
-        
         return $result;
     }
-    public function getGrossHoldeSAFE($siteID, $datefrom, $dateto) {
-        $sql = "SELECT TransactionDate, s.SiteCode Login, SUM(ts.StartBalance)
-                StartBalance,
-                SUM(ts.WalletReloads) WalletReloads, SUM(ts.EndBalance) EndBalance, SUM(IFNULL(tl.GenesisWithdrawal,0)) GenesisWithdrawal
-                FROM transactionsummary ts
-                INNER JOIN sites s		
-                ON ts.SiteID = s.SiteID
-				LEFT JOIN transactionsummarylogs tl
-				ON tl.TransactionSummaryID = ts.TransactionsSummaryID
-                WHERE ts.SiteID = ? AND 
-                ts.DateEnded >= ?
-                AND ts.DateEnded < ?";
+    
+    public function getGrossHoldeSAFE($siteID, $datefrom, $dateto) 
+    {
+        $sql = "SELECT TransactionDate, s.SiteCode Login, SUM(ts.StartBalance) StartBalance, 
+                SUM(ts.WalletReloads) WalletReloads, SUM(ts.EndBalance) EndBalance, SUM(IFNULL(tl.GenesisWithdrawal,0)) GenesisWithdrawal 
+                FROM transactionsummary ts INNER JOIN sites s ON ts.SiteID = s.SiteID 
+                    LEFT JOIN transactionsummarylogs tl tl.TransactionSummaryID = ts.TransactionsSummaryID 
+                WHERE ts.SiteID = ? 
+                    AND ts.DateEnded >= ? AND ts.DateEnded < ?";
         
         $datefrom = $datefrom." 06:00:00";
         $dateto = $dateto." 06:00:00";
@@ -1567,39 +1627,41 @@ class RptOperator extends DBHandler
         $this->bindparameter(3, $dateto);
         $this->execute();
         $result = $this->fetchData();
-        
         return $result;
-        
     }
-    function getEncashedTicketsV15($zsiteID, $zdatefrom, $zdateto) {
+    
+    function getEncashedTicketsV15($zsiteID, $zdatefrom, $zdateto) 
+    {
         $listsite = array();
         $totalencashedtickets = 0.00;
         foreach ($zsiteID as $row)
         {
             array_push($listsite, "'".$row."'");
         }
-        for ($i = 0; $i < count($listsite); $i++) {
+        
+        for ($i = 0; $i < count($listsite); $i++) 
+        {
             $query = "SELECT IFNULL(SUM(Amount), 0) AS EncashedTicketsV2, t.UpdatedByAID, t.SiteID, ad.Name   
-                        FROM vouchermanagement.tickets t 
-                        LEFT JOIN accountdetails ad ON t.UpdatedByAID = ad.AID 
-                        WHERE t.DateEncashed >= :startdate AND t.DateEncashed < :enddate
-                        AND t.UpdatedByAID IN (SELECT sacct.AID FROM siteaccounts sacct WHERE sacct.SiteID IN (".$listsite[$i]."))
-                        AND t.SiteID = ".$listsite[$i]."
-                        AND TicketCode NOT IN (
-                                SELECT IFNULL(ss.TicketCode, '') FROM stackermanagement.stackersummary ss 
-                                INNER JOIN ewallettrans ewt ON ewt.StackerSummaryID = ss.StackerSummaryID 
-                                WHERE ewt.SiteID = ".$listsite[$i]." AND ewt.TransType = 'W'
-                        )";
-            
-             $this->prepare($query);
-             $this->bindparameter(":startdate", $zdatefrom);
-             $this->bindparameter(":enddate", $zdateto);
-             $this->execute();
-             $rows = $this->fetchAllData();
+                        FROM vouchermanagement.tickets t LEFT JOIN accountdetails ad ON t.UpdatedByAID = ad.AID 
+                        WHERE t.DateEncashed >= :startdate AND t.DateEncashed < :enddate 
+                            AND t.UpdatedByAID IN (SELECT sacct.AID 
+                                                    FROM siteaccounts sacct 
+                                                    WHERE sacct.SiteID IN (".$listsite[$i]."))
+                            AND t.SiteID = ".$listsite[$i]." 
+                            AND TicketCode NOT IN (SELECT IFNULL(ss.TicketCode, '') 
+                                                    FROM stackermanagement.stackersummary ss 
+                                                        INNER JOIN ewallettrans ewt ON ewt.StackerSummaryID = ss.StackerSummaryID 
+                                                    WHERE ewt.SiteID = ".$listsite[$i]." AND ewt.TransType = 'W')";
+            $this->prepare($query);
+            $this->bindparameter(":startdate", $zdatefrom);
+            $this->bindparameter(":enddate", $zdateto);
+            $this->execute();
+            $rows = $this->fetchAllData();
              
-             if (count($rows) > 0) {
+            if (count($rows) > 0) 
+            {
                 $totalencashedtickets += (float)$rows[0]['EncashedTicketsV2'];
-             }
+            }
         }
         return $totalencashedtickets;
     }

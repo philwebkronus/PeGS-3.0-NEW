@@ -1,9 +1,7 @@
 <?php
-
 /*
  * Created By: Lea Tuazon
  * Date Created : June 8, 2011
- *
  * Modified By: Edson L. Perez
  */
 
@@ -18,12 +16,17 @@ include __DIR__ . '/../sys/class/SAPIWrapper.class.php';
 //include __DIR__.'/../sys/class/RealtimeGamingPlayerAPI.class.php';
 
 $aid = 0;
-if (isset($_SESSION['sessionID'])) {
+if (isset($_SESSION['sessionID'])) 
+{
     $new_sessionid = $_SESSION['sessionID'];
-} else {
+} 
+else 
+{
     $new_sessionid = '';
 }
-if (isset($_SESSION['accID'])) {
+
+if (isset($_SESSION['accID'])) 
+{
     $aid = $_SESSION['accID'];
 }
 
@@ -35,16 +38,19 @@ $loyalty = new LoyaltyUBWrapper();
 $connected = $oas->open();
 $connected2 = $oas2->open();
 $connected3 = $oas3->open();
-if ($connected && $connected2 && $connected3) {
+if ($connected && $connected2 && $connected3) 
+{
     $vipaddress = gethostbyaddr($_SERVER['REMOTE_ADDR']);
     $vdate = $oas->getDate();
-    /*     * ******** SESSION CHECKING ********* */
+    /********** SESSION CHECKING **********/
     $isexist = $oas->checksession($aid);
-    if ($isexist == 0) {
+    if ($isexist == 0) 
+    {
         session_destroy();
         $msg = "Not Connected";
         $oas->close();
-        if ($oas->isAjaxRequest()) {
+        if ($oas->isAjaxRequest()) 
+        {
             header('HTTP/1.1 401 Unauthorized');
             echo "Session Expired";
             exit;
@@ -53,17 +59,21 @@ if ($connected && $connected2 && $connected3) {
     }
 
     $isexistsession = $oas->checkifsessionexist($aid, $new_sessionid);
-    if ($isexistsession == 0) {
+    if ($isexistsession == 0) 
+    {
         session_destroy();
         $msg = "Not Connected";
         $oas->close();
-        if ($oas->isAjaxRequest()) {
+        if ($oas->isAjaxRequest()) 
+        {
             header('HTTP/1.1 401 Unauthorized');
             echo "Session Expired";
             exit;
         }
         header("Location: login.php?mess=" . $msg);
-    } else {
+    } 
+    else 
+    {
         //get all services 
         $rserviceall = array();
         $rserviceall = $oas->getallservices("ServiceName");
@@ -77,18 +87,20 @@ if ($connected && $connected2 && $connected3) {
         $rservice = array();
         $rservice = $oas->getallservices("ServiceName");
         $rservices = array();
-        foreach ($rservice as $row) {
+        foreach ($rservice as $row) 
+        {
             $rserverID = $row['ServiceID'];
             $rservername = $row['ServiceName'];
 
-            if (strstr($rservername, "RTG")) {
+            if (strstr($rservername, "RTG")) 
+            {
                 $newarr = array('ServiceID' => $rserverID, 'ServiceName' => $rservername);
                 array_push($rservices, $newarr);
             }
         }
         $_SESSION['getservices'] = $rservices; //session variable for RTG Servers selection
     }
-    /*     * ******** END SESSION CHECKING ********* */
+    /********** END SESSION CHECKING **********/
 
     //checks if account was locked 
 //   $islocked = $oas->chkLoginAttempts($aid);
@@ -104,56 +116,54 @@ if ($connected && $connected2 && $connected3) {
 //      }
 //   }
 
-
-    if (isset($_POST['page'])) {
+    if (isset($_POST['page'])) 
+    {
         $vpage = $_POST['page'];
-        switch ($vpage) {
+        switch ($vpage) 
+        {
             //for casino services dropdown retreived from casino array   
             case "GetServices":
                 $cardnumber = $_POST['txtcardnumber'];
-
-                if (strlen($cardnumber) > 0) {
-
+                if (strlen($cardnumber) > 0) 
+                {
                     $loyaltyResult = $loyalty->getCardInfo2($cardnumber, $cardinfo, 1);
-
                     $obj_result = json_decode($loyaltyResult);
-
                     $statuscode = $obj_result->CardInfo->StatusCode;
 
                     //validate if membership card is invalid
-                    if ($statuscode == 1 || $statuscode == 5 || $statuscode == 9) {
-
+                    if ($statuscode == 1 || $statuscode == 5 || $statuscode == 9) 
+                    {
                         $casino = $obj_result->CardInfo->CasinoArray;
                         $casinoarray_count = count($casino);
 
                         $casinos = array();
                         $casinoz = array();
                         if ($casinoarray_count != 0)
-                            for ($ctr = 0; $ctr < $casinoarray_count; $ctr++) {
-                                $casinos =
-                                        array('ServiceUsername' => $casino[$ctr]->ServiceUsername,
+                            for ($ctr = 0; $ctr < $casinoarray_count; $ctr++) 
+                            {
+                                $casinos = array('ServiceUsername' => $casino[$ctr]->ServiceUsername,
                                             'ServicePassword' => $casino[$ctr]->ServicePassword,
                                             'HashedServicePassword' => $casino[$ctr]->HashedServicePassword,
                                             'ServiceID' => $casino[$ctr]->ServiceID,
                                             'UserMode' => $casino[$ctr]->UserMode,
                                             'isVIP' => $casino[$ctr]->isVIP,
-                                            'Status' => $casino[$ctr]->Status
-                                );
-
+                                            'Status' => $casino[$ctr]->Status);
                                 array_push($casinoz, $casinos);
                             }
                         $value2 = $oas->loopAndFindService($casinoz, 'ServiceID');
 
-
-                        if (empty($casino) || empty($value2)) {
+                        if (empty($casino) || empty($value2)) 
+                        {
                             echo "Reset Casino Account User Based: No Services Assigned";
-                        } else {
+                        } 
+                        else 
+                        {
                             $service = implode(", ", $value2);
-
                             $vresults = $oas->getServices($service);
-
                             $services = array();
-                            foreach ($vresults as $row) {
+                            
+                            foreach ($vresults as $row) 
+                            {
                                 $rterminalID = $row['ServiceID'];
                                 $rterminalCode = $row['ServiceName'];
 
@@ -163,251 +173,279 @@ if ($connected && $connected2 && $connected3) {
                             }
                             echo json_encode($services);
                         }
-                    } else {
+                    } 
+                    else 
+                    {
                         $statusmsg = $oas->membershipcardStatus($statuscode);
                         echo "Reset Casino Account User Based: " . $statusmsg;
                     }
-                } else {
+                } 
+                else 
+                {
                     echo "Reset Casino Account User Based: Invalid input detected.";
                 }
-
-
                 unset($vresults, $services, $newvalue, $value2, $casino);
-
                 $oas->close();
                 exit;
                 break;
 
             //show loyalty card information on a pop up box  
             case "GetLoyaltyCard":
-
                 //validate if card number field was empty
                 $cardnumber = $_POST['txtcardnumber'];
-
-                if (strlen($cardnumber) > 0) {
+                if (strlen($cardnumber) > 0) 
+                {
                     $loyaltyResult = $loyalty->getCardInfo2($cardnumber, $cardinfo, 1);
-
                     $obj_result = json_decode($loyaltyResult);
-
                     $statuscode = $obj_result->CardInfo->StatusCode;
 
-                    if (!is_null($statuscode)) {
+                    if (!is_null($statuscode)) 
+                    {
                         //allow active memeebership card and active temp account
-                        if ($statuscode == 1 || $statuscode == 5 || $statuscode == 9) {
-
+                        if ($statuscode == 1 || $statuscode == 5 || $statuscode == 9) 
+                        {
                             $casinoarray_count = count($obj_result->CardInfo->CasinoArray);
-
                             $casinoinfo2 = array();
-                            if ($casinoarray_count != 0) {
-                                for ($ctr = 0; $ctr < $casinoarray_count; $ctr++) {
+                            if ($casinoarray_count != 0) 
+                            {
+                                for ($ctr = 0; $ctr < $casinoarray_count; $ctr++) 
+                                {
                                     $service = $oas->getServices($obj_result->CardInfo->CasinoArray[$ctr]->ServiceID);
-                                    foreach ($service as $value) {
+                                    foreach ($service as $value) 
+                                    {
                                         $casinoname = $value['ServiceName'];
                                     }
 
-                                    $casinoinfo =
-                                            array(
-                                                'UserName' => $obj_result->CardInfo->MemberName,
+                                    $casinoinfo = array('UserName' => $obj_result->CardInfo->MemberName,
                                                 'MobileNumber' => $obj_result->CardInfo->MobileNumber,
                                                 'Email' => $obj_result->CardInfo->Email,
                                                 'Birthdate' => $obj_result->CardInfo->Birthdate,
                                                 'Casino' => $casinoname,
                                                 'Login' => $obj_result->CardInfo->CasinoArray[$ctr]->ServiceUsername,
                                                 'CardNumber' => $obj_result->CardInfo->Username,
-                                                'StatusCode' => $obj_result->CardInfo->StatusCode,
-                                    );
-
+                                                'StatusCode' => $obj_result->CardInfo->StatusCode,);
                                     array_push($casinoinfo2, $casinoinfo);
-
                                     $_SESSION['CasinoArray'] = $obj_result->CardInfo->CasinoArray;
                                     $_SESSION['MID'] = $obj_result->CardInfo->MemberID;
                                 }
                                 echo json_encode($casinoinfo2);
-                            } else {
+                            } 
+                            else 
+                            {
                                 $services = "Reset Casino Account: Casino is empty";
                                 echo "$services";
                             }
-                        } else {
+                        } 
+                        else 
+                        {
                             $statusmsg = $oas->membershipcardStatus($statuscode);
                             echo "Reset Casino Account: " . $statusmsg;
                         }
-                    } else {
+                    } 
+                    else 
+                    {
                         $statuscode = 100;
                         $statusmsg = $oas->membershipcardStatus($statuscode);
                         echo "Reset Casino Account: " . $statusmsg;
                     }
-                } else {
+                } 
+                else 
+                {
                     echo "Reset Casino Account: Invalid input detected";
                 }
-
                 unset($loyaltyResult, $casino);
                 $oas->close();
                 exit;
                 break;
 
-
             //show loyalty card information on a pop up box  
             case "GetLoyaltyCard2":
-
                 //validate if card number field was empty
                 $cardnumber = $_POST['txtcardnumber'];
-
-                if (strlen($cardnumber) > 0) {
+                if (strlen($cardnumber) > 0) 
+                {
                     $loyaltyResult = $loyalty->getCardInfo2($cardnumber, $cardinfo, 1);
-
                     $obj_result = json_decode($loyaltyResult);
-
                     $statuscode = $obj_result->CardInfo->StatusCode;
 
-                    if (!is_null($statuscode)) {
+                    if (!is_null($statuscode)) 
+                    {
                         //allow active memeebership card and active temp account
-                        if ($statuscode == 1 || $statuscode == 5 || $statuscode == 9) {
-
+                        if ($statuscode == 1 || $statuscode == 5 || $statuscode == 9) 
+                        {
                             $casinoarray_count = count($obj_result->CardInfo->CasinoArray);
-
                             $casinoinfo2 = array();
-                            if ($casinoarray_count != 0) {
-                                for ($ctr = 0; $ctr < $casinoarray_count; $ctr++) {
+                            if ($casinoarray_count != 0) 
+                            {
+                                for ($ctr = 0; $ctr < $casinoarray_count; $ctr++) 
+                                {
                                     $service = $oas->getServices($obj_result->CardInfo->CasinoArray[$ctr]->ServiceID);
-                                    foreach ($service as $value) {
+                                    foreach ($service as $value) 
+                                    {
                                         $casinoname = $value['ServiceName'];
                                     }
 
-                                    $casinoinfo =
-                                            array(
-                                                'UserName' => $obj_result->CardInfo->MemberName,
+                                    $casinoinfo = array('UserName' => $obj_result->CardInfo->MemberName,
                                                 'MobileNumber' => $obj_result->CardInfo->MobileNumber,
                                                 'Email' => $obj_result->CardInfo->Email,
                                                 'Birthdate' => $obj_result->CardInfo->Birthdate,
                                                 'Casino' => $casinoname,
                                                 'Login' => $obj_result->CardInfo->CasinoArray[$ctr]->ServiceUsername,
                                                 'CardNumber' => $obj_result->CardInfo->Username,
-                                                'StatusCode' => $obj_result->CardInfo->StatusCode,
-                                    );
-
+                                                'StatusCode' => $obj_result->CardInfo->StatusCode,);
                                     array_push($casinoinfo2, $casinoinfo);
-
                                     $_SESSION['CasinoArray'] = $obj_result->CardInfo->CasinoArray;
                                     $_SESSION['MID'] = $obj_result->CardInfo->MemberID;
                                 }
                                 echo json_encode($casinoinfo2);
-                            } else {
+                            } 
+                            else 
+                            {
                                 $services = "UB Transaction Tracking: Casino is empty";
                                 echo "$services";
                             }
-                        } else {
-                            if ($statuscode == 8) {
+                        } 
+                        else 
+                        {
+                            if ($statuscode == 8) 
+                            {
                                 echo json_encode($statuscode);
-                            } else {
+                            } 
+                            else 
+                            {
                                 $statusmsg = $oas->membershipcardStatus($statuscode);
                                 echo "UB Transaction Tracking: " . $statusmsg;
                             }
                         }
-                    } else {
+                    } 
+                    else 
+                    {
                         $statuscode = 100;
                         $statusmsg = $oas->membershipcardStatus($statuscode);
                         echo "UB Transaction Tracking: " . $statusmsg;
                     }
-                } else {
+                } 
+                else 
+                {
                     echo "UB Transaction Tracking: Invalid input detected";
                 }
-
                 unset($loyaltyResult, $casino);
                 $oas->close();
                 exit;
                 break;
 
             case 'EGMManualRemoving':
-                if ($_POST['cmbterminals'] != "") {
+                if ($_POST['cmbterminals'] != "") 
+                {
                     $terminalid = $_POST['cmbterminals'];
-
                     $terminalcode = $oas->getTerminalCode($terminalid);
 
-                    if (!empty($terminalcode)) {
+                    if (!empty($terminalcode)) 
+                    {
                         $terminalcode = $terminalcode['TerminalCode'];
                     }
 
                     $vipterminalid = $oas->getTerminalIDs($terminalcode . 'VIP');
 
-                    if (!empty($vipterminalid)) {
+                    if (!empty($vipterminalid)) 
+                    {
                         $vipterminalid = $vipterminalid['TerminalID'];
                     }
 
                     $count = $oas->checkTerminalSessions($terminalid, $vipterminalid);
 
                     //check number of sessions in a certain site
-                    if ($count > 0) {
+                    if ($count > 0) 
+                    {
                         $response = 'Failed to remove EGM Session, There is an existing terminal session for this terminal.';
-                    } else {
+                    } 
+                    else 
+                    {
                         $egmcheck = $oas->checkEGMSessions($terminalid, $vipterminalid);
 
-                        if ($egmcheck > 0) {
-
+                        if ($egmcheck > 0) 
+                        {
                             $stackerbatchid = $oas->getStackerBatchID($terminalid, $vipterminalid);
                             $deposit_amt = $oas->checkdeposit($stackerbatchid);
                             //if there's already a deposited amount, prompt the user if wants to continue.      
-                            if (is_null($stackerbatchid)) {
+                            if (is_null($stackerbatchid)) 
+                            {
                                 $updated = 1;
-                            } else {
+                            } 
+                            else 
+                            {
                                 $updated = $oas2->updateSSStatus($aid, $stackerbatchid, 5);
 
-                                if ($updated == 0) {
+                                if ($updated == 0) 
+                                {
                                     $updated = 1;
                                 }
                             }
 
-                            if ($updated > 0) {
+                            if ($updated > 0) 
+                            {
                                 $deleted = $oas->deleteEGMSessions($terminalid, $vipterminalid);
-                            } else {
+                            } 
+                            else 
+                            {
                                 $deleted = 0;
                             }
 
-                            if ($deleted > 0 && $updated > 0) {
+                            if ($deleted > 0 && $updated > 0) 
+                            {
                                 $response = 'EGM Session Successfully Removed';
-                            } else {
+                            } 
+                            else 
+                            {
                                 $response = 'Failed to remove EGM Session';
                             }
-                        } else {
+                        } 
+                        else 
+                        {
                             $response = 'Failed to remove EGM session, EGM session does not exist';
                         }
                     }
-
                     $vtransdetails = $response . ", terminalid " . $terminalid;
                     $vauditfuncID = 78;
                     $oas->logtoaudit($new_sessionid, $aid, $vtransdetails, $vdate, $vipaddress, $vauditfuncID);
-                } else {
+                } 
+                else 
+                {
                     $response = "All fields are requred";
                 }
-
                 echo json_encode($response);
                 unset($egmcheck, $deleted, $terminalid, $count);
                 $oas->close();
                 $oas2->close();
                 exit;
                 break;
+                
             case "TerminalRemoving":
                 $cardnumber = trim($_POST['cardnumber']);
-                if ($cardnumber != "") {
+                if ($cardnumber != "") 
+                {
                     $mid = $oas3->getMIDByUBCard($cardnumber);
-
-                    if (!$mid) {
-                        $response = array('ErrorCode' => 1,
-                            'Message' => 'Invalid Card Number.');
-                    } else {
-                        //check if card has terminal session
+                    if (!$mid) 
+                    {
+                        $response = array('ErrorCode' => 1, 'Message' => 'Invalid Card Number.');
+                    } 
+                    else 
+                    {   //check if card has terminal session
                         $hasTerminal = $oas->checkIfHasTerminalSession($cardnumber);
                         //check number of sessions in a certain site
-                        if ($hasTerminal != false) {
+                        if ($hasTerminal != false) 
+                        {
                             $terminalid = $hasTerminal['TerminalID'];
                             $usermode = $hasTerminal['UserMode'];
-
                             $loyaltyResult = $loyalty->getCardInfo2($cardnumber, $cardinfo, 1);
                             $obj_result = json_decode($loyaltyResult);
                             $casinocount = count($obj_result->CardInfo->CasinoArray);
-                            if ($casinocount > 0) {
-                                //check if card is user based
-                                if ($usermode == 1) {
-                                    if ($obj_result->CardInfo->IsEwallet > 0) {
+                            if ($casinocount > 0) 
+                            {   //check if card is user based
+                                if ($usermode == 1) 
+                                {
+                                    if ($obj_result->CardInfo->IsEwallet > 0) 
+                                    {
                                         $details = $oas->getTerminalCode($terminalid);
                                         //get site code
                                         $getSiteCode = $oas->getSiteCode($details['SiteID']);
@@ -417,28 +455,33 @@ if ($connected && $connected2 && $connected3) {
                                             'SiteCode' => trim(str_replace('ICSA-', '', $getSiteCode['SiteCode'])),
                                             'TerminalCode' => trim(str_replace('ICSA-', '', $details['TerminalCode'])),
                                         );
-                                    } else {
-                                        $response = array('ErrorCode' => 1,
-                                            'Message' => 'Card Number is not for e-SAFE.');
+                                    } 
+                                    else 
+                                    {
+                                        $response = array('ErrorCode' => 1, 'Message' => 'Card Number is not for e-SAFE.');
                                         $terminalid = "";
                                     }
-                                } else {
-                                    $response = array('ErrorCode' => 1,
-                                        'Message' => 'Existing terminal session is not a User-based casino.');
+                                } 
+                                else 
+                                {
+                                    $response = array('ErrorCode' => 1, 'Message' => 'Existing terminal session is not a User-based casino.');
                                 }
-                            } else {
-                                $response = array('ErrorCode' => 1,
-                                    'Message' => 'There is no mapped casino for this Card Number.');
+                            } 
+                            else 
+                            {
+                                $response = array('ErrorCode' => 1, 'Message' => 'There is no mapped casino for this Card Number.');
                             }
-                        } else {
-                            $response = array('ErrorCode' => 1,
-                                'Message' => 'Card Number has no terminal session.');
+                        } 
+                        else 
+                        {
+                            $response = array('ErrorCode' => 1, 'Message' => 'Card Number has no terminal session.');
                             $terminalid = "";
                         }
                     }
-                } else {
-                    $response = array('ErrorCode' => 1,
-                        'Message' => 'Please enter Card Number.');
+                } 
+                else 
+                {
+                    $response = array('ErrorCode' => 1, 'Message' => 'Please enter Card Number.');
                 }
                 echo json_encode($response);
                 unset($egmcheck, $deleted, $terminalid, $count);
@@ -446,6 +489,7 @@ if ($connected && $connected2 && $connected3) {
                 $oas2->close();
                 exit;
                 break;
+                
             case "RemoveTerminal":
                 $pcwsWrapper = new PcwsWrapper($Pcws['systemusername'], $Pcws['systemcode']);
                 $sapiWrapper = new SAPIWrapper();
@@ -456,69 +500,83 @@ if ($connected && $connected2 && $connected3) {
                 $serviceID = $_POST['serviceid'];
                 $call = 2;
                 $isEGM = 0;
-
                 $MID = $oas->getMIDByUBCard($cardnumber);
                 $hasEGM = $oas->checkIfHasEGMSession($MID['MID']);
-                if ($hasEGM['EGMCount'] > 0) {
+                if ($hasEGM['EGMCount'] > 0) 
+                {
                     $isEGM = 1;
                 }
                 //double check if session has TransSummaryID
                 $hasTransSumID = $oas->getTransactionSummaryViaLogin($login);
                 $apicall = 1; //force logout
-                if (is_null($hasTransSumID)) {
+                if (is_null($hasTransSumID)) 
+                {
                     $apicall = 2; //remove session
                 }
-                while ($call > 0) {
-                    if ($apicall == 1) { //force logout
-                        if ($isEGM > 0) {
+                while ($call > 0) 
+                {
+                    if ($apicall == 1) 
+                    { //force logout
+                        if ($isEGM > 0) 
+                        {
                             $api_result = $pcwsWrapper->logoutLaunchPad($Pcws['forcelogoutgen'], $login, $serviceID);
-                        } else {
+                        } 
+                        else 
+                        {
                             $api_result = $pcwsWrapper->logoutLaunchPad($Pcws['forcelogout'], $login, $serviceID);
-                            $changepass=$pcwsWrapper->changePassword($Pcws['changepassword'], 1, $login, $serviceID, 0);
+                            //$changepass=$pcwsWrapper->changePassword($Pcws['changepassword'], 1, $login, $serviceID, 0);
                         }
-                    } else { //remove session
+                    } 
+                    else 
+                    { //remove session
                         $api_result = $pcwsWrapper->removeSession($Pcws['removesession'], $terminal, $cardnumber);
-                        $changepass=$pcwsWrapper->changePassword($Pcws['changepassword'], 1, $login, $serviceID, 0);
+                        //$changepass=$pcwsWrapper->changePassword($Pcws['changepassword'], 1, $login, $serviceID, 0);
                     }
-                    foreach ($api_result as $result) {
-                        if ($result['ErrorCode'] == 0) {
-                            if ($isEGM > 0) {
+                    
+                    foreach ($api_result as $result) 
+                    {
+                        if ($result['ErrorCode'] == 0) 
+                        {
+                            if ($isEGM > 0) 
+                            {
                                 $sapiURL = $SAPI['endsession'];
                                 $sapiWrapper->endSession($SAPIterminal, $sapiURL); //call sapi endsession
                             }
                             $call = 0;
-                            $response = array('ErrorCode' => 0,
-                                'Message' => 'Terminal session succesfully removed.');
-
+                            $response = array('ErrorCode' => 0, 'Message' => 'Terminal session succesfully removed.');
                             $vtransdetails = "Successfully removed. TerminalCode=$terminal;CardNumber=$cardnumber";
                             $vauditfuncID = 86;
                             $oas->logtoaudit($new_sessionid, $aid, $vtransdetails, $vdate, $vipaddress, $vauditfuncID);
-                        } else {
+                        } 
+                        else 
+                        {
                             $call -= 1;
                             if ($call == 0)
-                                $response = array('ErrorCode' => 1,
-                                    'Message' => $result['TransactionMessage']);
+                                $response = array('ErrorCode' => 1, 'Message' => $result['TransactionMessage']);
                         }
                     }
                 }
                 echo json_encode($response);
                 break;
+                
             case "CheckValidUB":
                 $cardnumber = trim($_POST['cardnumber']);
-                if ($cardnumber != "") {
+                if ($cardnumber != "") 
+                {
                     //check if card has terminal session
                     $hasTerminal = $oas->checkIfHasTerminalSession($cardnumber);
                     //check number of sessions in a certain site
-                    if ($hasTerminal != false) {
+                    if ($hasTerminal != false) 
+                    {
                         $terminalid = $hasTerminal['TerminalID'];
                         $usermode = $hasTerminal['UserMode'];
-
                         $loyaltyResult = $loyalty->getCardInfo2($cardnumber, $cardinfo, 1);
                         $obj_result = json_decode($loyaltyResult);
-
-                        if ($obj_result->CardInfo->IsEwallet > 0) {
+                        if ($obj_result->CardInfo->IsEwallet > 0) 
+                        {
                             $casinocount = count($obj_result->CardInfo->CasinoArray);
-                            if ($casinocount > 0) {
+                            if ($casinocount > 0) 
+                            {
                                 $details = $oas->getTerminalCode($terminalid);
                                 //get site code
                                 $getSiteCode = $oas->getSiteCode($details['SiteID']);
@@ -529,23 +587,27 @@ if ($connected && $connected2 && $connected3) {
                                     'TerminalCode' => trim(str_replace('ICSA-', '', $details['TerminalCode'])),
                                     'ServiceID' => $hasTerminal['ServiceID']
                                 );
-                            } else {
-                                $response = array('ErrorCode' => 1,
-                                    'Message' => 'There is no mapped casino for this Card Number.');
+                            } 
+                            else 
+                            {
+                                $response = array('ErrorCode' => 1, 'Message' => 'There is no mapped casino for this Card Number.');
                             }
-                        } else {
-                            $response = array('ErrorCode' => 1,
-                                'Message' => 'Card number should be an e-SAFE account.');
+                        } 
+                        else 
+                        {
+                            $response = array('ErrorCode' => 1, 'Message' => 'Card number should be an e-SAFE account.');
                             $terminalid = "";
                         }
-                    } else {
-                        $response = array('ErrorCode' => 1,
-                            'Message' => 'Card Number has no terminal session.');
+                    } 
+                    else 
+                    {
+                        $response = array('ErrorCode' => 1, 'Message' => 'Card Number has no terminal session.');
                         $terminalid = "";
                     }
-                } else {
-                    $response = array('ErrorCode' => 1,
-                        'Message' => 'Please enter Card Number.');
+                } 
+                else 
+                {
+                    $response = array('ErrorCode' => 1, 'Message' => 'Please enter Card Number.');
                 }
                 echo json_encode($response);
                 unset($egmcheck, $deleted, $terminalid, $count);
@@ -553,89 +615,105 @@ if ($connected && $connected2 && $connected3) {
                 $oas2->close();
                 $oas3->close();
                 break;
+                
             case "CheckLoyaltyCard":
                 $cardnumber = trim($_POST['cardnumber']);
-                if (strlen($cardnumber) > 0) {
+                if (strlen($cardnumber) > 0) 
+                {
                     $loyaltyResult = $loyalty->getCardInfo2($cardnumber, $cardinfo, 1);
-
                     $obj_result = json_decode($loyaltyResult);
-                    if (!empty($obj_result)) {
+                    if (!empty($obj_result)) 
+                    {
                         $statuscode = $obj_result->CardInfo->StatusCode;
-
-                        if (!is_null($statuscode)) {
+                        if (!is_null($statuscode)) 
+                        {
                             //allow active memeebership card and active temp account
-                            if ($statuscode == 1 || $statuscode == 5 || $statuscode == 9) {
-
+                            if ($statuscode == 1 || $statuscode == 5 || $statuscode == 9) 
+                            {
                                 $casinoarray_count = count($obj_result->CardInfo->CasinoArray);
-
                                 $casinoinfo2 = array();
-                                if ($casinoarray_count != 0) {
-                                    for ($ctr = 0; $ctr < $casinoarray_count; $ctr++) {
+                                if ($casinoarray_count != 0) 
+                                {
+                                    for ($ctr = 0; $ctr < $casinoarray_count; $ctr++) 
+                                    {
                                         $service = $oas->getServices($obj_result->CardInfo->CasinoArray[$ctr]->ServiceID);
-                                        foreach ($service as $value) {
+                                        foreach ($service as $value) 
+                                        {
                                             $casinoname = $value['ServiceName'];
                                         }
 
-                                        $casinoinfo =
-                                                array(
-                                                    'UserName' => $obj_result->CardInfo->MemberName,
+                                        $casinoinfo = array('UserName' => $obj_result->CardInfo->MemberName,
                                                     'MobileNumber' => $obj_result->CardInfo->MobileNumber,
                                                     'Email' => $obj_result->CardInfo->Email,
                                                     'Birthdate' => $obj_result->CardInfo->Birthdate,
                                                     'Casino' => $casinoname,
                                                     'Login' => $obj_result->CardInfo->CasinoArray[$ctr]->ServiceUsername,
                                                     'CardNumber' => $obj_result->CardInfo->Username,
-                                                    'StatusCode' => $obj_result->CardInfo->StatusCode,
-                                        );
-
+                                                    'StatusCode' => $obj_result->CardInfo->StatusCode,);
                                         array_push($casinoinfo2, $casinoinfo);
-
                                         $_SESSION['CasinoArray'] = $obj_result->CardInfo->CasinoArray;
                                         $_SESSION['MID'] = $obj_result->CardInfo->MemberID;
                                     }
                                     echo json_encode($casinoinfo2);
-                                } else {
+                                } 
+                                else 
+                                {
                                     $services = "Casino is empty";
                                     echo "$services";
                                 }
-                            } else {
-                                if ($statuscode == 8) {
+                            } 
+                            else 
+                            {
+                                if ($statuscode == 8) 
+                                {
                                     echo json_encode($statuscode);
-                                } else {
+                                } 
+                                else 
+                                {
                                     $statusmsg = $oas->membershipcardStatus($statuscode);
                                     echo $statusmsg;
                                 }
                             }
-                        } else {
+                        } 
+                        else 
+                        {
                             $statuscode = 100;
                             $statusmsg = $oas->membershipcardStatus($statuscode);
                             echo $statusmsg;
                         }
-                    } else {
+                    } 
+                    else 
+                    {
                         echo "Can't get card information.";
                     }
-                } else {
+                } 
+                else 
+                {
                     echo "Please enter Card Number.";
                 }
                 unset($egmcheck, $deleted, $terminalid, $count);
                 $oas->close();
                 break;
+                
             case "CheckActiveSession":
                 $ubcard = trim($_POST['ubcard']);
                 //check if ub card is blank
-                if (strlen($ubcard) > 0) {
+                if (strlen($ubcard) > 0) 
+                {
                     //get MID of the card
                     $getMID = $oas3->getMIDByUBCard($ubcard);
-                    if ($getMID != false) {
+                    if ($getMID != false) 
+                    {
                         $MID = $getMID['MID'];
                         //check if ub card exist in egmsessions, else, not started in egm terminal
                         $isInEGMsession = $oas->checkIfInEGMSession($MID);
-                        if ($isInEGMsession['Count'] > 0) { //started in egm
+                        if ($isInEGMsession['Count'] > 0) 
+                        { //started in egm
                             $started_in = "Genesis";
                             $hasSession = $oas->checkIfHasTerminalSessionByMID($MID);
-                            foreach ($hasSession as $row) {
+                            foreach ($hasSession as $row) 
+                            {
                                 $servicename = $oas->getServiceName($row['ServiceID']);
-
                                 $result[] = array('Site' => $row['SiteName'],
                                     'Terminal' => $row['TerminalCode'],
                                     'Service' => $servicename['ServiceName'],
@@ -644,24 +722,35 @@ if ($connected && $connected2 && $connected3) {
                                     'CardNumber' => $row['LoyaltyCardNumber'],
                                     'ErrorCode' => 0);
                             }
-                        } else { // not egm
+                        } 
+                        else 
+                        { // not egm
                             //check if player started in cashier or launchpad   
                             $hasSession = $oas->checkIfHasTerminalSessionByMID($MID);
                             $countSessions = count($hasSession);
-                            if ($countSessions > 0) {
+                            if ($countSessions > 0) 
+                            {
                                 //check if ewallet
                                 $isEwallet = $oas2->isEwallet($MID);
-                                foreach ($hasSession as $row) {
+                                foreach ($hasSession as $row) 
+                                {
                                     $servicename = $oas->getServiceName($row['ServiceID']);
                                     //check where the session started
-                                    if ($isEwallet == 1) {
-                                        if ($row['ServiceID'] == 19) {
+                                    if ($isEwallet == 1) 
+                                    {
+                                        if ($row['ServiceID'] == 19) 
+                                        {
                                             $started_in = "Launchpad";
-                                        } else {
+                                        } 
+                                        else 
+                                        {
                                             $started_in = "Cashier";
                                         }
-                                    } else {
-                                        switch ($row['ServiceID']) {
+                                    } 
+                                    else 
+                                    {
+                                        switch ($row['ServiceID']) 
+                                        {
                                             case 19:
                                                 $started_in = "Cashier";
                                                 break;
@@ -681,21 +770,25 @@ if ($connected && $connected2 && $connected3) {
                                         'CardNumber' => $row['LoyaltyCardNumber'],
                                         'ErrorCode' => 0);
                                 }
-                            } else {
-                                $result = array('ErrorCode' => 1,
-                                    'Message' => 'Card Number has no active session.');
+                            } 
+                            else 
+                            {
+                                $result = array('ErrorCode' => 1, 'Message' => 'Card Number has no active session.');
                             }
                         }
-                    } else {
-                        $result = array('ErrorCode' => 1,
-                            'Message' => 'Card Number not exist.');
+                    } 
+                    else 
+                    {
+                        $result = array('ErrorCode' => 1, 'Message' => 'Card Number not exist.');
                     }
-                } else {
-                    $result = array('ErrorCode' => 1,
-                        'Message' => 'Please enter Card Number.');
+                } 
+                else 
+                {
+                    $result = array('ErrorCode' => 1, 'Message' => 'Please enter Card Number.');
                 }
                 echo json_encode($result);
                 break;
+                
             /**
              * Check Get Last Session Information of UB
              * @author Mark Nicolas Atangan
@@ -706,13 +799,14 @@ if ($connected && $connected2 && $connected3) {
             case "CheckLastTrans":
                 $ubcard = trim($_POST['ubcard']);
                 //check if ub card is blank
-                if (strlen($ubcard) > 0) {
+                if (strlen($ubcard) > 0) 
+                {
                     //get MID of the card
                     $getMID = $oas3->getMIDByUBCard($ubcard);
-                    if ($getMID != false) {
+                    if ($getMID != false) 
+                    {
                         $MID = $getMID['MID'];
                         $hasSession = $oas->checkLastSessionByMID($MID);
-
                         $result[] = array('Site' => $hasSession['SiteCode'],
                             'Terminal' => $hasSession['TerminalCode'],
                             'Service' => $hasSession['ServiceName'],
@@ -726,30 +820,32 @@ if ($connected && $connected2 && $connected3) {
                             'TerminalTypeTS' => $hasSession['TerminalTypeTS'],
                             'CardNumberTS' => $hasSession['LoyaltyCardNumberTS'],
                             'ErrorCode' => 0);
-
                         $vtransdetails = "UB last transaction report generated";
                         $vauditfuncID = 107;
                         $oas->logtoaudit($new_sessionid, $aid, $vtransdetails, $vdate, $vipaddress, $vauditfuncID); //insert in audittrail
                     }
-                } else {
-                    $result = array('ErrorCode' => 1,
-                        'Message' => 'Please enter Card Number.');
+                } 
+                else 
+                {
+                    $result = array('ErrorCode' => 1, 'Message' => 'Please enter Card Number.');
                 }
                 echo json_encode($result);
                 break;
+                
             case "GetLastDepositAndWithdraw":
                 $ubcard = trim($_POST['ubcard']);
                 //check if ub card is blank
-                if (strlen($ubcard) > 0) {
+                if (strlen($ubcard) > 0) 
+                {
                     //get MID of the card
                     $getMID = $oas3->getMIDByUBCard($ubcard);
-                    if ($getMID != false) {
+                    if ($getMID != false) 
+                    {
                         $MID = $getMID['MID'];
                         //check if ub card exist in egmsessions, else, not started in egm terminal
                         $lastTransaction = $oas->getLastTransactionByMID($MID);
                         $withdrawAmount = number_format($lastTransaction['AmountW'], 2, '.', ',');
                         $depositAmount = number_format($lastTransaction['Amount'], 2, '.', ',');
-
                         $result[] = array('Site' => $lastTransaction['SiteCode'],
                             'DateAndTime' => $lastTransaction['StartDate'],
                             'Amount' => $depositAmount,
@@ -762,12 +858,14 @@ if ($connected && $connected2 && $connected3) {
                             'ServiceNameWithdraw' => $lastTransaction['ServiceNameW'],
                             'ErrorCode' => 0);
                     }
-                } else {
-                    $result = array('ErrorCode' => 1,
-                        'Message' => 'Please enter Card Number.');
+                } 
+                else 
+                {
+                    $result = array('ErrorCode' => 1, 'Message' => 'Please enter Card Number.');
                 }
                 echo json_encode($result);
                 break;
+                
                 /*
                  * Updated Creation of Virutal Cashier
                  * Update Status if there is an existing inactive Virtual Cashier
@@ -780,136 +878,146 @@ if ($connected && $connected2 && $connected3) {
                 $vctypeesafe = $_POST['vctypeesafe'];
                 $transdetails = "";
                 //check if both false
-                if (($vctypegen == "true" || $vctypeesafe == "true") && ($siteID != "-1")) {
-                    if ($vctypegen == "true") { //EGM
+                if (($vctypegen == "true" || $vctypeesafe == "true") && ($siteID != "-1")) 
+                {
+                    if ($vctypegen == "true") 
+                    { //EGM
                         $vctype = 1;
                         //check if the site has already an active virtual cashier for EGM
                         $hasVC = $oas->checkIfHasVirtualCashier($siteID, 1);
-                        if ($hasVC == 0) {
+                        if ($hasVC == 0) 
+                        {
                                 //check for inactive virtual cashier
                                 $hasInactiveVC = $oas->checkIfHasInactiveVC($siteID, 1);
-                                if ($hasInactiveVC == 0) {       
+                                if ($hasInactiveVC == 0) 
+                                {       
                                     $r = createVirtualCashier($oas, $siteID, $vctype);
-                                    if ($r['ErrorCode'] == 0) {
-                                        $result[] = array('ErrorCode' => 0,
-                                            'VCType' => 'Genesis Virtual Cashier',
+                                    if ($r['ErrorCode'] == 0) 
+                                    {
+                                        $result[] = array('ErrorCode' => 0, 'VCType' => 'Genesis Virtual Cashier',
                                             'Message' => 'Genesis Virtual Cashier successfully created.');
-
                                         $transdetails += "EGM: Created;";
                                     } 
-                                    else {
-                                        $result[] = array('ErrorCode' => 1,
-                                            'VCType' => 'Genesis Virtual Cashier',
+                                    else 
+                                    {
+                                        $result[] = array('ErrorCode' => 1, 'VCType' => 'Genesis Virtual Cashier',
                                             'Message' => 'Genesis Virtual Cashier creation failed.');
-
                                         $transdetails += "EGM: Failed;";
-                                        }   
+                                    }   
                                 }
                                 else
                                 {
-                                     $r = $oas->UpdateInactiveVC($siteID, 1);  
-                                        if ($r == 0) {
-                                          $result[] = array('ErrorCode' => 3,
-                                          'VCType' => 'Genesis Virtual Cashier',
-                                          'Message' => 'Genesis Virtual Cashier successfully Activated.');
-                                          $transdetails += "EGM: Activated;";
-                                  } else {
-                                      $result[] = array('ErrorCode' => 1,
-                                          'VCType' => 'Genesis Virtual Cashier',
-                                          'Message' => 'Genesis Virtual Cashier Activation failed.');
-
-                                      $transdetails += "EGM: Failed;";
-                                  }
-                                }
-                        } else {
-
-                                $result[] = array('ErrorCode' => 1,
-                                    'VCType' => 'Genesis Virtual Cashier',
-                                    'Message' => 'Site has already a Genesis virtual cashier.');
-                                $transdetails += "EGM: Site has already a Genesis virtual cashier;";
-                                
-                        }
-                    }
-                    if ($vctypeesafe == "true") { //e-SAFE
-                        $vctype = 2;
-                        $hasVC = $oas->checkIfHasVirtualCashier($siteID, 2); //e-SAFE
-                        if ($hasVC == 0) {
-                            $hasInactiveVC = $oas->checkIfHasInactiveVC($siteID, 2);
-                                if ($hasInactiveVC == 0) {   
-                                    $r = createVirtualCashier($oas, $siteID, $vctype);
-                                    if ($r['ErrorCode'] == 0) {
-                                        $result[] = array('ErrorCode' => 0,
-                                            'VCType' => 'e-SAFE Virtual Cashier',
-                                            'Message' => 'e-SAFE Virtual Cashier successfully created.');
-
-                                        $transdetails .= "e-SAFE: Created;";
-                                    } else {
-                                        $result[] = array('ErrorCode' => 1,
-                                            'VCType' => 'e-SAFE Virtual Cashier',
-                                            'Message' => 'e-SAFE Virtual Cashier creation failed.');
-
-                                        $transdetails .= "e-SAFE: Failed;";
+                                    $r = $oas->UpdateInactiveVC($siteID, 1);  
+                                    if ($r == 0) 
+                                    {
+                                        $result[] = array('ErrorCode' => 3, 'VCType' => 'Genesis Virtual Cashier',
+                                            'Message' => 'Genesis Virtual Cashier successfully Activated.');
+                                        $transdetails += "EGM: Activated;";
+                                    } 
+                                    else 
+                                    {
+                                        $result[] = array('ErrorCode' => 1, 'VCType' => 'Genesis Virtual Cashier',
+                                            'Message' => 'Genesis Virtual Cashier Activation failed.');
+                                       $transdetails += "EGM: Failed;";
                                     }
                                 }
-                                else
+                        } 
+                        else 
+                        {
+                            $result[] = array('ErrorCode' => 1, 'VCType' => 'Genesis Virtual Cashier',
+                                'Message' => 'Site has already a Genesis virtual cashier.');
+                            $transdetails += "EGM: Site has already a Genesis virtual cashier;";
+                        }
+                    }
+                    
+                    if ($vctypeesafe == "true") 
+                    { //e-SAFE
+                        $vctype = 2;
+                        $hasVC = $oas->checkIfHasVirtualCashier($siteID, 2); //e-SAFE
+                        if ($hasVC == 0) 
+                        {
+                            $hasInactiveVC = $oas->checkIfHasInactiveVC($siteID, 2);
+                            if ($hasInactiveVC == 0) 
+                            {   
+                                $r = createVirtualCashier($oas, $siteID, $vctype);
+                                if ($r['ErrorCode'] == 0) 
                                 {
-                                        $r = $oas->UpdateInactiveVC($siteID, 2);  
-                                        if ($r == 0) 
-                                        {
-                                          $result[] = array('ErrorCode' => 3,
-                                          'VCType' => 'e-SAFE Virtual Cashier',
-                                          'Message' => 'e-SAFE Virtual Cashier successfully Activated.');
-                                          $transdetails += "e-SAFE: Activated;";
-                                        } 
-                                        else 
-                                        {
-                                          $result[] = array('ErrorCode' => 1,
-                                          'VCType' => 'e-SAFE Virtual Cashier',
-                                          'Message' => 'e-SAFE Virtual Cashier Activation failed.');
-
-                                          $transdetails += "e-SAFE: Failed;";
-                                        }
-                                    
+                                    $result[] = array('ErrorCode' => 0, 'VCType' => 'e-SAFE Virtual Cashier',
+                                        'Message' => 'e-SAFE Virtual Cashier successfully created.');
+                                    $transdetails .= "e-SAFE: Created;";
+                                } 
+                                else 
+                                {
+                                    $result[] = array('ErrorCode' => 1, 'VCType' => 'e-SAFE Virtual Cashier',
+                                        'Message' => 'e-SAFE Virtual Cashier creation failed.');
+                                    $transdetails .= "e-SAFE: Failed;";
                                 }
-                        } else {
-                            $result[] = array('ErrorCode' => 1,
-                                'VCType' => 'e-SAFE Virtual Cashier',
+                            }
+                            else
+                            {
+                                $r = $oas->UpdateInactiveVC($siteID, 2);  
+                                if ($r == 0) 
+                                {
+                                    $result[] = array('ErrorCode' => 3, 'VCType' => 'e-SAFE Virtual Cashier',
+                                        'Message' => 'e-SAFE Virtual Cashier successfully Activated.');
+                                    $transdetails += "e-SAFE: Activated;";
+                                } 
+                                else 
+                                {
+                                    $result[] = array('ErrorCode' => 1, 'VCType' => 'e-SAFE Virtual Cashier',
+                                        'Message' => 'e-SAFE Virtual Cashier Activation failed.');
+                                    $transdetails += "e-SAFE: Failed;";
+                                }
+                            }
+                        } 
+                        else 
+                        {
+                            $result[] = array('ErrorCode' => 1, 'VCType' => 'e-SAFE Virtual Cashier',
                                 'Message' => 'Site has already an e-SAFE virtual cashier.');
                             $transdetails .= "e-SAFE: Site has already a virtual cashier;";
                         }
                     }
-                    if (isset($r['SiteCode'])) { //meaning at least one of either EGM of e-SAFE was created/failed.
+                    if (isset($r['SiteCode'])) 
+                    { //meaning at least one of either EGM of e-SAFE was created/failed.
                         $vauditfuncID = 105;
                         $vtransdetails = "Site:" . $r['SiteCode'] . "; " . $transdetails;
                         $oas->logtoaudit($new_sessionid, $aid, $vtransdetails, $vdate, $vipaddress, $vauditfuncID);
                     }
-                } else {
+                } 
+                else 
+                {
                     //display error message
-                    $result[] = array('ErrorCode' => 2,
-                        'Message' => 'Please fill up all fields.');
+                    $result[] = array('ErrorCode' => 2, 'Message' => 'Please fill up all fields.');
                 }
                 echo json_encode($result);
                 break;
         }
     }
-    if (isset($_POST['paginate'])) {
+    
+    if (isset($_POST['paginate'])) 
+    {
         $vpaginate = $_POST['paginate'];
-        if (isset($_POST['page']) && isset($_POST['rows']) && isset($_POST['sidx']) && isset($_POST['sord'])) {
+        if (isset($_POST['page']) && isset($_POST['rows']) && isset($_POST['sidx']) && isset($_POST['sord'])) 
+        {
             $page = $_POST['page']; // get the requested page
             $limit = $_POST['rows']; // get how many rows we want to have into the grid
             $sidx = $_POST['sidx']; // get index row - i.e. user click to sort
             $direction = $_POST['sord']; // get the direction
-        } else {
+        } 
+        else 
+        {
             $page = 1; // get the requested page
             $limit = 1; // get how many rows we want to have into the grid
             $sidx = 1; // get index row - i.e. user click to sort
             $direction = 1; // get the direction
         }
-        switch ($vpaginate) {
+        
+        switch ($vpaginate) 
+        {
             //page post for transaction tracking
             case 'ViewSupport':
-                if (isset($_POST['cmbsite']) && isset($_POST['cmbterminal'])
-                        && isset($_POST['txtDate1']) && isset($_POST['cmbstatus'])) {
+                if (isset($_POST['cmbsite']) && isset($_POST['cmbterminal']) && isset($_POST['txtDate1']) && isset($_POST['cmbstatus'])) 
+                {
                     $vSiteID = $_POST['cmbsite'];
                     $vTerminalID = $_POST['cmbterminal'];
                     $vdate1 = $_POST['txtDate1'];
@@ -918,40 +1026,50 @@ if ($connected && $connected2 && $connected3) {
                     $vTo = date('Y-m-d', strtotime('+1 day', strtotime($vdate1)));
                     $vtransstatus = $_POST['cmbstatus'];
                     $vtranstype = $_POST['cmbtranstype'];
-
                     /** Store status to an array * */
                     $arrstasssstus = array();
-                    if ($vtransstatus == 1) {
+                    if ($vtransstatus == 1) 
+                    {
                         $arrstatus = array($vtransstatus, '3');
-                    } elseif ($vtransstatus == 2) {
+                    } 
+                    elseif ($vtransstatus == 2) 
+                    {
                         $arrstatus = array($vtransstatus, '4');
-                    } else {
+                    } 
+                    else 
+                    {
                         $arrstatus = array($vtransstatus);
                     }
-
                     $rcount = $oas->counttransactiondetails($vSiteID, $vTerminalID, $arrstatus, $vtranstype, $vFrom, $vTo);
-
                     $count = $rcount['count'];
 
-                    if ($count > 0) {
+                    if ($count > 0) 
+                    {
                         $total_pages = ceil($count / $limit);
-                    } else {
+                    } 
+                    else 
+                    {
                         $total_pages = 0;
                     }
-                    if ($page > $total_pages) {
+                    
+                    if ($page > $total_pages) 
+                    {
                         $page = $total_pages;
                     }
                     $start = $limit * $page - $limit;
                     $limit = (int) $limit;
                     $result = $oas->selecttransactiondetails($vSiteID, $vTerminalID, $arrstatus, $vtranstype, $vFrom, $vTo, $start, $limit);
 
-                    if (count($result) > 0) {
+                    if (count($result) > 0) 
+                    {
                         $i = 0;
                         $responce->page = $page;
                         $responce->total = $total_pages;
                         $responce->records = $count;
-                        foreach ($result as $vview) {
-                            switch ($vview['Status']) {
+                        foreach ($result as $vview) 
+                        {
+                            switch ($vview['Status']) 
+                            {
                                 case 0: $vstatus = 'Pending';
                                     break;
                                 case 1: $vstatus = 'Successful';
@@ -968,7 +1086,8 @@ if ($connected && $connected2 && $connected3) {
                                     break;
                             }
 
-                            switch ($vview['TransactionType']) {
+                            switch ($vview['TransactionType']) 
+                            {
                                 case 'D': $vtranstype = 'Deposit';
                                     break;
                                 case 'W': $vtranstype = 'Withdrawal';
@@ -981,7 +1100,6 @@ if ($connected && $connected2 && $connected3) {
                             $results2 = $oas->getsitecode($vSiteID);
                             $results2 = $results2['SiteCode'];
                             $results = preg_split("/$results2/", $vview['TerminalCode']);
-
                             $responce->rows[$i]['id'] = $vview['TransactionDetailsID'];
                             $responce->rows[$i]['cell'] = array($results[1],
                                 $vtranstype,
@@ -992,7 +1110,9 @@ if ($connected && $connected2 && $connected3) {
                                 $vview['Name']);
                             $i++;
                         }
-                    } else {
+                    } 
+                    else 
+                    {
                         $i = 0;
                         $responce->page = $page;
                         $responce->total = $total_pages;
@@ -1010,9 +1130,8 @@ if ($connected && $connected2 && $connected3) {
 
             //view transaction logs for user based transactions
             case 'ViewSupportUB':
-
-                if (isset($_POST['cmbsource']) && isset($_POST['txtDate1'])
-                        || isset($_POST['cmbstatus'])) {
+                if (isset($_POST['cmbsource']) && isset($_POST['txtDate1']) || isset($_POST['cmbstatus'])) 
+                {
                     $vSource = $_POST['cmbsource'];
                     $vCardNum = $_POST['txtcardnumber'];
                     $vdate1 = $_POST['txtDate1'];
@@ -1020,29 +1139,36 @@ if ($connected && $connected2 && $connected3) {
                     $vFrom = $vdate1;
                     $vTo = date('Y-m-d H:i:s', strtotime('+1 day', strtotime($vdate1)));
 
-                    if (isset($_POST['cmbstatus']) && isset($_POST['cmbtranstype'])) {
+                    if (isset($_POST['cmbstatus']) && isset($_POST['cmbtranstype'])) 
+                    {
                         $vtransstatus = $_POST['cmbstatus'];
                         $vtranstype = $_POST['cmbtranstype'];
-                    } else {
+                    } 
+                    else 
+                    {
                         $vtransstatus = '';
                         $vtranstype = '';
                     }
 
-
-                    switch ($vSource) {
+                    switch ($vSource) 
+                    {
                         //if source is Cashier
                         case 1:
                             //get total number of transactiondetails for cashier source
                             $rcount = $oas->countcashierTranslogs($vCardNum, $vtransstatus, $vtranstype, $vFrom, $vTo);
-
                             $count = $rcount['count'];
 
-                            if ($count > 0) {
+                            if ($count > 0) 
+                            {
                                 $total_pages = ceil($count / $limit);
-                            } else {
+                            } 
+                            else 
+                            {
                                 $total_pages = 0;
                             }
-                            if ($page > $total_pages) {
+                            
+                            if ($page > $total_pages) 
+                            {
                                 $page = $total_pages;
                             }
                             $start = $limit * $page - $limit;
@@ -1050,20 +1176,23 @@ if ($connected && $connected2 && $connected3) {
                             //select transactiondetails for cashier source
                             $result = $oas->getcashierTranslogs($vCardNum, $vtransstatus, $vtranstype, $vFrom, $vTo, $start, $limit);
 
-                            if (!empty($result)) {
-
-                                if (count($result) > 0) {
+                            if (!empty($result)) 
+                            {
+                                if (count($result) > 0) 
+                                {
                                     $i = 0;
                                     $responce->page = $page;
                                     $responce->total = $total_pages;
                                     $responce->records = $count;
 
-                                    foreach ($result as $vview) {
+                                    foreach ($result as $vview) 
+                                    {
                                         $transrefid = $vview['TransactionReferenceID'];
                                         //get cashier username
                                         $user = $oas->getCashierUsername($vFrom, $vTo, $transrefid, $vCardNum);
 
-                                        switch ($vview['Status']) {
+                                        switch ($vview['Status']) 
+                                        {
                                             case 0: $vstatus = 'Pending';
                                                 break;
                                             case 1: $vstatus = 'Successful';
@@ -1078,7 +1207,8 @@ if ($connected && $connected2 && $connected3) {
                                                 break;
                                         }
 
-                                        switch ($vview['TransactionType']) {
+                                        switch ($vview['TransactionType']) 
+                                        {
                                             case 'D': $vtranstype = 'Deposit';
                                                 break;
                                             case 'W': $vtranstype = 'Withdrawal';
@@ -1097,7 +1227,9 @@ if ($connected && $connected2 && $connected3) {
                                         $i++;
                                     }
                                 }
-                            } else {
+                            } 
+                            else 
+                            {
                                 $i = 0;
                                 $responce->page = $page;
                                 $responce->total = $total_pages;
@@ -1110,15 +1242,19 @@ if ($connected && $connected2 && $connected3) {
                         case 2:
                             //get total number of transactionrequestlogslp transaction for launchpad source
                             $rcount = $oas->countlptranslogsLP($vCardNum, $vtransstatus, $vtranstype, $vFrom, $vTo);
-
                             $count = $rcount['count'];
 
-                            if ($count > 0) {
+                            if ($count > 0) 
+                            {
                                 $total_pages = ceil($count / $limit);
-                            } else {
+                            } 
+                            else 
+                            {
                                 $total_pages = 0;
                             }
-                            if ($page > $total_pages) {
+                            
+                            if ($page > $total_pages) 
+                            {
                                 $page = $total_pages;
                             }
                             $start = $limit * $page - $limit;
@@ -1126,13 +1262,16 @@ if ($connected && $connected2 && $connected3) {
                             //select transactionrequestlogslp transaction for launchpad source
                             $result = $oas->getlptranslogsLP($vCardNum, $vtransstatus, $vtranstype, $vFrom, $vTo, $start, $limit);
 
-                            if (count($result) > 0) {
+                            if (count($result) > 0) 
+                            {
                                 $i = 0;
                                 $responce->page = $page;
                                 $responce->total = $total_pages;
                                 $responce->records = $count;
-                                foreach ($result as $vview) {
-                                    switch ($vview['Status']) {
+                                foreach ($result as $vview) 
+                                {
+                                    switch ($vview['Status']) 
+                                    {
                                         case 0: $vstatus = 'Pending';
                                             break;
                                         case 1: $vstatus = 'Successful';
@@ -1147,7 +1286,8 @@ if ($connected && $connected2 && $connected3) {
                                             break;
                                     }
 
-                                    switch ($vview['TransactionType']) {
+                                    switch ($vview['TransactionType']) 
+                                    {
                                         case 'D': $vtranstype = 'Deposit';
                                             break;
                                         case 'W': $vtranstype = 'Withdrawal';
@@ -1165,7 +1305,9 @@ if ($connected && $connected2 && $connected3) {
                                         number_format($vview['Amount'], 2), $vview['StartDate'], $vview['EndDate'], $vstatus);
                                     $i++;
                                 }
-                            } else {
+                            } 
+                            else 
+                            {
                                 $i = 0;
                                 $responce->page = $page;
                                 $responce->total = $total_pages;
@@ -1180,12 +1322,17 @@ if ($connected && $connected2 && $connected3) {
                             $rcount = $oas->countmanualredemptionsub($vCardNum, $vtransstatus, $vFrom, $vTo);
                             $count = $rcount['count'];
 
-                            if ($count > 0) {
+                            if ($count > 0) 
+                            {
                                 $total_pages = ceil($count / $limit);
-                            } else {
+                            } 
+                            else 
+                            {
                                 $total_pages = 0;
                             }
-                            if ($page > $total_pages) {
+                            
+                            if ($page > $total_pages) 
+                            {
                                 $page = $total_pages;
                             }
                             $start = $limit * $page - $limit;
@@ -1193,13 +1340,16 @@ if ($connected && $connected2 && $connected3) {
                             //select manualredemptions transaction for manual redemption source
                             $result = $oas->selectmanualredemptionsub($vCardNum, $vtransstatus, $vFrom, $vTo, $start, $limit);
 
-                            if (count($result) > 0) {
+                            if (count($result) > 0) 
+                            {
                                 $i = 0;
                                 $responce->page = $page;
                                 $responce->total = $total_pages;
                                 $responce->records = $count;
-                                foreach ($result as $vview) {
-                                    switch ($vview['Status']) {
+                                foreach ($result as $vview) 
+                                {
+                                    switch ($vview['Status']) 
+                                    {
                                         case 0: $vstatus = 'Pending';
                                             break;
                                         case 1: $vstatus = 'Successful';
@@ -1209,7 +1359,6 @@ if ($connected && $connected2 && $connected3) {
                                         default: $vstatus = 'All';
                                             break;
                                     }
-
                                     list($site, $sitecode) = split("-", $vview['SiteCode']);
                                     $results = $vview['TerminalCode'] != null ? substr($vview['TerminalCode'], strlen($vview['SiteCode'])) : "N/A";
                                     $responce->rows[$i]['id'] = $vview['ManualRedemptionsID'];
@@ -1217,7 +1366,9 @@ if ($connected && $connected2 && $connected3) {
                                         number_format($vview['ReportedAmount'], 2), $vview['TransactionDate'], $vstatus);
                                     $i++;
                                 }
-                            } else {
+                            } 
+                            else 
+                            {
                                 $i = 0;
                                 $responce->page = $page;
                                 $responce->total = $total_pages;
@@ -1227,16 +1378,20 @@ if ($connected && $connected2 && $connected3) {
                             }
                             break;
                         case 4:
-
                             $rcount = $oas->countUBTransactionEwallet($vCardNum, $vFrom, $vTo);
                             $count = $rcount['count'];
 
-                            if ($count > 0) {
+                            if ($count > 0) 
+                            {
                                 $total_pages = ceil($count / $limit);
-                            } else {
+                            } 
+                            else 
+                            {
                                 $total_pages = 0;
                             }
-                            if ($page > $total_pages) {
+                            
+                            if ($page > $total_pages) 
+                            {
                                 $page = $total_pages;
                             }
 
@@ -1245,13 +1400,15 @@ if ($connected && $connected2 && $connected3) {
 
                             $result = $oas->selectUBTransactionEwallet($vCardNum, $vFrom, $vTo, $start, $limit);
 
-                            if (count($result) > 0) {
+                            if (count($result) > 0) 
+                            {
                                 $i = 0;
                                 $responce = new stdClass();
                                 $responce->page = $page;
                                 $responce->total = $total_pages;
                                 $responce->records = $count;
-                                foreach ($result as $vview) {
+                                foreach ($result as $vview) 
+                                {
                                     list($site, $sitecode) = split("-", $vview['SiteCode']);
                                     $terminalcode = preg_replace("/[^0-9][^VIP]/", "", $vview['TerminalCode']);
                                     $enddate = $vview['EndDate'] == 0 ? "Still playing ..." : date('Y-m-d H:i:s', strtotime($vview['EndDate']));
@@ -1260,7 +1417,9 @@ if ($connected && $connected2 && $connected3) {
                                         number_format($vview['TotalEwalletload'], 2), number_format($vview['EndingBalance'], 2), number_format($vview['GenesisWithdrawal'], 2), date('Y-m-d H:i:s', strtotime($vview['StartDate'])), $enddate);
                                     $i++;
                                 }
-                            } else {
+                            } 
+                            else 
+                            {
                                 $i = 0;
                                 $responce->page = $page;
                                 $responce->total = $total_pages;
@@ -1273,7 +1432,6 @@ if ($connected && $connected2 && $connected3) {
                         default:
                             echo "Error: Invalid Source!";
                     }
-
                     echo json_encode($responce);
                     unset($result);
                     unset($responce);
@@ -1283,8 +1441,8 @@ if ($connected && $connected2 && $connected3) {
                 break;
 
             case 'MCFHistory':
-                if (isset($_POST['cmbsite']) && isset($_POST['cmbterminal'])
-                        && isset($_POST['txtDate1']) && isset($_POST['cmbstatus'])) {
+                if (isset($_POST['cmbsite']) && isset($_POST['cmbterminal']) && isset($_POST['txtDate1']) && isset($_POST['cmbstatus'])) 
+                {
                     $vSiteID = $_POST['cmbsite'];
                     $vTerminalID = $_POST['cmbterminal'];
                     $vdate1 = $_POST['txtDate1'];
@@ -1296,28 +1454,35 @@ if ($connected && $connected2 && $connected3) {
                     $vTo = $vTo . ' 06;00:00';
 
                     $rcount = $oas->countfulfillmenthistroy($vSiteID, $vTerminalID, $vtransstatus, $vFrom, $vTo);
-
                     $count = $rcount['Count'];
 
-                    if ($count > 0) {
+                    if ($count > 0) 
+                    {
                         $total_pages = ceil($count / $limit);
-                    } else {
+                    } 
+                    else 
+                    {
                         $total_pages = 0;
                     }
-                    if ($page > $total_pages) {
+                    
+                    if ($page > $total_pages) 
+                    {
                         $page = $total_pages;
                     }
                     $start = $limit * $page - $limit;
                     $limit = (int) $limit;
                     $result = $oas->getfulfillmenthistroy($vSiteID, $vTerminalID, $vtransstatus, $vFrom, $vTo, $start, $limit);
 
-                    if (count($result) > 0) {
+                    if (count($result) > 0) 
+                    {
                         $i = 0;
                         $responce->page = $page;
                         $responce->total = $total_pages;
                         $responce->records = $count;
-                        foreach ($result as $vview) {
-                            switch ($vview['Status']) {
+                        foreach ($result as $vview) 
+                        {
+                            switch ($vview['Status']) 
+                            {
                                 case 0: $vstatus = 'Pending';
                                     break;
                                 case 3: $vstatus = 'Fulfillment Approved';
@@ -1328,7 +1493,8 @@ if ($connected && $connected2 && $connected3) {
                                     break;
                             }
 
-                            switch ($vview['TransactionType']) {
+                            switch ($vview['TransactionType']) 
+                            {
                                 case 'D': $vtranstype = 'Deposit';
                                     break;
                                 case 'W': $vtranstype = 'Withdrawal';
@@ -1339,7 +1505,8 @@ if ($connected && $connected2 && $connected3) {
                                     break;
                             }
 
-                            switch ($vview['UserMode']) {
+                            switch ($vview['UserMode']) 
+                            {
                                 case 0: $usermode = 'Terminal Based';
                                     break;
                                 case 1: $usermode = 'User Based';
@@ -1351,18 +1518,17 @@ if ($connected && $connected2 && $connected3) {
                             }
 
                             $name = $oas->getNamebyAid($vview['CreatedByAID']);
-
                             $results2 = $oas->getsitecode($vSiteID);
                             $results2 = $results2['SiteCode'];
                             $results = preg_split("/$results2/", $vview['TerminalCode']);
-
                             $sitecode = preg_split("/ICSA-/", $vview['SiteCode']);
-
                             $responce->rows[$i]['id'] = $vview['TransactionRequestLogID'];
                             $responce->rows[$i]['cell'] = array($sitecode[1], $results[1], $vtranstype, number_format($vview['Amount'], 2), $vview['ServiceName'], $vview['TransactionDate'], $vstatus, $usermode, $name);
                             $i++;
                         }
-                    } else {
+                    } 
+                    else 
+                    {
                         $i = 0;
                         $responce->page = $page;
                         $responce->total = $total_pages;
@@ -1389,9 +1555,12 @@ if ($connected && $connected2 && $connected3) {
                 $vsummaryID = $_POST['summaryID'];
 
                 //for sorting
-                if ($_POST['sidx'] != "") {
+                if ($_POST['sidx'] != "") 
+                {
                     $sort = $_POST['sidx'];
-                } else {
+                } 
+                else 
+                {
                     $sort = "TransactionReferenceID"; //default sort name for transactiondetails
                 }
 
@@ -1399,25 +1568,33 @@ if ($connected && $connected2 && $connected3) {
 
                 $count = $rcount['ctrtdetails'];
 
-                if ($count > 0) {
+                if ($count > 0) 
+                {
                     $total_pages = ceil($count / $limit);
-                } else {
+                } 
+                else 
+                {
                     $total_pages = 0;
                 }
-                if ($page > $total_pages) {
+                
+                if ($page > $total_pages) 
+                {
                     $page = $total_pages;
                 }
                 $start = $limit * $page - $limit;
                 $limit = (int) $limit;
                 $result = $oas->gettransactiondetails($vSiteID, $vTerminalID, $vFrom, $vTo, $vsummaryID, $start, $limit, $sort, $direction);
 
-                if (count($result) > 0) {
+                if (count($result) > 0) 
+                {
                     $i = 0;
                     $responce->page = $page;
                     $responce->total = $total_pages;
                     $responce->records = $count;
-                    foreach ($result as $vview) {
-                        switch ($vview['Status']) {
+                    foreach ($result as $vview) 
+                    {
+                        switch ($vview['Status']) 
+                        {
                             case 0: $vstatus = 'Pending';
                                 break;
                             case 1: $vstatus = 'Successful';
@@ -1434,7 +1611,8 @@ if ($connected && $connected2 && $connected3) {
                                 break;
                         }
 
-                        switch ($vview['TransactionType']) {
+                        switch ($vview['TransactionType']) 
+                        {
                             case 'D': $vtranstype = 'Deposit';
                                 break;
                             case 'W': $vtranstype = 'Withdrawal';
@@ -1448,12 +1626,13 @@ if ($connected && $connected2 && $connected3) {
                         $results2 = $oas->getsitecode($vSiteID);
                         $results2 = $results2['SiteCode'];
                         $results = preg_split("/$results2/", $vview['TerminalCode']);
-
                         $responce->rows[$i]['id'] = $vview['TransactionReferenceID'];
                         $responce->rows[$i]['cell'] = array($vview['POSAccountNo'], $results[1], $vtranstype, $vview['ServiceName'], number_format($vview['Amount'], 2), $vview['DateCreated'], $vview['Name'], $vstatus);
                         $i++;
                     }
-                } else {
+                } 
+                else 
+                {
                     $i = 0;
                     $responce->page = $page;
                     $responce->total = $total_pages;
@@ -1461,12 +1640,12 @@ if ($connected && $connected2 && $connected3) {
                     $msg = "E-City Tracking: No returned result";
                     $responce->msg = $msg;
                 }
-
                 echo json_encode($responce);
                 unset($result);
                 $oas->close();
                 exit;
                 break;
+                
             //page post for transaction summary
             case 'LPTransactionSummary':
                 $vSiteID = $_POST['cmbsite'];
@@ -1476,9 +1655,12 @@ if ($connected && $connected2 && $connected3) {
                 $vFrom = $vdate1 . " " . $cutoff_time;
                 $vTo = date('Y-m-d', strtotime('+1 day', strtotime($vdate1))) . " " . $cutoff_time;
                 //for sorting
-                if ($_POST['sidx'] != "") {
+                if ($_POST['sidx'] != "") 
+                {
                     $sort = $_POST['sidx'];
-                } else {
+                } 
+                else 
+                {
                     $sort = "TransactionsSummaryID"; //default sort name for transaction summary grid
                 }
 
@@ -1486,24 +1668,32 @@ if ($connected && $connected2 && $connected3) {
 
                 $count = $rcount['ctrtsum'];
 
-                if ($count > 0) {
+                if ($count > 0) 
+                {
                     $total_pages = ceil($count / $limit);
-                } else {
+                } 
+                else 
+                {
                     $total_pages = 0;
                 }
-                if ($page > $total_pages) {
+                
+                if ($page > $total_pages) 
+                {
                     $page = $total_pages;
                 }
+                
                 $start = $limit * $page - $limit;
                 $limit = (int) $limit;
                 $result = $oas->gettransactionsummary($vSiteID, $vTerminalID, $vFrom, $vTo, $start, $limit, $sort, $direction);
 
-                if (count($result) > 0) {
+                if (count($result) > 0) 
+                {
                     $i = 0;
                     $responce->page = $page;
                     $responce->total = $total_pages;
                     $responce->records = $count;
-                    foreach ($result as $vview) {
+                    foreach ($result as $vview) 
+                    {
                         $results2 = $oas->getsitecode($vSiteID);
                         $results2 = $results2['SiteCode'];
                         $results = preg_split("/$results2/", $vview['TerminalCode']);
@@ -1511,7 +1701,9 @@ if ($connected && $connected2 && $connected3) {
                         $responce->rows[$i]['cell'] = array($vview['POSAccountNo'], $results[1], number_format($vview['Deposit'], 2), number_format($vview['Reload'], 2), number_format($vview['Withdrawal'], 2), $vview['DateStarted'], $vview['DateEnded'], $vview['Name']);
                         $i++;
                     }
-                } else {
+                } 
+                else 
+                {
                     $i = 0;
                     $responce->page = $page;
                     $responce->total = $total_pages;
@@ -1519,12 +1711,12 @@ if ($connected && $connected2 && $connected3) {
                     $msg = "E-City Tracking: No returned result";
                     $responce->msg = $msg;
                 }
-
                 echo json_encode($responce);
                 unset($result);
                 $oas->close();
                 exit;
                 break;
+                
             //page post for transaction request logs
             case 'LPTransactionLogs':
                 $vSiteID = $_POST['cmbsite'];
@@ -1536,9 +1728,12 @@ if ($connected && $connected2 && $connected3) {
                 $vsummaryID = $_POST['summaryID'];
 
                 //for sorting
-                if ($_POST['sidx'] != "") {
+                if ($_POST['sidx'] != "") 
+                {
                     $sort = $_POST['sidx'];
-                } else {
+                } 
+                else 
+                {
                     $sort = "TransactionRequestLogLPID"; //default sort name for transaction logs(E-City) grid
                 }
 
@@ -1546,12 +1741,17 @@ if ($connected && $connected2 && $connected3) {
 
                 $count = $rcount['ctrlogs'];
 
-                if ($count > 0) {
+                if ($count > 0) 
+                {
                     $total_pages = ceil($count / $limit);
-                } else {
+                } 
+                else 
+                {
                     $total_pages = 0;
                 }
-                if ($page > $total_pages) {
+                
+                if ($page > $total_pages) 
+                {
                     $page = $total_pages;
                 }
                 $start = $limit * $page - $limit;
@@ -1559,13 +1759,16 @@ if ($connected && $connected2 && $connected3) {
 
                 $result = $oas->gettranslogslp($vSiteID, $vTerminalID, $vFrom, $vTo, $vsummaryID, $start, $limit, $sort, $direction);
 
-                if (count($result) > 0) {
+                if (count($result) > 0) 
+                {
                     $i = 0;
                     $responce->page = $page;
                     $responce->total = $total_pages;
                     $responce->records = $count;
-                    foreach ($result as $vview) {
-                        switch ($vview['Status']) {
+                    foreach ($result as $vview) 
+                    {
+                        switch ($vview['Status']) 
+                        {
                             case 0: $vstatus = 'Pending';
                                 break;
                             case 1: $vstatus = 'Successful';
@@ -1580,7 +1783,8 @@ if ($connected && $connected2 && $connected3) {
                                 break;
                         }
 
-                        switch ($vview['TransactionType']) {
+                        switch ($vview['TransactionType']) 
+                        {
                             case 'D': $vtranstype = 'Deposit';
                                 break;
                             case 'W': $vtranstype = 'Withdrawal';
@@ -1601,7 +1805,9 @@ if ($connected && $connected2 && $connected3) {
                             $vview['StartDate'], $vview['EndDate'], $vstatus);
                         $i++;
                     }
-                } else {
+                } 
+                else 
+                {
                     $i = 0;
                     $responce->page = $page;
                     $responce->total = $total_pages;
@@ -1609,39 +1815,50 @@ if ($connected && $connected2 && $connected3) {
                     $msg = "E-City Tracking: No returned result";
                     $responce->msg = $msg;
                 }
-
                 echo json_encode($responce);
                 unset($result);
                 $oas->close();
                 exit;
                 break;
+                
             case 'ViewMachineInfo':
                 //for sorting
-                if ($_POST['sidx'] != "") {
+                if ($_POST['sidx'] != "") 
+                {
                     $sort = $_POST['sidx'];
-                } else {
+                } 
+                else 
+                {
                     $sort = "CashierMachineInfoId_PK"; //default sort name for transaction logs(E-City) grid
                 }
                 $vsiteID = $_POST['siteid'];
                 $rcount = $oas->countcashiermachineinfo($vsiteID);
                 $count = $rcount['ctrmachine'];
-                if ($count > 0) {
+                if ($count > 0) 
+                {
                     $total_pages = ceil($count / $limit);
-                } else {
+                } 
+                else 
+                {
                     $total_pages = 0;
                 }
-                if ($page > $total_pages) {
+                
+                if ($page > $total_pages) 
+                {
                     $page = $total_pages;
                 }
+                
                 $start = $limit * $page - $limit;
                 $limit = (int) $limit;
                 $result = $oas->getcashiermachineinfo($start, $limit, $vsiteID);
-                if (count($result) > 0) {
+                if (count($result) > 0) 
+                {
                     $i = 0;
                     $responce->page = $page;
                     $responce->total = $total_pages;
                     $responce->records = $count;
-                    foreach ($result as $vview) {
+                    foreach ($result as $vview) 
+                    {
                         $cshmacID = $vview['CashierMachineInfoId_PK'];
                         $sitecode = substr($vview['SiteCode'], strlen($terminalcode));
                         $responce->rows[$i]['id'] = $cshmacID;
@@ -1651,7 +1868,9 @@ if ($connected && $connected2 && $connected3) {
                             "<input type=\"button\" value=\"Disable\" onclick=\"window.location.href='process/ProcessAppSupport.php?cshmacid=$cshmacID'+'&disable='+'DisableTerminal';\"/>");
                         $i++;
                     }
-                } else {
+                } 
+                else 
+                {
                     $i = 0;
                     $responce->page = $page;
                     $responce->total = $total_pages;
@@ -1659,7 +1878,6 @@ if ($connected && $connected2 && $connected3) {
                     $msg = "Disabling of cashier Terminal: No returned result";
                     $responce->msg = $msg;
                 }
-
                 echo json_encode($responce);
                 unset($result);
                 $oas->close();
@@ -1668,23 +1886,28 @@ if ($connected && $connected2 && $connected3) {
         }
     }
 
-    if (isset($_GET['disable']) == "DisableTerminal") {
+    if (isset($_GET['disable']) == "DisableTerminal") 
+    {
         $vcshmacID = $_GET['cshmacid'];
         $_SESSION['cshmacid'] = $vcshmacID; //session variable to pass the account 
         $oas->close();
         header("Location: ../appdisableterminal.php");
     }
+    
     //for passkey on/off
-    if (isset($_POST['page2'])) {
+    if (isset($_POST['page2'])) 
+    {
         $vpage2 = $_POST['page2'];
-        switch ($vpage2) {
+        switch ($vpage2) 
+        {
             case 'withpasskey':
                 $cashierid = $_POST['cmbcashier'];
                 $data = $oas->checkpasskeydetails($cashierid);
                 $genpasskey = '';
                 $passkeyexpirydate = '';
 
-                if (($data['Passkey'] == NULL || $data['Passkey'] == '') && ($data['DatePasskeyExpires'] == NULL || $data['DatePasskeyExpires'] == '')) {
+                if (($data['Passkey'] == NULL || $data['Passkey'] == '') && ($data['DatePasskeyExpires'] == NULL || $data['DatePasskeyExpires'] == '')) 
+                {
                     $genpasskey = '12345678';
                     $ddate = new DateTime(date());
                     $ddate->sub(date_interval_create_from_date_string('8 hour'));
@@ -1692,22 +1915,28 @@ if ($connected && $connected2 && $connected3) {
                 }
 
                 $result = $oas->updatecashierpasskey($cashierid, $_POST['optpasskey'], $genpasskey, $passkeyexpirydate);
-                if ($result > 0) {
+                if ($result > 0) 
+                {
                     $msg = "Application Support : Passkey tag successfully updated";
                     //insert into audit trail
                     $vtransdetails = "cashier username " . $_POST['txtcashier'];
                     $vauditfuncID = 6;
                     $oas->logtoaudit($new_sessionid, $aid, $vtransdetails, $vdate, $vipaddress, $vauditfuncID); //insert in audittrail
-                } else {
+                } 
+                else 
+                {
                     $msg = "Application Support : Passkey tag unchanged";
                 }
                 $oas->close();
                 $_SESSION['mess'] = $msg;
                 header("Location: ../apppasskey.php");
                 break;
+                
             case 'ReAssignServer':
+                
                 if ((isset($_POST['chosen'])) && (isset($_POST['cmbnewservice']))
-                        && (isset($_POST['cmboldservice'])) && (isset($_POST['cmbsite'])) && isset($_POST['txtremarks'])) {
+                    && (isset($_POST['cmboldservice'])) && (isset($_POST['cmbsite'])) && isset($_POST['txtremarks'])) 
+                {
                     $vremarks = trim($_POST['txtremarks']);
                     $vsiteID = $_POST['cmbsite'];
                     $vnewserviceID = $_POST['cmbnewservice'];
@@ -1717,18 +1946,14 @@ if ($connected && $connected2 && $connected3) {
                     $vprovidername = $_POST['txtnewserver'];
                     $vaccID = $aid; // Account ID
 
-                    if ($vsiteID > 0) {
+                    if ($vsiteID > 0) 
+                    {
                         $_CasinoGamingPlayerAPI = new CasinoGamingCAPI();
                         $_CasinoGamingPlayerAPIUB = new CasinoGamingCAPIUB();
-
                         $usermode = $oas->getServiceUserMode($vnewserviceID);
-
                         $servicegroupname = $oas->getServiceGrpNameById($vnewserviceID);
-
                         $vprovidername = $servicegroupname;
-
                         $servicegroupid = $oas->getServiceGrpIDById($vnewserviceID);
-
                         $country = 'PH';
                         $casinoID = 1;
                         $fname = 'ICSA';
@@ -1754,24 +1979,27 @@ if ($connected && $connected2 && $connected3) {
                         $sex = '';
                         $fax = '';
                         $occupation = '';
-
                         $vnewserviceIDz = $vnewserviceID;
 
-                        if ($usermode == 1) {
+                        if ($usermode == 1) 
+                        {
                             $vnewserviceIDz = null;
                         }
 
                         $rterminals = $oas->getterminalacct($varrterminalcode, $vsiteID, $vsitecode, $vnewserviceIDz);
                         $isapicreated = 0;
 
-                        if (empty($rterminals[0])) {
+                        if (empty($rterminals[0])) 
+                        {
                             $rterminals = $oas->getterminalacct($varrterminalcode, $vsiteID, $vsitecode, null);
                         }
 
                         //store all necessary information in the array
                         $rbatch = array();
-                        foreach ($rterminals as $value) {
-                            foreach ($value as $row) {
+                        foreach ($rterminals as $value) 
+                        {
+                            foreach ($value as $row) 
+                            {
                                 $vnewarr = array("TerminalID" => $row['TerminalID'], "OldServiceID" => $voldserviceID,
                                     "NewServiceID" => $vnewserviceID, "Remarks" => $vremarks,
                                     "TerminalCode" => $row['TerminalCode'], "ServiceGroupID" => $row['ServiceGroupID'],
@@ -1787,10 +2015,13 @@ if ($connected && $connected2 && $connected3) {
                         $isoldsite = 0;
 
                         //check if this a existing site and Status is active and use
-                        if (isset($roldsite['GeneratedPasswordBatchID']) && $roldsite['GeneratedPasswordBatchID'] > 0) {
+                        if (isset($roldsite['GeneratedPasswordBatchID']) && $roldsite['GeneratedPasswordBatchID'] > 0) 
+                        {
                             $vgenpwdid = $roldsite['GeneratedPasswordBatchID'];
                             $isoldsite = 1;
-                        } else {
+                        } 
+                        else 
+                        {
                             $isoldsite = 0;
                             $rpwdbatch = $oas->chkpwdbatch();
                             if ($rpwdbatch)
@@ -1798,7 +2029,8 @@ if ($connected && $connected2 && $connected3) {
                         }
 
                         //checking of available plain and hashed password
-                        if ($vgenpwdid > 0) {
+                        if ($vgenpwdid > 0) 
+                        {
                             $isexists = 0;
                             $apisuccess = 0;
                             $arrsuccess = array();
@@ -1809,45 +2041,58 @@ if ($connected && $connected2 && $connected3) {
                             $siteclassid = $oas->selectsiteclassification($vsiteID);
 
                             //check if Site is for e-Bingo
-                            if ((int) $siteclassid['SiteClassificationID'] == 3) {
+                            if ((int) $siteclassid['SiteClassificationID'] == 3) 
+                            {
                                 //check if casino is e-Bingo
-                                if ((int) $usermode != 2) {
+                                if ((int) $usermode != 2) 
+                                {
                                     $servicename = $oas->viewterminalservices(0, $vnewserviceID);
                                     $errmsg = "Cannot Map " . $servicename[0]['ServiceName'] . " to an e-Bingo site";
                                     $vapiResult['IsSucceed'] == false;
                                     $nebingo = false;
-                                } else {
+                                }
+                                else 
+                                {
                                     $nebingo = true;
                                 }
-                            } else {
-                                if ((int) $usermode == 2) {
+                            } 
+                            else 
+                            {
+                                if ((int) $usermode == 2) 
+                                {
                                     $servicename = $oas->viewterminalservices(0, $vnewserviceID);
                                     $errmsg = "Cannot Map " . $servicename[0]['ServiceName'] . " to a non e-Bingo site";
                                     $vapiResult['IsSucceed'] == false;
                                     $nebingo = false;
-                                } else {
+                                } 
+                                else 
+                                {
                                     $nebingo = true;
                                 }
                             }
 
-                            if ($nebingo) {
-                                if ($usermode == 0 || $usermode == 2) {
-
-                                    foreach ($rbatch as $val) {
+                            if ($nebingo) 
+                            {
+                                if ($usermode == 0 || $usermode == 2) 
+                                {
+                                    foreach ($rbatch as $val) 
+                                    {
                                         $vterminalID = $val['TerminalID'];
                                         $login = $val['TerminalCode'];
                                         $vservicegrpid = $val['ServiceGroupID'];
                                         $vserviceID = $val['NewServiceID'];
                                         $voldpassword = $val['OldPassword'];
                                         $voldhashedpwd = $val['OldHashedPwd'];
-
                                         $lname = substr($login, strlen($terminalcode));
                                         $alias = substr($login, strlen($terminalcode));
 
                                         //check if VIP, then pass appropriate VIP parameter
-                                        if (strstr($login, "VIP") == true) {
+                                        if (strstr($login, "VIP") == true) 
+                                        {
                                             $isVIP = 1;
-                                        } else {
+                                        } 
+                                        else 
+                                        {
                                             $isVIP = 0;
                                         }
 
@@ -1855,11 +2100,11 @@ if ($connected && $connected2 && $connected3) {
                                         $vretrievepwd = $oas->getgeneratedpassword($vgenpwdid, $servicegroupid);
                                         $vgenpassword = $vretrievepwd['PlainPassword'];
                                         $vgenhashed = $vretrievepwd['EncryptedPassword'];
-
                                         $password = $vgenpassword;
 
                                         //if provider is MG, then
-                                        if (strstr($vprovidername, "MG") == true) {
+                                        if (strstr($vprovidername, "MG") == true) 
+                                        {
                                             $_MGCredentials = $_PlayerAPI[$vserviceID - 1];
                                             list($mgurl, $mgserverID) = $_MGCredentials;
                                             $url = $mgurl;
@@ -1876,35 +2121,119 @@ if ($connected && $connected2 && $connected3) {
                                             $vaccountExist = '';
 
                                             //Verify if API Call was successful
-                                            if (isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true) {
+                                            if (isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true) 
+                                            {
                                                 $vaccountExist = $vapiResult['AccountInfo']['UserExists'];
 
                                                 //check if account exists for MG Casino
-                                                if ($vaccountExist) {
+                                                if ($vaccountExist) 
+                                                {
                                                     $apisuccess = 1;
                                                     $isexists = 1;
                                                     //Call Reset Password API if MG
                                                     $vapiResult = $_CasinoGamingPlayerAPI->resetCasinoPassword($login, $password, $vserviceID, $url, $capiusername, $capipassword, $capiplayername, $capiserverID);
-                                                } else {
+                                                } 
+                                                else 
+                                                {
                                                     $isexists = 0;
                                                     //call CasinoAPI creation (RTG / MG) if account does not exist
-                                                    if ($usermode == 0) {
+                                                    if ($usermode == 0) 
+                                                    {
                                                         $vapiResult = $_CasinoGamingPlayerAPI->createTerminalAccount($vprovidername, $vserviceID, $url, $login, $password, $aid, $currency, $email, $fname, $lname, $dayphone, $evephone, $addr1, $addr2, $city, $country, $state, $zip, $userID, $birthdate, $fax, $occupation, $sex, $alias, $casinoID, $ip, $mac, $downloadID, $clientID, $putInAffPID, $calledFromCasino, $hashedPassword, $agentID, $currentPosition, $thirdPartyPID, $capiusername, $capipassword, $capiplayername, $capiserverID, $isVIP, $usermode);
-                                                        if ($vapiResult == NULL) { // proceeed if certificate does not match
+                                                        if ($vapiResult == NULL) 
+                                                        { // proceeed if certificate does not match
                                                             $vapiResult = $_CasinoGamingPlayerAPI->createTerminalAccount($vprovidername, $vserviceID, $url, $login, $password, $aid, $currency, $email, $fname, $lname, $dayphone, $evephone, $addr1, $addr2, $city, $country, $state, $zip, $userID, $birthdate, $fax, $occupation, $sex, $alias, $casinoID, $ip, $mac, $downloadID, $clientID, $putInAffPID, $calledFromCasino, $hashedPassword, $agentID, $currentPosition, $thirdPartyPID, $capiusername, $capipassword, $capiplayername, $capiserverID, $isVIP);
                                                         }
                                                     }
-                                                    if ($usermode == 2) {
+                                                    if ($usermode == 2) 
+                                                    {
                                                         $vapiResult = $_CasinoGamingPlayerAPI->createTerminalAccount($vprovidername, $vserviceID, $url, $login, $password, $aid, $currency, $email, $fname, $lname, $dayphone, $evephone, $addr1, $addr2, $city, $country, $state, $zip, $userID, $birthdate, $fax, $occupation, $sex, $alias, $casinoID, $ip, $mac, $downloadID, $clientID, $putInAffPID, $calledFromCasino, $hashedPassword, $agentID, $currentPosition, $thirdPartyPID, $capiusername, $capipassword, $capiplayername, $capiserverID, $isVIP, $usermode);
                                                     }
                                                     $vnewarr = array("TerminalCode" => $login, "Casino" => $vprovidername);
                                                     array_push($arrsucccreated, $vnewarr);
                                                 }
-                                            } else {
+                                            } 
+                                            else 
+                                            {
                                                 $errmsg = $vapiResult['ErrorMessage'];
                                                 $apisuccess = 0;
                                             }
-                                        } else {
+                                        } 
+                                        // CCT ADDED 12/21/2017 BEGIN
+                                        // Habanero
+//                                        elseif (strstr($vprovidername, "HAB") == true) 
+//                                        {
+//                                            $url = $_ServiceAPI[$vserviceID-1];                                            
+//                                            $aid = 0;
+//                                            $currency = '';
+//                                            $capiusername = $_HABbrandID;
+//                                            $capipassword = $_HABapiKey;
+//                                            $capiplayername = '';
+//                                            $capiserverID = '';
+//                                     
+//                                            $terminalID = $oas->getTerminalIDs($login);
+//                                            if ($terminalID['TerminalID'] == null)
+//                                            {
+//                                                $vapiResult['IsSucceed'] = false;
+//                                            }
+//                                            else
+//                                            {
+//                                                $terminalID = $terminalID['TerminalID'];
+//                                                $servicePassword = $oas->getServicePassword($terminalID, $vserviceID);
+//                                                $vapiResult['IsSucceed'] = true;
+//                                            }
+//                                          
+//                                            //Verify if API Call was successful
+//                                            if (isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true) 
+//                                            {
+//                                                //Call API to verify if account is already existing in Habanero
+//                                                $vapiResult = $_CasinoGamingPlayerAPI->validateHabCasinoAccount($url, $capiusername, $capipassword, $login, $password['ServicePassword']);
+//
+//                                                //Verify if API Call was successful
+//                                                if (isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true) 
+//                                                {
+//                                                    $isexists = 1;
+//                                                    $vrtgoldpwd = $servicePassword['ServicePassword'];
+//                                                    //Update Password
+//                                                    $vapiResult = $_CasinoGamingPlayerAPI->changeTerminalPassword($vprovidername, $vserviceID,
+//                                                            $url, $casinoID, $login, $vgenpassword, $vgenpassword, $capiusername, $capipassword, 
+//                                                            $capiplayername, $capiserverID, $usermode);
+//                                                }
+//                                                else 
+//                                                {
+//                                                    // Check if Password does not match, hence exists returns error
+//                                                    if ($vapiResult['Count'] == 0 && $vapiResult['ErrorCode'] == 2)
+//                                                    {
+//                                                        if (strstr($vapiResult['ErrorMessage'] , "Password does not match") == true)
+//                                                        {
+//                                                            $isexists = 1;
+//                                                            $vrtgoldpwd = $servicePassword['ServicePassword'];
+//                                                            //Update Password
+//                                                            $vapiResult = $_CasinoGamingPlayerAPI->changeTerminalPassword($vprovidername, $vserviceID,
+//                                                                    $url, $casinoID, $login, $vgenpassword, $vgenpassword, $capiusername, $capipassword, 
+//                                                                    $capiplayername, $capiserverID, $usermode);                                                    
+//                                                        }
+//                                                    } 
+//                                                    else
+//                                                    {    
+//                                                        $isexists = 0;
+//                                                    }
+//                                                }                                                
+//                                            } 
+//                                            else 
+//                                            {
+//                                                //call CasinoAPI creation in Habanero
+//                                                if ($usermode == 0) 
+//                                                {
+//                                                    $vapiResult = $_CasinoGamingPlayerAPI->createTerminalAccount($vprovidername, $vserviceID, $playerurl, $login, $password, $aid, $currency, $email, $fname, $lname, $dayphone, $evephone, $addr1, $addr2, $city, $country, $state, $zip, $userID, $birthdate, $fax, $occupation, $sex, $alias, $casinoID, $ip, $mac, $downloadID, $clientID, $putInAffPID, $calledFromCasino, $password, $agentID, $currentPosition, $thirdPartyPID, $capiusername, $capipassword, $capiplayername, $capiserverID, $isVIP, $usermode);
+//                                                }
+//                                                $vnewarr = array("TerminalCode" => $login, "Casino" => $vprovidername);
+//                                                array_push($arrsucccreated, $vnewarr);
+//                                            }
+//                                        } 
+                                        // CCT ADDED 12/21/2017 END
+                                        else 
+                                        {
                                             $cashierurl = $_ServiceAPI[$vserviceID - 1];
                                             $playerurl = $_PlayerAPI[$vserviceID - 1];
                                             $hashedpass = sha1($password);
@@ -1916,7 +2245,6 @@ if ($connected && $connected2 && $connected3) {
                                             $capiplayername = '';
                                             $capiserverID = '';
 
-
                                             //Call API to get Account Info, for RTG casino
 //                                            if ($usermode == 0) {
 //                                                $vapiResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $vserviceID, $cashierurl, '', $vprovidername, $usermode);
@@ -1927,7 +2255,7 @@ if ($connected && $connected2 && $connected3) {
 //                                            if ($usermode == 2) {
 //                                                $vapiResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $vserviceID, $cashierurl, '', $vprovidername, $usermode);
 //                                            }
-                                           $terminalID = $oas->getTerminalIDs($login);
+                                            $terminalID = $oas->getTerminalIDs($login);
                                             if ($terminalID['TerminalID'] == null)
                                             {
                                                 $vapiResult['IsSucceed'] = false;
@@ -1935,41 +2263,53 @@ if ($connected && $connected2 && $connected3) {
                                             else
                                             {
                                                 $terminalID = $terminalID['TerminalID'];
-                                            $servicePassword = $oas->getServicePassword($terminalID, $vserviceID);
-                                            $vapiResult['IsSucceed'] = true;
+                                                $servicePassword = $oas->getServicePassword($terminalID, $vserviceID);
+                                                $vapiResult['IsSucceed'] = true;
                                             }
+                                            
                                             //Verify if API Call was successful
-                                            if (isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true) {
+                                            if (isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true) 
+                                            {
                                                 //check if exists in RTG
-                                                if (isset($servicePassword['ServicePassword']) &&
-                                                        $servicePassword['ServicePassword'] <> null) {
+                                                if (isset($servicePassword['ServicePassword']) && $servicePassword['ServicePassword'] <> null) 
+                                                {
                                                     $isexists = 1;
                                                     $vrtgoldpwd = $servicePassword['ServicePassword'];
 
                                                     //Call API Change Password
-                                                    if ($usermode == 0) {
+                                                    if ($usermode == 0) 
+                                                    {
                                                         $vapiResult = $_CasinoGamingPlayerAPI->changeTerminalPassword($vprovidername, $vserviceID, $playerurl, $casinoID, $login, $vrtgoldpwd, $password, $capiusername, $capipassword, $capiplayername, $capiserverID, $usermode);
-                                                        if ($vapiResult == NULL) { // proceeed if certificate does not match
+                                                        if ($vapiResult == NULL) 
+                                                        { // proceeed if certificate does not match
                                                             $vapiResult = $_CasinoGamingPlayerAPI->changeTerminalPassword($vprovidername, $vserviceID, $playerurl, $casinoID, $login, $vrtgoldpwd, $password, $capiusername, $capipassword, $capiplayername, $capiserverID);
                                                         }
                                                     }
 
-                                                    if ($usermode == 2) {
+                                                    if ($usermode == 2) 
+                                                    {
                                                         $vapiResult = $_CasinoGamingPlayerAPI->changeTerminalPassword($vprovidername, $vserviceID, $playerurl, $casinoID, $login, $vrtgoldpwd, $password, $capiusername, $capipassword, $capiplayername, $capiserverID, $usermode);
                                                     }
-                                                } else {
+                                                } 
+                                                else 
+                                                {
                                                     $isexists = 0;
                                                 }
-                                            } else {
+                                            } 
+                                            else 
+                                            {
                                                 //call CasinoAPI creation (RTG / MG)
-                                                if ($usermode == 0) {
+                                                if ($usermode == 0) 
+                                                {
                                                     $vapiResult = $_CasinoGamingPlayerAPI->createTerminalAccount($vprovidername, $vserviceID, $playerurl, $login, $password, $aid, $currency, $email, $fname, $lname, $dayphone, $evephone, $addr1, $addr2, $city, $country, $state, $zip, $userID, $birthdate, $fax, $occupation, $sex, $alias, $casinoID, $ip, $mac, $downloadID, $clientID, $putInAffPID, $calledFromCasino, $hashedPassword, $agentID, $currentPosition, $thirdPartyPID, $capiusername, $capipassword, $capiplayername, $capiserverID, $isVIP, $usermode);
-                                                    if ($vapiResult == NULL) { // proceeed if certificate does not match
+                                                    if ($vapiResult == NULL) 
+                                                    { // proceeed if certificate does not match
                                                         $vapiResult = $_CasinoGamingPlayerAPI->createTerminalAccount($vprovidername, $vserviceID, $playerurl, $login, $password, $aid, $currency, $email, $fname, $lname, $dayphone, $evephone, $addr1, $addr2, $city, $country, $state, $zip, $userID, $birthdate, $fax, $occupation, $sex, $alias, $casinoID, $ip, $mac, $downloadID, $clientID, $putInAffPID, $calledFromCasino, $hashedPassword, $agentID, $currentPosition, $thirdPartyPID, $capiusername, $capipassword, $capiplayername, $capiserverID, $isVIP);
                                                     }
                                                 }
 
-                                                if ($usermode == 2) {
+                                                if ($usermode == 2) 
+                                                {
                                                     $vapiResult = $_CasinoGamingPlayerAPI->createTerminalAccount($vprovidername, $vserviceID, $playerurl, $login, $password, $aid, $currency, $email, $fname, $lname, $dayphone, $evephone, $addr1, $addr2, $city, $country, $state, $zip, $userID, $birthdate, $fax, $occupation, $sex, $alias, $casinoID, $ip, $mac, $downloadID, $clientID, $putInAffPID, $calledFromCasino, $hashedPassword, $agentID, $currentPosition, $thirdPartyPID, $capiusername, $capipassword, $capiplayername, $capiserverID, $isVIP, $usermode);
                                                 }
 
@@ -1979,27 +2319,31 @@ if ($connected && $connected2 && $connected3) {
                                         }
 
                                         ///Check if API Result was successfull
-                                        if (isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true) {
+                                        if (isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true) 
+                                        {
                                             $apisuccess = 1;
 
-                                            if ($usermode == 0 || $usermode == 2) {
-                                                if ($vprovidername == 'RTG2') {
-                                                    if (strstr($login, "VIP") == true) {
+                                            if ($usermode == 0 || $usermode == 2) 
+                                            {
+                                                if ($vprovidername == 'RTG2') 
+                                                {
+                                                    if (strstr($login, "VIP") == true) 
+                                                    {
                                                         $pid = $vapiResult['PID'];
                                                         $playerClassID = 2;
                                                         $_CasinoGamingPlayerAPI->ChangePlayerClassification($vprovidername, $playerurl, $pid, $playerClassID, $userID, $vserviceID);
                                                     }
                                                 }
                                             }
-
-
                                             $vnewarr = array("TerminalID" => $vterminalID, "TerminalCode" => $login,
                                                 "PlainPassword" => $vgenpassword, "HashedPassword" => $vgenhashed,
                                                 "OldPassword" => $voldpassword, "OldHashedPwd" => $voldhashedpwd,
                                                 "Casino" => $vprovidername, "OldServiceID" => $voldserviceID,
                                                 "NewServiceID" => $vnewserviceID, "Remarks" => $vremarks);
                                             array_push($arrsuccess, $vnewarr);
-                                        } else {
+                                        } 
+                                        else 
+                                        {
                                             $apisuccess = 0;
                                             $errmsg = $vapiResult['ErrorMessage'];
                                             $vnewarr = array("TerminalID" => $vterminalID, "TerminalCode" => $login,
@@ -2010,9 +2354,11 @@ if ($connected && $connected2 && $connected3) {
                                             array_push($arrerror, $vnewarr);
                                         }
                                     }
-                                } else {
-
-                                    foreach ($rbatch as $val) {
+                                } 
+                                else 
+                                {
+                                    foreach ($rbatch as $val) 
+                                    {
                                         $vterminalID = $val['TerminalID'];
                                         $login = $val['TerminalCode'];
                                         $vservicegrpid = $val['ServiceGroupID'];
@@ -2029,19 +2375,19 @@ if ($connected && $connected2 && $connected3) {
                                             "NewServiceID" => $vnewserviceID, "Remarks" => $vremarks);
                                         array_push($arrsuccess, $vnewarr);
                                     }
-
-
-
                                     $vapiResult = array('IsSucceed' => true);
                                     $isoldsite = 0;
                                 }
                             }
 
                             //Verify if casino API was successfull, then insert plain and hashed password to Kronus DB
-                            if (isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true) {
+                            if (isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true) 
+                            {
                                 $rresult = $oas->reassignbatchserver($arrsuccess);
-                                if ($rresult > 0) {
-                                    if ($isoldsite == 0) {
+                                if ($rresult > 0) 
+                                {
+                                    if ($isoldsite == 0) 
+                                    {
                                         $updbatchpwd = $oas->updateGenPwdBatch($vsiteID, $vgenpwdid, 0);
                                         if (!$updbatchpwd)
                                             $msg = "Re-Assign Server:  Records unchanged in generatedpasswordbatch";
@@ -2056,14 +2402,17 @@ if ($connected && $connected2 && $connected3) {
                                     $oas->logtoaudit($new_sessionid, $vaccID, $vtransdetails, $vdate, $vipaddress, $vauditfuncID);
 
                                     //Log the created terminals in Casino's
-                                    if (count($arrsucccreated) > 0) {
+                                    if (count($arrsucccreated) > 0) 
+                                    {
                                         $logdir = __DIR__ . "/../sys/log/CreatedTerminals";
                                         $logfile = $logdir . "/CreatedTerminals_" . $vdate . ".log";
                                         //$writelogs = $oas->logTerminalsCreated($arrsucccreated, $logfile);
                                     }
-                                } else
+                                } 
+                                else
                                     $msg = "Re-Assign Server: error in re-assigning terminal/s";
-                            } else
+                            } 
+                            else
                                 $msg = "Re-Assign Server: API Error=" . $errmsg;
                         }
                         else
@@ -2078,23 +2427,25 @@ if ($connected && $connected2 && $connected3) {
                 $oas->close();
                 header("Location: appswitchserver.php?mess=" . $msg);
                 break;
+                
             case 'RemoveServer':
-                if (isset($_POST['cmbterminal']) && (isset($_POST['cmbnewservice'])) && (isset($_POST['txtremarks']))) {
+                if (isset($_POST['cmbterminal']) && (isset($_POST['cmbnewservice'])) && (isset($_POST['txtremarks']))) 
+                {
                     $vsiteID = $_POST['cmbsite'];
                     $vserviceID = $_POST['cmbnewservice'];
                     $varrterminalcode = array($_POST['txtterminalcode']);
                     $vremarks = trim($_POST['txtremarks']);
-
                     $rsitecode = $oas->getsitecode($vsiteID); //get the sitecode first
                     $vsitecode = $rsitecode['SiteCode'];
-
                     //get terminalID for regular and vip terminal
                     $rterminals = $oas->getterminalID($varrterminalcode, $vsiteID, $vsitecode);
 
                     //store terminalID in the array
                     $arrterminalID = array();
-                    foreach ($rterminals as $value) {
-                        foreach ($value as $row) {
+                    foreach ($rterminals as $value) 
+                    {
+                        foreach ($value as $row) 
+                        {
                             $vterminalID = $row['TerminalID'];
                             $vnewarr = array($vterminalID);
                             array_push($arrterminalID, $vnewarr);
@@ -2103,11 +2454,14 @@ if ($connected && $connected2 && $connected3) {
 
                     //Checking if terminal has session
                     $hassession = $oas->chkTerminalSession($arrterminalID);
-                    if (isset($hassession['ctrsession'])) {
+                    if (isset($hassession['ctrsession'])) 
+                    {
                         $ctrsession = $hassession['ctrsession'];
-                        if ($ctrsession == 0) {
+                        if ($ctrsession == 0) 
+                        {
                             $rresult = $oas->removeservice($arrterminalID, $vserviceID, $vremarks);
-                            if ($rresult > 0) {
+                            if ($rresult > 0) 
+                            {
                                 $msg = "Removing of casino: Casino Server successfully removed";
                                 //insert into audit trail
                                 $arrtermcode = implode(",", $varrterminalcode);
@@ -2122,56 +2476,63 @@ if ($connected && $connected2 && $connected3) {
                         else
                             $msg = "Removing of casino: This terminal has an existing session";
                     }
-
                     unset($arrterminalID, $hassession, $vtransdetails);
                 }
-                else {
+                else 
+                {
                     $msg = "Removing of casino: Invalid Field";
                 }
                 $_SESSION['mess'] = $msg;
                 $oas->close();
                 header("Location: ../appremoveserver.php");
                 break;
+                
             //get the terminal by server (appswitchserver.php)
             case 'GetTerminals':
                 $vsiteID = $_POST['SiteID'];
                 $vserviceID = $_POST['ServiceID'];
                 $rsitecode = $oas->getsitecode($vsiteID); //get the sitecode first
                 $vresults = $oas->getterminalbyserverID($vsiteID, $vserviceID);
-                if (count($vresults) > 0) {
+                if (count($vresults) > 0) 
+                {
                     $terminals = array();
-                    foreach ($vresults as $row) {
+                    foreach ($vresults as $row) 
+                    {
                         $rterminalID = $row['TerminalID'];
                         $rterminalCode = $row['TerminalCode'];
                         $sitecode = $terminalcode;
                         //remove the "icsa-[SiteCode]"
                         $rterminalCode = substr($row['TerminalCode'], strlen($rsitecode['SiteCode']));
-
                         //create a new array to populate the combobox
                         $newvalue = array("TerminalID" => $rterminalID, "TerminalCode" => $rterminalCode);
                         array_push($terminals, $newvalue);
                     }
                     echo json_encode($terminals);
                     unset($terminals);
-                } else {
+                } 
+                else 
+                {
                     echo "No Terminal assigned to this provider";
                 }
                 $oas->close();
                 exit;
                 break;
+                
             //POST history details upon click of service history ID on the Transaction LOGs(Ecity) grid
             case 'GetTransferHistory':
                 $vshistoryID = $_POST['shistory'];
                 $rhistory = $oas->gethistorydetails($vshistoryID);
                 $vhistarr = array();
-                foreach ($rhistory as $row) {
+                foreach ($rhistory as $row) 
+                {
                     $vservicehistid = $row['ServiceTransferHistoryID'];
                     $vthtermid = $row["TerminalID"];
                     $vthamount = $row["Amount"];
                     $vthfromcasino = $row["FromServiceID"];
                     $vthtocasino = $row["ToServiceID"];
                     $vthstat = $row ["Status"];
-                    switch ($vthstat) {
+                    switch ($vthstat) 
+                    {
                         case 0: $vnewstat = 'Failed';
                             break;
                         case 1: $vnewstat = 'Successful';
@@ -2185,6 +2546,7 @@ if ($connected && $connected2 && $connected3) {
                 $oas->close();
                 exit;
                 break;
+            
             //POST providers / service upon loading of page (E-city transaction logs)
             case 'GetProviders':
                 $rproviders = $oas->getallservices("ServiceName");
@@ -2192,6 +2554,7 @@ if ($connected && $connected2 && $connected3) {
                 $oas->close();
                 exit;
                 break;
+            
             //Get log files upon loading of page
 //            case 'GetLogFile':
 //                $vrealfolder = $oas->getlogspath($cashierlogpath);
@@ -2221,61 +2584,70 @@ if ($connected && $connected2 && $connected3) {
 //                $oas->close();
 //                exit;
 //            break;
+            
             case 'GetLogFile':
-
                 $system = $_POST['system'];
                 $vfiles = array();
                 $vrealfolder = $oas->getlogspath($LogPaths[$_POST['system']][$_POST['link']]);
 
-                if (file_exists($vrealfolder)) {
+                if (file_exists($vrealfolder)) 
+                {
                     $listfiles = scandir($vrealfolder);
-                    foreach ($listfiles as $file) {
-
+                    foreach ($listfiles as $file) 
+                    {
                         //hides (.), (..), (index), and temporary files upon viewing
                         if (($file != '..') && ($file != '.') && (strstr($file, "index") == false) &&
-                                (strstr($file, "tmp") == false) && (strstr($file, "dev_application") == false)) {
+                            (strstr($file, "tmp") == false) && (strstr($file, "dev_application") == false)) 
+                        {
                             $newarr = array(substr($file, 0, strrpos($file, ".")));
                             array_push($vfiles, $newarr);
                         }
                     }
                     unset($listfiles);
-                } else {
+                } 
+                else 
+                {
                     $headers = @get_headers($vrealfolder, 1);
 
-                    if (strpos($headers[0], '200') != false) {
+                    if (strpos($headers[0], '200') != false) 
+                    {
                         $matches = array();
                         preg_match_all("/(a href\=\")([^\?\"]*.log)(\")/i", getListFromServer($vrealfolder), $matches);
                         $vfiles = array();
-                        foreach ($matches[2] as $file) {
-
+                        foreach ($matches[2] as $file) 
+                        {
                             $newarr = array(substr($file, 0, strrpos($file, ".")));
                             array_push($vfiles, $newarr);
                         }
-                    } else {
+                    } 
+                    else 
+                    {
                         echo "The logs directory does not exist";
                         exit;
                     }
                 }
-
                 arsort($vfiles); //arrange files by ascending
                 echo json_encode($vfiles);
                 unset($vfiles);
                 $oas->close();
                 exit;
-
                 break;
 
             //Get Launch Pad log files upon loading of page
             case 'GetLaunchPadLogFile':
                 $vrealfolder = $oas->getlogspath($launchPadLogPath);
-                if (is_dir($vrealfolder)) {
+                if (is_dir($vrealfolder)) 
+                {
                     $listfiles = scandir($vrealfolder);
                     $vfiles = array();
-                    foreach ($listfiles as $file) {
+                    foreach ($listfiles as $file) 
+                    {
                         //hides (.), (..), (index), and temporary files upon viewing
                         if (($file != '..') && ($file != '.') && (strstr($file, "index") == false) &&
-                                (strstr($file, "tmp") == false) && (strstr($file, "dev_application") == false)) {
-                            if (!preg_match("/gii-1.1/", $file)) { //Added on July 3, 2012 To remove gii-1.1 folder from list
+                            (strstr($file, "tmp") == false) && (strstr($file, "dev_application") == false)) 
+                        {
+                            if (!preg_match("/gii-1.1/", $file)) 
+                            { //Added on July 3, 2012 To remove gii-1.1 folder from list
                                 $newarr = array(substr($file, 0, strrpos($file, ".")));
                                 array_push($vfiles, $newarr);
                             }
@@ -2285,22 +2657,28 @@ if ($connected && $connected2 && $connected3) {
                     echo json_encode($vfiles);
                     unset($vfiles);
                     unset($listfiles);
-                } else {
+                } 
+                else 
+                {
                     echo "The logs directory does not exist";
                 }
                 $oas->close();
                 exit;
                 break;
+                
             //Get log files upon loading of page
             case 'GetAdminLogFile':
                 $vrealfolder = $oas->getadminlogspath($adminlogpath);
-                if (is_dir($vrealfolder)) {
+                if (is_dir($vrealfolder)) 
+                {
                     $listfiles = scandir($vrealfolder);
                     $vfiles = array();
-                    foreach ($listfiles as $file) {
+                    foreach ($listfiles as $file) 
+                    {
                         //hides (.), (..), (index), and temporary files upon viewing
                         if (($file != '..') && ($file != '.') && (strstr($file, "index") == false) &&
-                                (strstr($file, "tmp") == false) && (strstr($file, "dev_application") == false)) {
+                            (strstr($file, "tmp") == false) && (strstr($file, "dev_application") == false)) 
+                        {
                             $newarr = array(substr($file, 0, strrpos($file, ".")));
                             array_push($vfiles, $newarr);
                         }
@@ -2309,12 +2687,15 @@ if ($connected && $connected2 && $connected3) {
                     echo json_encode($vfiles);
                     unset($vfiles);
                     unset($listfiles);
-                } else {
+                } 
+                else 
+                {
                     echo "The logs directory does not exist";
                 }
                 $oas->close();
                 exit;
                 break;
+                
             //show log's content upon clicking of file
 //            case 'ShowLogContent':
 //                $vrealfolder = $oas->getlogspath($cashierlogpath);
@@ -2363,8 +2744,8 @@ if ($connected && $connected2 && $connected3) {
 //                } 
 //                exit;
 //            break;
+                
             case 'ShowLogContent':
-
                 $system = $_POST['system'];
                 $vrealfolder = $oas->getlogspath($LogPaths[$_POST['system']][$_POST['link']]);
                 $vfile = $_POST['logfile'];
@@ -2372,11 +2753,9 @@ if ($connected && $connected2 && $connected3) {
                 $vfullpath = $vrealfolder . $vfile . ".log";
                 $vdatenow = date("Y-m-d");
 
-
                 //check first if file exists
-
-                if (file_exists($vfullpath)) {
-
+                if (file_exists($vfullpath)) 
+                {
 //                        $datemodified = date("Y-m-d", filemtime($vfullpath));
 ////                       $datemodified = '1970-01-01'; //get file modification/creation date
 //                       //check if date today is the same with date modification of file, then create temp file
@@ -2401,17 +2780,22 @@ if ($connected && $connected2 && $connected3) {
 //                            else{
                     $rcontent = $oas->getfilecontents($vfullpath);
                     //}          
-                    if ($rcontent != "") {
+                    if ($rcontent != "") 
+                    {
                         echo json_encode($rcontent);
-                    } else {
+                    } 
+                    else 
+                    {
                         $errmsg = "Log file does not exists";
                         print $errmsg;
                     }
-                } else {
-
+                } 
+                else 
+                {
                     $headers = @get_headers($vfullpath, 1);
 
-                    if (strpos($headers[0], '200') != false) {
+                    if (strpos($headers[0], '200') != false) 
+                    {
 //                        $dm = strtotime($headers['Last-Modified']);  //get file modification/creation date
 //                        $datemodified = date("Y-m-d",$dm);
                         //check if date today is the same with date modification of file, then create temp file
@@ -2433,26 +2817,27 @@ if ($connected && $connected2 && $connected3) {
 //                        }
 //                        else
 //                        {
+                    $rcontent = $oas->getfilecontents($vfullpath);
 
-                        $rcontent = $oas->getfilecontents($vfullpath);
-
-                        //}
-
-                        if ($rcontent != "") {
-                            echo json_encode($rcontent);
-                        } else {
-
-                            $errmsg = "Log file does not exists";
-                            print $errmsg;
-                        }
-                    } else {
+                    if ($rcontent != "") 
+                    {
+                        echo json_encode($rcontent);
+                    } 
+                    else 
+                    {
                         $errmsg = "Log file does not exists";
                         print $errmsg;
                     }
+                } 
+                else 
+                {
+                    $errmsg = "Log file does not exists";
+                    print $errmsg;
                 }
-
-                exit;
-                break;
+            }
+            exit;
+            break;
+             
             //show Launch Pad log's content upon clicking of file
             case 'ShowLaunchPadLogContent':
                 $vrealfolder = $oas->getlogspath($launchPadLogPath);
@@ -2460,70 +2845,95 @@ if ($connected && $connected2 && $connected3) {
                 $vfullpath = $vrealfolder . $vfile . ".log";
                 $vdatenow = date("Y-m-d");
                 //check first if file exists
-                if (file_exists($vfullpath)) {
-                    //then check if file is not empty
-                    if (filesize($vfullpath) > 0) {
+                if (file_exists($vfullpath)) 
+                {  //then check if file is not empty
+                    if (filesize($vfullpath) > 0) 
+                    {
                         $datemodified = date("Y-m-d", filemtime($vfullpath)); //get file modification/creation date
                         //check if date today is the same with date modification of file, then create temp file
-                        if ($vdatenow == $datemodified) {
+                        if ($vdatenow == $datemodified) 
+                        {
                             $tmpfile = $vrealfolder . "tmp" . $vdatenow . ".log";
                             //validate if temp file was exists
-                            if (file_exists($tmpfile) == true) {
+                            if (file_exists($tmpfile) == true) 
+                            {
                                 unlink($tmpfile); //removes the temp file if exists
                                 file_put_contents($tmpfile, file_get_contents($vfullpath), FILE_APPEND | LOCK_EX); //re-create the temp file
                                 $rcontent = $oas->getfilecontents($tmpfile);
-                            } else {
+                            } 
+                            else 
+                            {
                                 file_put_contents($tmpfile, file_get_contents($vfullpath), FILE_APPEND | LOCK_EX); //create the temp file
                                 $rcontent = $oas->getfilecontents($tmpfile); //get contents
                             }
-                        } else {
+                        } 
+                        else 
+                        {
                             $rcontent = $oas->getfilecontents($vfullpath);
                         }
-                    } else {
+                    } 
+                    else 
+                    {
                         $rcontent = "";
                     }
                     echo json_encode($rcontent);
-                } else {
+                } 
+                else 
+                {
                     $errmsg->error = "Log file does not exists";
                     echo json_encode($errmsg);
                 }
                 exit;
                 break;
+                
             case 'ShowAdminLogContent':
                 $vrealfolder = $oas->getadminlogspath($adminlogpath);
                 $vfile = $_POST['logfile'];
                 $vfullpath = $vrealfolder . $vfile . ".log";
                 $vdatenow = date("Y-m-d");
                 //check first if file exists
-                if (file_exists($vfullpath)) {
+                if (file_exists($vfullpath)) 
+                {
                     //then check if file is not empty
-                    if (filesize($vfullpath) > 0) {
+                    if (filesize($vfullpath) > 0) 
+                    {
                         $datemodified = date("Y-m-d", filemtime($vfullpath)); //get file modification/creation date
                         //check if date today is the same with date modification of file, then create temp file
-                        if ($vdatenow == $datemodified) {
+                        if ($vdatenow == $datemodified) 
+                        {
                             $tmpfile = $vrealfolder . "tmp" . $vdatenow . ".log";
                             //validate if temp file was exists
-                            if (file_exists($tmpfile) == true) {
+                            if (file_exists($tmpfile) == true) 
+                            {
                                 unlink($tmpfile); //removes the temp file if exists
                                 file_put_contents($tmpfile, file_get_contents($vfullpath), FILE_APPEND | LOCK_EX); //re-create the temp file
                                 $rcontent = $oas->getfilecontents($tmpfile);
-                            } else {
+                            } 
+                            else 
+                            {
                                 file_put_contents($tmpfile, file_get_contents($vfullpath), FILE_APPEND | LOCK_EX); //create the temp file
                                 $rcontent = $oas->getfilecontents($tmpfile); //get contents
                             }
-                        } else {
+                        } 
+                        else 
+                        {
                             $rcontent = $oas->getfilecontents($vfullpath);
                         }
-                    } else {
+                    } 
+                    else 
+                    {
                         $rcontent = "";
                     }
                     echo json_encode($rcontent);
-                } else {
+                } 
+                else 
+                {
                     $errmsg->error = "Log file does not exists";
                     echo json_encode($errmsg);
                 }
                 exit;
                 break;
+                
             //Get log's content by modification date (onselect of datepicker)
             case 'GetContentByModDate':
                 $vrealfolder = $oas->getlogspath($cashierlogpath);
@@ -2533,39 +2943,55 @@ if ($connected && $connected2 && $connected3) {
                 $vdatenow = date("Y-m-d");
                 $rcontent = "";
                 //loop throughout the directory
-                foreach ($listfiles as $file) {
+                foreach ($listfiles as $file) 
+                {
                     //hides (.), (..), (.svn), and temporary files upon viewing
-                    if (($file != '..') && ($file != '.') && (strstr($file, "index") == false) && (strstr($file, "tmp") == false)) {
+                    if (($file != '..') && ($file != '.') && (strstr($file, "index") == false) && (strstr($file, "tmp") == false)) 
+                    {
                         $datemodified = date("Y-m-d", filemtime($vrealfolder . $file)); //get modification date of each file
                         //is date today the same with date selected
-                        if ($vdate == $vdatenow) {
+                        if ($vdate == $vdatenow) 
+                        {
                             //is date selected the same with date modification of a certain file
-                            if ($vdate == $datemodified) {
+                            if ($vdate == $datemodified) 
+                            {
                                 $vfullpath = $vrealfolder . $file; //store the file into a variable
                                 //check if the file is empty
-                                if (filesize($vfullpath) > 0) {
+                                if (filesize($vfullpath) > 0) 
+                                {
                                     $tmpfile = $vrealfolder . "tmp" . $vdatenow . ".log";
                                     //validate if temp file was exists
-                                    if (file_exists($tmpfile) == true) {
+                                    if (file_exists($tmpfile) == true) 
+                                    {
                                         unlink($tmpfile); //removes the temp file if exists
                                         file_put_contents($tmpfile, file_get_contents($vfullpath), FILE_APPEND | LOCK_EX); //re-create the temp file
                                         $rcontent = $oas->getfilecontents($tmpfile);
-                                    } else {
+                                    } 
+                                    else 
+                                    {
                                         file_put_contents($tmpfile, file_get_contents($vfullpath), FILE_APPEND | LOCK_EX); //create the temp file
                                         $rcontent = $oas->getfilecontents($tmpfile); //get contents
                                     }
-                                } else {
+                                } 
+                                else 
+                                {
                                     $rcontent = "";
                                 }
                             }
-                        } else {
+                        } 
+                        else 
+                        {
                             //check if date selected same with the modification date of a file
-                            if ($vdate == $datemodified) {
+                            if ($vdate == $datemodified) 
+                            {
                                 $vfullpath = $vrealfolder . $file; //store to a variable
                                 //check if file is empty
-                                if (filesize($vfullpath) > 0) {
+                                if (filesize($vfullpath) > 0) 
+                                {
                                     $rcontent = $oas->getfilecontents($vfullpath);
-                                } else {
+                                } 
+                                else 
+                                {
                                     $rcontent = "";
                                 }
                             }
@@ -2575,6 +3001,7 @@ if ($connected && $connected2 && $connected3) {
                 echo json_encode($rcontent);
                 exit;
                 break;
+                
             //get the number of cashier machine count per site
             case 'CashierMachineCount':
                 $vsiteID = $_POST['siteid'];
@@ -2582,8 +3009,10 @@ if ($connected && $connected2 && $connected3) {
                 echo json_encode($vcashiercount);
                 exit;
                 break;
+            
             case 'AddCashierMachine':
-                if (isset($_POST['cmbsite']) && (isset($_POST['txtaddcashier']))) {
+                if (isset($_POST['cmbsite']) && (isset($_POST['txtaddcashier']))) 
+                {
                     $vsiteID = $_POST['cmbsite'];
                     $vsitecode = $_POST['txtsitecode'];
                     $vtotalcount = (int) $_POST['txtcurrent'];
@@ -2591,68 +3020,93 @@ if ($connected && $connected2 && $connected3) {
                     $vaddcashier = $vtotalcount + (int) $vaddcount;
                     $vaid = $aid;
 
-                    if ($vaddcount == "--" || $vaddcount == "-" || $vaddcount == "---") {
+                    if ($vaddcount == "--" || $vaddcount == "-" || $vaddcount == "---") 
+                    {
                         $msg = "Invalid cashier count";
-                    } else if ($vaddcashier < 0) {
+                    } 
+                    else if ($vaddcashier < 0) 
+                    {
                         $msg = "Value for decreasing the number of cashier must not be greater than the current number of cashiers";
-                    } else if ($vaddcashier > 127) {
+                    } 
+                    else if ($vaddcashier > 127) 
+                    {
                         $msg = "Number of cashiers in a site must not be greater than 127";
-                    } else {
-                        if ($vtotalcount == $vaddcashier) {
+                    } 
+                    else 
+                    {
+                        if ($vtotalcount == $vaddcashier) 
+                        {
                             $msg = "Cashier count unchanged";
                         }
                         //validate if no record of cashier machine count; then insert records
-                        else if ($vtotalcount >= 0) {
+                        else if ($vtotalcount >= 0) 
+                        {
                             $rcashierterminal = $oas->updatecashiercount($vaddcashier, $vsiteID, $vaid);
-                            if ($rcashierterminal >= 0) {
+                            if ($rcashierterminal >= 0) 
+                            {
                                 $msg = "AddCashierMachine: Success on updating the cashier terminal count";
                                 $vtransdetails = "Site Code " . $vsitecode . " ;cashier terminal added = " . $vaddcount . " ;Previous number of cashier = " . $vtotalcount;
                                 $vauditfuncID = 56;
                                 $oas->logtoaudit($new_sessionid, $aid, $vtransdetails, $vdate, $vipaddress, $vauditfuncID);
-                            } else {
+                            } 
+                            else 
+                            {
                                 $msg = "AddCashierMachine: Error on updating the cashier terminal count";
                             }
-                        } else {
+                        } 
+                        else 
+                        {
                             $vcashiercount = $oas->insertmachinecount($vsiteID, $vaid);
-                            if ($vcashiercount > 0) {
+                            if ($vcashiercount > 0) 
+                            {
                                 $msg = "AddCashierMachine: Success on updating the cashier terminal count";
                                 $vtransdetails = "Site Code " . $vsitecode . " ;cashier terminal added = " . $vaddcount . " ;Previous number of cashier = " . $vtotalcount;
                                 $vauditfuncID = 56;
                                 $oas->logtoaudit($new_sessionid, $aid, $vtransdetails, $vdate, $vipaddress, $vauditfuncID);
-                            } else {
+                            } 
+                            else 
+                            {
                                 $msg = "AddCashierMachine: Error on updating the cashier terminal count";
                             }
                         }
                     }
-                } else {
+                } 
+                else 
+                {
                     $msg = "AddCashierMachine: Invalid Fields";
                 }
                 $_SESSION['mess'] = $msg;
                 $oas->close();
                 header("Location: ../appadjustterminal.php");
                 break;
+                
             case 'RTGServers':
                 $rservice = array();
                 $rservice = $oas->getallservices("ServiceName");
                 $rservices = array();
                 $vservicename = $_POST['servicename'];
                 //verify if RTG Server
-                if (strstr($vservicename, "RTG")) {
+                if (strstr($vservicename, "RTG")) 
+                {
                     $key = "RTG";
                 }
                 //verify if MG Server
-                if (strstr($vservicename, "MG")) {
+                if (strstr($vservicename, "MG")) 
+                {
                     $key = "MG";
                 }
                 //verify if Playtech 
-                if (strstr($vservicename, "PT")) {
+                if (strstr($vservicename, "PT")) 
+                {
                     $key = "PT";
                 }
-                foreach ($rservice as $row) {
+                foreach ($rservice as $row) 
+                {
                     $rserverID = $row['ServiceID'];
                     $rservername = $row['ServiceName'];
 
-                    if (strstr($rservername, $key)) {
+                    if (strstr($rservername, $key)) 
+                    {
                         $newarr = array('ServiceID' => $rserverID, 'ServiceName' => $rservername);
                         array_push($rservices, $newarr);
                     }
@@ -2663,20 +3117,26 @@ if ($connected && $connected2 && $connected3) {
                 unset($rservices);
                 unset($rservice);
                 break;
+                
             case 'DisableTerminal':
-                if (isset($_POST['txtremarks'])) {
-                    if (strlen($_POST['txtremarks']) > 0) {
+                if (isset($_POST['txtremarks'])) 
+                {
+                    if (strlen($_POST['txtremarks']) > 0) 
+                    {
                         $vremarks = $_POST['txtremarks'];
                         $vcshmacID = $_POST['txtmacid'];
                         $isdisabled = $oas->disableterminal($vcshmacID, $vremarks);
                         //check if terminal was alreay disable or not
-                        if ($isdisabled > 0) {
+                        if ($isdisabled > 0) 
+                        {
                             $msg = "Cashier Terminal was successfully disabled.";
                             //audit trail
                             $vtransdetails = "CashierMacID " . $vcshmacID;
                             $vauditfuncID = 43;
                             $oas->logtoaudit($new_sessionid, $aid, $vtransdetails, $vdate, $vipaddress, $vauditfuncID);
-                        } else {
+                        } 
+                        else 
+                        {
                             $msg = "Terminal was already disabled";
                         }
                     }
@@ -2685,8 +3145,10 @@ if ($connected && $connected2 && $connected3) {
                 $oas->close();
                 header("Location: ../appdisableterminal.php");
                 break;
+                
             case 'ChangeTerminalPassword':
-                if ((isset($_POST['cmbsite']) && isset($_POST['optpwd'])) || isset($_SESSION['createterminals'])) {
+                if ((isset($_POST['cmbsite']) && isset($_POST['optpwd'])) || isset($_SESSION['createterminals'])) 
+                {
                     $varrterminalcode = '';
                     $lpdeployment = '';
                     if (isset($_POST['chosen']))
@@ -2697,7 +3159,8 @@ if ($connected && $connected2 && $connected3) {
                     $vsiteID = $_POST['cmbsite'];
                     $vsitecode = $_POST['txtsitecode'];
 
-                    if ($vsiteID > 0 || isset($_SESSION['createterminals'])) {
+                    if ($vsiteID > 0 || isset($_SESSION['createterminals'])) 
+                    {
                         $_CasinoGamingPlayerAPI = new CasinoGamingCAPI();
                         $_CasinoGamingPlayerAPIUB = new CasinoGamingCAPIUB();
 
@@ -2727,10 +3190,13 @@ if ($connected && $connected2 && $connected3) {
                         $fax = '';
                         $occupation = '';
 
-                        if (!isset($_SESSION['createterminals'])) {
+                        if (!isset($_SESSION['createterminals'])) 
+                        {
                             $rterminals = $oas->getterminalacct($varrterminalcode, $vsiteID, $vsitecode);
                             $isapicreated = 0;
-                        } else {
+                        } 
+                        else 
+                        {
                             $rterminals = $_SESSION['createterminals'];
                             $vsiteID = $_SESSION['siteid'];
                             $lpdeployment = $_SESSION['lpdeployment'];
@@ -2739,8 +3205,10 @@ if ($connected && $connected2 && $connected3) {
 
                         //store all necessary information in the array
                         $rbatch = array();
-                        foreach ($rterminals as $value) {
-                            foreach ($value as $row) {
+                        foreach ($rterminals as $value) 
+                        {
+                            foreach ($value as $row) 
+                            {
                                 $vnewarr = array("TerminalID" => $row['TerminalID'], "ServiceID" => $row['ServiceID'],
                                     "TerminalCode" => $row['TerminalCode'], "ServiceName" => $row['ServiceName'],
                                     "ServiceGroupID" => $row['ServiceGroupID'], 'OldPassword' => $row['ServicePassword'],
@@ -2750,24 +3218,28 @@ if ($connected && $connected2 && $connected3) {
                         }
 
                         $roldsite = $oas->chkoldsite($vsiteID);
-
                         $vgenpwdid = 0;
                         $isoldsite = 0;
 
                         //check if selected option is for lp deployment
-                        if ($lpdeployment > 0) {
+                        if ($lpdeployment > 0) 
+                        {
                             //check if this a existing site and Status is active and use
-                            if (isset($roldsite['GeneratedPasswordBatchID']) && $roldsite['GeneratedPasswordBatchID'] > 0) {
+                            if (isset($roldsite['GeneratedPasswordBatchID']) && $roldsite['GeneratedPasswordBatchID'] > 0) 
+                            {
                                 $vgenpwdid = $roldsite['GeneratedPasswordBatchID'];
                                 $isoldsite = 1;
-                            } else {
+                            }
+                            else 
+                            {
                                 $isoldsite = 0;
                                 $rpwdbatch = $oas->chkpwdbatch();
                                 if ($rpwdbatch)
                                     $vgenpwdid = $rpwdbatch['GeneratedPasswordBatchID'];
                             }
                         }
-                        else {
+                        else 
+                        {
                             $isoldsite = 0;
                             $rpwdbatch = $oas->chkpwdbatch();
                             if ($rpwdbatch)
@@ -2775,14 +3247,16 @@ if ($connected && $connected2 && $connected3) {
                         }
 
                         //checking of available plain and hashed password
-                        if ($vgenpwdid > 0) {
+                        if ($vgenpwdid > 0) 
+                        {
                             $isexists = 0;
                             $apisuccess = 0;
                             $arrsuccess = array();
                             $arrerror = array();
                             $arrsucccreated = array();
                             $errmsg = '';
-                            foreach ($rbatch as $val) {
+                            foreach ($rbatch as $val) 
+                            {
                                 $vterminalID = $val['TerminalID'];
                                 $login = $val['TerminalCode'];
                                 $vservicegrpid = $val['ServiceGroupID'];
@@ -2790,25 +3264,20 @@ if ($connected && $connected2 && $connected3) {
                                 $vprovidername = $val['ServiceName'];
                                 $voldpassword = $val['OldPassword'];
                                 $voldhashedpwd = $val['OldHashedPwd'];
-
                                 $servicegroupname = $oas->getServiceGrpNameById($vserviceID);
-
                                 $vprovidername = $servicegroupname;
-
                                 $lname = substr($login, strlen($terminalcode));
                                 $alias = substr($login, strlen($terminalcode));
-
                                 $usermode = $oas->getServiceUserMode($vserviceID);
-
                                 //get plain and encrypted password
                                 $vretrievepwd = $oas->getgeneratedpassword($vgenpwdid, $vservicegrpid);
                                 $vgenpassword = $vretrievepwd['PlainPassword'];
                                 $vgenhashed = $vretrievepwd['EncryptedPassword'];
-
                                 $password = $vgenpassword;
 
                                 //if provider is MG, then
-                                if (strstr($vprovidername, "MG") == true) {
+                                if (strstr($vprovidername, "MG") == true) 
+                                {
                                     $_MGCredentials = $_PlayerAPI[$vserviceID - 1];
                                     list($mgurl, $mgserverID) = $_MGCredentials;
                                     $url = $mgurl;
@@ -2825,38 +3294,138 @@ if ($connected && $connected2 && $connected3) {
                                     $vaccountExist = '';
 
                                     //Verify if API Call was successful
-                                    if (isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true) {
+                                    if (isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true) 
+                                    {
                                         $vaccountExist = $vapiResult['AccountInfo']['UserExists'];
-
                                         //check if account exists for MG Casino
-                                        if ($vaccountExist) {
+                                        if ($vaccountExist) 
+                                        {
                                             $apisuccess = 1;
                                             $isexists = 1;
                                             //Call Reset Password API if MG
                                             $vapiResult = $_CasinoGamingPlayerAPI->resetCasinoPassword($login, $password, $vserviceID, $url, $capiusername, $capipassword, $capiplayername, $capiserverID);
-                                        } else {
+                                        } 
+                                        else 
+                                        {
                                             $isexists = 0;
-
-                                            if ($isapicreated == 0) {
+                                            if ($isapicreated == 0) 
+                                            {
                                                 $_SESSION['createterminals'] = $rterminals;
                                                 $_SESSION['siteid'] = $vsiteID;
                                                 $_SESSION['lpdeployment'] = $lpdeployment;
                                                 $oas->close();
                                                 header("Location: " . $_SERVER['HTTP_REFERER']);
-                                            } else {
+                                            } 
+                                            else 
+                                            {
                                                 //call CasinoAPI creation (RTG / MG) if account does not exist
                                                 $vapiResult = $_CasinoGamingPlayerAPI->createTerminalAccount($vprovidername, $vserviceID, $url, $login, $password, $aid, $currency, $email, $fname, $lname, $dayphone, $evephone, $addr1, $addr2, $city, $country, $state, $zip, $userID, $birthdate, $fax, $occupation, $sex, $alias, $casinoID, $ip, $mac, $downloadID, $clientID, $putInAffPID, $calledFromCasino, $hashedPassword, $agentID, $currentPosition, $thirdPartyPID, $capiusername, $capipassword, $capiplayername, $capiserverID);
                                                 $vnewarr = array("TerminalCode" => $login, "Casino" => $vprovidername);
                                                 array_push($arrsucccreated, $vnewarr);
                                             }
                                         }
-                                    } else {
+                                    } 
+                                    else 
+                                    {
                                         $errmsg = $vapiResult['ErrorMessage'];
                                         $apisuccess = 0;
                                     }
                                 }
+                                // CCT ADDED 12/20/2017 BEGIN
+                                //if provider is Habanero, then
+                                else if (strstr($vprovidername, "HAB") == true) 
+                                {
+                                    $url = $_ServiceAPI[$vserviceID-1];
+                                    $aid = 0;
+                                    $currency = '';
+                                    $capiusername = $_HABbrandID;
+                                    $capipassword = $_HABapiKey;
+                                    $capiplayername = '';
+                                    $capiserverID = '';
+                                    if (strstr($login, "VIP") == true) 
+                                    {
+                                        $isVIP = 1;
+                                    } 
+                                    else 
+                                    {
+                                        $isVIP = 0;
+                                    }
+                                    
+                                    $terminalID = $oas->getTerminalIDs($login);
+                                    if ($terminalID['TerminalID'] == null)
+                                    {
+                                        $vapiResult['IsSucceed'] = false;
+                                        $isapicreated == 1;
+                                    }
+                                    else
+                                    {
+                                        $terminal = $terminalID['TerminalID'];
+                                        $password = $oas->getServicePassword($terminal, $vserviceID);
+                                        //$password = $vgenpassword;
+                                        $vapiResult['IsSucceed'] = true;
+                                    }
+
+                                    if (isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true) 
+                                    {
+                                        //Call API to verify if account is already existing in Habanero
+                                        $vapiResult = $_CasinoGamingPlayerAPI->validateHabCasinoAccount($url, $capiusername, $capipassword, $login, $password['ServicePassword']);
+
+                                        //Verify if API Call was successful
+                                        if (isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true) 
+                                        {
+                                            $isexists = 1;
+                                            //Update Password
+                                            $vapiResult = $_CasinoGamingPlayerAPI->changeTerminalPassword($vprovidername, $vserviceID,
+                                                    $url, $casinoID, $login, $vgenpassword, $vgenpassword, $capiusername, $capipassword, 
+                                                    $capiplayername, $capiserverID, $usermode);
+                                        }
+                                        else 
+                                        {
+                                            // Check if Password does not match, hence exists returns error
+                                            if ($vapiResult['Count'] == 0 && $vapiResult['ErrorCode'] == 2)
+                                            {
+                                                if (strstr($vapiResult['ErrorMessage'] , "Password does not match") == true)
+                                                {
+                                                    $isexists = 1;
+                                                    //Update Password
+                                                    $vapiResult = $_CasinoGamingPlayerAPI->changeTerminalPassword($vprovidername, $vserviceID,
+                                                            $url, $casinoID, $login, $vgenpassword, $vgenpassword, $capiusername, $capipassword, 
+                                                            $capiplayername, $capiserverID, $usermode);                                                    
+                                                }
+                                            } 
+                                            else
+                                            {    
+                                                $isexists = 0;
+                                            }
+                                        }
+                                    } 
+                                    else 
+                                    {
+                                        $isexists = 0;
+                                        if ($isapicreated == 0) 
+                                        {
+                                            $_SESSION['createterminals'] = $rterminals;
+                                            $_SESSION['siteid'] = $vsiteID;
+                                            $_SESSION['lpdeployment'] = $lpdeployment;
+                                            $oas->close();
+                                            header("Location: " . $_SERVER['HTTP_REFERER']);
+                                        } 
+                                        else 
+                                        {
+                                            //call CasinoAPI creation (Habanero)
+                                            if ($usermode == 0) 
+                                            {
+                                                $vapiResult = $_CasinoGamingPlayerAPI->createTerminalAccount($vprovidername, $vserviceID, $playerurl, $login, $password, $aid, $currency, $email, $fname, $lname, $dayphone, $evephone, $addr1, $addr2, $city, $country, $state, $zip, $userID, $birthdate, $fax, $occupation, $sex, $alias, $casinoID, $ip, $mac, $downloadID, $clientID, $putInAffPID, $calledFromCasino, $password, $agentID, $currentPosition, $thirdPartyPID, $capiusername, $capipassword, $capiplayername, $capiserverID, $isVIP, $usermode);
+                                            }
+                                            $vnewarr = array("TerminalCode" => $login, "Casino" => $vprovidername);
+                                            array_push($arrsucccreated, $vnewarr);
+                                        }
+                                    }
+                                }
+                                // CCT ADDED 12/20/2017 END
                                 //if provider is RTG, then
-                                else if (strstr($vprovidername, "RTG") == true) {
+                                else if (strstr($vprovidername, "RTG") == true) 
+                                {
                                     $cashierurl = $_ServiceAPI[$vserviceID - 1];
                                     $playerurl = $_PlayerAPI[$vserviceID - 1];
                                     $hashedpass = sha1($password);
@@ -2867,12 +3436,14 @@ if ($connected && $connected2 && $connected3) {
                                     $capipassword = '';
                                     $capiplayername = '';
                                     $capiserverID = '';
-                                    if (strstr($login, "VIP") == true) {
+                                    if (strstr($login, "VIP") == true) 
+                                    {
                                         $isVIP = 1;
-                                    } else {
+                                    } 
+                                    else 
+                                    {
                                         $isVIP = 0;
                                     }
-
                                     
                                     //Call API to get Account Info, for RTG casino
 //                                    if ($usermode == 0) {
@@ -2885,66 +3456,82 @@ if ($connected && $connected2 && $connected3) {
 //                                    if ($usermode == 2) {
 //                                        $vapiResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $vserviceID, $cashierurl, '', $vprovidername);
 //                                    }
-                                        $terminalID = $oas->getTerminalIDs($login);
-                                            if ($terminalID['TerminalID'] == null)
-                                            {
-                                                $vapiResult['IsSucceed'] = false;
-                                                $isapicreated == 1;
-                                            }
-                                            else
-                                            {
-                                            $terminal = $terminalID['TerminalID'];
-                                            $getpassword = $oas->getServicePassword($terminal, $vserviceID);
-                                            $vapiResult['IsSucceed'] = true;
-                                            }
+                                    $terminalID = $oas->getTerminalIDs($login);
+                                    if ($terminalID['TerminalID'] == null)
+                                    {
+                                        $vapiResult['IsSucceed'] = false;
+                                        $isapicreated == 1;
+                                    }
+                                    else
+                                    {
+                                        $terminal = $terminalID['TerminalID'];
+                                        $getpassword = $oas->getServicePassword($terminal, $vserviceID);
+                                        $vapiResult['IsSucceed'] = true;
+                                    }
+                                    
                                     //Verify if API Call was successful
-                                    if (isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true) {
+                                    if (isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true) 
+                                    {
                                         //check if exists in RTG
-                                        if (isset($getpassword['ServicePassword']) &&
-                                                $getpassword['ServicePassword'] <> null) {
+                                        if (isset($getpassword['ServicePassword']) && $getpassword['ServicePassword'] <> null) 
+                                        {
                                             $isexists = 1;
                                             $oldpassword = $getpassword['ServicePassword'];
 
-                                            if ($usermode == 0) {
+                                            if ($usermode == 0) 
+                                            {
                                                 $vapiResult = $_CasinoGamingPlayerAPI->changeTerminalPassword($vprovidername, $vserviceID, $playerurl, $casinoID, $login, $oldpassword, $password, $capiusername, $capipassword, $capiplayername, $capiserverID, $usermode);
-                                                if ($vapiResult == null) { // proceeed if certificate does not match
+                                                if ($vapiResult == null) 
+                                                { // proceeed if certificate does not match
                                                     $vapiResult = $_CasinoGamingPlayerAPI->changeTerminalPassword($vprovidername, $vserviceID, $playerurl, $casinoID, $login, $oldpassword, $password, $capiusername, $capipassword, $capiplayername, $capiserverID);
                                                 }
                                             }
 
-                                            if ($usermode == 2) {
+                                            if ($usermode == 2) 
+                                            {
                                                 $vapiResult = $_CasinoGamingPlayerAPI->changeTerminalPassword($vprovidername, $vserviceID, $playerurl, $casinoID, $login, $oldpassword, $password, $capiusername, $capipassword, $capiplayername, $capiserverID, $usermode);
                                             }
 
-                                            if ($usermode == 1) {
+                                            if ($usermode == 1) 
+                                            {
                                                 $vapiResult = array('IsSucceed' => true);
                                             }
-                                        } else {
+                                        } 
+                                        else 
+                                        {
                                             $isexists = 0;
                                         }
-                                    } else {
+                                    } 
+                                    else 
+                                    {
                                         $isexists = 0;
-                                        if ($isapicreated == 0) {
+                                        if ($isapicreated == 0) 
+                                        {
                                             $_SESSION['createterminals'] = $rterminals;
                                             $_SESSION['siteid'] = $vsiteID;
                                             $_SESSION['lpdeployment'] = $lpdeployment;
                                             $oas->close();
                                             header("Location: " . $_SERVER['HTTP_REFERER']);
-                                        } else {
+                                        } 
+                                        else 
+                                        {
                                             //call CasinoAPI creation (RTG / MG)
-
-                                            if ($usermode == 0) {
+                                            if ($usermode == 0) 
+                                            {
                                                 $vapiResult = $_CasinoGamingPlayerAPI->createTerminalAccount($vprovidername, $vserviceID, $playerurl, $login, $password, $aid, $currency, $email, $fname, $lname, $dayphone, $evephone, $addr1, $addr2, $city, $country, $state, $zip, $userID, $birthdate, $fax, $occupation, $sex, $alias, $casinoID, $ip, $mac, $downloadID, $clientID, $putInAffPID, $calledFromCasino, $hashedPassword, $agentID, $currentPosition, $thirdPartyPID, $capiusername, $capipassword, $capiplayername, $capiserverID, $isVIP, $usermode);
-                                                if ($vapiResult == null) { // proceeed if certificate does not match
+                                                if ($vapiResult == null) 
+                                                { // proceeed if certificate does not match
                                                     $vapiResult = $_CasinoGamingPlayerAPI->createTerminalAccount($vprovidername, $vserviceID, $playerurl, $login, $password, $aid, $currency, $email, $fname, $lname, $dayphone, $evephone, $addr1, $addr2, $city, $country, $state, $zip, $userID, $birthdate, $fax, $occupation, $sex, $alias, $casinoID, $ip, $mac, $downloadID, $clientID, $putInAffPID, $calledFromCasino, $hashedPassword, $agentID, $currentPosition, $thirdPartyPID, $capiusername, $capipassword, $capiplayername, $capiserverID, $isVIP);
                                                 }
                                             }
 
-                                            if ($usermode == 2) {
+                                            if ($usermode == 2) 
+                                            {
                                                 $vapiResult = $_CasinoGamingPlayerAPI->createTerminalAccount($vprovidername, $vserviceID, $playerurl, $login, $password, $aid, $currency, $email, $fname, $lname, $dayphone, $evephone, $addr1, $addr2, $city, $country, $state, $zip, $userID, $birthdate, $fax, $occupation, $sex, $alias, $casinoID, $ip, $mac, $downloadID, $clientID, $putInAffPID, $calledFromCasino, $hashedPassword, $agentID, $currentPosition, $thirdPartyPID, $capiusername, $capipassword, $capiplayername, $capiserverID, $isVIP, $usermode);
                                             }
 
-                                            if ($usermode == 1) {
+                                            if ($usermode == 1) 
+                                            {
                                                 $vapiResult = array('IsSucceed' => true);
                                             }
 
@@ -2954,7 +3541,8 @@ if ($connected && $connected2 && $connected3) {
                                     }
                                 }
                                 //if provider is PT, then
-                                else {
+                                else 
+                                {
                                     $url = $_PlayerAPI[$vserviceID - 1];
                                     $oldpassword = '';
                                     $capiplayername = '';
@@ -2967,7 +3555,6 @@ if ($connected && $connected2 && $connected3) {
                                     $currency = 'Php';
                                     $capiusername = $_ptcasinoname;
                                     $capipassword = $_ptsecretkey;
-
                                     //replace number in the lastname with its equivalent value  in words.
                                     $number = 0;
                                     preg_match("/\d{1,}/", $lname, $number);
@@ -2977,20 +3564,26 @@ if ($connected && $connected2 && $connected3) {
                                     $vapiResult = $_CasinoGamingPlayerAPI->changeTerminalPassword($vprovidername, $vserviceID, $url, $casinoID, $login, $oldpassword, $password, $capiusername, $capipassword, $capiplayername, $capiserverID);
 
                                     //check if API result is success and response is not OK, then call create terminal API
-                                    if ($vapiResult['IsSucceed'] == TRUE && $vapiResult['PlayerInfo']['transaction']['@attributes']['result'] != "OK") {
+                                    if ($vapiResult['IsSucceed'] == TRUE && $vapiResult['PlayerInfo']['transaction']['@attributes']['result'] != "OK") 
+                                    {
                                         $isexists = 0;
-                                        if ($isapicreated == 0) {
+                                        if ($isapicreated == 0) 
+                                        {
                                             $_SESSION['createterminals'] = $rterminals;
                                             $_SESSION['siteid'] = $vsiteID;
                                             $_SESSION['lpdeployment'] = $lpdeployment;
                                             $oas->close();
                                             header("Location: " . $_SERVER['HTTP_REFERER']);
-                                        } else {
-
+                                        } 
+                                        else 
+                                        {
                                             //check if VIP, pass appropriate VIP parameter.
-                                            if (strstr($vprovidername, "VIP") == true) {
+                                            if (strstr($vprovidername, "VIP") == true) 
+                                            {
                                                 $visVIP = $_ptvip;
-                                            } else {
+                                            } 
+                                            else 
+                                            {
                                                 $visVIP = $_ptreg;
                                             }
 
@@ -3002,14 +3595,17 @@ if ($connected && $connected2 && $connected3) {
                                 }
 
                                 ///Check if API Result was successfull
-                                if (isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true) {
+                                if (isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true) 
+                                {
                                     $apisuccess = 1;
                                     $vnewarr = array("TerminalID" => $vterminalID, "ServiceID" => $vserviceID,
                                         "TerminalCode" => $login, "PlainPassword" => $vgenpassword,
                                         "HashedPassword" => $vgenhashed, 'OldPassword' => $voldpassword,
                                         'OldHashedPwd' => $voldhashedpwd, "Casino" => $vprovidername);
                                     array_push($arrsuccess, $vnewarr);
-                                } else {
+                                } 
+                                else 
+                                {
                                     $apisuccess = 0;
                                     $errmsg = $vapiResult['ErrorMessage'];
                                     $vnewarr = array("TerminalID" => $vterminalID, "ServiceID" => $vserviceID,
@@ -3021,14 +3617,16 @@ if ($connected && $connected2 && $connected3) {
                             }
 
                             //Verify if casino API was successfull, then insert plain and hashed password to Kronus DB
-                            if (isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true) {
+                            if (isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true) 
+                            {
                                 $isrecorded = $oas->updateterminalpwd($arrsuccess);
-                                if ($isrecorded > 0) {
-
+                                if ($isrecorded > 0) 
+                                {
                                     $updbatchpwd = $oas->updateGenPwdBatch($vsiteID, $vgenpwdid, $lpdeployment);
                                     if (!$updbatchpwd)
                                         $msg = "Terminal Service Assignment:  Records unchanged in generatedpasswordbatch";
-                                    else {
+                                    else 
+                                    {
                                         if ($lpdeployment > 0)
                                             $msg = "Change Terminal Password: Success in updating terminal/s for launchpad deployment";
                                         else
@@ -3036,7 +3634,8 @@ if ($connected && $connected2 && $connected3) {
                                     }
 
                                     $arrtrans = array();
-                                    foreach ($arrsuccess as $val) {
+                                    foreach ($arrsuccess as $val) 
+                                    {
                                         $zterminalCode = $val['TerminalCode'];
                                         $zcasino = $val['Casino'];
                                         $transdetails = "Terminal=" . $zterminalCode . " Casino=" . $zcasino;
@@ -3046,33 +3645,41 @@ if ($connected && $connected2 && $connected3) {
                                     $vtransdetails = implode(";", $arrtrans);
                                     //Insert in audit trail
                                     $vauditfuncID = 60;
-
                                     $isaudit = $oas->logtoaudit($new_sessionid, $vaccID, $vtransdetails, $vdate, $vipaddress, $vauditfuncID);
-
                                     $txtfile = __DIR__ . "/../sys/log/TerminalPasswords.txt";
                                     //Write the result/s in a Log file
                                     $writetologs = $oas->createTerminalPwdLogs($arrsuccess, $arrerror, $txtfile);
 
-                                    if (count($arrsucccreated) > 0) {
+                                    if (count($arrsucccreated) > 0) 
+                                    {
                                         $logdir = __DIR__ . "/../sys/log";
                                         $logfile = $logdir . "/CreatedTerminals_" . $vdate . ".log";
                                         $writelogs = $oas->logTerminalsCreated($arrsucccreated, $logfile);
                                     }
-                                } else {
+                                } 
+                                else 
+                                {
                                     $msg = "Change Terminal Password: Passwords are already updated";
                                 }
-                            } else {
+                            } 
+                            else 
+                            {
                                 $msg = "Change Terminal Password: API Error=" . $errmsg;
                             }
-
                             unset($rterminals, $rbatch, $varrterminalcode, $arrsuccess, $vapiResult, $arrerror, $arrtrans, $arrsucccreated);
-                        } else {
+                        } 
+                        else 
+                        {
                             $msg = "Change Terminal Password: No available site to get plain and encrypted password.";
                         }
-                    } else {
+                    } 
+                    else 
+                    {
                         $msg = "Change Terminal Password: Invalid fields";
                     }
-                } else {
+                } 
+                else 
+                {
                     $msg = "Change Terminal Password: Invalid fields";
                 }
                 unset($_SESSION['createterminals'], $_SESSION['siteid'], $_SESSION['lpdeployment']);
@@ -3080,14 +3687,18 @@ if ($connected && $connected2 && $connected3) {
                 $oas->close();
                 header("Location: appbatchpassword.php?mess=" . $msg);
                 break;
+                
             case 'GetTerminalsCreatedLogs':
                 $logdir = __DIR__ . "/../sys/log";
-                if (is_dir($logdir)) {
+                if (is_dir($logdir)) 
+                {
                     $listfiles = scandir($logdir);
                     $vfiles = array();
-                    foreach ($listfiles as $file) {
+                    foreach ($listfiles as $file) 
+                    {
                         //hides (.), (..), (index), and temporary files upon viewing
-                        if (($file != '..') && ($file != '.') && (strstr($file, "PHP_errors") == false)) {
+                        if (($file != '..') && ($file != '.') && (strstr($file, "PHP_errors") == false)) 
+                        {
                             $newarr = array(substr($file, 0, strrpos($file, ".")));
                             array_push($vfiles, $newarr);
                         }
@@ -3096,34 +3707,45 @@ if ($connected && $connected2 && $connected3) {
                     echo json_encode($vfiles);
                     unset($vfiles);
                     unset($listfiles);
-                } else {
+                } 
+                else 
+                {
                     echo "The logs directory does not exist";
                 }
                 $oas->close();
                 exit;
                 break;
+                
             case 'ShowTerminalsCreatedLogs':
                 $logdir = __DIR__ . "/../sys/log/";
                 $vfile = $_POST['logfile'];
                 $vfullpath = $logdir . $vfile . ".log";
                 $vdatenow = date("Y-m-d");
                 //check first if file exists
-                if (file_exists($vfullpath)) {
+                if (file_exists($vfullpath)) 
+                {
                     //then check if file is not empty
-                    if (filesize($vfullpath) > 0) {
+                    if (filesize($vfullpath) > 0) 
+                    {
                         $rcontent = $oas->getfilecontents($vfullpath);
-                    } else {
+                    } 
+                    else 
+                    {
                         $rcontent = "";
                     }
                     echo json_encode($rcontent);
-                } else {
+                } 
+                else 
+                {
                     $errmsg->error = "Logs Tracking: Log file does not exists";
                     echo json_encode($errmsg);
                 }
                 exit;
                 break;
+                
             case 'ViewTerminalPassword':
-                if (isset($_POST['terminalCode'])) {
+                if (isset($_POST['terminalCode'])) 
+                {
                     $vterminalCode = $_POST['terminalCode'];
                     $terminals = $oas->viewTerminalID($vterminalCode);
                     if ($terminals)
@@ -3136,8 +3758,10 @@ if ($connected && $connected2 && $connected3) {
                 $oas->close();
                 exit;
                 break;
+                
             case 'GetTerminalCredentials':
-                if (isset($_POST['terminalID']) && isset($_POST['serviceID'])) {
+                if (isset($_POST['terminalID']) && isset($_POST['serviceID'])) 
+                {
                     $vterminalID = $_POST['terminalID'];
                     $vserviceID = $_POST['serviceID'];
                     $terminals = $oas->getterminalcredentials($vterminalID, $vserviceID);
@@ -3149,6 +3773,7 @@ if ($connected && $connected2 && $connected3) {
                 $oas->close();
                 exit;
                 break;
+                
             case 'GetServiceGroup':
                 $vserviceid = $_POST['serviceid'];
                 $rservicegrp = $oas->getterminalprovider(0, $vserviceid);
@@ -3156,6 +3781,7 @@ if ($connected && $connected2 && $connected3) {
                 $oas->close();
                 exit;
                 break;
+            
             case 'ShowTerminalPassword':
                 $vfile = ROOT_DIR . "sys/log/TerminalPasswords.txt";
                 $rresult = $oas->getfilecontents($vfile);
@@ -3167,10 +3793,11 @@ if ($connected && $connected2 && $connected3) {
                 $oas->close();
                 exit;
                 break;
+                
             //Reset's and unlock MG and PT Terminals
             case 'UnlockMGTerminal':
-                if (isset($_POST['cmbsite']) && isset($_POST['cmbterminal'])
-                        && isset($_POST['cmbnewservice'])) {
+                if (isset($_POST['cmbsite']) && isset($_POST['cmbterminal']) && isset($_POST['cmbnewservice'])) 
+                {
                     $vsiteID = $_POST['cmbsite'];
                     $vterminalID = $_POST['cmbterminal'];
                     $vterminal = $_POST['txtterminalcode'];
@@ -3179,11 +3806,13 @@ if ($connected && $connected2 && $connected3) {
                     $vaid = $aid;
 
                     $rservicegrpID = $oas->getterminalprovider(0, $vserviceID);
-                    foreach ($rservicegrpID as $val) {
+                    foreach ($rservicegrpID as $val) 
+                    {
                         $vservicegrpID = $val['ServiceGroupID'];
                     }
 
-                    switch ($vservicegrpID) {
+                    switch ($vservicegrpID) 
+                    {
                         case '2': //if provider is MG, then
                             $_MGCredentials = $_PlayerAPI[$vserviceID - 1];
                             list($mgurl, $mgserverID) = $_MGCredentials;
@@ -3215,10 +3844,13 @@ if ($connected && $connected2 && $connected3) {
                     $isoldsite = 0;
 
                     //check if this a existing site and Status is active and use
-                    if (isset($roldsite['GeneratedPasswordBatchID']) && $roldsite['GeneratedPasswordBatchID'] > 0) {
+                    if (isset($roldsite['GeneratedPasswordBatchID']) && $roldsite['GeneratedPasswordBatchID'] > 0) 
+                    {
                         $vgenpwdid = $roldsite['GeneratedPasswordBatchID'];
                         $isoldsite = 1;
-                    } else {
+                    } 
+                    else 
+                    {
                         $isoldsite = 0;
                         $rpwdbatch = $oas->chkpwdbatch();
                         if ($rpwdbatch)
@@ -3226,26 +3858,29 @@ if ($connected && $connected2 && $connected3) {
                     }
 
                     //checking of available plain and hashed password
-                    if ($vgenpwdid > 0) {
+                    if ($vgenpwdid > 0) 
+                    {
                         //get plain and encrypted password
                         $vretrievepwd = $oas->getgeneratedpassword($vgenpwdid, $vservicegrpID);
                         $vgenpassword = $vretrievepwd['PlainPassword'];
                         $vgenhashed = $vretrievepwd['EncryptedPassword'];
-
                         $password = $vgenpassword;
 
-                        switch ($vservicegrpID) {
+                        switch ($vservicegrpID) 
+                        {
                             case '2': //if provider is MG, then
                                 //Unlock Casino Account of MG
                                 $vunlockResult = $_CasinoGamingPlayerAPI->unlockCasinoAccount($login, $vserviceID, $url, $capiusername, $capipassword, $capiplayername, $capiserverID);
 
-                                if (isset($vunlockResult['IsSucceed']) && $vunlockResult['IsSucceed'] == true) {
+                                if (isset($vunlockResult['IsSucceed']) && $vunlockResult['IsSucceed'] == true) 
+                                {
                                     //Call Reset Password API of MG
                                     $vapiResult = $_CasinoGamingPlayerAPI->resetCasinoPassword($login, $password, $vserviceID, $url, $capiusername, $capipassword, $capiplayername, $capiserverID);
-                                } else {
+                                } 
+                                else 
+                                {
                                     $vapiResult['IsSucceed'] = false;
                                 }
-
                                 break;
                             case '3': //if provider is PT, then
                                 //$frozen = 0 for unfreeze state
@@ -3260,16 +3895,17 @@ if ($connected && $connected2 && $connected3) {
                     }
 
                     $updbatchpwd = 0;
-                    if (isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true) {
+                    if (isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true) 
+                    {
                         $vnewarr = array(array("TerminalID" => $vterminalID, "ServiceID" => $vserviceID,
-                                "TerminalCode" => $login, "PlainPassword" => $vgenpassword,
-                                "HashedPassword" => $vgenhashed));
+                            "TerminalCode" => $login, "PlainPassword" => $vgenpassword, "HashedPassword" => $vgenhashed));
 
                         $isrecorded = $oas->updateterminalpwd($vnewarr);
 
-                        if ($isrecorded > 0) {
-
-                            if ($isoldsite == 0) {
+                        if ($isrecorded > 0) 
+                        {
+                            if ($isoldsite == 0) 
+                            {
                                 $updbatchpwd = $oas->updateGenPwdBatch($vsiteID, $vgenpwdid, 1);
                                 if (!$updbatchpwd)
                                     $msg = "Reset Casino Account: Records unchanged in generatedpasswordbatch";
@@ -3279,7 +3915,6 @@ if ($connected && $connected2 && $connected3) {
                             $vauditfuncID = 70;
                             $vtransdetails = "Terminal: " . $login . ", Server ID: " . $vserviceID;
                             $isaudit = $oas->logtoaudit($new_sessionid, $vaid, $vtransdetails, $vdate, $vipaddress, $vauditfuncID);
-
                             $msg = "Reset Casino Account: Casino account was successfully reset.";
                         }
                         else
@@ -3298,26 +3933,25 @@ if ($connected && $connected2 && $connected3) {
 
             //Casino Reset User Based
             case 'UnlockMGTerminalUB':
-
                 $service = $_POST['cmbnewservice'];
                 $cardnumber = $_POST['txtcardnumber'];
                 $casino = $_SESSION['CasinoArray'];
                 $servername = $_POST['txtservicename'];
-
                 $casinoarray_count = count($casino);
-
                 $casinos = array();
 
-                if ($casinoarray_count != 0) {
-                    for ($ctr = 0; $ctr < $casinoarray_count; $ctr++) {
+                if ($casinoarray_count != 0) 
+                {
+                    for ($ctr = 0; $ctr < $casinoarray_count; $ctr++) 
+                    {
                         $casinos[$ctr] =
-                                array('ServiceUsername' => $casino[$ctr]->ServiceUsername,
-                                    'ServicePassword' => $casino[$ctr]->ServicePassword,
-                                    'HashedServicePassword' => $casino[$ctr]->HashedServicePassword,
-                                    'ServiceID' => $casino[$ctr]->ServiceID,
-                                    'UserMode' => $casino[$ctr]->UserMode,
-                                    'isVIP' => $casino[$ctr]->isVIP,
-                                    'Status' => $casino[$ctr]->Status
+                            array('ServiceUsername' => $casino[$ctr]->ServiceUsername,
+                                'ServicePassword' => $casino[$ctr]->ServicePassword,
+                                'HashedServicePassword' => $casino[$ctr]->HashedServicePassword,
+                                'ServiceID' => $casino[$ctr]->ServiceID,
+                                'UserMode' => $casino[$ctr]->UserMode,
+                                'isVIP' => $casino[$ctr]->isVIP,
+                                'Status' => $casino[$ctr]->Status
                         );
 
                         //get details by pick casino
@@ -3326,11 +3960,16 @@ if ($connected && $connected2 && $connected3) {
                 }
 
                 //catch if casino array is empty
-                if (empty($casino2)) {
+                if (empty($casino2)) 
+                {
                     $msg = 'Reset Casino Account User Based: Casino is Empty';
-                } else {
-                    if (isset($_POST['txtcardnumber']) && isset($_POST['cmbnewservice'])) {
-                        foreach ($casino2 as $value) {
+                } 
+                else 
+                {
+                    if (isset($_POST['txtcardnumber']) && isset($_POST['cmbnewservice'])) 
+                    {
+                        foreach ($casino2 as $value) 
+                        {
                             $rserviceuname = $value['ServiceUsername'];
                             $rservicepassword = $value['ServicePassword'];
                             $vserviceID = $value['ServiceID'];
@@ -3339,11 +3978,11 @@ if ($connected && $connected2 && $connected3) {
                             $hashedpassword = $value['HashedServicePassword'];
                             $rstatus = $value['Status'];
                         }
-
                         $vaid = $aid;
 
                         //set casino credentials
-                        switch (true) {
+                        switch (true) 
+                        {
                             case strstr($servername, "MG"): //if provider is MG, then
                                 $_MGCredentials = $_PlayerAPI[$vserviceID - 1];
                                 list($mgurl, $mgserverID) = $_MGCredentials;
@@ -3371,18 +4010,21 @@ if ($connected && $connected2 && $connected3) {
                         $password = $rservicepassword;
 
                         //call casino api's to reset particular casino account
-                        switch (true) {
+                        switch (true) 
+                        {
                             case strstr($servername, "MG"): //if provider is MG, then
                                 //Unlock Casino Account of MG
                                 $vunlockResult = $_CasinoGamingPlayerAPI->unlockCasinoAccount($login, $vserviceID, $url, $capiusername, $capipassword, $capiplayername, $capiserverID);
 
-                                if (isset($vunlockResult['IsSucceed']) && $vunlockResult['IsSucceed'] == true) {
+                                if (isset($vunlockResult['IsSucceed']) && $vunlockResult['IsSucceed'] == true) 
+                                {
                                     //Call Reset Password API of MG
                                     $vapiResult = $_CasinoGamingPlayerAPI->resetCasinoPassword($login, $password, $vserviceID, $url, $capiusername, $capipassword, $capiplayername, $capiserverID);
-                                } else {
+                                } 
+                                else 
+                                {
                                     $vapiResult['IsSucceed'] = false;
                                 }
-
                                 break;
                             case strstr($servername, "PT"): //if provider is PT, then
                                 //$frozen 0 for unfreeze state
@@ -3395,14 +4037,13 @@ if ($connected && $connected2 && $connected3) {
                                 break;
                         }
 
-
                         $updbatchpwd = 0;
-                        if (isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true) {
+                        if (isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true) 
+                        {
                             //Insert in audit trail
                             $vauditfuncID = 70;
                             $vtransdetails = "Terminal: " . $login . ", Server ID: " . $vserviceID;
                             $isaudit = $oas->logtoaudit($new_sessionid, $vaid, $vtransdetails, $vdate, $vipaddress, $vauditfuncID);
-
                             $msg = "Reset Casino Account User Based: Casino account was successfully reset.";
                         }
                         else
@@ -3413,21 +4054,20 @@ if ($connected && $connected2 && $connected3) {
 
                     unset($vapiResult, $vsiteID, $vterminal, $vserviceID, $vsitecode, $rservicegrpID, $_MGCredentials, $url, $login, $roldsite, $vgenpwdid, $isoldsite, $vretrievepwd);
                 }
-
                 //show result message
                 echo json_encode($msg);
                 $oas->close();
                 exit;
                 break;
+                
             //Update Spyder 
             case 'SpyderEnable':
-
                 $site = $_POST['cmbsite'];
                 $txtspyder = $_POST['txtspyder'];
                 $txtoldspyder = $_POST['txtoldspyder'];
 
-                if ($site != '-1' || $txtspyder = '' || $txtoldspyder = '') {
-
+                if ($site != '-1' || $txtspyder = '' || $txtoldspyder = '') 
+                {
 //                    $count = $oas->checkAccountSessions($site);
 //                    //check number of sessions in a certain site
 //                    if($count > 0)
@@ -3437,12 +4077,16 @@ if ($connected && $connected2 && $connected3) {
 //                    else
 //                    {    
                     //check if spyder status has changed
-                    if ($txtspyder == $txtoldspyder) {
+                    if ($txtspyder == $txtoldspyder) 
+                    {
                         $msg = 'Enabling of Spyder: Spyder status did not change';
-                    } else {
+                    } 
+                    else 
+                    {
                         //update spyder status in sites table
                         $upspy = $oas->updateSpyder($txtspyder, $site);
-                        if ($upspy > 0) {
+                        if ($upspy > 0) 
+                        {
                             $msg = 'Enabling of Spyder: Update Successful';
 
                             $vtransdetails = "Site ID " . $site;
@@ -3453,7 +4097,9 @@ if ($connected && $connected2 && $connected3) {
                         }
                     }
 //                    }    
-                } else {
+                } 
+                else 
+                {
                     $msg = 'Enabling of Spyder: All Details are Required';
                 }
                 echo json_encode($msg);
@@ -3463,50 +4109,61 @@ if ($connected && $connected2 && $connected3) {
 
             //Update Cashier Menu Tab
             case 'UpdateCashierTab':
-
                 $siteID = $_POST['cmbsite'];
                 $tmTab = $_POST['tmTab'];
                 $srrTab = $_POST['srrTab'];
                 $oldTM = $_POST['oldTM'];
                 $oldSRR = $_POST['oldSRR'];
-
-
                 $updateResult = $oas->updateCashierMenuTab($siteID, $tmTab, $srrTab);
 
-                if ($updateResult > 0) {
+                if ($updateResult > 0) 
+                {
                     $msg = 'Cashier Menu Management: Update Successful';
 
-                    if ($oldTM != $tmTab && $oldSRR == $srrTab) {
-                        if ($oldTM == 0 && $tmTab == 1) {
+                    if ($oldTM != $tmTab && $oldSRR == $srrTab) 
+                    {
+                        if ($oldTM == 0 && $tmTab == 1) 
+                        {
                             $vtransdetails = "TM Menu Enabled in Site ID " . $siteID;
                         }
-                        if ($oldTM == 1 && $tmTab == 0) {
+                        
+                        if ($oldTM == 1 && $tmTab == 0) 
+                        {
                             $vtransdetails = "TM Menu Disabled in Site ID " . $siteID;
                         }
                     }
 
-                    if ($oldTM == $tmTab && $oldSRR != $srrTab) {
-
-                        if ($oldSRR == 0 && $srrTab == 1) {
+                    if ($oldTM == $tmTab && $oldSRR != $srrTab) 
+                    {
+                        if ($oldSRR == 0 && $srrTab == 1) 
+                        {
                             $vtransdetails = "SR Menu Enabled in Site ID " . $siteID;
                         }
-                        if ($oldSRR == 1 && $srrTab == 0) {
+                        
+                        if ($oldSRR == 1 && $srrTab == 0) 
+                        {
                             $vtransdetails = "SR Menu Disabled in Site ID " . $siteID;
                         }
                     }
-                    if ($oldTM != $tmTab && $oldSRR != $srrTab) {
-                        if (($oldTM == 0 && $tmTab == 1) && ($oldSRR == 0 && $srrTab == 1)) {
+                    
+                    if ($oldTM != $tmTab && $oldSRR != $srrTab) 
+                    {
+                        if (($oldTM == 0 && $tmTab == 1) && ($oldSRR == 0 && $srrTab == 1)) 
+                        {
                             $vtransdetails = "TM and SR Menu Enabled in Site ID " . $siteID;
                         }
-                        if (($oldTM == 1 && $tmTab == 0) && ($oldSRR == 1 && $srrTab == 0)) {
+                        
+                        if (($oldTM == 1 && $tmTab == 0) && ($oldSRR == 1 && $srrTab == 0)) 
+                        {
                             $vtransdetails = "TM and SR Menu Disabled in Site ID " . $siteID;
                         }
                     }
 
                     $vauditfuncID = 87;
-// 
                     $oas->logtoaudit($new_sessionid, $aid, $vtransdetails, $vdate, $vipaddress, $vauditfuncID); //insert in audittrail
-                } else {
+                } 
+                else 
+                {
                     $msg = 'Cashier Menu Management: Update Failed';
                 }
 
@@ -3516,29 +4173,36 @@ if ($connected && $connected2 && $connected3) {
 
             //Update Casher Version
             case 'UpCashierVersion':
-
                 $site = $_POST['cmbsite'];
                 $txtcversion = $_POST['txtcversion'];
                 $txtoldcversion = $_POST['txtoldcversion'];
 
-                if ($site != '-1' || $txtcversion = '' || $txtoldcversion = '') {
+                if ($site != '-1' || $txtcversion = '' || $txtoldcversion = '') 
+                {
                     //check if spyder status has changed
-                    if ($txtcversion == $txtoldcversion) {
+                    if ($txtcversion == $txtoldcversion) 
+                    {
                         $msg = 'Cashier URL Management: Cashier Version did not change';
-                    } else {
+                    } 
+                    else 
+                    {
                         //update spyder status in sites table
                         $upspy = $oas->updateCashierVersion($txtcversion, $site);
-                        if ($upspy > 0) {
+                        if ($upspy > 0) 
+                        {
                             $msg = 'Cashier URL Management: Update Successful';
-
                             $vtransdetails = "Cashier URL Management: Update Cashier Version of Site ID " . $site;
                             $vauditfuncID = 76;
                             $oas->logtoaudit($new_sessionid, $aid, $vtransdetails, $vdate, $vipaddress, $vauditfuncID); //insert in audittrail
-                        } else {
+                        } 
+                        else 
+                        {
                             $msg = 'Cashier URL Management: Failed to Update Cashier Version';
                         }
                     }
-                } else {
+                } 
+                else 
+                {
                     $msg = 'Cashier URL Management: All Details are Required';
                 }
                 echo json_encode($msg);
@@ -3552,7 +4216,8 @@ if ($connected && $connected2 && $connected3) {
                 $list = "";
                 $serv = $LogPaths[$val];
 
-                for ($i = 0; $i < count($serv); $i++) {
+                for ($i = 0; $i < count($serv); $i++) 
+                {
                     if ($serv[$i] != "")
                         $list.= "<option value=$i style='color:green;'>Server " . ($i + 1) . "</option>";
                 }
@@ -3567,34 +4232,42 @@ if ($connected && $connected2 && $connected3) {
                 break;
         }
     }
+    
     //this was used in transaction tracking
-    if (isset($_POST['sendSiteID'])) {
+    if (isset($_POST['sendSiteID'])) 
+    {
         $vsiteID = $_POST['sendSiteID'];
-        if ($vsiteID <> "-1") {
+        if ($vsiteID <> "-1") 
+        {
             $rsitecode = $oas->getsitecode($vsiteID); //get the sitecode first
             $vresults = array();
             //get all terminals
             $vresults = $oas->viewterminals($vsiteID);
-            if (count($vresults) > 0) {
+            if (count($vresults) > 0) 
+            {
                 $terminals = array();
-                foreach ($vresults as $row) {
+                foreach ($vresults as $row) 
+                {
                     $rterminalID = $row['TerminalID'];
                     $rterminalCode = $row['TerminalCode'];
                     $sitecode = $terminalcode;
                     //remove the "icsa-[SiteCode]"
                     $rterminalCode = substr($row['TerminalCode'], strlen($rsitecode['SiteCode']));
-
                     //create a new array to populate the combobox
                     $newvalue = array("TerminalID" => $rterminalID, "TerminalCode" => $rterminalCode);
                     array_push($terminals, $newvalue);
                 }
                 echo json_encode($terminals);
                 unset($terminals);
-            } else {
+            } 
+            else 
+            {
                 echo "No Terminal Assigned";
             }
             unset($vresults);
-        } else {
+        } 
+        else 
+        {
             echo "No Terminal Assigned";
         }
         unset($vresults);
@@ -3602,63 +4275,73 @@ if ($connected && $connected2 && $connected3) {
         exit;
     }
     //this was used on removing the terminal
-    elseif (isset($_POST['sendSiteID2'])) {
+    elseif (isset($_POST['sendSiteID2'])) 
+    {
         $vsiteID = $_POST['sendSiteID2'];
         $rsitecode = $oas->getsitecode($vsiteID); //get the sitecode first
         $vresults = array();
         //get all terminals
         $vresults = $oas->getterminals($vsiteID);
-        if (count($vresults) > 0) {
+        if (count($vresults) > 0) 
+        {
             $terminals = array();
-            foreach ($vresults as $row) {
+            foreach ($vresults as $row) 
+            {
                 $rterminalID = $row['TerminalID'];
                 $rterminalCode = $row['TerminalCode'];
                 $sitecode = $terminalcode;
-
                 //remove the "icsa-[SiteCode]"
                 $rterminalCode = substr($row['TerminalCode'], strlen($rsitecode['SiteCode']));
-
                 //create a new array to populate the combobox
                 $newvalue = array("TerminalID" => $rterminalID, "TerminalCode" => $rterminalCode);
                 array_push($terminals, $newvalue);
             }
             echo json_encode($terminals);
             unset($terminals);
-        } else {
+        } 
+        else 
+        {
             echo "No Terminal Assigned";
         }
         unset($vresults);
         $oas->close();
         exit;
-    } elseif (isset($_POST['sendSiteID3'])) {
+        
+    } 
+    elseif (isset($_POST['sendSiteID3'])) 
+    {
         $vsiteID = $_POST['sendSiteID3'];
         $rsitecode = $oas->getsitecode($vsiteID); //get the sitecode first
         $vresults = array();
         //get all terminals
         $vresults = $oas->getterminals2($vsiteID);
-        if (count($vresults) > 0) {
+        if (count($vresults) > 0) 
+        {
             $terminals = array();
-            foreach ($vresults as $row) {
+            foreach ($vresults as $row) 
+            {
                 $rterminalID = $row['TerminalID'];
                 $rterminalCode = $row['TerminalCode'];
                 $sitecode = $terminalcode;
-
                 //remove the "icsa-[SiteCode]"
                 $rterminalCode = substr($row['TerminalCode'], strlen($rsitecode['SiteCode']));
-
                 //create a new array to populate the combobox
                 $newvalue = array("TerminalID" => $rterminalID, "TerminalCode" => $rterminalCode);
                 array_push($terminals, $newvalue);
             }
             echo json_encode($terminals);
             unset($terminals);
-        } else {
+        } 
+        else 
+        {
             echo "No Terminal Assigned";
         }
         unset($vresults);
         $oas->close();
         exit;
-    } elseif (isset($_POST['cashiersiteID'])) {
+    } 
+    elseif (isset($_POST['cashiersiteID'])) 
+    {
         $vcashiersiteID = $_POST['cashiersiteID'];
         $vresults = array();
         $vresults = $oas->getcashierpersite($vcashiersiteID);
@@ -3666,7 +4349,9 @@ if ($connected && $connected2 && $connected3) {
         unset($vresults);
         $oas->close();
         exit;
-    } elseif (isset($_POST['cashierpasskey'])) {
+    } 
+    elseif (isset($_POST['cashierpasskey'])) 
+    {
         $vcashierpasskey = $_POST['cashierpasskey'];
         $vresults = array();
         $vresults = $oas->getcashierpasskey($vcashierpasskey); //get passkey tagging for particular cashier
@@ -3674,7 +4359,9 @@ if ($connected && $connected2 && $connected3) {
         unset($vresults);
         $oas->close();
         exit;
-    } elseif (isset($_GET['cmbterminal'])) {
+    } 
+    elseif (isset($_GET['cmbterminal'])) 
+    {
         $vterminalID = $_GET['cmbterminal'];
         $rresult = array();
         $rresult = $oas->getterminalname($vterminalID);
@@ -3685,21 +4372,25 @@ if ($connected && $connected2 && $connected3) {
         exit;
     }
     //for displaying site name on label
-    elseif (isset($_POST['cmbsitename'])) {
+    elseif (isset($_POST['cmbsitename'])) 
+    {
         $vsiteName->SiteName = null;
         $vsiteName->POSAccNo = null;
-
         $vsiteID = $_POST['cmbsitename'];
         $rresult = array();
         $rresult = $oas->getsitename($vsiteID);
-        foreach ($rresult as $row) {
+        foreach ($rresult as $row) 
+        {
             $rsitename = $row['SiteName'];
             $rposaccno = $row['POS'];
         }
-        if (count($rresult) > 0) {
+        if (count($rresult) > 0) 
+        {
             $vsiteName->SiteName = $rsitename;
             $vsiteName->POSAccNo = $rposaccno;
-        } else {
+        } 
+        else 
+        {
             $vsiteName->SiteName = "";
             $vsiteName->POSAccNo = "";
         }
@@ -3709,20 +4400,25 @@ if ($connected && $connected2 && $connected3) {
         exit;
     }
     //for displaying site credentials (Passcode, SiteCode)
-    elseif (isset($_POST['sitecredentials'])) {
+    elseif (isset($_POST['sitecredentials'])) 
+    {
         $vsiteID = $_POST['sitecredentials'];
         $rresult = array();
         $rresult = $oas->getsitecredentials($vsiteID);
-        foreach ($rresult as $row) {
+        foreach ($rresult as $row) 
+        {
             $rsitename = $row['SiteName'];
             $rsitecode = $row['SiteCode'];
             $rpasscode = $row['PassCode'];
         }
-        if (count($rresult) > 0) {
+        if (count($rresult) > 0) 
+        {
             $vsiteName->SiteName = $rsitename;
             $vsiteName->SiteCode = $rsitecode;
             $vsiteName->PassCode = $rpasscode;
-        } else {
+        } 
+        else 
+        {
             $vsiteName->SiteName = "";
             $vsiteName->SiteCode = "";
             $vsiteName->PassCode = "";
@@ -3733,13 +4429,17 @@ if ($connected && $connected2 && $connected3) {
         exit;
     }
     //this will get the server per terminal (appremoveserver.php)
-    elseif (isset($_POST['terminalserver'])) {
+    elseif (isset($_POST['terminalserver'])) 
+    {
         $terminalID = $_POST['terminalserver'];
         $rresult = array();
         $rresult = $oas->getterminalprovider($terminalID, 0);
-        if (count($rresult) > 0) {
+        if (count($rresult) > 0) 
+        {
             echo json_encode($rresult);
-        } else {
+        } 
+        else 
+        {
             echo "No Provider Found";
         }
         unset($rresult);
@@ -3747,55 +4447,68 @@ if ($connected && $connected2 && $connected3) {
         exit;
     }
     //ajax request: Get MG and PT Casino server's only
-    elseif (isset($_POST['mgterminalserver'])) {
+    elseif (isset($_POST['mgterminalserver'])) 
+    {
         $terminalID = $_POST['mgterminalserver'];
         $rresult = array();
         $rresult = $oas->getterminalprovider($terminalID, 0);
         $mgprovider = array();
-        foreach ($rresult as $val) {
+        foreach ($rresult as $val) 
+        {
             $vserver = $val['ServiceName'];
             $vserviceID = $val['ServiceID'];
-            if (strstr($vserver, "MG")) {
+            if (strstr($vserver, "MG")) 
+            {
                 array_push($mgprovider, array("ServiceName" => $vserver, "ServiceID" => $vserviceID));
-            } else if (strstr($vserver, "PT")) {
+            } 
+            else if (strstr($vserver, "PT")) 
+            {
                 array_push($mgprovider, array("ServiceName" => $vserver, "ServiceID" => $vserviceID));
             }
         }
-        if (count($mgprovider) > 0) {
+        if (count($mgprovider) > 0) 
+        {
             echo json_encode($mgprovider);
-        } else {
+        } 
+        else 
+        {
             echo "Reset Casino Account: No MG or PT Provider Found";
         }
         unset($rresult);
         $oas->close();
         exit;
-    } elseif (isset($_POST['getsiteterminals'])) {
+    } 
+    elseif (isset($_POST['getsiteterminals'])) 
+    {
         $vsiteID = $_POST['getsiteterminals'];
         $rsitecode = $oas->getsitecode($vsiteID); //get the sitecode first
         $vresults = array();
         $vresults = $oas->getsiteterminals($vsiteID);
-        if (count($vresults) > 0) {
+        if (count($vresults) > 0) 
+        {
             $terminals = array();
-            foreach ($vresults as $row) {
+            foreach ($vresults as $row) 
+            {
                 $rterminalID = $row['TerminalID'];
                 $rterminalCode = $row['TerminalCode'];
                 $sitecode = $terminalcode;
-
                 //remove the "icsa-[SiteCode]"
                 $rterminalCode = substr($row['TerminalCode'], strlen($rsitecode['SiteCode']));
-
                 //create a new array to populate the combobox
                 $newvalue = array("TerminalID" => $rterminalID, "TerminalCode" => $rterminalCode);
                 array_push($terminals, $newvalue);
             }
             echo json_encode($terminals);
             unset($terminals);
-        } else {
+        } 
+        else 
+        {
             echo "No Terminal Assigned";
         }
     }
     //get Spyder from selected site
-    elseif (isset($_POST['cmbsites'])) {
+    elseif (isset($_POST['cmbsites'])) 
+    {
         $vsiteID = $_POST['cmbsites'];
         $rresult = $oas->getSpyder($vsiteID);
         $rresult = $rresult['Spyder'];
@@ -3803,37 +4516,45 @@ if ($connected && $connected2 && $connected3) {
         unset($rresult);
         $oas->close();
         exit;
-    } elseif (isset($_POST['cashierTab'])) {
+    } 
+    elseif (isset($_POST['cashierTab'])) 
+    {
         $siteID = $_POST['cashierTab'];
         $result = $oas->getCashierTab($siteID);
         echo json_encode($result);
         unset($result);
         $oas->close();
         exit;
-    } elseif (isset($_POST['cmbsitez'])) {
+    } 
+    elseif (isset($_POST['cmbsitez'])) 
+    {
         $vsiteID = $_POST['cmbsitez'];
         $rresult = $oas->getCashierVersion($vsiteID);
         $rresult = $rresult['CashierVersion'];
-        if ($rresult == null) {
+        if ($rresult == null) 
+        {
             $rresult = 0;
         }
         echo json_encode($rresult);
         unset($rresult);
         $oas->close();
         exit;
-    } else {
-        
-    }
-} else {
+    } 
+} 
+else 
+{
     $msg = "Not Connected";
     header("Location: login.php?mess=" . $msg);
 }
 
-function getListFromServer($url) {
+function getListFromServer($url)
+{
     $content = "";
     $fp_load = fopen("$url", "rb");
-    if ($fp_load) {
-        while (!feof($fp_load)) {
+    if ($fp_load) 
+    {
+        while (!feof($fp_load)) 
+        {
             $content .= fgets($fp_load, 8192);
         }
         fclose($fp_load);
@@ -3841,13 +4562,15 @@ function getListFromServer($url) {
     }
 }
 
-function createVirtualCashier($oas, $siteID, $vctype) {
+function createVirtualCashier($oas, $siteID, $vctype) 
+{
     $vdate = $oas->getDate();
     //select site code
     $sitecode = $oas->getSiteCode($siteID);
     //removes the "icsa-" code
     $rsiteCode = preg_replace('/^ICSA-/', '', $sitecode);
-    if (is_array($rsiteCode)) {
+    if (is_array($rsiteCode)) 
+    {
         $rsiteCode = $rsiteCode['SiteCode'];
     }
 
@@ -3856,12 +4579,15 @@ function createVirtualCashier($oas, $siteID, $vctype) {
     $vMobileNumber = '';
 
     //check if EGM or e-SAFE
-    if ($vctype == 1) { //EGM
+    if ($vctype == 1) 
+    { //EGM
         $username = 'CSHREGM' . $siteCode . '15';
         $sha = substr(sha1($username), -3);
         $UserName = 'CSHREGM' . $siteCode . $sha;
         $vUserName = strtoupper($UserName);
-    } else { //e-SAFE
+    } 
+    else 
+    { //e-SAFE
         $username = ' CSHREWVC' . $siteCode . '17';
         $sha = substr(sha1($username), -3);
         $UserName = ' CSHREWVC' . $siteCode . $sha;
@@ -3872,28 +4598,23 @@ function createVirtualCashier($oas, $siteID, $vctype) {
     //reset password
     $vPassword = sha1("temppassword" . $time);
     $vctype == 1 ? $vAccountTypeID = 15 : $vAccountTypeID = 17;
-
     $vStatus = 1;
     $vAccountGroupID = null;
     $vDateLastLogin = null;
     $vLoginAttempts = 0;
     $vSessionNoExpire = 0;
     $vDateCreated = $vdate; //get date and time
-
     $vCreatedByAID = 1;
     $vForChangePassword = 0;
-
     $vWithPasskey = 0;
     $vPasskey = null;
     $vdateissued = null;
     $vdateexpires = null;
-
     $vAID = 1; //session id
     $vName = 'Electronic Gaming Machine - ' . $siteCode;
     $vAddress = 'Makati City';
     $vEmail = 'no-reply@philweb.com.ph';
     $vdesignationID = null;
-
     //$vOption1= trim($_POST['txtcto']);
     $vOption1 = " ";
     $vOption2 = " ";
@@ -3901,16 +4622,14 @@ function createVirtualCashier($oas, $siteID, $vctype) {
 
     $isSuccess = $oas->insertaccount($vUserName, $vPassword, $vAccountTypeID, $vPasskey, $vStatus, $vAccountGroupID, $vDateLastLogin, $vLoginAttempts, $vSessionNoExpire, $vDateCreated, $vCreatedByAID, $vForChangePassword, $vWithPasskey, $vAID, $vName, $vAddress, $vEmail, $vLandline, $vMobileNumber, $vOption1, $vOption2, $vdesignationID, $vSiteID, $vdateissued, $vdateexpires);
     //check result
-    if ($isSuccess > 0) {
-        $result = array('ErrorCode' => 0,
-            'SiteCode' => $rsiteCode,
-            'Message' => 'Genesis Virtual Cashier was successfully created.');
-    } else {
-        $result = array('ErrorCode' => 1,
-            'SiteCode' => $rsiteCode,
-            'Message' => 'Genesis Virtual Cashier creation failed.');
+    if ($isSuccess > 0) 
+    {
+        $result = array('ErrorCode' => 0, 'SiteCode' => $rsiteCode, 'Message' => 'Genesis Virtual Cashier was successfully created.');
+    } 
+    else 
+    {
+        $result = array('ErrorCode' => 1, 'SiteCode' => $rsiteCode, 'Message' => 'Genesis Virtual Cashier creation failed.');
     }
     return $result;
 }
-
 ?>

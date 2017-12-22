@@ -1,7 +1,5 @@
 <?php
-
-
-/**
+/*
  * Date Created 10 3, 11 3:55:17 PM
  * Description of TopUpPDF
  * @author Bryan Salazar
@@ -10,13 +8,51 @@
 include_once "DbHandler.class.php"; 
 include_once "AppendArray.class.php"; 
 
-class TopUpReportQuery extends DBHandler{
+class TopUpReportQuery extends DBHandler
+{
+    
+    // ADDED CCT 11/29/2017 BEGIN
+   public function getMIDInfo($terminalID, $serviceID) 
+    {
+        $stmt = "SELECT MID, LoyaltyCardNumber FROM terminalsessions WHERE TerminalID = ? AND ServiceID = ?";
+        $this->prepare($stmt);
+        $this->bindparameter(1, $terminalID);
+        $this->bindparameter(2, $serviceID);
+        $this->execute();
+        $midresult = $this->fetchData();
+        return $midresult;
+    }
+      
+    public function getUBInfo($MID, $serviceID) 
+    {
+        $stmt = "SELECT ServiceUserName, ServicePassword FROM membership.memberservices WHERE MID = ? AND ServiceID = ?";
+        $this->prepare($stmt);
+        $this->bindparameter(1, $MID);
+        $this->bindparameter(2, $serviceID);
+        $this->execute();
+        $ubresult = $this->fetchData();
+        return $ubresult;
+    }
+
+    public function getterminalcredentials($zterminalID, $zserviceID)
+    {
+        $stmt = "SELECT ServicePassword FROM terminalservices 
+                WHERE ServiceID = ? AND TerminalID = ? AND Status = 1 AND isCreated = 1";
+        $this->prepare($stmt);
+        $this->bindparameter(1, $zserviceID);
+        $this->bindparameter(2, $zterminalID);
+        $this->execute();
+        return $this->fetchData();
+    }
+    // ADDED CCT 11/29/2017 END
+      
     public function __construct($sconectionstring)
     {
         parent::__construct($sconectionstring);
     }
     
-    public function confirmation($startdate, $enddate) {
+    public function confirmation($startdate, $enddate) 
+    {
         $query = "SELECT ghc.GrossHoldConfirmationID, a.UserName, s.SiteCode, ghc.DateCreated, ghc.DateCredited, ghc.SiteRepresentative, ghc.AmountConfirmed, s.POSAccountNo " . 
                 "FROM grossholdconfirmation ghc INNER JOIN accounts a ON ghc.PostedByAID = a.AID " . 
                 "INNER JOIN sites s ON ghc.SiteID = s.SiteID WHERE ghc.DateCreated >= '$startdate' AND  ghc.DateCreated < '$enddate' ORDER BY ghc.GrossHoldConfirmationID  ASC ";
@@ -42,7 +78,6 @@ class TopUpReportQuery extends DBHandler{
                                     WHERE sb.Balance <= sb.MinBalance";
                                 $this->prepare($query);                                
                                 break;
-                            
                             case $zownerAID > 0: // OWNER AND ALL ASSIGNED SITES
                                 $query = "SELECT sb.SiteID,sb.Balance,sb.MinBalance,sb.MaxBalance, s.OwnerAID,
                                     sb.LastTransactionDate,sb.TopUpType,sb.PickUpTag, s.SiteName,
@@ -76,7 +111,6 @@ class TopUpReportQuery extends DBHandler{
                                     WHERE sb.Balance > sb.MinBalance ";
                                 $this->prepare($query);                                
                                 break;
-                            
                             case $zownerAID > 0: // OWNER AND ALL ASSIGNED SITES
                                 $query = "SELECT sb.SiteID,sb.Balance,sb.MinBalance,sb.MaxBalance, s.OwnerAID,
                                     sb.LastTransactionDate,sb.TopUpType,sb.PickUpTag, s.SiteName,
@@ -183,54 +217,58 @@ class TopUpReportQuery extends DBHandler{
             }
             $varrmerge[$value['SiteID']] = array_merge($varrmerge[$value['SiteID']], $trans);
         }
-        
 
-        foreach($varrmerge as $key => $trans) {
-                $vsiteID = $trans['SiteID'];
-                // GET SUM of MANUAL REDEMPTION
-                $query2 = "SELECT SUM(ActualAmount) AS ActualAmount FROM manualredemptions " . 
-                    "WHERE SiteID = ? AND TransactionDate >= ? AND TransactionDate < ?";
-                $this->prepare($query2);
-                $this->bindparameter(1, $vsiteID); // $key is site id
-                $this->bindparameter(2, $startdate);
-                $this->bindparameter(3, $enddate);
-                $this->execute();  
-                $rows2 =  $this->fetchData();
-                $varrmerge[$key]['ActualAmount'] = '0.00';
-                if($rows2['ActualAmount'])
-                    $varrmerge[$key]['ActualAmount'] = $rows2['ActualAmount'];
-                
-                // GET PickUpTag per site id
-                $query3 = "SELECT PickUpTag FROM sitebalance WHERE SiteID = ?";
-                $this->prepare($query3);
-                $this->bindparameter(1, $vsiteID); // $key is site id
-                $this->execute();
-                $row3 =  $this->fetchData();
-                
-                if($row3['PickUpTag'] == 1) {
-                    $varrmerge[$key]['PickUpTag'] = "Metro Manila";
-                } else {
-                    $varrmerge[$key]['PickUpTag'] = "Provincial";
-                }
-                
-                $query4 = "SELECT SiteID FROM grossholdconfirmation WHERE SiteID = ? AND DateCredited = ?";
-                $this->prepare($query4);
-                $this->bindparameter(1, $vsiteID); // $key is site id   
-                $this->bindparameter(2, $startdate);
-                $this->execute();
-                $row4 =  $this->fetchData();
-                $withconfirmation = 'N';
-                if($row4) {
-                    $withconfirmation = 'Y';
-                }
-                $varrmerge[$key]['withconfirmation'] = $withconfirmation;
+        foreach($varrmerge as $key => $trans) 
+        {
+            $vsiteID = $trans['SiteID'];
+            // GET SUM of MANUAL REDEMPTION
+            $query2 = "SELECT SUM(ActualAmount) AS ActualAmount FROM manualredemptions " . 
+                "WHERE SiteID = ? AND TransactionDate >= ? AND TransactionDate < ?";
+            $this->prepare($query2);
+            $this->bindparameter(1, $vsiteID); // $key is site id
+            $this->bindparameter(2, $startdate);
+            $this->bindparameter(3, $enddate);
+            $this->execute();  
+            $rows2 =  $this->fetchData();
+            $varrmerge[$key]['ActualAmount'] = '0.00';
+            if($rows2['ActualAmount'])
+                $varrmerge[$key]['ActualAmount'] = $rows2['ActualAmount'];
+
+            // GET PickUpTag per site id
+            $query3 = "SELECT PickUpTag FROM sitebalance WHERE SiteID = ?";
+            $this->prepare($query3);
+            $this->bindparameter(1, $vsiteID); // $key is site id
+            $this->execute();
+            $row3 =  $this->fetchData();
+
+            if($row3['PickUpTag'] == 1) 
+            {
+                $varrmerge[$key]['PickUpTag'] = "Metro Manila";
+            } 
+            else 
+            {
+                $varrmerge[$key]['PickUpTag'] = "Provincial";
+            }
+
+            $query4 = "SELECT SiteID FROM grossholdconfirmation WHERE SiteID = ? AND DateCredited = ?";
+            $this->prepare($query4);
+            $this->bindparameter(1, $vsiteID); // $key is site id   
+            $this->bindparameter(2, $startdate);
+            $this->execute();
+            $row4 =  $this->fetchData();
+            $withconfirmation = 'N';
+            if($row4) 
+            {
+                $withconfirmation = 'Y';
+            }
+            $varrmerge[$key]['withconfirmation'] = $withconfirmation;
           }
-          
           return $varrmerge;
     }
     
-    public function bankDeposit($startdate,$enddate) {
-          $query = "SELECT sr.SiteRemittanceID,
+    public function bankDeposit($startdate,$enddate) 
+    {
+        $query = "SELECT sr.SiteRemittanceID,
                 sr.RemittanceTypeID,
                 sr.BankID,
                 sr.Branch,
@@ -249,32 +287,33 @@ class TopUpReportQuery extends DBHandler{
                 rt.RemittanceName as remittancename,
                 ats.Username as PostedBy,
                 st.POSAccountNo
-                FROM siteremittance sr 
+            FROM siteremittance sr 
                 LEFT JOIN sites st ON sr.SiteID = st.SiteID 
                 LEFT JOIN accountdetails ad ON sr.CreatedByAID = ad.AID 
                 LEFT JOIN ref_remittancetype rt ON sr.RemittanceTypeID = rt.RemittanceTypeID 
                 LEFT JOIN ref_banks bk ON sr.BankID = bk.BankID 
                 LEFT JOIN accounts ats ON sr.VerifiedBy = ats.CreatedByAID 
-                WHERE sr.DateCreated >= '$startdate' AND sr.DateCreated < '$enddate' AND sr.Status = 3 
-                ORDER BY sr.DateCreated ASC";
-         $this->prepare($query);
-         $this->execute();
-         return $this->fetchAllData();        
+            WHERE sr.DateCreated >= '$startdate' AND sr.DateCreated < '$enddate' AND sr.Status = 3 
+            ORDER BY sr.DateCreated ASC";
+        $this->prepare($query);
+        $this->execute();
+        return $this->fetchAllData();        
     }
     
-    public function getCohAdjustment($startdate,$enddate) {
-          $query = "SELECT b.SiteName, b.POSAccountNo, 
+    public function getCohAdjustment($startdate,$enddate) 
+    {
+        $query = "SELECT b.SiteName, b.POSAccountNo, 
                     a.Amount, a.Reason, d.Name as ApprovedBy, 
                     c.Name AS CreatedBy, a.DateCreated
-                    FROM cohadjustment a
+                FROM cohadjustment a
                     LEFT JOIN sites b ON a.SiteID = b.SiteID
                     LEFT JOIN accountdetails c ON a.CreatedByAID = c.AID
                     LEFT JOIN accountdetails d ON a.ApprovedByAID = d.AID
                 WHERE a.DateCreated >= '$startdate' AND a.DateCreated < '$enddate' ORDER BY a.DateCreated ASC";
-         $this->prepare($query);
-         $this->execute();
-         return $this->fetchAllData();
-      }
+        $this->prepare($query);
+        $this->execute();
+        return $this->fetchAllData();
+    }
     
     public function topUpHistory($startdate,$enddate,$type, $zsiteID) 
     {
@@ -289,10 +328,10 @@ class TopUpReportQuery extends DBHandler{
                            tuth.TopupAmount,tuth.TotalTopupAmount,tuth.TopupType, 
                            tuth.TopupTransactionType,tuth.DateCreated,tuth.Remarks, 
                            tuth.TopupCount,tuth.CreatedByAID, st.SiteName,st.SiteCode,st.POSAccountNo
-                           FROM topuptransactionhistory tuth JOIN sites st ON tuth.SiteID = st.SiteID
-                           WHERE tuth.DateCreated >= ?
+                       FROM topuptransactionhistory tuth JOIN sites st ON tuth.SiteID = st.SiteID
+                       WHERE tuth.DateCreated >= ?
                            AND tuth.DateCreated < ? AND tuth.TopupTransactionType IN(0,1)
-                           ORDER BY tuth.TopupHistoryID ASC";
+                       ORDER BY tuth.TopupHistoryID ASC";
                 $this->prepare($stmt);
                 $this->bindparameter(1, $startdate);
                 $this->bindparameter(2, $enddate);
@@ -304,11 +343,11 @@ class TopUpReportQuery extends DBHandler{
                            tuth.TopupAmount,tuth.TotalTopupAmount,tuth.TopupType, 
                            tuth.TopupTransactionType,tuth.DateCreated,tuth.Remarks, 
                            tuth.TopupCount,tuth.CreatedByAID, st.SiteName,st.SiteCode,st.POSAccountNo
-                           FROM topuptransactionhistory tuth JOIN sites st ON tuth.SiteID = st.SiteID
-                           WHERE tuth.DateCreated >= ?
+                       FROM topuptransactionhistory tuth JOIN sites st ON tuth.SiteID = st.SiteID
+                       WHERE tuth.DateCreated >= ?
                            AND tuth.DateCreated < ?
                            AND tuth.TopupTransactionType = ? 
-                           ORDER BY tuth.TopupHistoryID ASC";      
+                       ORDER BY tuth.TopupHistoryID ASC";      
                 $this->prepare($stmt);
                 $this->bindparameter(1, $startdate);
                 $this->bindparameter(2, $enddate);
@@ -325,8 +364,8 @@ class TopUpReportQuery extends DBHandler{
                            tuth.TopupAmount,tuth.TotalTopupAmount,tuth.TopupType, 
                            tuth.TopupTransactionType,tuth.DateCreated,tuth.Remarks, 
                            tuth.TopupCount,tuth.CreatedByAID, st.SiteName,st.SiteCode,st.POSAccountNo
-                           FROM topuptransactionhistory tuth JOIN sites st ON tuth.SiteID = st.SiteID
-                           WHERE tuth.DateCreated >= ?
+                       FROM topuptransactionhistory tuth JOIN sites st ON tuth.SiteID = st.SiteID
+                       WHERE tuth.DateCreated >= ?
                            AND tuth.DateCreated < ? AND tuth.TopupTransactionType IN(0,1)
                            AND tuth.SiteID = ? ORDER BY tuth.TopupHistoryID ASC";
                 $this->prepare($stmt);
@@ -341,11 +380,11 @@ class TopUpReportQuery extends DBHandler{
                            tuth.TopupAmount,tuth.TotalTopupAmount,tuth.TopupType, 
                            tuth.TopupTransactionType,tuth.DateCreated,tuth.Remarks, 
                            tuth.TopupCount,tuth.CreatedByAID, st.SiteName,st.SiteCode,st.POSAccountNo
-                           FROM topuptransactionhistory tuth JOIN sites st ON tuth.SiteID = st.SiteID
-                           WHERE tuth.DateCreated >= ?
+                       FROM topuptransactionhistory tuth JOIN sites st ON tuth.SiteID = st.SiteID
+                       WHERE tuth.DateCreated >= ?
                            AND tuth.DateCreated < ?
                            AND tuth.TopupTransactionType = ? AND tuth.SiteID = ? 
-                           ORDER BY tuth.TopupHistoryID ASC";      
+                       ORDER BY tuth.TopupHistoryID ASC";      
                 $this->prepare($stmt);
                 $this->bindparameter(1, $startdate);
                 $this->bindparameter(2, $enddate);
@@ -358,13 +397,14 @@ class TopUpReportQuery extends DBHandler{
         return $this->fetchAllData();        
     }
     
-    public function reversalManual($startdate,$enddate) {
+    public function reversalManual($startdate,$enddate) 
+    {
           $query = "SELECT th.TopupHistoryID,th.SiteID,sites.SiteName as SiteName,sites.SiteCode as SiteCode,
               sites.POSAccountNo, th.StartBalance,th.EndBalance,th.TopupAmount as ReversedAmount,
               th.DateCreated as TransDate,th.CreatedByAID,acc.Username as ReversedBy " .
               "FROM topuptransactionhistory as th " .
-              "inner join accounts as acc on acc.AID = th.CreatedByAID " .
-              "inner join sites on sites.SiteID = th.SiteID " . 
+                  "inner join accounts as acc on acc.AID = th.CreatedByAID " .
+                  "inner join sites on sites.SiteID = th.SiteID " . 
               "where th.DateCreated >= '$startdate' and th.DateCreated < '$enddate' and th.TopupTransactionType = 2 " . 
               "ORDER BY th.TopupHistoryID ASC ";
           $this->prepare($query);
@@ -372,8 +412,9 @@ class TopUpReportQuery extends DBHandler{
           return $this->fetchAllData();        
     }
     
-    public function manualRedemption($startdate,$enddate) {
-            $query = "SELECT mr.ManualRedemptionsID,
+    public function manualRedemption($startdate,$enddate) 
+    {
+        $query = "SELECT mr.ManualRedemptionsID,
                 mr.ReportedAmount,
                 mr.ActualAmount,
                 mr.Remarks,
@@ -387,21 +428,21 @@ class TopUpReportQuery extends DBHandler{
                 at.Name,
                 st.POSAccountNo,
                 rs.ServiceName
-                FROM manualredemptions mr 
+            FROM manualredemptions mr 
                 INNER JOIN sites st ON mr.SiteID = st.SiteID 
                 LEFT JOIN terminals tm ON mr.TerminalID = tm.TerminalID
                 INNER JOIN accountdetails at ON mr.ProcessedByAID = at.AID
                 LEFT JOIN ref_services rs ON mr.ServiceID = rs.ServiceID
-                WHERE mr.TransactionDate >= '$startdate' AND mr.TransactionDate < '$enddate'  
-                ORDER BY mr.ManualRedemptionsID ASC";
-            $this->prepare($query);
-            $this->execute();
-            return $this->fetchAllData();         
+            WHERE mr.TransactionDate >= '$startdate' AND mr.TransactionDate < '$enddate'  
+            ORDER BY mr.ManualRedemptionsID ASC";
+        $this->prepare($query);
+        $this->execute();
+        return $this->fetchAllData();         
     }   
+    
     /*
      * Get old gross hold balance if queried date is not today
      */
-    
     public function getoldGHCutoff($startdate, $enddate, $zsiteid) 
     {      
        switch ($zsiteid)
@@ -411,20 +452,18 @@ class TopUpReportQuery extends DBHandler{
                 $query1 = "SELECT sgc.SiteID, sgc.BeginningBalance, ad.Name, sd.SiteDescription, sgc.Coupon,
                             s.SiteCode, s.POSAccountNo,sgc.ReportDate,
                             sgc.DateCutOff,sgc.Deposit AS InitialDeposit, sgc.Reload AS Reload , sgc.Withdrawal AS Redemption, sgc.EwalletDeposits,  sgc.EwalletWithdrawals
-                            FROM sitegrossholdcutoff sgc
+                        FROM sitegrossholdcutoff sgc
                             INNER JOIN sites s ON s.SiteID = sgc.SiteID
                             INNER JOIN accountdetails ad ON ad.AID = s.OwnerAID
                             INNER JOIN sitedetails sd ON sd.SiteID = sgc.SiteID
-                            WHERE sgc.DateCutOff > ? AND sgc.DateCutOff <= ?
-                            ORDER BY s.SiteCode, sgc.DateCutOff";          
+                        WHERE sgc.DateCutOff > ? AND sgc.DateCutOff <= ?
+                        ORDER BY s.SiteCode, sgc.DateCutOff";          
 
                //Query for Replenishments
-                $query2 = "SELECT SiteID, Amount, DateCreated FROM replenishments
-                                    WHERE DateCreated >= ? AND DateCreated < ? ";
+                $query2 = "SELECT SiteID, Amount, DateCreated FROM replenishments WHERE DateCreated >= ? AND DateCreated < ? ";
 
                 //Query for Collection
-                $query3 = "SELECT SiteID, Amount, DateCreated FROM siteremittance
-                                    WHERE Status = 3 AND DateCreated >= ? AND DateCreated < ? ";
+                $query3 = "SELECT SiteID, Amount, DateCreated FROM siteremittance WHERE Status = 3 AND DateCreated >= ? AND DateCreated < ? ";
                 
                 //Query for Manual Redemption (per site/per cut off)
                 $query5 = "SELECT SiteID, ActualAmount AS ActualAmount,TransactionDate FROM manualredemptions " . 
@@ -709,7 +748,8 @@ class TopUpReportQuery extends DBHandler{
                 $this->execute(); 
                 $rows1 = $this->fetchAllData();        
                 $qr1 = array();
-                foreach($rows1 as $row1) {
+                foreach($rows1 as $row1) 
+                {
                     $qr1[] = array('SiteID'=>$row1['SiteID'],'BegBal'=>$row1['BeginningBalance'],
                         'POSAccountNo' => $row1['POSAccountNo'],'SiteName' => $row1['Name'],'SiteCode'=>$row1['SiteCode'], 
                         'InitialDeposit'=>'0.00','Reload'=>'0.00','Redemption'=> '0.00',
@@ -732,8 +772,7 @@ class TopUpReportQuery extends DBHandler{
                 $qr2 = array();
                 foreach($rows2 as $row2) 
                 {
-                    $qr2[] = array('SiteID'=>$row2['SiteID'],'DateCreated'=>$row2['DateCreated'],
-                        'Amount'=>$row2['Amount']);
+                    $qr2[] = array('SiteID'=>$row2['SiteID'],'DateCreated'=>$row2['DateCreated'],'Amount'=>$row2['Amount']);
                 }
 
                 // to get deposits made by cashier from metro manila
@@ -745,8 +784,7 @@ class TopUpReportQuery extends DBHandler{
                 $qr3 = array();
                 foreach($rows3 as $row3) 
                 {
-                    $qr3[] = array('SiteID'=>$row3['SiteID'],'DateCreated'=>$row3['DateCreated'],
-                        'Amount'=>$row3['Amount']);
+                    $qr3[] = array('SiteID'=>$row3['SiteID'],'DateCreated'=>$row3['DateCreated'],'Amount'=>$row3['Amount']);
                 }  
                 // to get manual redemptions based on date range
                 $this->prepare($query5);
@@ -767,54 +805,67 @@ class TopUpReportQuery extends DBHandler{
                 $this->bindparameter(2, $enddate);
                 $this->execute();  
                 $rows6 =  $this->fetchAllData();                
-                foreach ($rows6 as $row6) {
-                    foreach ($qr1 as $keys => $value1) {
-                        if($row6["SiteID"] == $value1["SiteID"]){
-                            if(($row6['DateCreated'] >= $value1['ReportDate']." ".BaseProcess::$cutoff) && ($row6['DateCreated'] < $value1['CutOff'])){
-                                if($row6["DepositCash"] != '0.00'){
+                foreach ($rows6 as $row6) 
+                {
+                    foreach ($qr1 as $keys => $value1) 
+                    {
+                        if($row6["SiteID"] == $value1["SiteID"])
+                        {
+                            if(($row6['DateCreated'] >= $value1['ReportDate']." ".BaseProcess::$cutoff) && ($row6['DateCreated'] < $value1['CutOff']))
+                            {
+                                if($row6["DepositCash"] != '0.00')
+                                {
                                     $qr1[$keys]["DepositCash"] = (float)$qr1[$keys]["DepositCash"] + (float)$row6["DepositCash"];
                                     $qr1[$keys]["InitialDeposit"] = (float)$qr1[$keys]["InitialDeposit"] + (float)$row6["DepositCash"];
                                 }
-                                if($row6["ReloadCash"] != '0.00'){
+                                if($row6["ReloadCash"] != '0.00')
+                                {
                                     $qr1[$keys]["ReloadCash"] = (float)$qr1[$keys]["ReloadCash"] + (float)$row6["ReloadCash"];
                                     $qr1[$keys]["Reload"] = (float)$qr1[$keys]["Reload"] + (float)$row6["ReloadCash"];
                                 }
-                                if($row6["RedemptionCashier"] != '0.00'){
+                                if($row6["RedemptionCashier"] != '0.00')
+                                {
                                     $qr1[$keys]["RedemptionCashier"] = (float)$qr1[$keys]["RedemptionCashier"] + (float)$row6["RedemptionCashier"];
                                     $qr1[$keys]["Redemption"] = (float)$qr1[$keys]["Redemption"] + (float)$row6["RedemptionCashier"];
                                 }
-                                if($row6["RedemptionGenesis"] != '0.00'){
+                                if($row6["RedemptionGenesis"] != '0.00')
+                                {
                                     $qr1[$keys]["RedemptionGenesis"] = (float)$qr1[$keys]["RedemptionGenesis"] + (float)$row6["RedemptionGenesis"];
                                     $qr1[$keys]["Redemption"] = (float)$qr1[$keys]["Redemption"] + (float)$row6["RedemptionGenesis"];
                                 }
-                                if($row6["DepositCoupon"] != '0.00'){
+                                if($row6["DepositCoupon"] != '0.00')
+                                {
                                     $qr1[$keys]["DepositCoupon"] = (float)$qr1[$keys]["DepositCoupon"] + (float)$row6["DepositCoupon"];
                                     $qr1[$keys]["Coupon"] = (float)$qr1[$keys]["Coupon"] + (float)$row6["DepositCoupon"];
                                     $qr1[$keys]["InitialDeposit"] = (float)$qr1[$keys]["InitialDeposit"] + (float)$row6["DepositCoupon"];
                                 }
-                                if($row6["ReloadCoupon"] != '0.00'){
+                                if($row6["ReloadCoupon"] != '0.00')
+                                {
                                     $qr1[$keys]["ReloadCoupon"] = (float)$qr1[$keys]["ReloadCoupon"] + (float)$row6["ReloadCoupon"];
                                     $qr1[$keys]["Coupon"] = (float)$qr1[$keys]["Coupon"] + (float)$row6["ReloadCoupon"];
                                     $qr1[$keys]["Reload"] = (float)$qr1[$keys]["Reload"] + (float)$row6["ReloadCoupon"];
                                 }
-                                if($row6["DepositTicket"] != '0.00'){
+                                if($row6["DepositTicket"] != '0.00')
+                                {
                                     $qr1[$keys]["LoadTickets"] = (float)$qr1[$keys]["LoadTickets"] + (float)$row6["DepositTicket"];
                                     $qr1[$keys]["InitialDeposit"] = (float)$qr1[$keys]["InitialDeposit"] + (float)$row6["DepositTicket"];
                                 }
-                                if($row6["ReloadTicket"] != '0.00'){
+                                if($row6["ReloadTicket"] != '0.00')
+                                {
                                     $qr1[$keys]["LoadTickets"] = (float)$qr1[$keys]["LoadTickets"] + (float)$row6["ReloadTicket"];
                                     $qr1[$keys]["Reload"] = (float)$qr1[$keys]["Reload"] + (float)$row6["ReloadTicket"];
                                 }
-                                if($row6["TotalRedemption"] != '0.00'){
+                                if($row6["TotalRedemption"] != '0.00')
+                                {
                                     $qr1[$keys]["TotalRedemption"] = (float)$qr1[$keys]["TotalRedemption"] + (float)$row6["TotalRedemption"];                                
-                                    
                                 }
                             }
                         }
                     }     
                 }
                 
-                foreach ($qr1 as $keys => $value2) {
+                foreach ($qr1 as $keys => $value2) 
+                {
                     //Get the total Unused Tickets per site
                     $this->prepare($query7);
                     $this->bindparameter(":startdate", $value2["ReportDate"]." ".BaseProcess::$cutoff);
@@ -822,9 +873,12 @@ class TopUpReportQuery extends DBHandler{
                     $this->bindparameter(":siteid", $value2["SiteID"]);
                     $this->execute();  
                     $rows7 =  $this->fetchAllData();
-                    foreach ($rows7 as $row7) {
-                        if($row7["SiteID"] == $value2["SiteID"]){
-                            if(($row7['DateCreated'] >= $value2['ReportDate']." ".BaseProcess::$cutoff) && ($row7['DateCreated'] < $value2['CutOff'])){
+                    foreach ($rows7 as $row7) 
+                    {
+                        if($row7["SiteID"] == $value2["SiteID"])
+                        {
+                            if(($row7['DateCreated'] >= $value2['ReportDate']." ".BaseProcess::$cutoff) && ($row7['DateCreated'] < $value2['CutOff']))
+                            {
                                 $qr1[$keys]["UnusedTickets"] = (float)$row7["UnusedTickets"];
                             }
                         }
@@ -837,9 +891,11 @@ class TopUpReportQuery extends DBHandler{
                     $this->execute();  
                     $rows8 =  $this->fetchAllData();
                     
-                    foreach ($rows8 as $row8) {
+                    foreach ($rows8 as $row8) 
+                    {
                         if($row8["SiteID"] == $value2["SiteID"]){
-                            if(($row8['DateCreated'] >= $value2['ReportDate']." ".BaseProcess::$cutoff) && ($row8['DateCreated'] < $value2['CutOff'])){
+                            if(($row8['DateCreated'] >= $value2['ReportDate']." ".BaseProcess::$cutoff) && ($row8['DateCreated'] < $value2['CutOff']))
+                            {
                                 $qr1[$keys]["PrintedTickets"] = (float)$row8["PrintedTickets"];
                             }
                             break;
@@ -854,9 +910,12 @@ class TopUpReportQuery extends DBHandler{
                     $this->execute();  
                     $rows9 =  $this->fetchAllData();
                     
-                    foreach ($rows9 as $row9) {
-                        if($row9["SiteID"] == $value2["SiteID"]){
-                            if(($row9['DateCreated'] >= $value2['ReportDate']." ".BaseProcess::$cutoff) && ($row9['DateCreated'] < $value2['CutOff'])){
+                    foreach ($rows9 as $row9) 
+                    {
+                        if($row9["SiteID"] == $value2["SiteID"])
+                        {
+                            if(($row9['DateCreated'] >= $value2['ReportDate']." ".BaseProcess::$cutoff) && ($row9['DateCreated'] < $value2['CutOff']))
+                            {
                                 $qr1[$keys]["EncashedTickets"] = (float)$row9["EncashedTickets"];
                             }
                             break;
@@ -871,18 +930,22 @@ class TopUpReportQuery extends DBHandler{
                 $this->execute();  
                 $rows10 =  $this->fetchAllData();
 
-                foreach ($rows10 as $value1) {
-                    foreach ($qr1 as $keys => $value2) {
-                        if($value1["SiteID"] == $value2["SiteID"]){
-                                if($value1['ReportDate'] == $value2['ReportDate']){
-                                    $qr1[$keys]["EwalletCashLoads"] += (float)$value1["EwalletCashDeposit"];
-                                    $qr1[$keys]["EwalletCashLoads"] += (float)$value1["EwalletBancnetDeposit"];
-                                    $qr1[$keys]["EwalletWithdraw"] += (float)$value1["EwalletRedemption"];
-                                    //$qr1[$keys]["EwalletRedemptionGenesis"] += (float)$value1["EwalletRedemptionGenesis"];
-                                    $qr1[$keys]["EwalletLoads"] += (float)$value1["EwalletDeposits"];
-                                    $qr1[$keys]["ewalletCoupon"] += (float)$value1["EwalletVoucherDeposit"];
-                                    $qr1[$keys]["LoadTickets"] += (float)$qr1[$keys]["LoadTickets"] + (float)$value1["EwalletTicketDeposit"];
-                                }
+                foreach ($rows10 as $value1) 
+                {
+                    foreach ($qr1 as $keys => $value2) 
+                    {
+                        if($value1["SiteID"] == $value2["SiteID"])
+                        {
+                            if($value1['ReportDate'] == $value2['ReportDate'])
+                            {
+                                $qr1[$keys]["EwalletCashLoads"] += (float)$value1["EwalletCashDeposit"];
+                                $qr1[$keys]["EwalletCashLoads"] += (float)$value1["EwalletBancnetDeposit"];
+                                $qr1[$keys]["EwalletWithdraw"] += (float)$value1["EwalletRedemption"];
+                                //$qr1[$keys]["EwalletRedemptionGenesis"] += (float)$value1["EwalletRedemptionGenesis"];
+                                $qr1[$keys]["EwalletLoads"] += (float)$value1["EwalletDeposits"];
+                                $qr1[$keys]["ewalletCoupon"] += (float)$value1["EwalletVoucherDeposit"];
+                                $qr1[$keys]["LoadTickets"] += (float)$qr1[$keys]["LoadTickets"] + (float)$value1["EwalletTicketDeposit"];
+                            }
                             break;
                         }
                     }  
@@ -895,17 +958,20 @@ class TopUpReportQuery extends DBHandler{
                 $this->execute();  
                 $rows11 =  $this->fetchAllData();
                 
-                foreach ($rows11 as $value1) {
-                    foreach ($qr1 as $keys => $value2) {
-                        if($value1["SiteID"] == $value2["SiteID"]){
-                            if(($value1['DateEncashed'] >= $value2['ReportDate']." ".BaseProcess::$cutoff) && ($value1['DateEncashed'] < $value2['CutOff'])){
+                foreach ($rows11 as $value1) 
+                {
+                    foreach ($qr1 as $keys => $value2) 
+                    {
+                        if($value1["SiteID"] == $value2["SiteID"])
+                        {
+                            if(($value1['DateEncashed'] >= $value2['ReportDate']." ".BaseProcess::$cutoff) && ($value1['DateEncashed'] < $value2['CutOff']))
+                            {
                                 $qr1[$keys]["EncashedTicketsV15"] = (float)$value1["EncashedTicketsV2"];
                             }
                             break;
                         }
                     }  
                 }
-                
                 
                 $ctr = 0;
                 while($ctr < count($qr1))
@@ -982,8 +1048,8 @@ class TopUpReportQuery extends DBHandler{
                             INNER JOIN sites s ON s.SiteID = sgc.SiteID
                             INNER JOIN accountdetails ad ON ad.AID = s.OwnerAID
                             INNER JOIN sitedetails sd ON sd.SiteID = sgc.SiteID
-                            WHERE sgc.DateCutOff >= ?
-                            AND sgc.DateCutOff < ? AND sgc.SiteID = ?
+                            WHERE sgc.DateCutOff > ?
+                            AND sgc.DateCutOff <= ? AND sgc.SiteID = ?
                             ORDER BY s.SiteCode, sgc.DateCutOff";          
 
                //Query for Replenishments
@@ -1283,7 +1349,8 @@ class TopUpReportQuery extends DBHandler{
                 $this->execute(); 
                 $rows1 = $this->fetchAllData();        
                 $qr1 = array();
-                foreach($rows1 as $row1) {
+                foreach($rows1 as $row1) 
+                {
                     $qr1[] = array('SiteID'=>$row1['SiteID'],'BegBal'=>$row1['BeginningBalance'],
                             'POSAccountNo' => $row1['POSAccountNo'],'SiteName' => $row1['Name'],'SiteCode'=>$row1['SiteCode'], 
                             'InitialDeposit'=>'0.00','Reload'=>'0.00','Redemption'=>'0.00',
@@ -1307,8 +1374,7 @@ class TopUpReportQuery extends DBHandler{
                 $qr2 = array();
                 foreach($rows2 as $row2) 
                 {
-                    $qr2[] = array('SiteID'=>$row2['SiteID'],'DateCreated'=>$row2['DateCreated'],
-                        'Amount'=>$row2['Amount']);
+                    $qr2[] = array('SiteID'=>$row2['SiteID'],'DateCreated'=>$row2['DateCreated'], 'Amount'=>$row2['Amount']);
                 }
 
                 // to get deposits made by cashier from metro manila
@@ -1321,8 +1387,7 @@ class TopUpReportQuery extends DBHandler{
                 $qr3 = array();
                 foreach($rows3 as $row3) 
                 {
-                    $qr3[] = array('SiteID'=>$row3['SiteID'],'DateCreated'=>$row3['DateCreated'],
-                        'Amount'=>$row3['Amount']);
+                    $qr3[] = array('SiteID'=>$row3['SiteID'],'DateCreated'=>$row3['DateCreated'], 'Amount'=>$row3['Amount']);
                 }  
                 // to get manual redemptions based on date range
                 $this->prepare($query5);
@@ -1346,45 +1411,58 @@ class TopUpReportQuery extends DBHandler{
                 $this->execute();  
                 $rows6 =  $this->fetchAllData();
 
-                foreach ($rows6 as $row6) {
-                    foreach ($qr1 as $keys => $value1) {
-                        if($row6["SiteID"] == $value1["SiteID"]){
-                            if(($row6['DateCreated'] >= $value1['ReportDate']." ".BaseProcess::$cutoff) && ($row6['DateCreated'] < $value1['CutOff'])){
-                                if($row6["DepositCash"] != '0.00'){
+                foreach ($rows6 as $row6) 
+                {
+                    foreach ($qr1 as $keys => $value1) 
+                    {
+                        if($row6["SiteID"] == $value1["SiteID"])
+                        {
+                            if(($row6['DateCreated'] >= $value1['ReportDate']." ".BaseProcess::$cutoff) && ($row6['DateCreated'] < $value1['CutOff']))
+                            {
+                                if($row6["DepositCash"] != '0.00')
+                                {
                                     $qr1[$keys]["DepositCash"] = (float)$qr1[$keys]["DepositCash"] + (float)$row6["DepositCash"];
                                     $qr1[$keys]["InitialDeposit"] = (float)$qr1[$keys]["InitialDeposit"] + (float)$row6["DepositCash"];
                                 }
-                                if($row6["ReloadCash"] != '0.00'){
+                                if($row6["ReloadCash"] != '0.00')
+                                {
                                     $qr1[$keys]["ReloadCash"] = (float)$qr1[$keys]["ReloadCash"] + (float)$row6["ReloadCash"];
                                     $qr1[$keys]["Reload"] = (float)$qr1[$keys]["Reload"] + (float)$row6["ReloadCash"];
                                 }
-                                if($row6["RedemptionCashier"] != '0.00'){
+                                if($row6["RedemptionCashier"] != '0.00')
+                                {
                                     $qr1[$keys]["RedemptionCashier"] = (float)$qr1[$keys]["RedemptionCashier"] + (float)$row6["RedemptionCashier"];
                                     $qr1[$keys]["Redemption"] = (float)$qr1[$keys]["Redemption"] + (float)$row6["RedemptionCashier"];
-                                    }
-                                if($row6["RedemptionGenesis"] != '0.00'){
+                                }
+                                if($row6["RedemptionGenesis"] != '0.00')
+                                {
                                     $qr1[$keys]["RedemptionGenesis"] = (float)$qr1[$keys]["RedemptionGenesis"] + (float)$row6["RedemptionGenesis"];
                                     $qr1[$keys]["Redemption"] = (float)$qr1[$keys]["Redemption"] + (float)$row6["RedemptionGenesis"];
-                                    }
-                                if($row6["DepositCoupon"] != '0.00'){
+                                }
+                                if($row6["DepositCoupon"] != '0.00')
+                                {
                                     $qr1[$keys]["DepositCoupon"] = (float)$qr1[$keys]["DepositCoupon"] + (float)$row6["DepositCoupon"];
                                     $qr1[$keys]["Coupon"] = (float)$qr1[$keys]["Coupon"] + (float)$row6["DepositCoupon"];
                                     $qr1[$keys]["InitialDeposit"] = (float)$qr1[$keys]["InitialDeposit"] + (float)$row6["DepositCoupon"];
                                 }
-                                if($row6["ReloadCoupon"] != '0.00'){
+                                if($row6["ReloadCoupon"] != '0.00')
+                                {
                                     $qr1[$keys]["ReloadCoupon"] = (float)$qr1[$keys]["ReloadCoupon"] + (float)$row6["ReloadCoupon"];
                                     $qr1[$keys]["Coupon"] = (float)$qr1[$keys]["Coupon"] + (float)$row6["ReloadCoupon"];
                                     $qr1[$keys]["Reload"] = (float)$qr1[$keys]["Reload"] + (float)$row6["ReloadCoupon"];
                                 }
-                                if($row6["DepositTicket"] != '0.00'){
+                                if($row6["DepositTicket"] != '0.00')
+                                {
                                     $qr1[$keys]["LoadTickets"] = (float)$qr1[$keys]["LoadTicket"] + (float)$row6["DepositTicket"];
                                     $qr1[$keys]["InitialDeposit"] = (float)$qr1[$keys]["InitialDeposit"] + (float)$row6["DepositTicket"];
                                 }
-                                if($row6["ReloadTicket"] != '0.00'){
+                                if($row6["ReloadTicket"] != '0.00')
+                                {
                                     $qr1[$keys]["LoadTickets"] = (float)$qr1[$keys]["LoadTicket"] + (float)$row6["ReloadTicket"];
                                     $qr1[$keys]["Reload"] = (float)$qr1[$keys]["Reload"] + (float)$row6["ReloadTicket"];
                                 }
-                                if($row6["TotalRedemption"] != '0.00'){
+                                if($row6["TotalRedemption"] != '0.00')
+                                {
                                     $qr1[$keys]["TotalRedemption"] = (float)$qr1[$keys]["TotalRedemption"] + (float)$row6["TotalRedemption"];                                
                                     
                                 }
@@ -1393,7 +1471,8 @@ class TopUpReportQuery extends DBHandler{
                     }     
                 }
 
-                foreach ($qr1 as $keys => $value2) {
+                foreach ($qr1 as $keys => $value2) 
+                {
                     //Get the total Unused Tickets per site
                     $this->prepare($query7);
                     $this->bindparameter(":siteid", $value2["SiteID"]);
@@ -1401,9 +1480,12 @@ class TopUpReportQuery extends DBHandler{
                     $this->bindparameter(":enddate", $value2["CutOff"]);
                     $this->execute();  
                     $rows7 =  $this->fetchAllData();
-                    foreach ($rows7 as $row7) {
-                        if($row7["SiteID"] == $value2["SiteID"]){
-                            if(($row7['DateCreated'] >= $value2['ReportDate']." ".BaseProcess::$cutoff) && ($row7['DateCreated'] < $value2['CutOff'])){
+                    foreach ($rows7 as $row7) 
+                    {
+                        if($row7["SiteID"] == $value2["SiteID"])
+                        {
+                            if(($row7['DateCreated'] >= $value2['ReportDate']." ".BaseProcess::$cutoff) && ($row7['DateCreated'] < $value2['CutOff']))
+                            {
                                 $qr1[$keys]["UnusedTickets"] = (float)$row7["UnusedTickets"];
                             }
                         }
@@ -1414,15 +1496,18 @@ class TopUpReportQuery extends DBHandler{
                     $this->bindparameter(":startdate", $value2["ReportDate"]." ".BaseProcess::$cutoff);
                     $this->bindparameter(":enddate", $value2["CutOff"]);
                     $this->bindparameter(":siteid", $value2["SiteID"]);
-                    $this->bindparameter(":startdate", $value2["ReportDate"]." ".BaseProcess::$cutoff);
-                    $this->bindparameter(":enddate", $value2["CutOff"]);
-                    $this->bindparameter(":siteid", $value2["SiteID"]);
+   //                 $this->bindparameter(":startdate", $value2["ReportDate"]." ".BaseProcess::$cutoff);
+//                    $this->bindparameter(":enddate", $value2["CutOff"]);
+ //                  $this->bindparameter(":siteid", $value2["SiteID"]);
                     $this->execute();  
                     $rows8 =  $this->fetchAllData();
 
-                    foreach ($rows8 as $row8) {
-                        if($row8["SiteID"] == $value2["SiteID"]){
-                            if(($row8['DateCreated'] >= $value2['ReportDate']." ".BaseProcess::$cutoff) && ($row8['DateCreated'] < $value2['CutOff'])){
+                    foreach ($rows8 as $row8) 
+                    {
+                        if($row8["SiteID"] == $value2["SiteID"])
+                        {
+                            if(($row8['DateCreated'] >= $value2['ReportDate']." ".BaseProcess::$cutoff) && ($row8['DateCreated'] < $value2['CutOff']))
+                            {
                                 $qr1[$keys]["PrintedTickets"] = (float)$row8["PrintedTickets"];
                             }
                         }
@@ -1436,9 +1521,12 @@ class TopUpReportQuery extends DBHandler{
                     $this->execute();  
                     $rows9 =  $this->fetchAllData();
                     
-                    foreach ($rows9 as $row9) {
-                        if($row9["SiteID"] == $value2["SiteID"]){
-                            if(($row9['DateCreated'] >= $value2['ReportDate']." ".BaseProcess::$cutoff) && ($row9['DateCreated'] < $value2['CutOff'])){
+                    foreach ($rows9 as $row9) 
+                    {
+                        if($row9["SiteID"] == $value2["SiteID"])
+                        {
+                            if(($row9['DateCreated'] >= $value2['ReportDate']." ".BaseProcess::$cutoff) && ($row9['DateCreated'] < $value2['CutOff']))
+                            {
                                 $qr1[$keys]["EncashedTickets"] = (float)$row9["EncashedTickets"];
                             }
                             break;
@@ -1455,18 +1543,22 @@ class TopUpReportQuery extends DBHandler{
                 $this->execute();  
                 $rows10 =  $this->fetchAllData();
 
-                foreach ($rows10 as $value1) {
-                    foreach ($qr1 as $keys => $value2) {
-                        if($value1["SiteID"] == $value2["SiteID"]){
-                                if($value1['ReportDate'] == $value2['ReportDate']){
-                                    $qr1[$keys]["EwalletCashLoads"] += (float)$value1["EwalletCashDeposit"];
-                                    $qr1[$keys]["EwalletCashLoads"] += (float)$value1["EwalletBancnetDeposit"];
-                                    $qr1[$keys]["EwalletWithdraw"] += (float)$value1["EwalletRedemption"];
-                                    $qr1[$keys]["EwalletLoads"] += (float)$value1["EwalletDeposits"];
-                                    //$qr1[$keys]["EwalletRedemptionGenesis"] += (float)$value1["EwalletRedemptionGenesis"];
-                                    $qr1[$keys]["ewalletCoupon"] += (float)$value1["EwalletVoucherDeposit"];
-                                    $qr1[$keys]["LoadTickets"] += (float)$qr1[$keys]["LoadTickets"] + (float)$value1["EwalletTicketDeposit"];
-                                }
+                foreach ($rows10 as $value1) 
+                {
+                    foreach ($qr1 as $keys => $value2) 
+                    {
+                        if($value1["SiteID"] == $value2["SiteID"])
+                        {
+                            if($value1['ReportDate'] == $value2['ReportDate'])
+                            {
+                                $qr1[$keys]["EwalletCashLoads"] += (float)$value1["EwalletCashDeposit"];
+                                $qr1[$keys]["EwalletCashLoads"] += (float)$value1["EwalletBancnetDeposit"];
+                                $qr1[$keys]["EwalletWithdraw"] += (float)$value1["EwalletRedemption"];
+                                $qr1[$keys]["EwalletLoads"] += (float)$value1["EwalletDeposits"];
+                                //$qr1[$keys]["EwalletRedemptionGenesis"] += (float)$value1["EwalletRedemptionGenesis"];
+                                $qr1[$keys]["ewalletCoupon"] += (float)$value1["EwalletVoucherDeposit"];
+                                $qr1[$keys]["LoadTickets"] += (float)$qr1[$keys]["LoadTickets"] + (float)$value1["EwalletTicketDeposit"];
+                            }
                             break;
                         }
                     }  
@@ -1480,10 +1572,14 @@ class TopUpReportQuery extends DBHandler{
                 $this->execute();  
                 $rows11 =  $this->fetchAllData();
                 
-                foreach ($rows11 as $value1) {
-                    foreach ($qr1 as $keys => $value2) {
-                        if($value1["SiteID"] == $value2["SiteID"]){
-                            if(($value1['DateEncashed'] >= $value2['ReportDate']." ".BaseProcess::$cutoff) && ($value1['DateEncashed'] < $value2['CutOff'])){
+                foreach ($rows11 as $value1) 
+                {
+                    foreach ($qr1 as $keys => $value2) 
+                    {
+                        if($value1["SiteID"] == $value2["SiteID"])
+                        {
+                            if(($value1['DateEncashed'] >= $value2['ReportDate']." ".BaseProcess::$cutoff) && ($value1['DateEncashed'] < $value2['CutOff']))
+                            {
                                 $qr1[$keys]["EncashedTicketsV15"] = (float)$value1["EncashedTicketsV2"];
                             }
                             break;
@@ -1491,8 +1587,6 @@ class TopUpReportQuery extends DBHandler{
                     }  
                 }
                 
-//                print_r($qr1);
-//                print_r($qr5);
                 $ctr = 0;
                 while($ctr < count($qr1))
                 {
@@ -1511,16 +1605,7 @@ class TopUpReportQuery extends DBHandler{
                                      $amount = $qr1[$ctr]['ManualRedemption'];
                                      $qr1[$ctr]['ManualRedemption'] = $amount + $qr5[$ctr2]['ManualRedemption'];
                                  }
-                                 
-//                                 echo $ctr."==>".$qr5[$ctr2]['mrtransdate']." >= ".$qr1[$ctr]['reportdate']."==>".
-//                                         $qr5[$ctr2]['mrtransdate']." < ".$qr1[$ctr]['cutoff']."==>".$qr1[$ctr]['manualredemption']."<br />";
-//                                 
                             }
-//                            else {
-//                                
-//                                echo "NOT IN ".$qr5[$ctr2]['mrtransdate'].">=".$qr1[$ctr]['reportdate']."<br />";
-//                                
-//                            }
                         }
                         $ctr2 = $ctr2 + 1;
                     }            
@@ -1570,343 +1655,336 @@ class TopUpReportQuery extends DBHandler{
                break;
        }
   
-        unset($query1,$query2,$query3,$query5, $rows1,$rows2,$rows3,$qr2,
-                $qr3,$rows4,$rows5);
+        unset($query1,$query2,$query3,$query5, $rows1,$rows2,$rows3,$qr2, $qr3,$rows4,$rows5);
         return $qr1;
     }
-     public function getTerminalCode($sitecode, $terminalID)
-      {
-          $query = "SELECT TerminalCode FROM terminals t INNER JOIN sites as s ON t.SiteID = s.SiteID  WHERE s.siteCode = '$sitecode' AND t.terminalID = $terminalID";
-           $this->prepare($query);
-          $this->execute();
-          $code =  $this->fetchAllData();
-          $terminalCodes = $code[0]["TerminalCode"];
-            return $terminalCodes;
-          
-      }
-            public function getVipTerminal($sitecode, $terminalCode)
-      {
-          $query = "SELECT TerminalID FROM terminals t INNER JOIN sites as s ON t.SiteID = s.SiteID  WHERE s.siteCode = '$sitecode' AND t.terminalCode = '$terminalCode'";
-           $this->prepare($query);
-          $this->execute();
-          $code =  $this->fetchAllData();
-          $terminalCodes = $code[0]["TerminalID"];
-          return $terminalCodes;
-          
-      }
-     public function getRptActiveTerminals($zsitecode, $terminalid="all", $vipTerminal) 
+    
+    public function getTerminalCode($sitecode, $terminalID)
     {
-          //if site was selected All
-          if($zsitecode == "all")
-          {
-              $query = "SELECT ts.TerminalID, t.TerminalName,s.SiteName, s.POSAccountNo, s.SiteCode,ts.ServiceID,
-                        CASE t.TerminalType WHEN 0 THEN 'Regular' WHEN 1 THEN 'Genesis' ELSE 'e-SAFE' END AS TerminalType, 
-                        t.TerminalCode, rs.ServiceName, ts.UserMode, m.IsEwallet FROM terminalsessions ts
-                        INNER JOIN terminals as t ON ts.TerminalID = t.terminalID 
-                        INNER JOIN sites as s ON t.SiteID = s.SiteID 
-                        INNER JOIN ref_services rs ON ts.ServiceID = rs.ServiceID
-                        INNER JOIN membership.members m ON m.MID = ts.MID
-                        ORDER BY s.SiteCode, t.TerminalCode  ASC";
-              $this->prepare($query);
-          }
-          else
-          {
-              $terminalid != "all"? $vipTerminal!= "all" ? $additioncond = "AND ts.TerminalID IN ($terminalid, $vipTerminal) ":$additioncond = "" :$additioncond = "";
-              $query = "SELECT ts.TerminalID, t.TerminalName,s.SiteName, s.POSAccountNo, s.SiteCode,ts.ServiceID,
-                        CASE t.TerminalType WHEN 0 THEN 'Regular' WHEN 1 THEN 'Genesis' ELSE 'e-SAFE' END AS TerminalType, 
-                        t.TerminalCode, rs.ServiceName, ts.UserMode, m.IsEwallet FROM terminalsessions ts
-                        INNER JOIN terminals as t ON ts.TerminalID = t.terminalID 
-                        INNER JOIN sites as s ON t.SiteID = s.SiteID 
-                        INNER JOIN ref_services rs ON ts.ServiceID = rs.ServiceID
-                        INNER JOIN membership.members m ON m.MID = ts.MID
-                        WHERE s.SiteCode = '".$zsitecode."' ".$additioncond."ORDER BY s.SiteCode, t.TerminalCode ASC";
-              $this->prepare($query);
-          }
-          $this->execute();
-          return $this->fetchAllData();
+        $query = "SELECT TerminalCode FROM terminals t INNER JOIN sites as s ON t.SiteID = s.SiteID  WHERE s.siteCode = '$sitecode' AND t.terminalID = $terminalID";
+        $this->prepare($query);
+        $this->execute();
+        $code =  $this->fetchAllData();
+        $terminalCodes = $code[0]["TerminalCode"];
+        return $terminalCodes;
+    }
+ 
+    public function getVipTerminal($sitecode, $terminalCode)
+    {
+        $query = "SELECT TerminalID FROM terminals t INNER JOIN sites as s ON t.SiteID = s.SiteID  WHERE s.siteCode = '$sitecode' AND t.terminalCode = '$terminalCode'";
+        $this->prepare($query);
+        $this->execute();
+        $code =  $this->fetchAllData();
+        $terminalCodes = $code[0]["TerminalID"];
+        return $terminalCodes;
     }
     
-     /**
-     * @author Gerardo V. Jagolino Jr.
-      *@params $cardnumber
-     * @return array
-     * selecting active terminals via card number
-     */    
-     public function getRptActiveTerminalsUB($cardnumber) 
+    public function getRptActiveTerminals($zsitecode, $terminalid="all", $vipTerminal) 
     {
-          
-              $query = "SELECT ts.TerminalID, t.TerminalName,s.SiteName, s.POSAccountNo, s.SiteCode,ts.ServiceID,
-                        CASE t.TerminalType WHEN 0 THEN 'Regular' WHEN 1 THEN 'Genesis' ELSE 'e-SAFE' END AS TerminalType, 
-                        t.TerminalCode, rs.ServiceName, ts.UserMode, ts.UBServiceLogin, m.IsEwallet FROM terminalsessions ts
-                        INNER JOIN terminals as t ON ts.TerminalID = t.terminalID 
-                        INNER JOIN sites as s ON t.SiteID = s.SiteID 
-                        INNER JOIN ref_services rs ON ts.ServiceID = rs.ServiceID
-                        INNER JOIN membership.members m ON m.MID = ts.MID
-                        WHERE ts.LoyaltyCardNumber = '".$cardnumber."' ORDER BY s.SiteCode, t.TerminalCode ASC";
-              $this->prepare($query);
-             
-          $this->execute();
-          return $this->fetchAllData();
+      //if site was selected All
+      if($zsitecode == "all")
+      {
+          $query = "SELECT ts.TerminalID, t.TerminalName,s.SiteName, s.POSAccountNo, s.SiteCode,ts.ServiceID,
+                    CASE t.TerminalType WHEN 0 THEN 'Regular' WHEN 1 THEN 'Genesis' ELSE 'e-SAFE' END AS TerminalType, 
+                    t.TerminalCode, rs.ServiceName, ts.UserMode, m.IsEwallet FROM terminalsessions ts
+                    INNER JOIN terminals as t ON ts.TerminalID = t.terminalID 
+                    INNER JOIN sites as s ON t.SiteID = s.SiteID 
+                    INNER JOIN ref_services rs ON ts.ServiceID = rs.ServiceID
+                    INNER JOIN membership.members m ON m.MID = ts.MID
+                    ORDER BY s.SiteCode, t.TerminalCode  ASC";
+          $this->prepare($query);
+      }
+      else
+      {
+          $terminalid != "all"? $vipTerminal!= "all" ? $additioncond = "AND ts.TerminalID IN ($terminalid, $vipTerminal) ":$additioncond = "" :$additioncond = "";
+          $query = "SELECT ts.TerminalID, t.TerminalName,s.SiteName, s.POSAccountNo, s.SiteCode,ts.ServiceID,
+                    CASE t.TerminalType WHEN 0 THEN 'Regular' WHEN 1 THEN 'Genesis' ELSE 'e-SAFE' END AS TerminalType, 
+                    t.TerminalCode, rs.ServiceName, ts.UserMode, m.IsEwallet FROM terminalsessions ts
+                    INNER JOIN terminals as t ON ts.TerminalID = t.terminalID 
+                    INNER JOIN sites as s ON t.SiteID = s.SiteID 
+                    INNER JOIN ref_services rs ON ts.ServiceID = rs.ServiceID
+                    INNER JOIN membership.members m ON m.MID = ts.MID
+                    WHERE s.SiteCode = '".$zsitecode."' ".$additioncond."ORDER BY s.SiteCode, t.TerminalCode ASC";
+          $this->prepare($query);
+      }
+      $this->execute();
+      return $this->fetchAllData();
     }
     
-    public function getUBServiceLogin($terminalid) {
+    /**
+    * @author Gerardo V. Jagolino Jr.
+     *@params $cardnumber
+    * @return array
+    * selecting active terminals via card number
+    */    
+    public function getRptActiveTerminalsUB($cardnumber) 
+    {
+      $query = "SELECT ts.TerminalID, t.TerminalName,s.SiteName, s.POSAccountNo, s.SiteCode,ts.ServiceID,
+                CASE t.TerminalType WHEN 0 THEN 'Regular' WHEN 1 THEN 'Genesis' ELSE 'e-SAFE' END AS TerminalType, 
+                t.TerminalCode, rs.ServiceName, ts.UserMode, ts.UBServiceLogin, m.IsEwallet FROM terminalsessions ts
+                INNER JOIN terminals as t ON ts.TerminalID = t.terminalID 
+                INNER JOIN sites as s ON t.SiteID = s.SiteID 
+                INNER JOIN ref_services rs ON ts.ServiceID = rs.ServiceID
+                INNER JOIN membership.members m ON m.MID = ts.MID
+                WHERE ts.LoyaltyCardNumber = '".$cardnumber."' ORDER BY s.SiteCode, t.TerminalCode ASC";
+      $this->prepare($query);
+      $this->execute();
+      return $this->fetchAllData();
+    }
+    
+    public function getUBServiceLogin($terminalid) 
+    {
+      $query = "SELECT UBServiceLogin FROM terminalsessions WHERE TerminalID = ?";
+      $this->prepare($query);
+      $this->bindparameter(1, $terminalid);
+      $this->execute();
+      $ublogin = $this->fetchData();
+      $ublogin = $ublogin['UBServiceLogin'];
+      return $ublogin;
+    }
+    
+    public function getAgentSessionGuid($terminalid) 
+    {
+        $query = "SELECT C.ServiceAgentSessionID FROM serviceterminals A INNER JOIn terminalmapping B ON A.ServiceTerminalID = B.ServiceTerminalID
+               INNER JOIN serviceagentsessions C ON A.ServiceAgentID = C.ServiceAgentID WHERE B.TerminalID = '" . $terminalid . "';";
+        $this->prepare($query);
+        $this->execute();
+        $rows = $this->fetchAllData();
+        if(isset($rows[0]['ServiceAgentSessionID']))
+            return $rows[0]['ServiceAgentSessionID'];
+        return '';
+    }
+    
+    public function getRefServices() 
+    {
+      $query = "SELECT rs.ServiceID, rs.Alias, rs.ServiceName, rsg.ServiceGroupName FROM ref_services rs INNER JOIN ref_servicegroups rsg ON rs.ServiceGroupID = rsg.ServiceGroupID";
+      $this->prepare($query);
+      $this->execute();
+      return $this->fetchAllData();
+    }
+    
+    public function ListPEGSSubjectReport($sort,$dir,$startdate,$enddate) 
+    {
+        $query1 = "SELECT s.POSAccountNo, s.SiteID, a.AID, ad.Name
+                    FROM sites s
+                        INNER JOIN accounts a ON a.AID = s.OwnerAID
+                        INNER JOIN accountdetails ad ON ad.AID = a.AID 
+                    ORDER by s.SiteID";
 
-          $query = "SELECT UBServiceLogin FROM terminalsessions WHERE TerminalID = ?";
-          $this->prepare($query);
-          $this->bindparameter(1, $terminalid);
-          $this->execute();
-          $ublogin = $this->fetchData();
-          $ublogin = $ublogin['UBServiceLogin'];
-          return $ublogin;
-      }
-    
-    public function getAgentSessionGuid($terminalid) {
-            $query = "SELECT C.ServiceAgentSessionID FROM serviceterminals A INNER JOIn terminalmapping B ON A.ServiceTerminalID = B.ServiceTerminalID
-                   INNER JOIN serviceagentsessions C ON A.ServiceAgentID = C.ServiceAgentID WHERE B.TerminalID = '" . $terminalid . "';";
-            $this->prepare($query);
-            $this->execute();
-            $rows = $this->fetchAllData();
-            if(isset($rows[0]['ServiceAgentSessionID']))
-                return $rows[0]['ServiceAgentSessionID'];
-            return '';
-    }
-    public function getRefServices() {
-          $query = "SELECT rs.ServiceID, rs.Alias, rs.ServiceName, rsg.ServiceGroupName FROM ref_services rs INNER JOIN ref_servicegroups rsg ON rs.ServiceGroupID = rsg.ServiceGroupID";
-          $this->prepare($query);
-          $this->execute();
-          return $this->fetchAllData();
-    }
-     public function ListPEGSSubjectReport($sort,$dir,$startdate,$enddate) {
-          
-            $query1 = "SELECT s.POSAccountNo, s.SiteID, a.AID, ad.Name
-                            FROM sites s
-                            INNER JOIN accounts a ON a.AID = s.OwnerAID
-                            INNER JOIN accountdetails ad ON ad.AID = a.AID 
-                            ORDER by s.SiteID";
-              
-             $query2 = "SELECT sb.SiteID,sb.Balance,sb.MaxBalance FROM sitebalance sb";
-              
-          if(isset($_GET['siteid']) && $_GET['siteid'] != '') {
-              $query3 = "SELECT td.Amount, td.SiteID                 
-                FROM transactiondetails td 
-                FORCE INDEX (IX_transactiondetails_DateCreated)
-                WHERE td.DateCreated >= ? AND td.DateCreated < ? AND td.Status IN (1,4) AND td.SiteID = ?
-                ORDER BY s.$sort $dir";
-              
-              
-          } else {
-               $query3 = "SELECT td.TransactionDetailsID, td.Amount,td.TransactionType, td.SiteID                 
-                FROM transactiondetails td
-                FORCE INDEX (IX_transactiondetails_DateCreated)
-                WHERE td.DateCreated >= ? AND td.DateCreated < ? -- AND td.Status IN (1,4) 
-                ORDER BY td.$sort $dir";
-          }
-         
-          $this->prepare($query3);
-          $this->bindparameter(1, $startdate);
-          $this->bindparameter(2, $enddate);
-          if(isset($_GET['siteid']) && $_GET['siteid']) {
+        $query2 = "SELECT sb.SiteID,sb.Balance,sb.MaxBalance FROM sitebalance sb";
+
+        if(isset($_GET['siteid']) && $_GET['siteid'] != '') 
+        {
+            $query3 = "SELECT td.Amount, td.SiteID                 
+                        FROM transactiondetails td 
+                            FORCE INDEX (IX_transactiondetails_DateCreated)
+                        WHERE td.DateCreated >= ? AND td.DateCreated < ? AND td.Status IN (1,4) AND td.SiteID = ?
+                        ORDER BY s.$sort $dir";
+        } 
+        else 
+        {
+            $query3 = "SELECT td.TransactionDetailsID, td.Amount,td.TransactionType, td.SiteID                 
+                        FROM transactiondetails td
+                            FORCE INDEX (IX_transactiondetails_DateCreated)
+                        WHERE td.DateCreated >= ? AND td.DateCreated < ? -- AND td.Status IN (1,4) 
+                        ORDER BY td.$sort $dir";
+        }
+
+        $this->prepare($query3);
+        $this->bindparameter(1, $startdate);
+        $this->bindparameter(2, $enddate);
+        if(isset($_GET['siteid']) && $_GET['siteid']) 
+        {
             $this->bindparameter(3, $_GET['siteid']);
-          }  
-         
-          $this->execute(); 
-          $rows1 =  $this->fetchAllData();
-         
-          //all site account with account names
-          $this->prepare($query1);
-          $this->execute();
-          $siteaccount =  $this->fetchAllData();
-          
-          //all sitebalance record
-          $this->prepare($query2);
-          $this->execute();
-          $sitebalance =  $this->fetchAllData();          
-      
-          $trans_details = array();
-          $varrmerge = array();
-          foreach($rows1 as $value) 
-          {                
-                if(!isset($varrmerge[$value['SiteID']])) 
-                {
-                     $mergedep = 0;
-                     $mergerel = 0;
-                     $mergewith = 0; 
-                     $varrmerge[$value['SiteID']] = array(                       
-                        'SiteID'=>$value['SiteID'],       
-                        'Redemption'=>$mergewith,
-                        'Deposit'=>$mergedep,
-                        'Reload'=>$mergerel
-                     ); 
+        }  
+
+        $this->execute(); 
+        $rows1 =  $this->fetchAllData();
+
+        //all site account with account names
+        $this->prepare($query1);
+        $this->execute();
+        $siteaccount =  $this->fetchAllData();
+
+        //all sitebalance record
+        $this->prepare($query2);
+        $this->execute();
+        $sitebalance =  $this->fetchAllData();          
+
+        $trans_details = array();
+        $varrmerge = array();
+        foreach($rows1 as $value) 
+        {                
+            if(!isset($varrmerge[$value['SiteID']])) 
+            {
+                $mergedep = 0;
+                $mergerel = 0;
+                $mergewith = 0; 
+                $varrmerge[$value['SiteID']] = array(                       
+                            'SiteID'=>$value['SiteID'],       
+                            'Redemption'=>$mergewith,
+                            'Deposit'=>$mergedep,
+                            'Reload'=>$mergerel
+                        ); 
+            }
+            $trans = array();
+            switch ($value['TransactionType']) 
+            {
+                case 'W':
+                    $mergewith = $mergewith + $value['Amount'];
+                    $trans = array('Redemption'=>$mergewith);
+                    break;
+                case 'D':
+                    $mergedep = $mergedep + $value['Amount'];
+                    $trans = array('Deposit'=>$mergedep);
+                    break;
+                case 'R':
+                    $mergerel = $mergerel + $value['Amount'];
+                    $trans = array('Reload'=>$mergerel);
+                    break;
+            }
+            $varrmerge[$value['SiteID']] = array_merge($varrmerge[$value['SiteID']], $trans);
+        }
+
+        //merge tansactiondetails records to siteaccounts
+        $append = new AppendArrays();
+        $columnNamesToBind = array("POSAccountNo","Name");
+        $mergedColumnNames = array("POSAccountNo","Name");          
+        $varrmerge1 = $append->joinArrayByKeys($varrmerge, $siteaccount, 'SiteID', 'SiteID', $mergedColumnNames, $columnNamesToBind, null);
+
+        //merge transactiondeytails with siteaccounts with site balance
+        $append1 = new AppendArrays();
+        $columnNamesToBind = array("Balance","MaxBalance");
+        $mergedColumnNames = array("Balance","MaxBalance");
+        $varrmerge2 = $append1->joinArrayByKeys($varrmerge1, $sitebalance, 'SiteID', 'SiteID', $mergedColumnNames, $columnNamesToBind, null);
+
+        $arrResult = null;
+        if($varrmerge2)
+        {
+            for($i=0; $i<count($varrmerge2); $i++) 
+            {
+                $gross_hold = (($varrmerge2[$i]['Deposit'] + $varrmerge2[$i]['Reload'] - $varrmerge2[$i]['Redemption']) );
+                $allowable_topup = (( $varrmerge2[$i]['MaxBalance'] -($gross_hold + $varrmerge2[$i]['Balance'])));
+                if($allowable_topup > 0)
+                { 
+                    $arrResult[$i]["SiteID"]= $varrmerge2[$i]["SiteID"];
+                    $arrResult[$i]["POSAccountNo"]= $varrmerge2[$i]["POSAccountNo"];
+                    $arrResult[$i]["Name"]= $varrmerge2[$i]["Name"];
+                    $arrResult[$i]["Balance"]= $varrmerge2[$i]["Balance"];
+                    $arrResult[$i]["Deposit"]= $varrmerge2[$i]["Deposit"];
+                    $arrResult[$i]["Redemption"]= $varrmerge2[$i]["Redemption"];
+                    $arrResult[$i]["Reload"]= $varrmerge2[$i]["Reload"];
+                    $arrResult[$i]["GrossHold"]= $gross_hold;
+                    $arrResult[$i]["Allowable"] =   $allowable_topup;
                 }
-                $trans = array();
-                switch ($value['TransactionType']) 
-                {
-                    case 'W':
-                        $mergewith = $mergewith + $value['Amount'];
-                        $trans = array('Redemption'=>$mergewith);
-                        break;
-                    case 'D':
-                        $mergedep = $mergedep + $value['Amount'];
-                        $trans = array('Deposit'=>$mergedep);
-                        break;
-                    case 'R':
-                        $mergerel = $mergerel + $value['Amount'];
-                        $trans = array('Reload'=>$mergerel);
-                        break;
-                }
-                $varrmerge[$value['SiteID']] = array_merge($varrmerge[$value['SiteID']], $trans);
-          }
-          
-          //merge tansactiondetails records to siteaccounts
-          $append = new AppendArrays();
-          $columnNamesToBind = array("POSAccountNo","Name");
-          $mergedColumnNames = array("POSAccountNo","Name");          
-          $varrmerge1 = $append->joinArrayByKeys($varrmerge, $siteaccount, 'SiteID', 'SiteID', $mergedColumnNames, $columnNamesToBind, null);
-          
-          //merge transactiondeytails with siteaccounts with site balance
-          $append1 = new AppendArrays();
-          $columnNamesToBind = array("Balance","MaxBalance");
-          $mergedColumnNames = array("Balance","MaxBalance");
-          $varrmerge2 = $append1->joinArrayByKeys($varrmerge1, $sitebalance, 'SiteID', 'SiteID', $mergedColumnNames, $columnNamesToBind, null);
-          
-          $arrResult = null;
-          if($varrmerge2)
-          {
-              for($i=0; $i<count($varrmerge2); $i++) 
-              {
-                  $gross_hold = (($varrmerge2[$i]['Deposit'] + $varrmerge2[$i]['Reload'] - $varrmerge2[$i]['Redemption']) );
-                  $allowable_topup = (( $varrmerge2[$i]['MaxBalance'] -($gross_hold + $varrmerge2[$i]['Balance'])));
-                  if($allowable_topup > 0)
-                  { 
-                      $arrResult[$i]["SiteID"]= $varrmerge2[$i]["SiteID"];
-                      $arrResult[$i]["POSAccountNo"]= $varrmerge2[$i]["POSAccountNo"];
-                      $arrResult[$i]["Name"]= $varrmerge2[$i]["Name"];
-                      $arrResult[$i]["Balance"]= $varrmerge2[$i]["Balance"];
-                      $arrResult[$i]["Deposit"]= $varrmerge2[$i]["Deposit"];
-                      $arrResult[$i]["Redemption"]= $varrmerge2[$i]["Redemption"];
-                      $arrResult[$i]["Reload"]= $varrmerge2[$i]["Reload"];
-                      $arrResult[$i]["GrossHold"]= $gross_hold;
-                      $arrResult[$i]["Allowable"] =   $allowable_topup;
-                  }
-              }             
-          }
-          return $arrResult;
-          
-              
+            }             
+        }
+        return $arrResult;
     }
     
     public function geteWalletTransactionHistoryReport($site,$transType,$transStatus,$startDate,$endDate)
-      {
+    {
         $where="";
-         
-         if($transType != 'All' && $transStatus != 'All'){
-             
-          
-                $where.="WHERE a.SiteID=$site"
-                     ." AND a.TransType='$transType'"
-                     ." AND a.Status=$transStatus"
-                     ." AND a.StartDate >= '$startDate' "
-                     ." AND a.StartDate <  '$endDate' ";
-             
-         }
-         elseif($transType == 'All' && $transStatus <> 'All'){
-              
-             
-                 $where.="WHERE a.SiteID=$site"
-                        . " AND a.Status=$transStatus"
-                        .  " AND a.StartDate >= '$startDate' "
-                        .   " AND a.StartDate < '$endDate' ";
-             
 
-         }
-         elseif($transType <> 'All' && $transStatus == 'All'){
-             $where.="WHERE a.SiteID=$site"
-                     ." AND a.TransType='$transType'"
-                     . " AND a.StartDate >= '$startDate' "
-                     .  " AND a.StartDate < '$endDate' ";
-             
-         }
-         else{
-             $where.="WHERE a.SiteID=$site"
-                     ." AND a.StartDate >= '$startDate' "
-                     . " AND a.StartDate < '$endDate' "; 
-         }
-         
-        
-          $stmt = "SELECT a.EwalletTransID,a.LoyaltyCardNumber, a.StartDate ,"
-                        ." a.EndDate , a.Amount, a.TransType,
-                            CASE a.Status 
-                                  WHEN 0 THEN 'Pending'
-                                  WHEN 1 THEN 'Successful'
-                                  WHEN 2 THEN 'Failed'
-                                  WHEN 3 THEN 'Fulfillment Approved'
-                                  WHEN 4 THEN 'Fulfillment Denied'
-                            END AS Status, b.Name, c.TerminalCode"
-                        ." FROM ewallettrans a"
-                        ." INNER JOIN accountdetails b ON b.AID = a.CreatedByAID"
-                        ." LEFT JOIN terminals c ON c.TerminalID=a.TerminalID ".$where;     
-          
-          $this->prepare($stmt);
-          $this->execute();
-          return $this->fetchAllData();
-      }
+        if($transType != 'All' && $transStatus != 'All')
+        {
+            $where.="WHERE a.SiteID=$site"
+                ." AND a.TransType='$transType'"
+                ." AND a.Status=$transStatus"
+                ." AND a.StartDate >= '$startDate' "
+                ." AND a.StartDate <  '$endDate' ";
+        }
+        elseif($transType == 'All' && $transStatus <> 'All')
+        {
+            $where.="WHERE a.SiteID=$site"
+                . " AND a.Status=$transStatus"
+                .  " AND a.StartDate >= '$startDate' "
+                .   " AND a.StartDate < '$endDate' ";
+        }
+        elseif($transType <> 'All' && $transStatus == 'All')
+        {
+            $where.="WHERE a.SiteID=$site"
+                ." AND a.TransType='$transType'"
+                . " AND a.StartDate >= '$startDate' "
+                .  " AND a.StartDate < '$endDate' ";
+        }
+        else
+        {
+            $where.="WHERE a.SiteID=$site"
+                ." AND a.StartDate >= '$startDate' "
+                . " AND a.StartDate < '$endDate' "; 
+        }
+
+        $stmt = "SELECT a.EwalletTransID,a.LoyaltyCardNumber, a.StartDate ,"
+                    ." a.EndDate , a.Amount, a.TransType,
+                    CASE a.Status 
+                    WHEN 0 THEN 'Pending'
+                    WHEN 1 THEN 'Successful'
+                    WHEN 2 THEN 'Failed'
+                    WHEN 3 THEN 'Fulfillment Approved'
+                    WHEN 4 THEN 'Fulfillment Denied'
+                    END AS Status, b.Name, c.TerminalCode"
+                ." FROM ewallettrans a"
+                    ." INNER JOIN accountdetails b ON b.AID = a.CreatedByAID"
+                    ." LEFT JOIN terminals c ON c.TerminalID=a.TerminalID ".$where;     
+        $this->prepare($stmt);
+        $this->execute();
+        return $this->fetchAllData();
+    }
       
-      public function geteWalletTransactionCardHistoryReport($cardNum,$transType,$transStatus,$startDate,$endDate)
-      {
-          $where="";
+    public function geteWalletTransactionCardHistoryReport($cardNum,$transType,$transStatus,$startDate,$endDate)
+    {
+        $where="";
 
-         if($transType != 'All' && $transStatus != 'All'){
-            
-             $where.="WHERE a.LoyaltyCardNumber='$cardNum'"
-                     ." AND a.TransType='$transType'"
-                     . " AND a.Status=$transStatus"
-                     .  " AND a.StartDate >= '$startDate' "
-                     .   " AND a.StartDate < '$endDate' 
-                     ";
-             
-         }
-         elseif($transType == 'All' && $transStatus <> 'All'){
-            
-                $where.="WHERE a.LoyaltyCardNumber='$cardNum'"
-                        . " AND a.Status=$transStatus"
-                        . " AND a.StartDate >= '$startDate' "
-                        .  " AND a.StartDate < '$endDate' ";
-          
+        if($transType != 'All' && $transStatus != 'All')
+        {
+            $where.="WHERE a.LoyaltyCardNumber='$cardNum'"
+                ." AND a.TransType='$transType'"
+                . " AND a.Status=$transStatus"
+                .  " AND a.StartDate >= '$startDate' "
+                .   " AND a.StartDate < '$endDate' 
+                ";
+        }
+        elseif($transType == 'All' && $transStatus <> 'All')
+        {
+            $where.="WHERE a.LoyaltyCardNumber='$cardNum'"
+                . " AND a.Status=$transStatus"
+                . " AND a.StartDate >= '$startDate' "
+                .  " AND a.StartDate < '$endDate' ";
+        }
+        elseif($transType <> 'All' && $transStatus == 'All')
+        {
+            $where.="WHERE a.LoyaltyCardNumber='$cardNum'"
+                ." AND a.TransType='$transType'"
+                . " AND a.StartDate >= '$startDate' "
+                .  " AND a.StartDate < '$endDate' ";
+        }
+        else
+        {
+            $where.="WHERE a.LoyaltyCardNumber='$cardNum'"
+                ." AND a.StartDate >= '$startDate' "
+                . " AND a.StartDate < '$endDate' "; 
+        }
 
-         }
-         elseif($transType <> 'All' && $transStatus == 'All'){
-             $where.="WHERE a.LoyaltyCardNumber='$cardNum'"
-                     ." AND a.TransType='$transType'"
-                     . " AND a.StartDate >= '$startDate' "
-                     .  " AND a.StartDate < '$endDate' ";
-             
-         }
-         else{
-             $where.="WHERE a.LoyaltyCardNumber='$cardNum'"
-                     ." AND a.StartDate >= '$startDate' "
-                     . " AND a.StartDate < '$endDate' "; 
-         }
-         
-        
-          $stmt = "SELECT a.EwalletTransID,a.LoyaltyCardNumber, a.StartDate ,"
-                  ." a.EndDate , a.Amount, a.TransType,a.Status,a.SiteID,
-                      CASE a.Status 
-                            WHEN 0 THEN 'Pending'
-                            WHEN 1 THEN 'Successful'
-                            WHEN 2 THEN 'Failed'
-                            WHEN 3 THEN 'Fulfillment Approved'
-                            WHEN 4 THEN 'Fulfillment Denied'
-                      END AS Status, b.Name "
-                  ." FROM ewallettrans a"
-                  ." INNER JOIN accountdetails b ON b.AID = a.CreatedByAID ".$where;     
-          
-          $this->prepare($stmt);
-          $this->execute();
-          return $this->fetchAllData();
-      }
+        $stmt = "SELECT a.EwalletTransID,a.LoyaltyCardNumber, a.StartDate ,"
+                    ." a.EndDate , a.Amount, a.TransType,a.Status,a.SiteID,
+                    CASE a.Status 
+                    WHEN 0 THEN 'Pending'
+                    WHEN 1 THEN 'Successful'
+                    WHEN 2 THEN 'Failed'
+                    WHEN 3 THEN 'Fulfillment Approved'
+                    WHEN 4 THEN 'Fulfillment Denied'
+                    END AS Status, b.Name "
+                ." FROM ewallettrans a"
+                    ." INNER JOIN accountdetails b ON b.AID = a.CreatedByAID ".$where;     
+        $this->prepare($stmt);
+        $this->execute();
+        return $this->fetchAllData();
+    }
       
-      //@date modified 03-03-2015
-      public function replenish($startdate, $enddate) {
+    //@date modified 03-03-2015
+    public function replenish($startdate, $enddate) 
+    {
 //        $query = "SELECT r.ReplenishmentID, s.SiteCode, s.POSAccountNo, r.Amount, r.DateCredited, r.DateCreated, a.UserName, r.ReferenceNumber FROM replenishments r " . 
 //                "INNER JOIN sites s ON s.SiteID = r.SiteID " . 
 //                "INNER JOIN accounts a ON a.AID = r.CreatedByAID WHERE r.DateCreated BETWEEN '$startdate' AND '$enddate' ORDER BY r.ReplenishmentID ASC";
@@ -1919,6 +1997,4 @@ class TopUpReportQuery extends DBHandler{
         $this->execute();
         return $this->fetchAllData();
     }
-
-    
 }

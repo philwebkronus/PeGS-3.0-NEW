@@ -8,7 +8,8 @@
 //include "../../sys/class/DbReport.class.php";
 require __DIR__.'/../sys/core/init.php';
 
-class BaseProcess {
+class BaseProcess 
+{
    private static $_connection;
    private static $_connectionmaster;
    public static $service_api;
@@ -26,33 +27,42 @@ class BaseProcess {
    public static $ptcasinoname;
    public static $cardinfo;
    public static $deploymentdate;
+   // CCT ADDED BEGIN 11/29/2017
+   public static $habbrandid;
+   public static $habapikey;
+   // CCT ADDED END 11/29/2017
    public $conn;
    
-   public function getConnection() {
+   public function getConnection() 
+   {
       return self::$_connection;
    }
    
-   public function getMasterConnection() {
+   public function getMasterConnection() 
+   {
       return self::$_connectionmaster;
    }
    
-   public function __construct() {
+   public function __construct() 
+   {
       
    }
    
-    public function render($view,$parameter=array()) {
+    public function render($view,$parameter=array()) 
+    {
         $param = $parameter; 
         include '../views/' . $view . '.php';
     }
    
-    public static function setConnection($connection) {
+    public static function setConnection($connection) 
+    {
         self::$_connection = $connection;
     }
     
-    public static function setMasterConnection($connection) {
+    public static function setMasterConnection($connection) 
+    {
         self::$_connectionmaster = $connection;
     }
-   
     
     /**
      * For testing of paging of jqgrid
@@ -61,31 +71,38 @@ class BaseProcess {
      * @param type $limit
      * @return array 
      */
-    public function testPaging($start,$limit) {
+    public function testPaging($start,$limit) 
+    {
         $rows = array();
-        for($i=0;$i < 100; $i++) {
+        for($i=0;$i < 100; $i++) 
+       {
             $rows[] = array('id'=>$i,'cell'=>array('foo'.$i,'bar'.$i,'baz'.$i,'fred'.$i));
         }          
         return $rows = array_slice($rows,$start,$limit);      
     }
    
-    public function CasinoType($serviceId) {
+    public function CasinoType($serviceId) 
+    {
         include_once __DIR__.'/../sys/class/TopUp.class.php';
         $topup = new TopUp($this->getConnection());
         $topup->open();  
         //$rows = $topup->getRefServices(); 
         $rows = $topup->getRefServicesWithServiceGroup(); 
         $casino = array();
-        foreach($rows as $row) {
+        foreach($rows as $row) 
+        {
             $casino[$row['ServiceID']] = $row['ServiceGroupName'];
         }
         return $casino[$serviceId];
     }
     
-    public static function setConfig($_ServiceAPI,$_PlayerAPI,$_ServiceAPICaching,
-                                     $_MicrogamingCurrency, $terminalcode, $cutoff_time,
-                                     $gaddeddate, $_CAPIUsername, $_CAPIPassword, 
-                                     $_CAPIPlayerName, $_ptsecretkey, $_ptcasinoname, $cardinfo, $deploymentDate) {
+    // CCT EDITED 11/29/2017
+    //public static function setConfig($_ServiceAPI,$_PlayerAPI,$_ServiceAPICaching, $_MicrogamingCurrency, $terminalcode, $cutoff_time,
+    //        $gaddeddate, $_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_ptsecretkey, $_ptcasinoname, $cardinfo, $deploymentDate) 
+    public static function setConfig($_ServiceAPI,$_PlayerAPI,$_ServiceAPICaching, $_MicrogamingCurrency, $terminalcode, $cutoff_time,
+            $gaddeddate, $_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_ptsecretkey, $_ptcasinoname, $cardinfo, $deploymentDate, 
+            $_HABbrandID, $_HABapiKey) 
+    {
         self::$service_api = $_ServiceAPI;
         self::$player_api = $_PlayerAPI;
         self::$service_api_caching = $_ServiceAPICaching;
@@ -101,10 +118,15 @@ class BaseProcess {
         self::$ptcasinoname = $_ptcasinoname;
         self::$cardinfo = $cardinfo;
         self::$deploymentdate = $deploymentDate;
+        // CCT ADDED BEGIN 11/29/2017
+        self::$habbrandid = $_HABbrandID;
+        self::$habapikey = $_HABapiKey;
+        // CCT ADDED END 11/29/2017
     }
 }
 
-class jQGrid {
+class jQGrid 
+{
    public $page;
    public $total;
    public $records;
@@ -113,6 +135,10 @@ class jQGrid {
 
 BaseProcess::setMasterConnection($_DBConnectionString[0]); //connect to master DB
 BaseProcess::setConnection($_DBConnectionString[1]); //connect to report/Slave db
-BaseProcess::setConfig($_ServiceAPI,$_PlayerAPI,$_ServiceAPICaching,$_MicrogamingCurrency, 
-                       $terminalcode, $cutoff_time, $gaddeddate, $_CAPIUsername, $_CAPIPassword, 
-                       $_CAPIPlayerName,$_ptsecretkey,$_ptcasinoname, $cardinfo, $deploymentDate);
+//// CCT EDITED 11/29/2017
+//BaseProcess::setConfig($_ServiceAPI,$_PlayerAPI,$_ServiceAPICaching,$_MicrogamingCurrency, $terminalcode, $cutoff_time, $gaddeddate, 
+//        $_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName,$_ptsecretkey,$_ptcasinoname, $cardinfo, $deploymentDate);
+// CCT ADDED BEGIN 11/29/2017
+BaseProcess::setConfig($_ServiceAPI,$_PlayerAPI,$_ServiceAPICaching,$_MicrogamingCurrency, $terminalcode, $cutoff_time, $gaddeddate, 
+        $_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName,$_ptsecretkey,$_ptcasinoname, $cardinfo, $deploymentDate, $_HABbrandID, $_HABapiKey);
+// CCT ADDED END 11/29/2017

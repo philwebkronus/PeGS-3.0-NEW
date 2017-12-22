@@ -1,6 +1,4 @@
-
 <?php
-
 /**
  * Date Created10 3, 11 4:35:09 PM
  * Description of ProcessTopUpGeneratePDF
@@ -12,12 +10,11 @@ include_once __DIR__.'/../sys/class/CTCPDF.php';
 include_once __DIR__.'/../sys/class/TopUpReportQuery.php';
 include_once 'BaseProcess.php';
 
-
-class ProcessTopUpGenerateReports extends BaseProcess{
+class ProcessTopUpGenerateReports extends BaseProcess
+{
     //Gross Hold Monitoring Report (PDF)
-    
-    
-    public function grossHoldMonPdf() {
+    public function grossHoldMonPdf() 
+    {
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
         $siteID = $_POST['selSiteCode'];
@@ -45,16 +42,21 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                 array('value'=>'With Confirmation'),
                 array('value'=>'Location'),
              ));
-        foreach($rows as $row) {
+        foreach($rows as $row) 
+        {
             $gross_hold = (($row['Deposit'] + $row['Reload'] - $row['Withdrawal']) - $row['ActualAmount']);
-            if($_POST['selwithconfirmation'] != '') {
-                if($row['withconfirmation'] != $_POST['selwithconfirmation']) {
+            if($_POST['selwithconfirmation'] != '') 
+            {
+                if($row['withconfirmation'] != $_POST['selwithconfirmation']) 
+                {
                     continue;
                 }
             }
             
-            if($_POST['sellocation'] != '') {
-                if($row['PickUpTag'] != $_POST['sellocation']) {
+            if($_POST['sellocation'] != '') 
+            {
+                if($row['PickUpTag'] != $_POST['sellocation']) 
+                {
                     continue;
                 }
             }
@@ -79,7 +81,8 @@ class ProcessTopUpGenerateReports extends BaseProcess{
     }
     
     //Gross Hold Monitoring Report (Excel)
-    public function grossHoldMonExcel() {
+    public function grossHoldMonExcel() 
+    {
         $siteID = $_POST['selSiteCode'];
         $startdate = $_POST['startdate']." ".BaseProcess::$cutoff;
         //$venddate = $_POST['enddate'];  
@@ -91,15 +94,20 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $rows = $topreport->grossHolMonitoring($startdate, $enddate, $siteID);
         
         $new_rows = array();
-        foreach($rows as $row) {
+        foreach($rows as $row) 
+        {
             $gross_hold = (($row['Deposit'] + $row['Reload'] - $row['Withdrawal']) - $row['ActualAmount']);
-            if($_POST['selwithconfirmation'] != '') {
-                if($row['withconfirmation'] != $_POST['selwithconfirmation']) {
+            if($_POST['selwithconfirmation'] != '') 
+            {
+                if($row['withconfirmation'] != $_POST['selwithconfirmation']) 
+                {
                     continue;
                 }
             }
-            if($_POST['sellocation'] != '') {
-                if($row['PickUpTag'] != $_POST['sellocation']) {
+            if($_POST['sellocation'] != '') 
+            {
+                if($row['PickUpTag'] != $_POST['sellocation']) 
+                {
                     continue;
                 }
             }
@@ -125,14 +133,19 @@ class ProcessTopUpGenerateReports extends BaseProcess{
     }
     
     //Collection History Report (PDF)
-    public function bankDepositPdf() {
+    public function bankDepositPdf() 
+    {
         $aid = 0;
-        if(isset($_SESSION['sessionID'])) {
+        if(isset($_SESSION['sessionID'])) 
+        {
             $sessionid = $_SESSION['sessionID'];
-        } else  {
+        } 
+        else  
+        {
             $sessionid = '';
         }
-        if(isset($_SESSION['accID'])) {
+        if(isset($_SESSION['accID'])) 
+        {
             $aid = $_SESSION['accID'];
         }
         $ipaddress = gethostbyaddr($_SERVER['REMOTE_ADDR']);
@@ -143,7 +156,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $venddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($startdate)))." ".BaseProcess::$cutoff;
 
         $startdate = $_POST['startdate']." ".BaseProcess::$cutoff;
-//        $venddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($_POST['enddate'])))." ".BaseProcess::$cutoff;
+//      $venddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($_POST['enddate'])))." ".BaseProcess::$cutoff;
 
         $rows = $topreport->bankDeposit($startdate, $venddate);
         
@@ -168,8 +181,8 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                 array('value'=>'Processed By')
                 
              ));
-        foreach($rows as $row) {
-            
+        foreach($rows as $row) 
+        {
             $particulars = $row['Particulars'];
 //            $particulars = str_split((string)$particulars, 15);
 //            $particulars = implode("<br/>",$particulars);
@@ -205,14 +218,19 @@ class ProcessTopUpGenerateReports extends BaseProcess{
     }
     
     //Collection History Report (Excel)
-    public function bankDepositExcel() {
+    public function bankDepositExcel() 
+    {
         $aid = 0;
-        if(isset($_SESSION['sessionID'])) {
+        if(isset($_SESSION['sessionID'])) 
+        {
             $sessionid = $_SESSION['sessionID'];
-        } else  {
+        } 
+        else  
+        {
             $sessionid = '';
         }
-        if(isset($_SESSION['accID'])) {
+        if(isset($_SESSION['accID'])) 
+        {
             $aid = $_SESSION['accID'];
         }
         $ipaddress = gethostbyaddr($_SERVER['REMOTE_ADDR']);
@@ -220,7 +238,6 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $startdate = $_POST['startdate'];
         $venddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($startdate)))." ".BaseProcess::$cutoff;
 
-        
         $startdate = $_POST['startdate']." ".BaseProcess::$cutoff;
 //        $venddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($_POST['enddate'])))." ".BaseProcess::$cutoff;
 
@@ -229,7 +246,8 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $topreport->open();
         $rows = $topreport->bankDeposit($startdate, $venddate);
         $new_rows = array();
-        foreach($rows as $row) {
+        foreach($rows as $row) 
+        {
             $new_rows[] = array(
                     $row['siteName'],
                     $row['POSAccountNo'],
@@ -261,7 +279,8 @@ class ProcessTopUpGenerateReports extends BaseProcess{
     }
     
     //Betting Credit Fund Report (PDF)
-    public function bettingCreditPdf() {
+    public function bettingCreditPdf() 
+    {
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
         $vownerAID = $_POST['sel_operator'];
@@ -280,7 +299,8 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                 array('value'=>'POS Account'),
                 array('value'=>'Balance')
              ));
-        foreach($rows as $row) {
+        foreach($rows as $row) 
+        {
             $pdf->c_tableRow2(array(
                 array('value'=>substr($row['SiteCode'], strlen(BaseProcess::$sitecode))),
                 array('value'=>$row['SiteName']),
@@ -294,7 +314,8 @@ class ProcessTopUpGenerateReports extends BaseProcess{
     }
     
     //Betting Credit Fund Report (Excel)
-    public function bettingCreditExcel() {
+    public function bettingCreditExcel() 
+    {
         $_SESSION['report_header'] = array('Site / PEGS Code','Site / PEGS Name', 'POS Account','Balance');
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
@@ -303,7 +324,8 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $vreport = $_GET['report'];
         $rows = $topreport->bettingcredit($vownerAID, $vsiteID, $vreport);
         $new_rows = array();
-        foreach($rows as $row) {
+        foreach($rows as $row) 
+        {
             $new_rows[] = array(
                     substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
                     $row['SiteName'],
@@ -318,7 +340,8 @@ class ProcessTopUpGenerateReports extends BaseProcess{
     }
     
     //Top-up History (Manual, Auto) Report (PDF)
-    public function topupHistoryPdf() {
+    public function topupHistoryPdf() 
+    {
         ini_set('memory_limit', '-1'); 
         ini_set('max_execution_time', '180');
         $topreport = new TopUpReportQuery($this->getConnection());
@@ -357,7 +380,8 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                 array('value'=>'Transaction Date'),
                 array('value'=>'Top-upType')
             ));
-        foreach($rows as $row) {
+        foreach($rows as $row) 
+        {
             $pdf->c_tableRow2(array(
                 array('value'=>$row['SiteName']),
                 array('value'=>substr($row['SiteCode'], strlen(BaseProcess::$sitecode))),
@@ -379,7 +403,8 @@ class ProcessTopUpGenerateReports extends BaseProcess{
     }
     
     //Top-up History (Manual, Auto) Report (Excel)
-    public function topupHistoryExcel() {
+    public function topupHistoryExcel() 
+    {
         $_SESSION['report_header'] = array('Site / PEGS Name', 'Site / PEGS Code','POS Account','Start Balance',
             'End Balance','Min Balance','Max Balance','Top-up Count','Top-up Amount','Total Top-up Amount',
             'Transaction Date','Top-up Type');
@@ -401,7 +426,8 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $rows = $topreport->topUpHistory($startdate, $enddate, $_POST['seltopuptype'],$_POST['selSiteCode']);
         
         $new_rows = array();
-        foreach($rows as $row) {
+        foreach($rows as $row) 
+        {
             $new_rows[] = array(
                     $row['SiteName'],
                     substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
@@ -424,16 +450,21 @@ class ProcessTopUpGenerateReports extends BaseProcess{
     }
     
      //this method will be called when defining Top-up Type
-    private function _topupType($type) {
-        if($type == 0) {
+    private function _topupType($type) 
+    {
+        if($type == 0) 
+        {
             return 'Manual';
-        } else {
+        } 
+        else 
+        {
             return 'Auto';
         }
     }
     
     // Manual Top-up Reversal History Report (PDF)
-    public function reversalManualPdf() {
+    public function reversalManualPdf() 
+    {
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
         
@@ -464,7 +495,8 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                 array('value'=>'Transaction Date'),
                 array('value'=>'Reversed By')
              ));
-        foreach($rows as $row) {
+        foreach($rows as $row) 
+        {
             $pdf->c_tableRow2(array(
                 array('value'=>substr($row['SiteCode'], strlen(BaseProcess::$sitecode))),
                 array('value'=>$row['SiteName']),
@@ -482,7 +514,8 @@ class ProcessTopUpGenerateReports extends BaseProcess{
     }
     
     // Manual Top-up Reversal History Report (Excel)
-    public function reversalManualExcel() {
+    public function reversalManualExcel() 
+    {
         $_SESSION['report_header'] = array('Site / PEGS Code','Site / PEGS Name', 'POS Account','Start Balance','End Balance',
             'Reversed Amount','Transaction Date','Reversed By');
         $topreport = new TopUpReportQuery($this->getConnection());
@@ -500,7 +533,8 @@ class ProcessTopUpGenerateReports extends BaseProcess{
 
         $rows = $topreport->reversalManual($vstartdate, $venddate);
         $new_rows = array();
-        foreach($rows as $row) {
+        foreach($rows as $row) 
+        {
             $new_rows[] = array(
                     substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
                     $row['SiteName'],
@@ -536,7 +570,8 @@ class ProcessTopUpGenerateReports extends BaseProcess{
     }
     
     //Manual Redemption History Report (PDF)
-    public function manualRedemptionPdf() {
+    public function manualRedemptionPdf() 
+    {
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
 
@@ -570,7 +605,8 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                 array('value'=>'Status'),
                 array('value'=>'Service Name'),
              ));
-        foreach($rows as $row) {
+        foreach($rows as $row) 
+        {
             $pdf->c_tableRow2(array(
                 array('value'=>substr($row['SiteCode'], strlen(BaseProcess::$sitecode))),
                 array('value'=>$row['SiteName']),
@@ -591,7 +627,8 @@ class ProcessTopUpGenerateReports extends BaseProcess{
     }
     
     //Manual Redemption History Report (Excel)
-    public function manualRedemptionExcel() {
+    public function manualRedemptionExcel() 
+    {
         $_SESSION['report_header'] = array('Site / PEGS Code','Site / PEGS Name', 'POS Account','Terminal Code','Reported Amount',
             'Requested By','Transaction Date','Ticket ID','Remarks','Status', 'Service Name');
         $topreport = new TopUpReportQuery($this->getConnection());
@@ -609,7 +646,8 @@ class ProcessTopUpGenerateReports extends BaseProcess{
 
         $rows = $topreport->manualRedemption($vstartdate, $venddate);
         $new_rows = array();
-        foreach($rows as $row) {
+        foreach($rows as $row) 
+        {
             $new_rows[] = array(
                     substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
                     $row['SiteName'],
@@ -631,7 +669,8 @@ class ProcessTopUpGenerateReports extends BaseProcess{
     }
     
     //Playing Balance History Report (PDF)
-    public function playingBalancePdf() {
+    public function playingBalancePdf() 
+    {
         include_once __DIR__.'/../sys/class/CasinoGamingCAPI.class.php';
         //$rows = $_SESSION['playing_balance'];
         $acctype = $_SESSION['acctype'];
@@ -640,24 +679,28 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $vsitecode = $_POST['selsite'];
         $vterminalid = $_POST['selterminal'];
         if ($vterminalid=='all')
-                    {
-                       $vipTerminal= 'all'; 
-                    }
-                    else{
-        $terminalCode = $topreport->getTerminalCode($vsitecode, $vterminalid);
-        $terminal=$terminalCode."VIP";
-        $terminalVip = $topreport->getVipTerminal($vsitecode,$terminal);
-        $vipTerminal = $terminalVip;
-                    }
+        {
+           $vipTerminal= 'all'; 
+        }
+        else
+        {
+            $terminalCode = $topreport->getTerminalCode($vsitecode, $vterminalid);
+            $terminal=$terminalCode."VIP";
+            $terminalVip = $topreport->getVipTerminal($vsitecode,$terminal);
+            $vipTerminal = $terminalVip;
+        }
         $rows = $topreport->getRptActiveTerminals($vsitecode,$vterminalid,$vipTerminal);
 
-        foreach($rows as $key => $row) {
+        foreach($rows as $key => $row) 
+        {
             $balance = $this->getBalance($row);
-            
             /********************* GET BALANCE API ****************************/
-            if(is_string($balance['Balance'])) {
+            if(is_string($balance['Balance'])) 
+            {
                 $rows[$key]['PlayingBalance'] = number_format((double)$balance['Balance'],2, '.', ',');
-            } else {
+            } 
+            else 
+            {
                 $rows[$key]['PlayingBalance'] = number_format($balance['Balance'],2, '.', ',');
             }
         }
@@ -680,18 +723,21 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                 array('value'=>'e-SAFE?')
              );
         
-        if($acctype == 6 || $acctype == 18){
+        if($acctype == 6 || $acctype == 18)
+        {
             array_pop($header);
         }
         
         $pdf->c_tableHeader2($header);
 
-        foreach($rows as $row) {
+        foreach($rows as $row) 
+        {
             $row['IsEwallet'] == 1 ? $isEwallet = "Yes" : $isEwallet = "No";
             $row['UserMode'] == 1 ? $row['UserMode'] = "User Based" : $row['UserMode'] = "Terminal Based";
             
-            if($row['PlayingBalance'] == 0){
-                    $row['PlayingBalance'] = "0";
+            if($row['PlayingBalance'] == 0)
+            {
+                $row['PlayingBalance'] = "0";
             }
             
             $data = array(
@@ -705,7 +751,8 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                 array('value'=>$isEwallet)
             );
             
-            if($acctype == 6 || $acctype == 18){
+            if($acctype == 6 || $acctype == 18)
+            {
                 array_pop($data);
             }
                     
@@ -717,7 +764,8 @@ class ProcessTopUpGenerateReports extends BaseProcess{
     }
     
     //Playing Balance History Report (PDF)
-    public function playingBalancePdfUB() {
+    public function playingBalancePdfUB() 
+    {
         include_once __DIR__.'/../sys/class/CasinoGamingCAPI.class.php';
         //$rows = $_SESSION['playing_balance'];
         $topreport = new TopUpReportQuery($this->getConnection());
@@ -725,18 +773,23 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $cardnumber = $_POST['txtcardnumber'];
         $rows = $topreport->getRptActiveTerminalsUB($cardnumber);
         
-        foreach($rows as $key => $row) {
-            
-            if($row['UserMode'] == 0){
+        foreach($rows as $key => $row) 
+        {
+            if($row['UserMode'] == 0)
+            {
                 $balance = $this->getBalance($row);
-            }else{
+            }
+            else
+            {
                 $balance = $this->getBalanceUB($row);
             }
-            
             /********************* GET BALANCE API ****************************/
-            if(is_string($balance['Balance'])) {
+            if(is_string($balance['Balance'])) 
+            {
                 $rows[$key]['PlayingBalance'] = number_format((double)$balance['Balance'],2, '.', ',');
-            } else {
+            } 
+            else 
+            {
                 $rows[$key]['PlayingBalance'] = number_format($balance['Balance'],2, '.', ',');
             }
         }
@@ -757,12 +810,13 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                 array('value'=>'Terminal Type'),
                 array('value'=>'e-SAFE?'),
              ));
-        foreach($rows as $row) {
-            
+        foreach($rows as $row) 
+        {
             $row['IsEwallet'] == 1 ? $isEwallet = "Yes" : $isEwallet = "No";
             $row['UserMode'] == 1 ? $row['UserMode'] = "User Based" : $row['UserMode'] = "Terminal Based";
 
-            if($row['PlayingBalance'] == 0){
+            if($row['PlayingBalance'] == 0)
+            {
                     $row['PlayingBalance'] = "N/A";
             }
                 
@@ -783,14 +837,16 @@ class ProcessTopUpGenerateReports extends BaseProcess{
     }
     
     //Playing Balance History Report (Excel)
-    public function playingBalanceExcel() {
+    public function playingBalanceExcel() 
+    {
         include_once __DIR__.'/../sys/class/CasinoGamingCAPI.class.php';
         
         $acctype = $_SESSION['acctype'];
         
         $_SESSION['report_header'] = array('Site / PEGS Code','Site / PEGS Name','Terminal Code','Playing Balance','Service Name', 'User Mode', 'Terminal Type', 'e-SAFE?');
         
-        if($acctype == 6 || $acctype == 18){
+        if($acctype == 6 || $acctype == 18)
+        {
             array_pop($_SESSION['report_header']);
         }
         
@@ -798,43 +854,48 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $topreport->open();
         $vsitecode = $_POST['selsite'];
         $vterminalid = $_POST['selterminal'];
-         if ($vterminalid=='all')
-                    {
-                       $vipTerminal= 'all'; 
-                    }
-                    else{
-        $terminalCode = $topreport->getTerminalCode($vsitecode, $vterminalid);
-        $terminal=$terminalCode."VIP";
-        $terminalVip = $topreport->getVipTerminal($vsitecode,$terminal);
-        $vipTerminal = $terminalVip;
-                    }
+        if ($vterminalid=='all')
+        {
+            $vipTerminal= 'all'; 
+        }
+        else
+        {
+            $terminalCode = $topreport->getTerminalCode($vsitecode, $vterminalid);
+            $terminal=$terminalCode."VIP";
+            $terminalVip = $topreport->getVipTerminal($vsitecode,$terminal);
+            $vipTerminal = $terminalVip;
+        }
         $rows = $topreport->getRptActiveTerminals($vsitecode,$vterminalid,$vipTerminal);
         
-        foreach($rows as $key => $row) {
+        foreach($rows as $key => $row) 
+        {
             $balance = $this->getBalance($row);
-            
             /********************* GET BALANCE API ****************************/
-            
             $rows[$key]['PlayingBalance'] = $balance['Balance'];
         }
         
         $actualBalance = 0;
         $new_rows = array();
-        foreach($rows as $row) {
-            
-            if(is_string($row['PlayingBalance'])) {
+        foreach($rows as $row) 
+        {
+            if(is_string($row['PlayingBalance'])) 
+            {
                 $actualBalance = (float)$row['PlayingBalance'];
-            } else {
+            } 
+            else 
+            {
                 $actualBalance = $row['PlayingBalance'];
             }
             
             $row['IsEwallet'] == 1 ? $isEwallet = "Yes" : $isEwallet = "No";
             $row['UserMode'] == 1 ? $row['UserMode'] = "User Based" : $row['UserMode'] = "Terminal Based";
             
-            if($actualBalance == 0){
-                    $actualBalance = "0";
+            if($actualBalance == 0)
+            {
+                $actualBalance = "0";
             }
-            else{
+            else
+            {
                 $actualBalance = number_format($actualBalance,2, '.', ',');
             }
             
@@ -842,7 +903,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                     substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
                     $row['SiteName'],
                     substr($row['TerminalCode'], strlen($row['SiteCode'])),
-                   $actualBalance,
+                    $actualBalance,
                     $row['ServiceName'],
                     $row['UserMode'],
                     $row['TerminalType']
@@ -852,17 +913,19 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                     substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
                     $row['SiteName'],
                     substr($row['TerminalCode'], strlen($row['SiteCode'])),
-                   $actualBalance,
+                    $actualBalance,
                     $row['ServiceName'],
                     $row['UserMode'],
                     $row['TerminalType'],
                     $isEwallet
                 );
             
-            if($acctype == 6 || $acctype == 18){
+            if($acctype == 6 || $acctype == 18)
+            {
                 $new_rows = $new_rows1;
             }
-            else{
+            else
+            {
                 $new_rows = $new_rows2;
             }
         }
@@ -872,9 +935,9 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $topreport->close();
     }
     
-    
     //Playing Balance History Report (Excel)
-    public function playingBalanceExcelUB() {
+    public function playingBalanceExcelUB() 
+    {
         include_once __DIR__.'/../sys/class/CasinoGamingCAPI.class.php';
         $_SESSION['report_header'] = array('Site / PEGS Code','Site / PEGS Name', 'Terminal Code','Playing Balance','Service Name', 'User Mode', 'Terminal Type', 'e-SAFE?');
         //$rows = $_SESSION['playing_balance'];
@@ -883,36 +946,42 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $cardnumber = $_POST['txtcardnumber'];
         $rows = $topreport->getRptActiveTerminalsUB($cardnumber);
         
-        foreach($rows as $key => $row) {
-            
-            if($row['UserMode'] == 0){
+        foreach($rows as $key => $row) 
+        {
+            if($row['UserMode'] == 0)
+            {
                 $balance = $this->getBalance($row);
-            }else{
+            }
+            else
+            {
                 $balance = $this->getBalanceUB($row);
             }
-            
             /********************* GET BALANCE API ****************************/
-            
             $rows[$key]['PlayingBalance'] = $balance['Balance'];
         }
         
         $actualBalance = 0;
         $new_rows = array();
-        foreach($rows as $row) {
-            
-            if(is_string($row['PlayingBalance'])) {
+        foreach($rows as $row) 
+        {
+            if(is_string($row['PlayingBalance'])) 
+            {
                 $actualBalance = (float)$row['PlayingBalance'];
-            } else {
+            } 
+            else 
+            {
                 $actualBalance = $row['PlayingBalance'];
             }
             
             $row['IsEwallet'] == 1 ? $isEwallet = "Yes" : $isEwallet = "No";
             $row['UserMode'] == 1 ? $row['UserMode'] = "User Based" : $row['UserMode'] = "Terminal Based";
             
-            if($actualBalance == 0){
-                    $actualBalance = "N/A";
+            if($actualBalance == 0)
+            {
+                $actualBalance = "N/A";
             }
-            else{
+            else
+            {
                 $actualBalance = number_format($actualBalance,2, '.', ',');
             }
             $new_rows[] = array(
@@ -932,17 +1001,21 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $topreport->close();
     }
     
-    
     //Replenishment History Report (PDF)
     //@date modified 03-03-2015
-    public function replenishPdf() {
+    public function replenishPdf() 
+    {
         $aid = 0;
-        if(isset($_SESSION['sessionID'])) {
+        if(isset($_SESSION['sessionID'])) 
+        {
             $sessionid = $_SESSION['sessionID'];
-        } else  {
+        } 
+        else  
+        {
             $sessionid = '';
         }
-        if(isset($_SESSION['accID'])) {
+        if(isset($_SESSION['accID'])) 
+        {
             $aid = $_SESSION['accID'];
         }
         $ipaddress = gethostbyaddr($_SERVER['REMOTE_ADDR']);
@@ -977,7 +1050,8 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                 array('value'=>'Reference Number'),
                 array('value'=>'Type')
              ));
-        foreach($rows as $row) {
+        foreach($rows as $row) 
+        {
             $pdf->c_tableRow2(array(
                 array('value'=>substr($row['SiteCode'], strlen(BaseProcess::$sitecode))),
                 array('value'=>$row['POSAccountNo']),
@@ -1005,14 +1079,19 @@ class ProcessTopUpGenerateReports extends BaseProcess{
     
     //Replenishment History Report (Excel)
     //@date modified 03-03-2015
-    public function replenishExcel() {
+    public function replenishExcel() 
+    {
         $aid = 0;
-        if(isset($_SESSION['sessionID'])) {
+        if(isset($_SESSION['sessionID'])) 
+        {
             $sessionid = $_SESSION['sessionID'];
-        } else  {
+        } 
+        else  
+        {
             $sessionid = '';
         }
-        if(isset($_SESSION['accID'])) {
+        if(isset($_SESSION['accID'])) 
+        {
             $aid = $_SESSION['accID'];
         }
         $ipaddress = gethostbyaddr($_SERVER['REMOTE_ADDR']);
@@ -1033,7 +1112,8 @@ class ProcessTopUpGenerateReports extends BaseProcess{
 
         $rows = $topreport->replenish($startdate, $enddate);
         $new_rows = array();
-        foreach($rows as $row) {
+        foreach($rows as $row) 
+        {
             $new_rows[] = array(
                     substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
                     $row['POSAccountNo'],
@@ -1060,7 +1140,8 @@ class ProcessTopUpGenerateReports extends BaseProcess{
     }
     
     //Confirmation History Report (PDF)
-    public function confirmationPdf() {
+    public function confirmationPdf() 
+    {
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
         $startdate = $_POST['startdate']." ".BaseProcess::$cutoff;
@@ -1083,7 +1164,8 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                 array('value'=>'Amount'),
                 array('value'=>'Created By'),
              ));
-        foreach($rows as $row) {
+        foreach($rows as $row) 
+        {
             $pdf->c_tableRow2(array(
                 array('value'=>$row['UserName']),
                 array('value'=>substr($row['SiteCode'], strlen(BaseProcess::$sitecode))),
@@ -1101,7 +1183,8 @@ class ProcessTopUpGenerateReports extends BaseProcess{
     }
     
     //Confirmation History Report (Excel)
-    public function confirmationExcel() {
+    public function confirmationExcel() 
+    {
         $_SESSION['report_header'] = array('Account Name','Site / PEGS Code','POS Account','Date Credited','Date Created','Who','Amount', 'Created By');
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
@@ -1109,7 +1192,8 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($_POST['enddate'])) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;
         $rows = $topreport->confirmation($startdate, $enddate);
         $new_rows = array();
-        foreach($rows as $row) {
+        foreach($rows as $row) 
+        {
             $new_rows[] = array(
                     $row['UserName'],
                     substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
@@ -1128,7 +1212,8 @@ class ProcessTopUpGenerateReports extends BaseProcess{
     }
     
     //added on 11-18-2011, for gross hold monitoring per cut off (PDF)
-    public function grossHoldCutoffPdf() {
+    public function grossHoldCutoffPdf() 
+    {
         ini_set('memory_limit', '-1'); 
         ini_set('max_execution_time', '180');
         $topreport = new TopUpReportQuery($this->getConnection());
@@ -1173,18 +1258,18 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                 array('value'=>'Ending Balance')
              ));
         
-        if(count($rows) > 0){
-            foreach($rows as $row) {
+        if(count($rows) > 0)
+        {
+            foreach($rows as $row) 
+            {
                 $grosshold = (($row['InitialDeposit'] + $row['Reload']) - $row['Redemption']) - $row['ManualRedemption'];
-//                var_dump($row['DepositCash'] + $row['EwalletCashLoads'] + $row['ReloadCash']);
-//                var_dump($row['DepositCash'] + $row['EwalletCashLoads'] + $row['ReloadCash'] + $row['DepositTicket'] + $row['ReloadTicket']);
-//                var_dump($row['RedemptionCashier'] + $row['EwalletWithdrawals'] + $row['ManualRedemption']);
-//                var_dump($row['EncashedTickets']);exit;
-                if ($startdate < BaseProcess::$deploymentdate) {
+                if ($startdate < BaseProcess::$deploymentdate) 
+                {
                      $cashonhand = (($row['DepositCash'] + $row['Coupon'] + $row['ReloadCash'] + $row['EwalletCashLoads'] + $row['ewalletCoupon']) - ($row['RedemptionCashier'] + $row['EwalletWithdraw']) - $row['ManualRedemption']) - $row["EncashedTicketsV15"];
                    //$cashonhand = ((((($row['DepositCash'] + $row['EwalletCashLoads'] + $row['ReloadCash']) - $row['RedemptionCashier']) - $row['RedemptionGenesis']) - $row['EwalletWithdrawals']) - $row['ManualRedemption']) - $row['EncashedTickets'];
                 }
-                else {
+                else 
+                {
                     $cashonhand = (($row['DepositCash'] + $row['Coupon'] + $row['ReloadCash'] + $row['EwalletCashLoads'] + $row['ewalletCoupon'] + $row['LoadTickets']) - ($row['TotalRedemption'] + $row['EwalletWithdraw']) - $row['ManualRedemption']) - $row["EncashedTicketsV15"];
                     //$cashonhand = ((((($row['DepositCash'] + $row['EwalletCashLoads'] + $row['ReloadCash'] + $row['DepositTicket'] + $row['ReloadTicket'] + $row['EwalletTicketDeposit'] + $row['Coupon']) - $row['RedemptionCashier']) - $row['RedemptionGenesis']) - $row['EwalletWithdrawals']) - $row['ManualRedemption']) - $row['EncashedTicketsV15'];
                 }
@@ -1213,12 +1298,12 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         
         $pdf->c_tableEnd();
         $pdf->c_generatePDF('grossholdpercutoff.pdf');
-        unset($startdate, $venddate, $enddate, $vsitecode, $datenow,
-              $rows);
+        unset($startdate, $venddate, $enddate, $vsitecode, $datenow, $rows);
         $topreport->close();
     }
     
-    public function grossHoldCutoffViewDetailsPdf() {
+    public function grossHoldCutoffViewDetailsPdf() 
+    {
         ini_set('memory_limit', '-1'); 
         ini_set('max_execution_time', '180');
         $topreport = new TopUpReportQuery($this->getConnection());
@@ -1235,96 +1320,97 @@ class ProcessTopUpGenerateReports extends BaseProcess{
             $rows = $topreport->getoldGHCutoff($startdate, $enddate, $vsiteid);
         }
         
-        $pdf = new CTCPDF('P', PDF_UNIT, PDF_PAGE_FORMAT, true,
-              'UTF-8', false);
+        $pdf = new CTCPDF('P', PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
         $pdf->c_commonReportFormat();
         $pdf->c_setHeader('Gross Hold Monitoring Per Cut-off Details');
         $pdf->html.='<div style="text-align:center;">As of ' . date('l') . ', ' .
               date('F d, Y') . ' ' . date('h:i:s A') .'</div>';
         $pdf->SetFontSize(10);
         $pdf->SetCellPadding(1);
-        if(count($rows) > 0){
-            foreach($rows as $row) {
+        if(count($rows) > 0)
+        {
+            foreach($rows as $row) 
+            {
                 $grosshold = (($row['InitialDeposit'] + $row['Reload']) - $row['Redemption']) - $row['ManualRedemption'];
                 $cashonhand = ((($row['DepositCash'] + $row['ReloadCash']) - $row['RedemptionCashier']) - $row['ManualRedemption']) - $row['EncashedTickets'];
 
                 $pdf->html.='<table id="ghbalviewdetails" style="border: 1px solid black;">
-                                                <tr style="background-color: #DCDCDC; height: 40px;">
-                                                    <td style="padding: 8px; border: 1px solid black;"><b>Site/ PEGS Name</b></td><td id="pegsname" style="padding: 8px; border: 1px solid black;" >'.$row["SiteName"].'</td><td style="padding: 8px; border: 1px solid black;"></td><td style="padding: 8px; border: 1px solid black;"></td>
-                                                </tr>
-                                                <tr style="background-color: white; height: 40px;">
-                                                    <td style="padding: 8px; border: 1px solid black;" ><b>Site/ PEGS Code</b></td><td id="pegscode" style="padding: 8px; border: 1px solid black;" >'.substr($row['SiteCode'], strlen(BaseProcess::$sitecode)).'</td><td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ></td>
-                                                </tr>
-                                                <tr style="background-color: #DCDCDC; height: 40px;">
-                                                    <td style="padding: 8px; border: 1px solid black;" ><b>POS Account</b></td><td id="posaccount" style="padding: 8px; border: 1px solid black;">'.$row["POSAccountNo"].'</td><td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ></td>
-                                                </tr>
-                                                <tr style="background-color: white; height: 40px;">
-                                                    <td style="padding: 8px; border: 1px solid black;" ><b>Cut Off Date</b></td><td id="cutoff" style="padding: 8px; border: 1px solid black;">'.$row["CutOff"].'</td><td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ></td>
-                                                </tr>
-                                                <tr style="background-color: #DCDCDC; height: 40px;">
-                                                    <td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ></td>
-                                                </tr>
-                                                <tr style="background-color: white; height: 40px;">
-                                                    <td style="padding: 8px; border: 1px solid black;" ><b>Beginning Balance</b></td><td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ></td><td id="begbal" style="padding: 8px; border: 1px solid black; text-align: right;">'.number_format($row['BegBal'],2).'</td>
-                                                </tr>
-                                                <tr style="background-color: #DCDCDC; height: 40px;">
-                                                    <td style="padding: 8px; border: 1px solid black;" ><b>Deposit</b></td><td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ></td><td id="deposit" style="padding: 8px; border: 1px solid black; text-align: right;">'.number_format($row['InitialDeposit'],2).'</td>
-                                                </tr>
-                                                <tr style="background-color: white; height: 40px;">
-                                                    <td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ><b>Cash</b></td><td id="depositcash" style="padding: 8px; border: 1px solid black; text-align: right;">'.number_format($row["DepositCash"],2).'</td><td style="padding: 8px; border: 1px solid black;" ></td>
-                                                </tr>
-                                                <tr style="background-color: #DCDCDC; height: 40px;">
-                                                    <td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ><b>Ticket</b></td><td id="depositticket" style="padding: 8px; border: 1px solid black; text-align: right;">'.number_format($row["DepositTicket"],2).'</td><td style="padding: 8px; border: 1px solid black;" ></td>
-                                                </tr>
-                                                <tr style="background-color: white; height: 40px;">
-                                                    <td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ><b>Coupon</b></td><td id="depositcoupon" style="padding: 8px; border: 1px solid black; text-align: right;">'.number_format($row["DepositCoupon"],2).'</td><td style="padding: 8px; border: 1px solid black;" ></td>
-                                                </tr>
-                                                <tr style="background-color: #DCDCDC; height: 40px;">
-                                                    <td style="padding: 8px; border: 1px solid black;" ><b>Reloads</b></td><td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ></td><td id="reload" style="padding: 8px; border: 1px solid black; text-align: right;">'.number_format($row['Reload'],2).'</td>
-                                                </tr>
-                                                <tr style="background-color: white; height: 40px;">
-                                                    <td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ><b>Cash</b></td><td id="reloadcash" style="padding: 8px; border: 1px solid black; text-align: right;" >'.number_format($row["ReloadCash"],2).'</td><td style="padding: 8px; border: 1px solid black;" ></td>
-                                                </tr>
-                                                <tr style="background-color: #DCDCDC; height: 40px;">
-                                                    <td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ><b>Ticket</b></td><td id="reloadticket" style="padding: 8px; border: 1px solid black; text-align: right;" >'.number_format($row["ReloadTicket"],2).'</td><td style="padding: 8px; border: 1px solid black;" ></td>
-                                                </tr>
-                                                <tr style="background-color: white; height: 40px;">
-                                                    <td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ><b>Coupon</b></td><td id="reloadcoupon" style="padding: 8px; border: 1px solid black; text-align: right;" >'.number_format($row["ReloadCoupon"],2).'</td><td style="padding: 8px; border: 1px solid black;" ></td>
-                                                </tr>
-                                                <tr style="background-color: #DCDCDC; height: 40px;">
-                                                    <td style="padding: 8px; border: 1px solid black;" ><b>Redemption</b></td><td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ></td><td id="redemption" style="padding: 8px; border: 1px solid black; text-align: right;" >'.number_format($row['Redemption'],2).'</td>
-                                                </tr>
-                                                <tr style="background-color: white; height: 40px;">
-                                                    <td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ><b>Cashier</b></td><td id="redemptioncashier" style="padding: 8px; border: 1px solid black; text-align: right;" >'.number_format($row["RedemptionCashier"],2).'</td><td style="padding: 8px; border: 1px solid black;" ></td>
-                                                </tr>
-                                                <tr style="background-color: #DCDCDC; height: 40px;">
-                                                    <td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ><b>Genesis</b></td><td id="redemptiongenesis" style="padding: 8px; border: 1px solid black; text-align: right;" >'.number_format($row["RedemptionGenesis"],2).'</td><td style="padding: 8px; border: 1px solid black;" ></td>
-                                                </tr>
-                                                <tr style="background-color: white; height: 40px;">
-                                                    <td style="padding: 8px; border: 1px solid black;" ><b>Manual Redemption</b></td><td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ></td><td id="manualredemption" style="padding: 8px; border: 1px solid black; text-align: right;" >'.number_format($row['ManualRedemption'], 2).'</td>
-                                                </tr>
-                                                <tr style="background-color: #DCDCDC; height: 40px;">
-                                                    <td style="padding: 8px; border: 1px solid black;" ><b>Encashed Tickets</b></td><td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ></td><td id="encashedtickets" style="padding: 8px; border: 1px solid black; text-align: right;" >'.number_format($row["EncashedTickets"],2).'</td>
-                                                </tr>
-                                                <tr style="background-color: white; height: 40px;" style="height: 40px;">
-                                                    <td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ></td>
-                                                </tr>
-                                                <tr style="background-color: #DCDCDC; height: 40px;">
-                                                    <td style="padding: 8px; border: 1px solid black;" ><b>Cash on Hand</b></td><td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ></td><td id="cashonhand" style="padding: 8px; border: 1px solid black; text-align: right;">'.number_format($cashonhand, 2).'</td>
-                                                </tr>
-                                                <tr style="background-color: white; height: 40px;">
-                                                    <td style="padding: 8px; border: 1px solid black;" ><b>Gross Hold</b></td><td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ></td><td id="grosshold" style="padding: 8px; border: 1px solid black; text-align: right;" >'.number_format($grosshold,2).'</td>
-                                                </tr>
-                                                <tr style="background-color: #DCDCDC; height: 40px;">
-                                                    <td style="padding: 8px; border: 1px solid black;" ><b>Replenishment</b></td><td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ></td><td id="replenishment" style="padding: 8px; border: 1px solid black; text-align: right;" >'.number_format($row['Replenishment'],2).'</td>
-                                                </tr>
-                                                <tr style="background-color: white; height: 40px;">
-                                                    <td style="padding: 8px; border: 1px solid black;" ><b>Collection</b></td><td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ></td><td id="collection" style="padding: 8px; border: 1px solid black; text-align: right;">'.number_format($row['Collection'],2).'</td>
-                                                </tr>
-                                                <tr style="background-color: #DCDCDC; height: 40px;">
-                                                    <td style="padding: 8px; border: 1px solid black;" ><b>Ending Balance</b></td><td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ></td><td id="endbal" style="padding: 8px; border: 1px solid black; text-align: right;" >'.number_format($row['EndBal'],2).'</td>
-                                                </tr>
-                                            </table>';
+                                <tr style="background-color: #DCDCDC; height: 40px;">
+                                    <td style="padding: 8px; border: 1px solid black;"><b>Site/ PEGS Name</b></td><td id="pegsname" style="padding: 8px; border: 1px solid black;" >'.$row["SiteName"].'</td><td style="padding: 8px; border: 1px solid black;"></td><td style="padding: 8px; border: 1px solid black;"></td>
+                                </tr>
+                                <tr style="background-color: white; height: 40px;">
+                                    <td style="padding: 8px; border: 1px solid black;" ><b>Site/ PEGS Code</b></td><td id="pegscode" style="padding: 8px; border: 1px solid black;" >'.substr($row['SiteCode'], strlen(BaseProcess::$sitecode)).'</td><td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ></td>
+                                </tr>
+                                <tr style="background-color: #DCDCDC; height: 40px;">
+                                    <td style="padding: 8px; border: 1px solid black;" ><b>POS Account</b></td><td id="posaccount" style="padding: 8px; border: 1px solid black;">'.$row["POSAccountNo"].'</td><td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ></td>
+                                </tr>
+                                <tr style="background-color: white; height: 40px;">
+                                    <td style="padding: 8px; border: 1px solid black;" ><b>Cut Off Date</b></td><td id="cutoff" style="padding: 8px; border: 1px solid black;">'.$row["CutOff"].'</td><td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ></td>
+                                </tr>
+                                <tr style="background-color: #DCDCDC; height: 40px;">
+                                    <td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ></td>
+                                </tr>
+                                <tr style="background-color: white; height: 40px;">
+                                    <td style="padding: 8px; border: 1px solid black;" ><b>Beginning Balance</b></td><td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ></td><td id="begbal" style="padding: 8px; border: 1px solid black; text-align: right;">'.number_format($row['BegBal'],2).'</td>
+                                </tr>
+                                <tr style="background-color: #DCDCDC; height: 40px;">
+                                    <td style="padding: 8px; border: 1px solid black;" ><b>Deposit</b></td><td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ></td><td id="deposit" style="padding: 8px; border: 1px solid black; text-align: right;">'.number_format($row['InitialDeposit'],2).'</td>
+                                </tr>
+                                <tr style="background-color: white; height: 40px;">
+                                    <td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ><b>Cash</b></td><td id="depositcash" style="padding: 8px; border: 1px solid black; text-align: right;">'.number_format($row["DepositCash"],2).'</td><td style="padding: 8px; border: 1px solid black;" ></td>
+                                </tr>
+                                <tr style="background-color: #DCDCDC; height: 40px;">
+                                    <td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ><b>Ticket</b></td><td id="depositticket" style="padding: 8px; border: 1px solid black; text-align: right;">'.number_format($row["DepositTicket"],2).'</td><td style="padding: 8px; border: 1px solid black;" ></td>
+                                </tr>
+                                <tr style="background-color: white; height: 40px;">
+                                    <td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ><b>Coupon</b></td><td id="depositcoupon" style="padding: 8px; border: 1px solid black; text-align: right;">'.number_format($row["DepositCoupon"],2).'</td><td style="padding: 8px; border: 1px solid black;" ></td>
+                                </tr>
+                                <tr style="background-color: #DCDCDC; height: 40px;">
+                                    <td style="padding: 8px; border: 1px solid black;" ><b>Reloads</b></td><td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ></td><td id="reload" style="padding: 8px; border: 1px solid black; text-align: right;">'.number_format($row['Reload'],2).'</td>
+                                </tr>
+                                <tr style="background-color: white; height: 40px;">
+                                    <td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ><b>Cash</b></td><td id="reloadcash" style="padding: 8px; border: 1px solid black; text-align: right;" >'.number_format($row["ReloadCash"],2).'</td><td style="padding: 8px; border: 1px solid black;" ></td>
+                                </tr>
+                                <tr style="background-color: #DCDCDC; height: 40px;">
+                                    <td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ><b>Ticket</b></td><td id="reloadticket" style="padding: 8px; border: 1px solid black; text-align: right;" >'.number_format($row["ReloadTicket"],2).'</td><td style="padding: 8px; border: 1px solid black;" ></td>
+                                </tr>
+                                <tr style="background-color: white; height: 40px;">
+                                    <td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ><b>Coupon</b></td><td id="reloadcoupon" style="padding: 8px; border: 1px solid black; text-align: right;" >'.number_format($row["ReloadCoupon"],2).'</td><td style="padding: 8px; border: 1px solid black;" ></td>
+                                </tr>
+                                <tr style="background-color: #DCDCDC; height: 40px;">
+                                    <td style="padding: 8px; border: 1px solid black;" ><b>Redemption</b></td><td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ></td><td id="redemption" style="padding: 8px; border: 1px solid black; text-align: right;" >'.number_format($row['Redemption'],2).'</td>
+                                </tr>
+                                <tr style="background-color: white; height: 40px;">
+                                    <td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ><b>Cashier</b></td><td id="redemptioncashier" style="padding: 8px; border: 1px solid black; text-align: right;" >'.number_format($row["RedemptionCashier"],2).'</td><td style="padding: 8px; border: 1px solid black;" ></td>
+                                </tr>
+                                <tr style="background-color: #DCDCDC; height: 40px;">
+                                    <td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ><b>Genesis</b></td><td id="redemptiongenesis" style="padding: 8px; border: 1px solid black; text-align: right;" >'.number_format($row["RedemptionGenesis"],2).'</td><td style="padding: 8px; border: 1px solid black;" ></td>
+                                </tr>
+                                <tr style="background-color: white; height: 40px;">
+                                    <td style="padding: 8px; border: 1px solid black;" ><b>Manual Redemption</b></td><td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ></td><td id="manualredemption" style="padding: 8px; border: 1px solid black; text-align: right;" >'.number_format($row['ManualRedemption'], 2).'</td>
+                                </tr>
+                                <tr style="background-color: #DCDCDC; height: 40px;">
+                                    <td style="padding: 8px; border: 1px solid black;" ><b>Encashed Tickets</b></td><td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ></td><td id="encashedtickets" style="padding: 8px; border: 1px solid black; text-align: right;" >'.number_format($row["EncashedTickets"],2).'</td>
+                                </tr>
+                                <tr style="background-color: white; height: 40px;" style="height: 40px;">
+                                    <td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ></td>
+                                </tr>
+                                <tr style="background-color: #DCDCDC; height: 40px;">
+                                    <td style="padding: 8px; border: 1px solid black;" ><b>Cash on Hand</b></td><td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ></td><td id="cashonhand" style="padding: 8px; border: 1px solid black; text-align: right;">'.number_format($cashonhand, 2).'</td>
+                                </tr>
+                                <tr style="background-color: white; height: 40px;">
+                                    <td style="padding: 8px; border: 1px solid black;" ><b>Gross Hold</b></td><td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ></td><td id="grosshold" style="padding: 8px; border: 1px solid black; text-align: right;" >'.number_format($grosshold,2).'</td>
+                                </tr>
+                                <tr style="background-color: #DCDCDC; height: 40px;">
+                                    <td style="padding: 8px; border: 1px solid black;" ><b>Replenishment</b></td><td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ></td><td id="replenishment" style="padding: 8px; border: 1px solid black; text-align: right;" >'.number_format($row['Replenishment'],2).'</td>
+                                </tr>
+                                <tr style="background-color: white; height: 40px;">
+                                    <td style="padding: 8px; border: 1px solid black;" ><b>Collection</b></td><td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ></td><td id="collection" style="padding: 8px; border: 1px solid black; text-align: right;">'.number_format($row['Collection'],2).'</td>
+                                </tr>
+                                <tr style="background-color: #DCDCDC; height: 40px;">
+                                    <td style="padding: 8px; border: 1px solid black;" ><b>Ending Balance</b></td><td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ></td><td id="endbal" style="padding: 8px; border: 1px solid black; text-align: right;" >'.number_format($row['EndBal'],2).'</td>
+                                </tr>
+                            </table>';
                 break;
             }
         }
@@ -1335,7 +1421,8 @@ class ProcessTopUpGenerateReports extends BaseProcess{
     }
     
     //added on 11-18-2011, for gross hold monitoring per cut off (Excel)
-    public function grossHoldCutoffExcel() {
+    public function grossHoldCutoffExcel() 
+    {
         $startdate = $_POST['startdate']." ".BaseProcess::$cutoff;
 //        $venddate = $_POST['enddate'];  
 //        $enddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($venddate)))." ".BaseProcess::$cutoff;           
@@ -1354,14 +1441,18 @@ class ProcessTopUpGenerateReports extends BaseProcess{
             $rows = $topreport->getoldGHCutoff($startdate, $enddate, $vsitecode);
         }
         
-        if(count($rows) > 0){
-            foreach($rows as $row) {
+        if(count($rows) > 0)
+        {
+            foreach($rows as $row) 
+            {
                 $grosshold = (($row['InitialDeposit'] + $row['Reload']) - $row['Redemption']) - $row['ManualRedemption'];
-                if ($startdate < BaseProcess::$deploymentdate) {
+                if ($startdate < BaseProcess::$deploymentdate) 
+                {
                     $cashonhand = (($row['DepositCash'] + $row['Coupon'] + $row['ReloadCash'] + $row['EwalletCashLoads'] + $row['ewalletCoupon']) - ($row['RedemptionCashier'] + $row['EwalletWithdraw']) - $row['ManualRedemption']) - $row["EncashedTicketsV15"];
                    // $cashonhand = ((((($row['DepositCash'] + $row['EwalletCashLoads'] + $row['ReloadCash']) - $row['RedemptionCashier']) - $row['RedemptionGenesis']) - $row['EwalletWithdrawals']) - $row['ManualRedemption']) - $row['EncashedTickets'];
                 }
-                else {
+                else 
+                {
                     $cashonhand = (($row['DepositCash'] + $row['Coupon'] + $row['ReloadCash'] + $row['EwalletCashLoads'] + $row['ewalletCoupon'] + $row['LoadTickets']) - ($row['TotalRedemption'] + $row['EwalletWithdraw']) - $row['ManualRedemption']) - $row["EncashedTicketsV15"];
                     //$cashonhand = ((((($row['DepositCash'] + $row['EwalletCashLoads'] + $row['ReloadCash'] + $row['DepositTicket'] + $row['ReloadTicket'] + $row['EwalletTicketDeposit'] + $row['Coupon']) - $row['RedemptionCashier']) - $row['RedemptionGenesis']) - $row['EwalletWithdrawals']) - $row['ManualRedemption']) - $row['EncashedTicketsV15'];
                 }
@@ -1395,14 +1486,19 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $topreport->close();
     }
     
-    public function cohAdjustmentExcel() {
+    public function cohAdjustmentExcel() 
+    {
         $aid = 0;
-        if(isset($_SESSION['sessionID'])) {
+        if(isset($_SESSION['sessionID'])) 
+        {
             $sessionid = $_SESSION['sessionID'];
-        } else  {
+        } 
+        else  
+        {
             $sessionid = '';
         }
-        if(isset($_SESSION['accID'])) {
+        if(isset($_SESSION['accID'])) 
+        {
             $aid = $_SESSION['accID'];
         }
         $ipaddress = gethostbyaddr($_SERVER['REMOTE_ADDR']);
@@ -1420,7 +1516,8 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $rows = $topreport->getCohAdjustment($startdate, $venddate);
    
         $new_rows = array();
-        foreach($rows as $row) {
+        foreach($rows as $row) 
+        {
             $new_rows[] = array(
                     $row['SiteName'],
                     $row['POSAccountNo'],
@@ -1447,14 +1544,19 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $topreport->close();
     }
     
-    public function cohAdjustmentPdf() {
+    public function cohAdjustmentPdf() 
+    {
         $aid = 0;
-        if(isset($_SESSION['sessionID'])) {
+        if(isset($_SESSION['sessionID'])) 
+        {
             $sessionid = $_SESSION['sessionID'];
-        } else  {
+        } 
+        else  
+        {
             $sessionid = '';
         }
-        if(isset($_SESSION['accID'])) {
+        if(isset($_SESSION['accID'])) 
+        {
             $aid = $_SESSION['accID'];
         }
         $ipaddress = gethostbyaddr($_SERVER['REMOTE_ADDR']);
@@ -1484,7 +1586,8 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                 array('value'=>'Date Created')
                 
              ));
-        foreach($rows as $row) {
+        foreach($rows as $row) 
+        {
             $pdf->c_tableRow2(array(
                 array('value'=>$row['SiteName']),
                 array('value'=>$row['POSAccountNo']),
@@ -1512,14 +1615,19 @@ class ProcessTopUpGenerateReports extends BaseProcess{
     }
     
     //e-SAFE Transaction History per site Report (PDF)
-    public function ewalletTransactionsitehistoryPDF($site, $transType, $transStatus, $startDate, $endDate) {
+    public function ewalletTransactionsitehistoryPDF($site, $transType, $transStatus, $startDate, $endDate) 
+    {
         $aid = 0;
-        if(isset($_SESSION['sessionID'])) {
+        if(isset($_SESSION['sessionID'])) 
+        {
             $sessionid = $_SESSION['sessionID'];
-        } else  {
+        } 
+        else  
+        {
             $sessionid = '';
         }
-        if(isset($_SESSION['accID'])) {
+        if(isset($_SESSION['accID'])) 
+        {
             $aid = $_SESSION['accID'];
         }
         
@@ -1544,9 +1652,11 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                 array('value'=>'Status'),
                 array('value'=>'Created By'),
              ));
-        foreach($rows as $row) {
+        foreach($rows as $row) 
+        {
             $trans_type = 'Withdraw';
-            if($row['TransType'] == 'D'){
+            if($row['TransType'] == 'D')
+            {
                 $trans_type = "Load";
             }
             $pdf->c_tableRow2(array(
@@ -1575,17 +1685,22 @@ class ProcessTopUpGenerateReports extends BaseProcess{
     }
     
      //e-SAFE Transaction History Report per site (Excel)
-    public function ewalletTransactionsitehistoryExcel($site, $transType, $transStatus, $startDate, $endDate) {
+    public function ewalletTransactionsitehistoryExcel($site, $transType, $transStatus, $startDate, $endDate) 
+    {
         $_SESSION['report_header'] = array('Card Number','Terminal Code','Start Date', 'End Date','Amount','Transaction Type',
             'Status','Created By');
         
         $aid = 0;
-        if(isset($_SESSION['sessionID'])) {
+        if(isset($_SESSION['sessionID'])) 
+        {
             $sessionid = $_SESSION['sessionID'];
-        } else  {
+        } 
+        else  
+        {
             $sessionid = '';
         }
-        if(isset($_SESSION['accID'])) {
+        if(isset($_SESSION['accID'])) 
+        {
             $aid = $_SESSION['accID'];
         }
         
@@ -1595,9 +1710,11 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $topreport->open();
         $rows = $topreport->geteWalletTransactionHistoryReport($site, $transType, $transStatus, $startDate, $endDate);
         $new_rows = array();
-        foreach($rows as $row) {
+        foreach($rows as $row) 
+        {
             $trans_type = 'Withdraw';
-            if($row['TransType'] == 'D'){
+            if($row['TransType'] == 'D')
+            {
                 $trans_type = "Load";
             }
             $new_rows[] = array(
@@ -1627,14 +1744,19 @@ class ProcessTopUpGenerateReports extends BaseProcess{
     }
     
      //e-SAFE Transaction History per card Report (PDF)
-    public function ewalletTransactioncardhistoryPDF($cardNumber, $transType, $transStatus, $startDate, $endDate) {
+    public function ewalletTransactioncardhistoryPDF($cardNumber, $transType, $transStatus, $startDate, $endDate) 
+    {
         $aid = 0;
-        if(isset($_SESSION['sessionID'])) {
+        if(isset($_SESSION['sessionID'])) 
+        {
             $sessionid = $_SESSION['sessionID'];
-        } else  {
+        } 
+        else  
+        {
             $sessionid = '';
         }
-        if(isset($_SESSION['accID'])) {
+        if(isset($_SESSION['accID'])) 
+        {
             $aid = $_SESSION['accID'];
         }
         
@@ -1658,9 +1780,11 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                 array('value'=>'Status'),
                 array('value'=>'Created By'),
              ));
-        foreach($rows as $row) {
+        foreach($rows as $row) 
+        {
             $trans_type = 'Withdraw';
-            if($row['TransType'] == 'D'){
+            if($row['TransType'] == 'D')
+            {
                 $trans_type = "Load";
             }
             $sitecode = $topreport->getsitecode($row['SiteID']);
@@ -1690,17 +1814,22 @@ class ProcessTopUpGenerateReports extends BaseProcess{
     }
     
      //e-SAFE Transaction History Report per card (Excel)
-    public function ewalletTransactioncardhistoryExcel($cardNumber, $transType, $transStatus, $startDate, $endDate) {
+    public function ewalletTransactioncardhistoryExcel($cardNumber, $transType, $transStatus, $startDate, $endDate) 
+    {
         $_SESSION['report_header'] = array('Site / PEGS Code','Card Number','Start Date', 'End Date','Amount','Transaction Type',
             'Status','Created By');
         
         $aid = 0;
-        if(isset($_SESSION['sessionID'])) {
+        if(isset($_SESSION['sessionID'])) 
+        {
             $sessionid = $_SESSION['sessionID'];
-        } else  {
+        } 
+        else  
+        {
             $sessionid = '';
         }
-        if(isset($_SESSION['accID'])) {
+        if(isset($_SESSION['accID'])) 
+        {
             $aid = $_SESSION['accID'];
         }
         
@@ -1710,9 +1839,11 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $topreport->open();
         $rows = $topreport->geteWalletTransactionCardHistoryReport($cardNumber, $transType, $transStatus, $startDate, $endDate);
         $new_rows = array();
-        foreach($rows as $row) {
+        foreach($rows as $row) 
+        {
             $trans_type = 'Withdraw';
-            if($row['TransType'] == 'D'){
+            if($row['TransType'] == 'D')
+            {
                 $trans_type = "Load";
             }
             $sitecode = $topreport->getsitecode($row['SiteID']);
@@ -1743,20 +1874,41 @@ class ProcessTopUpGenerateReports extends BaseProcess{
     }
     
     //method for get balance through API (Playing Balance)
-    protected function getBalance($row) {
+    protected function getBalance($row) 
+    {
         include_once __DIR__.'/../sys/class/helper/common.class.php';
         
         $providername = $this->CasinoRptType($row['ServiceID']);  
         
         switch (true)
         {
+// CCT BEGIN
+            // CCT ADDED BEGIN 11/29/2017 
+            //case "HAB": 
+            case (strstr($providername, "HAB")):
+                $url = self::$service_api[$row['ServiceID'] - 1];
+                $capiusername = self::$habbrandid ;
+                $capipassword = self::$habapikey;
+                $capiplayername = '';
+                $capiserverID = '';
+                break;           
+            // CCT ADDED END 11/29/2017 
+// CCT END               
+            //case "RTG2":
+            case (strstr($providername, "RTG2")):
+                $url = self::$service_api[$row['ServiceID'] - 1];
+                $capiusername = '';
+                $capipassword = '';
+                $capiplayername = '';
+                $capiserverID = '';
+                break;
             case (strstr($providername, "RTG")):
                $url = self::$service_api[$row['ServiceID'] - 1];
                $capiusername = '';
                $capipassword = '';
                $capiplayername = '';
                $capiserverID = '';
-                break;
+               break;
             case (strstr($providername, "MG")):
                 $_MGCredentials = self::$service_api[$row['ServiceID'] - 1];
                list($mgurl, $mgserverID) =  $_MGCredentials;
@@ -1765,60 +1917,88 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                $capipassword = self::$capi_password;
                $capiplayername = self::$capi_player;
                $capiserverID = $mgserverID;
-                break;
+               break;
             case (strstr($providername, "PT")):
                $url = self::$player_api[$row['ServiceID'] - 1];
                $capiusername =  self::$ptcasinoname;
                $capipassword = self::$ptSecretKey;
                $capiplayername = '';
                $capiserverID = '';
-                break;
+               break;
         }
         switch (true)
         {
-                case (strstr($providername, "RTG")):
-                    $CasinoGamingCAPI = new CasinoGamingCAPI();
-                    if($row['UserMode'] == 0){
-                        $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
-                            $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, 
-                            $capiserverID);
-                    }
-                    else{
-                        $topreport = new TopUpReportQuery($this->getConnection());
-                        $topreport->open();
-                        $serviceusername = $topreport->getUBServiceLogin($row['TerminalID']);
-                        $topreport->close();
-                        $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
-                            $serviceusername, $capiusername, $capipassword, $capiplayername, 
-                            $capiserverID); 
-                    }
-                    break;
-                case (strstr($providername, "MG")):
-                    $CasinoGamingCAPI = new CasinoGamingCAPI();
+// CCT BEGIN            
+            // CCT ADDED BEGIN 11/29/2017
+            //case "HAB": 
+            case (strstr($providername, "HAB")):
+                $CasinoGamingCAPI = new CasinoGamingCAPI();
+                $topreport = new TopUpReportQuery($this->getConnection());
+                $topreport->open();
+                //$MIDResult = $topreport->getMIDInfo($row['TerminalID'], $row['ServiceID']);            
+                //$serviceUBResult = $topreport->getUBInfo($MIDResult['MID'], $row['ServiceID']);                   
+                //$login = $serviceUBResult['ServiceUserName'];
+                //$password = $serviceUBResult['ServicePassword'];
+                $servicePwdResult = $topreport->getterminalcredentials($row['TerminalID'], $row['ServiceID']);
+                $login = $row['TerminalCode'];
+                $password = $servicePwdResult['ServicePassword'];
+                $topreport->close();
+                $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
+                    $login, $capiusername, $capipassword, $capiplayername, $capiserverID, $row['UserMode'], $password);
+                
+                break;
+            // CCT ADDED END 11/29/2017
+// CCT END       
+            // case "RTG2":
+            case (strstr($providername, "RTG2")):
+                $CasinoGamingCAPI = new CasinoGamingCAPI();
+                $topreport = new TopUpReportQuery($this->getConnection());
+                $topreport->open();
+                $serviceusername = $topreport->getUBServiceLogin($row['TerminalID']);
+                $topreport->close();
+                $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
+                    $serviceusername, $capiusername, $capipassword, $capiplayername, $capiserverID); 
+                break;
+            case (strstr($providername, "RTG")):
+                $CasinoGamingCAPI = new CasinoGamingCAPI();
+                if($row['UserMode'] == 0)
+                {
                     $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
-                            $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, 
-                            $capiserverID);
-                    break;
-                case (strstr($providername, "PT")):
-                    $CasinoGamingCAPI = new CasinoGamingCAPI();
+                        $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, $capiserverID);
+                }
+                else
+                {
+                    $topreport = new TopUpReportQuery($this->getConnection());
+                    $topreport->open();
+                    $serviceusername = $topreport->getUBServiceLogin($row['TerminalID']);
+                    $topreport->close();
+                    $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
+                        $serviceusername, $capiusername, $capipassword, $capiplayername, $capiserverID); 
+                }
+                break;
+            case (strstr($providername, "MG")):
+                $CasinoGamingCAPI = new CasinoGamingCAPI();
+                $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
+                        $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, $capiserverID);
+                break;
+            case (strstr($providername, "PT")):
+                $CasinoGamingCAPI = new CasinoGamingCAPI();
 
-                    if($row['UserMode'] == 0){
-                        $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
-                            $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, 
-                            $capiserverID);
-                    }
-                    else
-                    {
-                        $topreport = new TopUpReportQuery($this->getConnection());
-                        $topreport->open();
-                        $serviceusername = $topreport->getUBServiceLogin($row['TerminalID']);
-                        $topreport->close();
-                        $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
-                            $serviceusername, $capiusername, $capipassword, $capiplayername, 
-                            $capiserverID); 
-                    }    
-                    
-                    break;
+                if($row['UserMode'] == 0)
+                {
+                    $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
+                        $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, $capiserverID);
+                }
+                else
+                {
+                    $topreport = new TopUpReportQuery($this->getConnection());
+                    $topreport->open();
+                    $serviceusername = $topreport->getUBServiceLogin($row['TerminalID']);
+                    $topreport->close();
+                    $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
+                        $serviceusername, $capiusername, $capipassword, $capiplayername, $capiserverID); 
+                }    
+                break;
         }
         
         return array("Balance"=>$balance, "Casino"=>$providername);    
@@ -1839,53 +2019,51 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                     
         if(!is_null($statuscode) ||$statuscode == '')
         {
-                if($statuscode == 1 || $statuscode == 5 || $statuscode == 9)
-                {
-                   $casinoarray_count = count($obj_result->CardInfo->CasinoArray);
+            if($statuscode == 1 || $statuscode == 5 || $statuscode == 9)
+            {
+               $casinoarray_count = count($obj_result->CardInfo->CasinoArray);
 
-                   if($casinoarray_count != 0)
-                   {
-                       for($ctr = 0; $ctr < $casinoarray_count;$ctr++) {   
-                          
-                           $_SESSION['ServiceUsername'] = $obj_result->CardInfo->CasinoArray[$ctr]->ServiceUsername;
-                           $_SESSION['MID'] = $obj_result->CardInfo->MemberID;
-                           $_SESSION['UserMode'] = $obj_result->CardInfo->CasinoArray[$ctr]->UserMode;
-                           return true;
-                       }
-                  }
-                  else
-                  {
-                   return false;
-                  }
-               }
-               else
-               {  
-                   return false;
-               }
+               if($casinoarray_count != 0)
+               {
+                   for($ctr = 0; $ctr < $casinoarray_count;$ctr++) 
+                   {   
+                       $_SESSION['ServiceUsername'] = $obj_result->CardInfo->CasinoArray[$ctr]->ServiceUsername;
+                       $_SESSION['MID'] = $obj_result->CardInfo->MemberID;
+                       $_SESSION['UserMode'] = $obj_result->CardInfo->CasinoArray[$ctr]->UserMode;
+                       return true;
+                   }
+              }
+              else
+              {
+               return false;
+              }
+           }
+           else
+           {  
+               return false;
+           }
         }
         else
         {
             return false;
         }
-        
     }
     
-    
-    protected function getBalanceUB($row) {
-      
-        include_once __DIR__.'/../sys/class/helper/common.class.php';
+    protected function getBalanceUB($row) 
+    {
+       include_once __DIR__.'/../sys/class/helper/common.class.php';
         
-        $providername = $this->CasinoRptType($row['ServiceID']);  
+       $providername = $this->CasinoRptType($row['ServiceID']);  
        $this->getCardNumber();
        switch (true)
-        {
+       {
             case (strstr($providername, "RTG")):
                $url = self::$service_api[$row['ServiceID'] - 1];
                $capiusername = '';
                $capipassword = '';
                $capiplayername = '';
                $capiserverID = '';
-                break;
+               break;
             case (strstr($providername, "MG")):
                 $_MGCredentials = self::$service_api[$row['ServiceID'] - 1];
                list($mgurl, $mgserverID) =  $_MGCredentials;
@@ -1894,69 +2072,64 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                $capipassword = self::$capi_password;
                $capiplayername = self::$capi_player;
                $capiserverID = $mgserverID;
-                break;
+               break;
             case (strstr($providername, "PT")):
                $url = self::$player_api[$row['ServiceID'] - 1];
                $capiusername =  self::$ptcasinoname;
                $capipassword = self::$ptSecretKey;
                $capiplayername = '';
                $capiserverID = '';
-                break;
+               break;
         }
-        
         
         switch (true)
         {
-                case (strstr($providername, "RTG")):
-                    $CasinoGamingCAPI = new CasinoGamingCAPI();
-                    $usermode = $_SESSION['UserMode'];
-                    if($usermode == 0){
-                        $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
-                            $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, 
-                            $capiserverID);
-                    }
-                    else{
-                        $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
-                            $row['UBServiceLogin'], $capiusername, $capipassword, $capiplayername, 
-                            $capiserverID);   
-                    }
-                    break;
-                case (strstr($providername, "MG")):
+            case (strstr($providername, "RTG")):
+                $CasinoGamingCAPI = new CasinoGamingCAPI();
+                $usermode = $_SESSION['UserMode'];
+                if($usermode == 0)
+                {
+                    $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
+                        $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, $capiserverID);
+                }
+                else
+                {
+                    $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
+                        $row['UBServiceLogin'], $capiusername, $capipassword, $capiplayername, $capiserverID);   
+                }
+                break;
+            case (strstr($providername, "MG")):
+                $CasinoGamingCAPI = new CasinoGamingCAPI();
+                $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
+                        $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, $capiserverID);
+                break;
+            case (strstr($providername, "PT")):
+                $CasinoGamingCAPI = new CasinoGamingCAPI();
+                $usermode = $_SESSION['UserMode'];
+                if($usermode == 0)
+                {
                     $CasinoGamingCAPI = new CasinoGamingCAPI();
                     $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
-                            $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, 
-                            $capiserverID);
-                    break;
-                case (strstr($providername, "PT")):
-                    $CasinoGamingCAPI = new CasinoGamingCAPI();
-                    $usermode = $_SESSION['UserMode'];
-                    if($usermode == 0){
-                        $CasinoGamingCAPI = new CasinoGamingCAPI();
-                        $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
-                            $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, 
-                            $capiserverID);
-                    }
-                    else
-                    {
-                         $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
-                            $_SESSION['ServiceUsername'], $capiusername, $capipassword, $capiplayername, 
-                            $capiserverID);    
-                    }    
-                    
-                    
-                    break;
+                        $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, $capiserverID);
+                }
+                else
+                {
+                     $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
+                        $_SESSION['ServiceUsername'], $capiusername, $capipassword, $capiplayername, $capiserverID);    
+                }    
+                break;
         }
-        
         return array("Balance"=>$balance, "Casino"=>$providername);    
-  
     }
     
-    function CasinoRptType($serviceId) {
+    function CasinoRptType($serviceId) 
+    {
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open(); 
         $rows = $topreport->getRefServices(); 
         $casino = array();
-        foreach($rows as $row) {
+        foreach($rows as $row) 
+        {
             $casino[$row['ServiceID']] = $row['ServiceGroupName'];
         }
         return $casino[$serviceId];
@@ -1969,7 +2142,8 @@ $reports = new ProcessTopUpGenerateReports();
 if(!isset($_GET['action']))
     die('Page not found');
 
-switch($_GET['action']) {
+switch($_GET['action']) 
+{
     case 'confirmationpdf':
         $reports->confirmationPdf();
         break;
@@ -2045,7 +2219,6 @@ switch($_GET['action']) {
     case 'getcohadjustmentpdf':
         $reports->cohAdjustmentPdf();
         break;
-    
     case 'ewalletTransactionsitehistoryPDF':
         $startDate = date('Y-m-d')." ".BaseProcess::$cutoff;
         $endDate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startDate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;
@@ -2066,30 +2239,26 @@ switch($_GET['action']) {
         
         $reports->ewalletTransactionsitehistoryPDF($site, $transType, $transStatus, $startDate, $endDate);
         break;
-        
     case 'ewalletTransactionsitehistoryExcel':
-            
-            $startDate = date('Y-m-d')." ".BaseProcess::$cutoff;
-            $endDate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startDate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;
-            $transStatus="";
-            $transType="";
-            $site="";
+        $startDate = date('Y-m-d')." ".BaseProcess::$cutoff;
+        $endDate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startDate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;
+        $transStatus="";
+        $transType="";
+        $site="";
 
-            if(isset($_GET['dateFrom']))
-                $startDate = $_GET['dateFrom']." ".BaseProcess::$cutoff;
+        if(isset($_GET['dateFrom']))
+            $startDate = $_GET['dateFrom']." ".BaseProcess::$cutoff;
 //            if(isset($_GET['dateTo']))
-               $endDate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startDate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;
-            if(isset($_GET['cmbtransStatus']))
-                $transStatus = $_GET['cmbtransStatus'];
-            if(isset($_GET['cmbtransType']))
-                $transType = $_GET['cmbtransType'];
-            if(isset($_GET['cmbsite']))
-                $site = $_GET['cmbsite'];
+           $endDate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startDate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;
+        if(isset($_GET['cmbtransStatus']))
+            $transStatus = $_GET['cmbtransStatus'];
+        if(isset($_GET['cmbtransType']))
+            $transType = $_GET['cmbtransType'];
+        if(isset($_GET['cmbsite']))
+            $site = $_GET['cmbsite'];
 
-            $reports->ewalletTransactionsitehistoryExcel($site, $transType, $transStatus, $startDate, $endDate);
-            
-            break;
-            
+        $reports->ewalletTransactionsitehistoryExcel($site, $transType, $transStatus, $startDate, $endDate);
+        break;
     case 'ewalletTransactioncardhistoryPDF':
         $startDate = date('Y-m-d')." ".BaseProcess::$cutoff;
         $endDate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startDate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;
@@ -2110,30 +2279,26 @@ switch($_GET['action']) {
         
         $reports->ewalletTransactioncardhistoryPDF($cardNumber, $transType, $transStatus, $startDate, $endDate);
         break;
-        
     case 'ewalletTransactioncardhistoryExcel':
-            
-            $startDate = date('Y-m-d')." ".BaseProcess::$cutoff;
-            $endDate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startDate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;
-            $transStatus="";
-            $transType="";
-            $cardNumber="";
+        $startDate = date('Y-m-d')." ".BaseProcess::$cutoff;
+        $endDate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startDate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;
+        $transStatus="";
+        $transType="";
+        $cardNumber="";
 
-            if(isset($_GET['dateFrom']))
-                $startDate = $_GET['dateFrom']." ".BaseProcess::$cutoff;
+        if(isset($_GET['dateFrom']))
+            $startDate = $_GET['dateFrom']." ".BaseProcess::$cutoff;
 //            if(isset($_GET['dateTo']))
-                $endDate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startDate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;
-            if(isset($_GET['cmbtransStatus']))
-                $transStatus = $_GET['cmbtransStatus'];
-            if(isset($_GET['cmbtransType']))
-                $transType = $_GET['cmbtransType'];
-            if(isset($_GET['cardNum']))
-                $cardNumber = $_GET['cardNum'];
+            $endDate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startDate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;
+        if(isset($_GET['cmbtransStatus']))
+            $transStatus = $_GET['cmbtransStatus'];
+        if(isset($_GET['cmbtransType']))
+            $transType = $_GET['cmbtransType'];
+        if(isset($_GET['cardNum']))
+            $cardNumber = $_GET['cardNum'];
 
-            $reports->ewalletTransactioncardhistoryExcel($cardNumber, $transType, $transStatus, $startDate, $endDate);
-            break;
-            
-            
+        $reports->ewalletTransactioncardhistoryExcel($cardNumber, $transType, $transStatus, $startDate, $endDate);
+        break;
     default :
         die('Page not found');
 }
