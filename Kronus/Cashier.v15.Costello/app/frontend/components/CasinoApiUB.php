@@ -29,8 +29,8 @@ class CasinoApiUB {
     public function configureRTG($terminal_id,$serverid,$APIType = 0) {
         
         if(strpos(Mirage::app()->param['service_api'][$serverid - 1], 'ECFTEST') !== false) {
-            Mirage::app()->param['deposit_method_id'] = 502;
-            Mirage::app()->param['withdrawal_method_id'] = 503;
+            Mirage::app()->param['deposit_method_id'] = 503; // 502
+            Mirage::app()->param['withdrawal_method_id'] = 502; // 503
         }        
         
         $configuration = array( 'URI' =>Mirage::app()->param['service_api'][$serverid - 1],
