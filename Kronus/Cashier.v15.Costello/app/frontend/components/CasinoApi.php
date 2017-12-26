@@ -338,7 +338,18 @@ class CasinoApi {
                 $balanceinfo = $casinoApiHandler->GetBalanceHabanero($terminal_name, $terminal_pwd);
                 break;
         }
-        if ($service_name != "Habanero" || $service_name != "Vibrant Vegas") {
+        
+        /*
+         * John Aaron Vida
+         * 12/14/2017
+         * Added ::For Habanero
+         */
+        if ($service_name == 'HAB') {
+            $terminal_balance = $balanceinfo['TransactionInfo']['RealBalance'];
+            $redeemable_amount = $terminal_balance;
+        }
+
+        if ($service_name != "RTG") {
             if (!isset($balanceinfo['BalanceInfo']['Balance'])) {
                 $message = 'Error: Can\'t get balance';
                 logger($message . ' TerminalID=' . $terminal_id . ' ServiceID=' . $service_id .
@@ -364,17 +375,6 @@ class CasinoApi {
             } else {
                 $currentbet = 0;
             }
-        }
-
-        /*
-         * John Aaron Vida
-         * 12/14/2017
-         * Added ::Habanero
-         */
-        //For Habanero
-        if ($service_name == 'HAB') {
-            $terminal_balance = $balanceinfo['TransactionInfo']['RealBalance'];
-            $redeemable_amount = $terminal_balance;
         }
 
         $terminalSessionsModel->updateTerminalSessionById($terminal_id, $service_id, $terminal_balance);
@@ -434,7 +434,18 @@ class CasinoApi {
                 $balanceinfo = $casinoApiHandler->GetBalanceHabanero($terminal_name, $terminal_pwd);
                 break;
         }
-        if ($service_name != "Habanero" || $service_name != "Vibrant Vegas") {
+
+        /*
+         * John Aaron Vida
+         * 12/14/2017
+         * Added ::For Habanero
+         */
+        if ($service_name == 'HAB') {
+            $terminal_balance = $balanceinfo['TransactionInfo']['RealBalance'];
+            $redeemable_amount = $terminal_balance;
+        }
+
+        if ($service_name == "RTG") {
             if (!isset($balanceinfo['BalanceInfo']['Balance'])) {
                 $message = 'Error: Can\'t get balance';
                 logger($message . ' TerminalID=' . $terminal_id . ' ServiceID=' . $service_id .
@@ -460,17 +471,6 @@ class CasinoApi {
             } else {
                 $currentbet = 0;
             }
-        }
-
-        /*
-         * John Aaron Vida
-         * 12/14/2017
-         * Added ::Habanero
-         */
-        //For Habanero
-        if ($service_name == 'HAB') {
-            $terminal_balance = $balanceinfo['TransactionInfo']['RealBalance'];
-            $redeemable_amount = $terminal_balance;
         }
 
         return array($terminal_balance, $service_name, $terminalSessionsModel, $transReqLogsModel, $redeemable_amount, $casinoApiHandler, $currentbet);
@@ -568,7 +568,17 @@ class CasinoApi {
                 break;
         }
 
-        if ($service_name != "HAB" && $service_name != "PT") {
+        /*
+         * John Aaron Vida
+         * 12/14/2017
+         * Added ::For Habanero
+         */
+        if ($service_name == 'HAB') {
+            $terminal_balance = $balanceinfo['TransactionInfo']['RealBalance'];
+            $redeemable_amount = $terminal_balance;
+        }
+
+        if ($service_name == "RTG" || $service_name == "RTG2") {
             if (!isset($balanceinfo['BalanceInfo']['Balance'])) {
                 $message = 'Error: Can\'t get balance';
                 logger($message . ' TerminalID= ' . $terminal_id . ' ServiceID= ' . $service_id .
@@ -587,7 +597,7 @@ class CasinoApi {
 
         $currentbet = 0;
         //For PT --> denied redemption if there was a current bet
-        if ($service_name == 'PT' && $transtype == 'W') {
+        if ($service_name == 'PT') {
 
             if ($balanceinfo['BalanceInfo']['CurrentBet'] > 0) {
                 $currentbet = $balanceinfo['BalanceInfo']['CurrentBet'];
@@ -595,18 +605,6 @@ class CasinoApi {
                 $currentbet = 0;
             }
         }
-
-        /*
-         * John Aaron Vida
-         * 12/14/2017
-         * Added ::Habanero
-         */
-        //For Habanero
-        if ($service_name == 'HAB') {
-            $terminal_balance = $balanceinfo['TransactionInfo']['RealBalance'];
-            $redeemable_amount = $terminal_balance;
-        }
-
 
         $terminalSessionsModel->updateTerminalSessionById($terminal_id, $service_id, $terminal_balance);
         return array($terminal_balance, $service_name, $terminalSessionsModel, $transReqLogsModel, $redeemable_amount, $casinoApiHandler, $mgaccount, $currentbet);
@@ -671,11 +669,22 @@ class CasinoApi {
                 $casinoApiHandler = $this->configureHabanero($terminal_id, $service_id, 0);
                 MI_Database::close();
                 $balanceinfo = $casinoApiHandler->GetBalanceHabanero($terminal_name, $terminal_pwd);
+
                 break;
         }
 
+        /*
+         * John Aaron Vida
+         * 12/14/2017
+         * Added :: For Habanero
+         */
+        if ($service_name == 'Habanero') {
+            $terminal_balance = $balanceinfo['TransactionInfo']['RealBalance'];
+            $redeemable_amount = $terminal_balance;
+        }
 
-        if ($service_name != "Habanero" || $service_name != "Vibrant Vegas") {
+
+        if ($service_name == "Magic Macau" || $service_name == "Swinging Singapore") {
             if (!isset($balanceinfo['BalanceInfo']['Balance'])) {
                 return false;
             }
@@ -687,17 +696,6 @@ class CasinoApi {
             } else {
                 $redeemable_amount = $terminal_balance;
             }
-        }
-
-        /*
-         * John Aaron Vida
-         * 12/14/2017
-         * Added ::Habanero
-         */
-        //For Habanero
-        if ($service_name == 'Habanero') {
-            $terminal_balance = $balanceinfo['TransactionInfo']['RealBalance'];
-            $redeemable_amount = $terminal_balance;
         }
 
         $terminalSessionsModel->updateTerminalSessionById($terminal_id, $service_id, $terminal_balance);
@@ -761,7 +759,17 @@ class CasinoApi {
                 $balanceinfo = $casinoApiHandler->GetBalanceHabanero($terminal_name, $terminal_pwd);
                 break;
         }
-        if ($service_name != "Habanero" || $service_name != "Vibrant Vegas") {
+
+        /* John Aaron Vida
+         * 12/14/2017
+         * Added :: For Habanero
+         */
+        if ($service_name == 'Habanero') {
+            $terminal_balance = $balanceinfo['TransactionInfo']['RealBalance'];
+            $redeemable_amount = $terminal_balance;
+        }
+
+        if ($service_name == "Magic Macau" || $service_name == "Swinging Singapore") {
             if (!isset($balanceinfo['BalanceInfo']['Balance'])) {
                 return false;
             }
@@ -774,15 +782,7 @@ class CasinoApi {
                 $redeemable_amount = $terminal_balance;
             }
         }
-        /* John Aaron Vida
-         * 12/14/2017
-         * Added ::Habanero
-         */
-        //For Habanero
-        if ($service_name == 'Habanero' && $transtype == 'W') {
-            $terminal_balance = $balanceinfo['TransactionInfo']['RealBalance'];
-            $redeemable_amount = $terminal_balance;
-        }
+
 
         $terminalSessionsModel->updateTerminalSessionById($terminal_id, $service_id, $terminal_balance);
         return array($terminal_balance, $service_name, $terminalSessionsModel, $transReqLogsModel, $redeemable_amount, $casinoApiHandler, $mgaccount);
@@ -942,3 +942,4 @@ class CasinoApi {
     }
 
 }
+
