@@ -315,6 +315,12 @@ class CasinoCAPIHandler
         {
             return $this->_API->CheckTransaction($tracking1);
         }
+        // CCT ADDED 12/27/2017 BEGIN
+        elseif ( $this->_gamingProvider == self::HAB ) 
+        {
+            return $this->_API->TransactionSearchInfo($tracking1);
+        }        
+        // CCT ADDED 12/27/2017 END
     }
     
     public function GetMyBalance()

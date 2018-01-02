@@ -577,6 +577,12 @@ class CasinoGamingCAPI
                 $casinoApiHandler = $this->configurePT($url, $capiusername, $capipassword);
                 $transSearchInfo = $casinoApiHandler->TransactionSearchInfo( $login, $tracking1, $tracking2, $tracking3, $tracking4 );
                 break;
+            //ADDED CCT 12/27/2017 BEGIN
+            case "HAB":
+                $casinoApiHandler = $this->configureHAB($url, $capiusername, $capipassword); //BrandID, APIKey
+                $transSearchInfo = $casinoApiHandler->TransactionSearchInfo($login, $tracking1, $tracking2, $tracking3, $tracking4);
+                break;
+            //ADDED CCT 12/27/2017 END            
         }
         return $transSearchInfo;
     }

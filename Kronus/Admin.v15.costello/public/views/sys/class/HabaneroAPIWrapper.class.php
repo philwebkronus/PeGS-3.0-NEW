@@ -355,43 +355,32 @@ class HabaneroAPIWrapper
 //        //}
     }
     
-    public function TransactionSearchInfo( $login, $tracking1 = '', $tracking2 = '', $tracking3 = '', $tracking4 = '' )
+    public function TransactionSearchInfo($tracking1)
     {
-//        $GetPIDFromLoginResult = $this->_GetPIDFromLogin( $login );
-//        
-//        if ( !is_null( $GetPIDFromLoginResult ) )
-//        {
-//            if ( $GetPIDFromLoginResult[ 'IsSucceed'] == true )
-//            {
-//                $PID = $GetPIDFromLoginResult[ 'PID' ];
-//
-//                $TrackingInfoTransactionSearchResult = $this->_API->TrackingInfoTransactionSearch( $PID, $tracking1, $tracking2, $tracking3, $tracking4 );
-//
-//                if ( !$this->_API->GetError() )
-//                {
-//                    if ( is_array( $TrackingInfoTransactionSearchResult ) )
-//                    {
-//                        return array( 'IsSucceed' => true, 'ErrorCode' => 0, 'ErrorMessage' => null, 'TransactionInfo' => $TrackingInfoTransactionSearchResult );
-//                    }
-//                    else
-//                    {
-//                        return array( 'IsSucceed' => false, 'ErrorCode' => 40, 'ErrorMessage' => 'Response malformed' );
-//                    }
-//                }
-//                else
-//                {
-//                    return array( 'IsSucceed' => false, 'ErrorCode' => 41, 'ErrorMessage' => 'API Error: ' . $this->_API->GetError() );
-//                }
-//            }
-//            else
-//            {
-//                return array( 'IsSucceed' => false, 'ErrorCode' => 42, 'ErrorMessage' => 'Error retrieving PID' );
-//            }
-//        }
-//        else
-//        {
-//            return array( 'IsSucceed' => false, 'ErrorCode' => 42, 'ErrorMessage' => 'Error retrieving PID' );
-//        }
+        $queryTransResult = $this->_API->QueryTrans($tracking1);
+        
+        if(!is_null($queryTransResult))
+        {
+            if(isset($queryTransResult['querytransmethodResult']))
+            {
+                if ($queryTransResult['querytransmethodResult']['Success'] == true)
+                {
+                    return array('IsSucceed'=>true, 'ErrorCode' => 0, 'ErrorMessage'=>null, 'TransactionInfo' => $queryTransResult);
+                }
+                else
+                {
+                    return array('IsSucceed'=>false, 'ErrorCode' => 3, 'ErrorMessage'=> 'Transaction Not Found.');
+                }
+            }
+            else
+            {
+                return array('IsSucceed' => false, 'ErrorCode' => 2, 'ErrorMessage' => 'Response malformed' );
+            }            
+        }
+        else
+        {
+            return array('IsSucceed'=>false, 'ErrorCode' => 1, 'ErrorMessage' =>  'API Error');
+        }
     }
 }
 ?>
