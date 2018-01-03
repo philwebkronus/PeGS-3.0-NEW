@@ -54,6 +54,36 @@
                 var IsALLeSAFE = '<?php echo LPConfig::app()->params["IsALLeSAFE"]; ?>';
                 var serviceid = '';
                 var sysversion = '<?php echo LPConfig::app()->params["sysversionname"]; ?>';
+
+                $.checkSpyderConnection = function()
+                {
+                    $("#tdvv").hide();
+                    $("#tdmm").hide();
+                    $("#tdss").hide();
+                    
+                    $.ajax(
+                            {
+                                url: '../Helper/connector.php',
+                                type: 'post',
+                                dataType: 'json',
+                                async: false,
+                                data: {fn: function() {
+                                        return 'checkSpyderConnection';
+                                    },
+                                    TerminalCode: function() {
+                                        return terminalCode;
+                                    }},
+                                success: function(data)
+                                {
+                                    if (data['state'] != "Connected")
+                                    {
+                                        alert("Please Activate Spyder Connection on this Terminal!");
+                                        window.open("index.php", '_self');
+                                    }
+                                }
+                            });
+                };
+
                 $.checkTerminalType = function()
                 {
                     $.ajax(
@@ -192,6 +222,9 @@
                 {
                     if (bool)
                     {
+                        $("#tdvv").hide();
+                        $("#tdmm").hide();
+                        $("#tdss").hide();
                         $("#copyright1").hide();
                         $("#copyright2").hide();
                         $("#contentt").hide();
@@ -211,8 +244,8 @@
                                 {
                                     /*"width":lobby2imgW+"px",*/
                                     /*"height":lobby2imgH+"px"*/
-                                    "width": "244px",
-                                    "height": "278px",
+                                    "width": "360px",
+                                    "height": "340px",
                                     "list-style-type": "none",
                                     "background-size": "100%"
 
@@ -222,8 +255,8 @@
                                     /*"width":lobby2imgW+"px",*/
                                     /*"height":lobby2imgH+"px",*/
                                     /*"background-size":lobby2imgW+"px "+lobby2imgH+"px"*/
-                                    "width": "244px",
-                                    "height": "278px",
+                                    "width": "360px",
+                                    "height": "340px",
                                     "list-style-type": "none",
                                     "background-size": "100%"
                                 });
@@ -235,8 +268,8 @@
                                 {
                                     /*"width":lobby2imgW+"px",*/
                                     /*"height":lobby2imgH+"px"*/
-                                    "width": "244px",
-                                    "height": "278px",
+                                    "width": "360px",
+                                    "height": "340px",
                                     "list-style-type": "none",
                                     "background-size": "100%"
                                 });
@@ -245,8 +278,8 @@
                                     /*"width":lobby2imgW+"px",*/
                                     /*"height":lobby2imgH+"px",*/
                                     /*"background-size":lobby2imgW+"px "+lobby2imgH+"px"*/
-                                    "width": "244px",
-                                    "height": "278px",
+                                    "width": "360px",
+                                    "height": "340px",
                                     "list-style-type": "none",
                                     "background-size": "100%"
                                 });
@@ -258,8 +291,8 @@
                                 {
                                     /*"width":lobby2imgW+"px",*/
                                     /*"height":lobby2imgH+"px"*/
-                                    "width": "244px",
-                                    "height": "278px",
+                                    "width": "360px",
+                                    "height": "340px",
                                     "list-style-type": "none",
                                     "background-size": "100%"
                                 });
@@ -268,8 +301,8 @@
                                     /*"width":lobby2imgW+"px",*/
                                     /*"height":lobby2imgH+"px",*/
                                     /*"background-size":lobby2imgW+"px "+lobby2imgH+"px"*/
-                                    "width": "244px",
-                                    "height": "278px",
+                                    "width": "360px",
+                                    "height": "340px",
                                     "list-style-type": "none",
                                     "background-size": "100%"
                                 });
@@ -430,6 +463,7 @@
                 {
                     $('#system-version').html(sysversion);
                     localStorage.clear();
+                    $.checkSpyderConnection();
                     $.checkTerminalType();
                     $.getTerminalUserMode();
                     $.countServices();

@@ -5,63 +5,58 @@
  * @package application.modules.launchpad.controllers
  * @author Bryan Salazar
  */
-foreach (glob("../models/*.php") as $filename){
+foreach (glob("../models/*.php") as $filename) {
     include_once "$filename";
 }
 include_once '../components/CasinoApi.php';
 
-class LobbyController
-{
+class LobbyController {
 
-    
-    public function saveTerminalcode() 
-    {
-        if(isset($_GET['terminalCode'])) {
+    public function saveTerminalcode() {
+        if (isset($_GET['terminalCode'])) {
             echo "The terminal with code {$_GET['terminalCode']} has been saved";
         } else {
             echo "The terminal with code {$_GET['terminalCode']} is not saved";
-        }  
+        }
     }
-    
+
     /**
      *
      * @param array $casinos
      * @return array 
      */
-    protected function getCurrCasinoCasAndType($casinos)
-    {
-        
+    protected function getCurrCasinoCasAndType($casinos) {
+
         $casinoPosition = LPConfig::app()->params['casino_position'];
         $checkBy = $casinoPosition['check_by'];
         $positions = $casinoPosition['position'];
         $cas = array();
         $type = 'N/A';
         $currentCasino = 'N/A';
-        foreach($positions as $position) { // foreach casino position
-            foreach($casinos as $casino) { // foreach available casino
-                if($casino['ServiceID'] == $this->getCurrentServiceID()) {
+        foreach ($positions as $position) { // foreach casino position
+            foreach ($casinos as $casino) { // foreach available casino
+                if ($casino['ServiceID'] == $this->getCurrentServiceID()) {
                     $currentCasino = $casino['Alias'];
-                    $type=$casino['type'];
-                    $servicegroupname=$casino['ServiceGroupName'];
+                    $type = $casino['type'];
+                    $servicegroupname = $casino['ServiceGroupName'];
                 }
-                if($casino[$checkBy] == $position) {
-                    if($casino["ServiceGroupName"] == "RTG2"){
+                if ($casino[$checkBy] == $position) {
+                    if ($casino["ServiceGroupName"] == "RTG2") {
                         $casino["type"] = "rtg2";
                         $cas[$position] = $casino;
                     } else {
                         $cas[$position] = $casino;
                     }
-                    
                 }
             }
-            if(!isset($cas[$position])) {
+            if (!isset($cas[$position])) {
                 $cas[$position] = 'N/A';
             }
         }
-        
-        return array('currentCasino'=>$currentCasino,'cas'=>$cas,'type'=>$type, 'servicegroupname' => $servicegroupname);
+
+        return array('currentCasino' => $currentCasino, 'cas' => $cas, 'type' => $type, 'servicegroupname' => $servicegroupname);
     }
-    
+
     /**
      * This will call upon clicking of casino
      */
@@ -85,21 +80,20 @@ class LobbyController
 //        }
 //        echo CJSON::encode($response);
 //    }
-    
-    public function casinoServiceClick()
-    {
+
+    public function casinoServiceClick() {
         $serviceID = $this->getCurrentServiceID();
-        
-        if($serviceID != false){
-            list($currentBalance, $currentBet, $wcasinoApiHandler) = $this->getBalance($serviceID, $this->getCasinoServiceType($serviceID));  
-            $response = array('currentbal'=>$currentBalance, 'status' => 'ok');
-        }else{
-            $response = array('currentbal'=>0, 'status' => 'not ok');
+
+        if ($serviceID != false) {
+            list($currentBalance, $currentBet, $wcasinoApiHandler) = $this->getBalance($serviceID, $this->getCasinoServiceType($serviceID));
+            $response = array('currentbal' => $currentBalance, 'status' => 'ok');
+        } else {
+            $response = array('currentbal' => 0, 'status' => 'not ok');
         }
-        
+
         return $response;
     }
-    
+
 //    public function actions()
 //    {
 //        return array(
@@ -108,24 +102,22 @@ class LobbyController
 //            'getcasinoandabalance'=>'application.modules.launchpad.components.actions.GetCasinoAndBalanceAction',
 //        );
 //    }
-    
-    protected function getCurrentServiceID($terminalCode)
-    {
+
+    protected function getCurrentServiceID($terminalCode) {
         try {
-            $row=LPTerminalServices::model()->getCurrentCasino($terminalCode);
-        }catch(Exception $e) {
-            if(!isset($row['ServiceID']))
+            $row = LPTerminalServices::model()->getCurrentCasino($terminalCode);
+        } catch (Exception $e) {
+            if (!isset($row['ServiceID']))
                 return false;
         }
-        
-       return $row['ServiceID'];
+
+        return $row['ServiceID'];
     }
-    
-    public function getServiceID($terminalCode){
+
+    public function getServiceID($terminalCode) {
         return $this->getCurrentServiceID($terminalCode);
     }
 
-    
     /**
      * Get casino balance
      * @param int $serviceID
@@ -158,32 +150,32 @@ class LobbyController
 //        
 //        return array($balance, $currentBet, $getBalanceResult['CasinoAPIHandler']);
 //    }
-    
-    
-    public function getUserBaseLogin($terminalCode){
-        $data =  LPTerminalSessions::model()->isLogin($terminalCode);
+
+
+    public function getUserBaseLogin($terminalCode) {
+        $data = LPTerminalSessions::model()->isLogin($terminalCode);
         return $data[0];
     }
-    
-    public function getTerminalBaseLogin($terminalCode,$serviceID){
+
+    public function getTerminalBaseLogin($terminalCode, $serviceID) {
         $data = LPTerminalServices::model()->getTBCredentials($terminalCode, $serviceID);
         $data[0]['TerminalCode'] = $terminalCode;
         return $data[0];
     }
-    
-    protected function getCasinoServiceType($serviceID){
+
+    protected function getCasinoServiceType($serviceID) {
         $data = LPRefServices::model()->getServiceGroupName($serviceID);
         return $data;
     }
-    
-    public function getAllCasinos($terminalCode){
+
+    public function getAllCasinos($terminalCode) {
         $terminalid = LPTerminals::model()->getTerminalID($terminalCode);
         $casinos = LPTerminalServices::model()->getAllAvailableCasino($terminalid["TerminalID"]);
 
         $info = $this->getCurrCasinoCasAndType($casinos);
         $cas = $info['cas'];
         $currentCasino = $info['currentCasino'];
-        if($info["servicegroupname"] == "RTG2"){
+        if ($info["servicegroupname"] == "RTG2") {
             $type = "rtg2";
         } else {
             $type = $info['type'];
@@ -191,42 +183,41 @@ class LobbyController
 
         $currentServiceID = $this->getCurrentServiceID();
 
-        if(!$currentServiceID) {
+        if (!$currentServiceID) {
             $this->logerror("File: launchpad.controller.lobbycontroller, Message: Can't get current casino");
         } else {
-            list($currentBalance, $currentBet, $casinoApiHandler) = $this->getBalance($terminalCode,$currentServiceID, $type);
-        }   
-        
-        return array("cas" => $cas, "currentCasino" => $currentCasino, 
-                                "type" => $type, "currentBalance" => $currentBalance,
-                                "currentServiceID" => $currentServiceID);
+            list($currentBalance, $currentBet, $casinoApiHandler) = $this->getBalance($terminalCode, $currentServiceID, $type);
+        }
+
+        return array("cas" => $cas, "currentCasino" => $currentCasino,
+            "type" => $type, "currentBalance" => $currentBalance,
+            "currentServiceID" => $currentServiceID);
     }
-    
-    public function getTerminalType($terminalCode)
-    {
-        
+
+    public function getTerminalType($terminalCode) {
+
         $TERMINALCODE = LPTerminals::model()->getTerminalType($terminalCode);
-        
-        return $TERMINALCODE; 
+
+        return $TERMINALCODE;
     }
-    
-    public function getTerminalUserMode($terminalCode){
+
+    public function getTerminalUserMode($terminalCode) {
         $result = LPTerminalServices::model()->getTerminalUserMode($terminalCode);
         return $result;
     }
-    
-    public function getTerminalSiteClassification($terminalCode){
+
+    public function getTerminalSiteClassification($terminalCode) {
         $result = LPTerminalServices::model()->getTerminalSiteClassification($terminalCode);
         return $result;
     }
-    
-    public function countServices($terminalCode){
+
+    public function countServices($terminalCode) {
         $result = LPTerminalServices::model()->countServices($terminalCode);
         return $result;
     }
-    
-    public function checkForExistingSession($terminalCode){
-        $result = LPTerminalSessions::model()->checkExistingEwalletSession($terminalCode,1); 
+
+    public function checkForExistingSession($terminalCode) {
+        $result = LPTerminalSessions::model()->checkExistingEwalletSession($terminalCode, 1);
 //        $checkisewallet = LPMembers::model()->isEwallet($result['MID']);
 //        $result['IsEwallet'] = (int)$checkisewallet['IsEwallet'];
 //        if(!isset($result['ServiceID'])){
@@ -240,29 +231,34 @@ class LobbyController
 //            $result['SessionType'] = 2; //1 - terminal based session, 2 - user based session
 //            //$result['SessionType'] = 2; //1 - terminal based session, 2 - user based session
 //        }
-        if(empty($result)){ 
-            $result = LPTerminalSessions::model()->checkExistingEwalletSession($terminalCode,0);
-            if(isset($result['ServiceID'])){
+        if (empty($result)) {
+            $result = LPTerminalSessions::model()->checkExistingEwalletSession($terminalCode, 0);
+            if (isset($result['ServiceID'])) {
                 $result['SessionType'] = 1; //1 - terminal based session, 2 - user based session
             } else {
                 $result['SessionType'] = 0;
             }
         } else {
             $checkisewallet = LPMembers::model()->isEwallet($result['MID']);
-            $result['IsEwallet'] = (int)$checkisewallet['IsEwallet'];
-            
-            if(!isset($result['ServiceID'])){
-                $result = LPTerminalSessions::model()->checkExistingEwalletSession($terminalCode,0);
-                if(isset($result['ServiceID'])){
+            $result['IsEwallet'] = (int) $checkisewallet['IsEwallet'];
+
+            if (!isset($result['ServiceID'])) {
+                $result = LPTerminalSessions::model()->checkExistingEwalletSession($terminalCode, 0);
+                if (isset($result['ServiceID'])) {
                     $result['SessionType'] = 1; //1 - terminal based session, 2 - user based session
                 } else {
                     $result['SessionType'] = 0;
                 }
             }
-            
+
             $result['SessionType'] = 2; //1 - terminal based session, 2 - user based session
         }
         return $result;
     }
-    
+
+    public function checkSpyderConnection($terminalCode) {
+        $result = LPConnection::model()->checkSpyderConnection($terminalCode); 
+        return $result;
+    }
+
 }
