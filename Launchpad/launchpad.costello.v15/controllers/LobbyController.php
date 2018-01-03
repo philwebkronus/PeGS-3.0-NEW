@@ -112,7 +112,7 @@ class LobbyController
     protected function getCurrentServiceID($terminalCode)
     {
         try {
-            $row=LPTerminalSessions::model()->getCurrentCasino($terminalCode);
+            $row=LPTerminalServices::model()->getCurrentCasino($terminalCode);
         }catch(Exception $e) {
             if(!isset($row['ServiceID']))
                 return false;

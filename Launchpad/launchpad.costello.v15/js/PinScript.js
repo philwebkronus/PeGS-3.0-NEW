@@ -293,7 +293,7 @@ $(document).ready(function()
         }
     });
 /* CCT BEGIN comment */    
-/*
+
     $("#casinovv").click(function()
     {
         $.checkTerminalType();
@@ -320,7 +320,7 @@ $(document).ready(function()
             infoPinValue="000000";
         }
     });
-*/
+
 /* CCT END comment */    
 
     $(".boxclose").live('click', function()
