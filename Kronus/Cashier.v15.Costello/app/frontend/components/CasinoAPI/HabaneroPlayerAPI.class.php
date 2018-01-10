@@ -136,7 +136,7 @@ class HabaneroPlayerAPI {
     public function QueryPlayer($Username, $Password) {
         $jsonRequestBodyObject = array("BrandId" => $this->_brandID, "APIKey" => $this->_apiKey, "Username" => $Username, "Password" => $Password);
         $data_string = json_encode($jsonRequestBodyObject);
-        
+
         $result = $this->submitCurlRequest($this->_url . '/QueryPlayer', $data_string);
 
         if ($result[0] == 200) {
@@ -174,6 +174,8 @@ class HabaneroPlayerAPI {
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 
         $response = curl_exec($ch);
 
