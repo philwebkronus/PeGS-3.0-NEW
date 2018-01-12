@@ -954,11 +954,18 @@ if ($connected)
                                             } 
                                             else
                                             {
-                                                $msg = "Terminal Service Assignment : Create Player Full";
-                                                $oterminal->close();
-                                                $_SESSION['mess'] = $msg;
-                                                header("Location: ../serviceassignment.php");
-                                                break;
+                                                // Account is Created in RTG BackEnd but not existing in terminalservices
+                                                // CCT Commented 01/12/2018 BEGIN
+                                                //$msg = "Terminal Service Assignment : Create Player Full";
+                                                //$oterminal->close();
+                                                //$_SESSION['mess'] = $msg;
+                                                //header("Location: ../serviceassignment.php");
+                                                //break;
+                                                // CCT Commented 01/12/2018 END
+                                                // CCT Added 01/12/2018 BEGIN
+                                                $vapiResult = array('IsSucceed' => true);
+                                                $apisuccess = 1;
+                                                // CCT Added 01/12/2018 END
                                             }
                                         }   
                                         else
