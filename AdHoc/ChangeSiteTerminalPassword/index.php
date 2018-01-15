@@ -149,14 +149,14 @@ if ($_SERVER['REMOTE_ADDR']) {
                                         </td>
                                     </tr>
                                 </table>
-
+                                <p id="max-terminal" value="<?php echo $max_terminal_process; ?>" style="visibility: hidden;"></p>
                                 <div id="result"></div>
                             </legend>
                         </div>
                         <div style="float:right;width: 49% ;border: 1px solid black;">
                             <h1>Logs</h1>
                             <hr><br>
-                            <div id="contents" style="height : 600px;overflow-y:scroll;font-size : 8px;"></div> 
+                            <div id="contents" style="height : 600px;overflow-y:scroll; font-size : 8px;"></div> 
                         </div>
                     </div>
                     <div style="clear:both"></div>
@@ -169,7 +169,6 @@ if ($_SERVER['REMOTE_ADDR']) {
             </html>
 
             <script type="text/javascript">
-
                 $(document).ready(function() {
 
                     get_contents();
@@ -198,35 +197,41 @@ if ($_SERVER['REMOTE_ADDR']) {
                         var CasinoCode = $('#casino :selected').text();
 
                         var ret = TerminalCodes.replace(/,/g, '\n');
+                        var max_terminal = $('#max-terminal').val();
 
                         if (SiteID !== null && SiteCode !== null && TerminalIDs !== null && TerminalCodes !== null && CasinoID !== null && CasinoID !== '') {
 
-                            var answer = confirm("Are you sure you want to change the password of " + CasinoCode + " on the following terminals? \n" + ret);
-                            if (answer) {
-                                $('.ajax-loader').css("visibility", "visible");
-                                $.ajax({
-                                    url: 'process/ProcessChangeTerminalPassword.php',
-                                    method: "POST",
-                                    data: {
-                                        TerminalIDs: TerminalIDs,
-                                        TerminalCodes: TerminalCodes,
-                                        SiteID: SiteID,
-                                        SiteCode: SiteCode,
-                                        CasinoID: CasinoID,
-                                        CasinoCode: CasinoCode
-                                    },
-                                    dataType: 'html',
-                                    success: function(data) {
-                                        get_contents();
-                                        $('#retry').css("visibility", "visible");
-                                        $('.retry-button').attr('disabled', false);
-                                        $('.ajax-loader').css("visibility", "hidden");
-                                        $('#result').html(data);
-                                    }
-                                });
-                            }
-                            else {
-                                //some code
+                            if (TerminalIDs.length > max_terminal) {
+                                alert("Exceeds Maximum Terminals that can process. Please limit it to " + max_terminal + " pairs of Regular/VIP terminals only!");
+                                exit;
+                            } else {
+                                var answer = confirm("Are you sure you want to change the password of " + CasinoCode + " on the following terminals? \n" + ret);
+                                if (answer) {
+                                    $('.ajax-loader').css("visibility", "visible");
+                                    $.ajax({
+                                        url: 'process/ProcessChangeTerminalPassword.php',
+                                        method: "POST",
+                                        data: {
+                                            TerminalIDs: TerminalIDs,
+                                            TerminalCodes: TerminalCodes,
+                                            SiteID: SiteID,
+                                            SiteCode: SiteCode,
+                                            CasinoID: CasinoID,
+                                            CasinoCode: CasinoCode
+                                        },
+                                        dataType: 'html',
+                                        success: function(data) {
+                                            get_contents();
+                                            $('#retry').css("visibility", "visible");
+                                            $('.retry-button').attr('disabled', false);
+                                            $('.ajax-loader').css("visibility", "hidden");
+                                            $('#result').html(data);
+                                        }
+                                    });
+                                }
+                                else {
+                                    //some code
+                                }
                             }
 
                         } else {
