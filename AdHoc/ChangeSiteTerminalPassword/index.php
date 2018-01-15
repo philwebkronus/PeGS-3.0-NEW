@@ -149,7 +149,7 @@ if ($_SERVER['REMOTE_ADDR']) {
                                         </td>
                                     </tr>
                                 </table>
-                                <p id="max-terminal" value="<?php echo $max_terminal_process; ?>" style="visibility: hidden;"></p>
+                                <p id="max-terminal" value="<?php echo $max_terminal_process; ?>" style="visibility: hidden;"><?php echo $max_terminal_process; ?></p>
                                 <div id="result"></div>
                             </legend>
                         </div>
