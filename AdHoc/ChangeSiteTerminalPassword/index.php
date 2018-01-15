@@ -203,6 +203,7 @@ if ($_SERVER['REMOTE_ADDR']) {
 
                             if (TerminalIDs.length > max_terminal) {
                                 alert("Exceeds Maximum Terminals that can process. Please limit it to " + max_terminal + " pairs of Regular/VIP terminals only!");
+								$('#retry').css("visibility", "visible");
                                 exit;
                             } else {
                                 var answer = confirm("Are you sure you want to change the password of " + CasinoCode + " on the following terminals? \n" + ret);
