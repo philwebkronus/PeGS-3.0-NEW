@@ -197,7 +197,7 @@ if ($_SERVER['REMOTE_ADDR']) {
                         var CasinoCode = $('#casino :selected').text();
 
                         var ret = TerminalCodes.replace(/,/g, '\n');
-                        var max_terminal = $('#max-terminal').val();
+                        var max_terminal = $('#max-terminal').text();
 
                         if (SiteID !== null && SiteCode !== null && TerminalIDs !== null && TerminalCodes !== null && CasinoID !== null && CasinoID !== '') {
 
