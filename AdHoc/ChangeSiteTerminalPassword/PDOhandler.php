@@ -1,4 +1,5 @@
 <?php
+
 include 'config/config.php';
 
 class PDOhandler {
@@ -37,9 +38,9 @@ class PDOhandler {
     }
 
     public function getTerminals($SiteID) {
-	$query = $this->_connection->prepare('SELECT * FROM terminals WHERE SiteID  = ' . $SiteID . ' AND isVIP = 0');
-        
-	if ($query->execute()) {
+        $query = $this->_connection->prepare('SELECT * FROM terminals WHERE SiteID  = ' . $SiteID . ' AND isVIP = 0');
+
+        if ($query->execute()) {
             $res = $query->fetchAll();
             if (count($res) > 0) {
                 foreach ($res as $single) {
@@ -52,6 +53,23 @@ class PDOhandler {
         } else {
             return false;
         }
+    }
+
+    public function getTerminalID($terminalCode) {
+        $query = $this->_connection->prepare('SELECT * FROM terminals WHERE TerminalCode = "' . $terminalCode . '"');
+
+        if ($query->execute()) {
+            $res = $query->fetchAll();
+            if (count($res) > 0) {
+                $result = $res[0];
+            } else {
+                $result = false;
+            }
+        } else {
+            $result = "Error!";
+        }
+
+        return $result;
     }
 
     public function checkTerminalServices($terminalID) {
@@ -172,7 +190,7 @@ class PDOhandler {
             $query = $this->_connection->prepare('UPDATE terminalservices ts 
                                         INNER JOIN terminals t ON t.TerminalID = ts.TerminalID
                                         SET ts.ServicePassword = "' . $PlainPassword . '" , ts.HashedServicePassword = "' . $HashedPasswword . '" , Remarks = "' . $remarks . '" 
-                                        WHERE TerminalCode IN ("' . $TerminalCode . '", "' . $TerminalCode . 'VIP") AND ServiceID = "' . $serviceID . '"');
+                                        WHERE TerminalCode IN ("' . $TerminalCode . '") AND ServiceID = "' . $serviceID . '"');
 
             if ($query->execute()) {
                 return 1;
@@ -265,4 +283,3 @@ class PDOhandler {
     }
 
 }
-

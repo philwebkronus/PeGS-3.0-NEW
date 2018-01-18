@@ -43,33 +43,17 @@ if (isset($_GET['TerminalIDs'])) {
                 } else {
                     $isVIP = 0;
                 }
+
+                $login = 'ICSA-' . trim($terminalName[$counterTN]);
+
                 //Get Service Group ID
                 $getServiceGroupID = $PDO->getServiceGroupID($serviceID);
                 if ($getServiceGroupID != false) {
                     $ServiceGroupID = $getServiceGroupID[0];
                 } else {
                     $title = "GetGeneratedPasswordBatchID";
-                    $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | TerminalID : " . $terminalID . " | TerminalCode : " . $terminalName[$counterTN] . " | SiteCode : " . $SiteCode . " | ServiceID : " . $serviceID . " | Can't Get ServiceGroupID.";
+                    $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | TerminalID : " . $terminalID . " | TerminalCode : " . $login . " | SiteCode : " . $SiteCode . " | ServiceID : " . $serviceID . " | Can't Get ServiceGroupID.";
                     $PDO->InsertLogs($title, $errormessage);
-
-                    if (($counterTN + 1) == count($terminalName)) {
-                        $elapsed = (microtime(true) - $startTime);
-                        $endTime = microtime(true);
-
-                        echo
-                        " <br>Result: <br><br> Start Time : " . $startTime . " seconds" .
-                        " <br>End Time : " . $endTime . " seconds" .
-                        " <br><br> Elapsed time is: " . $elapsed . " seconds";
-
-                        $title = "EndTime";
-                        $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | SiteCode : " . $SiteCode . " | " . $endTime;
-                        $PDO->InsertLogs($title, $errormessage);
-
-                        $title = "ElapsedTime";
-                        $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | SiteCode : " . $SiteCode . " | " . $elapsed;
-                        $PDO->InsertLogs($title, $errormessage);
-                    }
-
                     $counterTN = $counterTN + 1;
                     continue;
                 }
@@ -79,27 +63,8 @@ if (isset($_GET['TerminalIDs'])) {
                     $GeneratedPasswordBatchID = $getGeneratedPasswordBatchID[0];
                 } else {
                     $title = "GetGeneratedPasswordBatchID";
-                    $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | TerminalID : " . $terminalID . " | TerminalCode : " . $terminalName[$counterTN] . " | SiteCode : " . $SiteCode . " | ServiceID : " . $serviceID . " | Can't Get GeneratedPasswordBatchID.";
+                    $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | TerminalID : " . $terminalID . " | TerminalCode : " . $login . " | SiteCode : " . $SiteCode . " | ServiceID : " . $serviceID . " | Can't Get GeneratedPasswordBatchID.";
                     $PDO->InsertLogs($title, $errormessage);
-
-                    if (($counterTN + 1) == count($terminalName)) {
-                        $elapsed = (microtime(true) - $startTime);
-                        $endTime = microtime(true);
-
-                        echo
-                        " <br>Result: <br><br> Start Time : " . $startTime . " seconds" .
-                        " <br>End Time : " . $endTime . " seconds" .
-                        " <br><br> Elapsed time is: " . $elapsed . " seconds";
-
-                        $title = "EndTime";
-                        $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | SiteCode : " . $SiteCode . " | " . $endTime;
-                        $PDO->InsertLogs($title, $errormessage);
-
-                        $title = "ElapsedTime";
-                        $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | SiteCode : " . $SiteCode . " | " . $elapsed;
-                        $PDO->InsertLogs($title, $errormessage);
-                    }
-
                     $counterTN = $counterTN + 1;
                     continue;
                 }
@@ -109,27 +74,8 @@ if (isset($_GET['TerminalIDs'])) {
                     $OldPassword = $getServicePassword[0];
                 } else {
                     $title = "GetServicePassword";
-                    $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | TerminalID : " . $terminalID . " | TerminalCode : " . $terminalName[$counterTN] . " | SiteCode : " . $SiteCode . " | ServiceID : " . $serviceID . " | Terminal does not have " . $CasinoCode . " account created.";
+                    $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | TerminalID : " . $terminalID . " | TerminalCode : " . $login . " | SiteCode : " . $SiteCode . " | ServiceID : " . $serviceID . " | Terminal does not have " . $CasinoCode . " account created.";
                     $PDO->InsertLogs($title, $errormessage);
-
-
-                    if (($counterTN + 1) == count($terminalName)) {
-                        $elapsed = (microtime(true) - $startTime);
-                        $endTime = microtime(true);
-
-                        echo
-                        " <br>Result: <br><br> Start Time : " . $startTime . " seconds" .
-                        " <br>End Time : " . $endTime . " seconds" .
-                        " <br><br> Elapsed time is: " . $elapsed . " seconds";
-
-                        $title = "EndTime";
-                        $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | SiteCode : " . $SiteCode . " | " . $endTime;
-                        $PDO->InsertLogs($title, $errormessage);
-
-                        $title = "ElapsedTime";
-                        $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | SiteCode : " . $SiteCode . " | " . $elapsed;
-                        $PDO->InsertLogs($title, $errormessage);
-                    }
                     $counterTN = $counterTN + 1;
                     continue;
                 }
@@ -140,33 +86,13 @@ if (isset($_GET['TerminalIDs'])) {
                     $NewHashedPassword = $getGeneratedPasswordPool['EncryptedPassword'];
                 } else {
                     $title = "GetGeneratedPasswordPool";
-                    $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " |TerminalID : " . $terminalID . " | TerminalCode : " . $terminalName[$counterTN] . " | SiteCode : " . $SiteCode . " | ServiceID : " . $serviceID . " | Can't get New Password.";
+                    $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " |TerminalID : " . $terminalID . " | TerminalCode : " . $login . " | SiteCode : " . $SiteCode . " | ServiceID : " . $serviceID . " | Can't get New Password.";
                     $PDO->InsertLogs($title, $errormessage);
-
-
-                    if (($counterTN + 1) == count($terminalName)) {
-                        $elapsed = (microtime(true) - $startTime);
-                        $endTime = microtime(true);
-
-                        echo
-                        " <br>Result: <br><br> Start Time : " . $startTime . " seconds" .
-                        " <br>End Time : " . $endTime . " seconds" .
-                        " <br><br> Elapsed time is: " . $elapsed . " seconds";
-
-                        $title = "EndTime";
-                        $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | SiteCode : " . $SiteCode . " | " . $endTime;
-                        $PDO->InsertLogs($title, $errormessage);
-
-                        $title = "ElapsedTime";
-                        $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | SiteCode : " . $SiteCode . " | " . $elapsed;
-                        $PDO->InsertLogs($title, $errormessage);
-                    }
-
                     $counterTN = $counterTN + 1;
                     continue;
                 }
 
-                $login = 'ICSA-' . trim($terminalName[$counterTN]);
+
 
                 if ($serviceID == 22) {
                     //CALL ChangePlayer API to RTG
@@ -191,50 +117,110 @@ if (isset($_GET['TerminalIDs'])) {
 
                     if ($UpdateTerminalServices == 1) {
                         $title = "UpdateTerminalServices";
-                        $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | TerminalID : " . $terminalID . " | TerminalCode : " . $terminalName[$counterTN] . " | SiteCode : " . $SiteCode . " | ServiceID : " . $serviceID . " | Successful Update Terminal Services.";
+                        $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | TerminalID : " . $terminalID . " | TerminalCode : " . $login . " | SiteCode : " . $SiteCode . " | ServiceID : " . $serviceID . " | Successful Update Terminal Services.";
                         $PDO->InsertLogs($title, $errormessage);
 
-                        if (($counterTN + 1) == count($terminalName)) {
-                            $elapsed = (microtime(true) - $startTime);
-                            $endTime = microtime(true);
+                        $login = 'ICSA-' . trim($terminalName[$counterTN]) . "VIP";
+                        $getTerminalID = $PDO->getTerminalID($login);
+                        $terminalID = $getTerminalID[0];
 
-                            echo
-                            " <br>Result: <br><br> Start Time : " . $startTime . " seconds" .
-                            " <br>End Time : " . $endTime . " seconds" .
-                            " <br><br> Elapsed time is: " . $elapsed . " seconds";
-
-                            $title = "EndTime";
-                            $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | SiteCode : " . $SiteCode . " | " . $endTime;
-                            $PDO->InsertLogs($title, $errormessage);
-
-                            $title = "ElapsedTime";
-                            $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | SiteCode : " . $SiteCode . " | " . $elapsed;
-                            $PDO->InsertLogs($title, $errormessage);
+                        if (empty($terminalID) || count($terminalID) == 0 || $terminalID == null) {
+                            continue;
                         }
 
-                        $counterTN = $counterTN + 1;
-                        continue;
+
+                        if ($serviceID == 22) {
+                            //CALL ChangePlayer API to RTG
+                            //$changePlayerPassword = $RTG->changePlayerPassword($serviceID, $login, $OldPassword, $NewPlainPassword);
+                            $changePlayerPassword = $rtgWcfPlayerApi->changePlayerPassword($login, $OldPassword, $NewPlainPassword);
+                        }
+
+                        if ($serviceID == 25) {
+                            //CALL UpdatePlayerPassword API to Habanero
+                            $changePlayerPassword = $Habanero->UpdatePlayerPassword($login, $NewPlainPassword);
+                            if ($changePlayerPassword['updatepasswordmethodResult']['Success'] == true) {
+                                $changePlayerPassword['ChangePasswordResult']['ErrorCode'] = 0;
+                            } else {
+                                $changePlayerPassword['ChangePasswordResult']['ErrorCode'] = 1;
+                            }
+                        }
+
+                        if (isset($changePlayerPassword['ChangePasswordResult']['ErrorCode']) && $changePlayerPassword['ChangePasswordResult']['ErrorCode'] == 0) {
+
+                            //If succesfull Update terminalservices
+                            $UpdateTerminalServices = $PDO->UpdateTerminalServices($login, $serviceID, $NewPlainPassword, $NewHashedPassword);
+
+                            if ($UpdateTerminalServices == 1) {
+                                $title = "UpdateTerminalServices";
+                                $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | TerminalID : " . $terminalID . " | TerminalCode : " . $login . " | SiteCode : " . $SiteCode . " | ServiceID : " . $serviceID . " | Successful Update Terminal Services.";
+                                $PDO->InsertLogs($title, $errormessage);
+                            } else {
+                                $title = "UpdateTerminalServices";
+                                $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | TerminalID : " . $terminalID . " | TerminalCode : " . $login . " | SiteCode : " . $SiteCode . " | ServiceID : " . $serviceID . " | Fail to Update Terminal Services.";
+                                $PDO->InsertLogs($title, $errormessage);
+                                $counterTN = $counterTN + 1;
+                                continue;
+                            }
+                        } else {
+                            $title = "ChangePlayerPassword";
+                            $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | TerminalID : " . $terminalID . " | TerminalCode : " . $login . " | SiteCode : " . $SiteCode . " | ServiceID : " . $serviceID . " | Fail to Change Password | " . $changePlayerPassword['ChangePasswordResult']['Message'];
+                            $PDO->InsertLogs($title, $errormessage);
+                            $counterTN = $counterTN + 1;
+                            continue;
+                        }
                     } else {
                         $title = "UpdateTerminalServices";
-                        $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | TerminalID : " . $terminalID . " | TerminalCode : " . $terminalName[$counterTN] . " | SiteCode : " . $SiteCode . " | ServiceID : " . $serviceID . " | Fail to Update Terminal Services.";
+                        $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | TerminalID : " . $terminalID . " | TerminalCode : " . $login . " | SiteCode : " . $SiteCode . " | ServiceID : " . $serviceID . " | Fail to Update Terminal Services.";
                         $PDO->InsertLogs($title, $errormessage);
 
-                        if (($counterTN + 1) == count($terminalName)) {
-                            $elapsed = (microtime(true) - $startTime);
-                            $endTime = microtime(true);
 
-                            echo
-                            " <br>Result: <br><br> Start Time : " . $startTime . " seconds" .
-                            " <br>End Time : " . $endTime . " seconds" .
-                            " <br><br> Elapsed time is: " . $elapsed . " seconds";
+                        $login = 'ICSA-' . trim($terminalName[$counterTN]) . "VIP";
+                        $getTerminalID = $PDO->getTerminalID($login);
+                        $terminalID = $getTerminalID[0];
 
-                            $title = "EndTime";
-                            $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | SiteCode : " . $SiteCode . " | " . $endTime;
+                        if (empty($terminalID) || count($terminalID) == 0 || $terminalID == null) {
+                            continue;
+                        }
+
+
+                        if ($serviceID == 22) {
+                            //CALL ChangePlayer API to RTG
+                            //$changePlayerPassword = $RTG->changePlayerPassword($serviceID, $login, $OldPassword, $NewPlainPassword);
+                            $changePlayerPassword = $rtgWcfPlayerApi->changePlayerPassword($login, $OldPassword, $NewPlainPassword);
+                        }
+
+                        if ($serviceID == 25) {
+                            //CALL UpdatePlayerPassword API to Habanero
+                            $changePlayerPassword = $Habanero->UpdatePlayerPassword($login, $NewPlainPassword);
+                            if ($changePlayerPassword['updatepasswordmethodResult']['Success'] == true) {
+                                $changePlayerPassword['ChangePasswordResult']['ErrorCode'] = 0;
+                            } else {
+                                $changePlayerPassword['ChangePasswordResult']['ErrorCode'] = 1;
+                            }
+                        }
+
+                        if (isset($changePlayerPassword['ChangePasswordResult']['ErrorCode']) && $changePlayerPassword['ChangePasswordResult']['ErrorCode'] == 0) {
+
+                            //If succesfull Update terminalservices
+                            $UpdateTerminalServices = $PDO->UpdateTerminalServices($login, $serviceID, $NewPlainPassword, $NewHashedPassword);
+
+                            if ($UpdateTerminalServices == 1) {
+                                $title = "UpdateTerminalServices";
+                                $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | TerminalID : " . $terminalID . " | TerminalCode : " . $login . " | SiteCode : " . $SiteCode . " | ServiceID : " . $serviceID . " | Successful Update Terminal Services.";
+                                $PDO->InsertLogs($title, $errormessage);
+                            } else {
+                                $title = "UpdateTerminalServices";
+                                $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | TerminalID : " . $terminalID . " | TerminalCode : " . $login . " | SiteCode : " . $SiteCode . " | ServiceID : " . $serviceID . " | Fail to Update Terminal Services.";
+                                $PDO->InsertLogs($title, $errormessage);
+                                $counterTN = $counterTN + 1;
+                                continue;
+                            }
+                        } else {
+                            $title = "ChangePlayerPassword";
+                            $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | TerminalID : " . $terminalID . " | TerminalCode : " . $login . " | SiteCode : " . $SiteCode . " | ServiceID : " . $serviceID . " | Fail to Change Password | " . $changePlayerPassword['ChangePasswordResult']['Message'];
                             $PDO->InsertLogs($title, $errormessage);
-
-                            $title = "ElapsedTime";
-                            $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | SiteCode : " . $SiteCode . " | " . $elapsed;
-                            $PDO->InsertLogs($title, $errormessage);
+                            $counterTN = $counterTN + 1;
+                            continue;
                         }
 
                         $counterTN = $counterTN + 1;
@@ -242,33 +228,29 @@ if (isset($_GET['TerminalIDs'])) {
                     }
                 } else {
                     $title = "ChangePlayerPassword";
-                    $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | TerminalID : " . $terminalID . " | TerminalCode : " . $terminalName[$counterTN] . " | SiteCode : " . $SiteCode . " | ServiceID : " . $serviceID . " | Fail to Change Password | " . $changePlayerPassword['ChangePasswordResult']['Message'];
+                    $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | TerminalID : " . $terminalID . " | TerminalCode : " . $login . " | SiteCode : " . $SiteCode . " | ServiceID : " . $serviceID . " | Fail to Change Password | " . $changePlayerPassword['ChangePasswordResult']['Message'];
                     $PDO->InsertLogs($title, $errormessage);
-
-                    if (($counterTN + 1) == count($terminalName)) {
-                        $elapsed = (microtime(true) - $startTime);
-                        $endTime = microtime(true);
-
-                        echo
-                        " <br>Result: <br><br> Start Time : " . $startTime . " seconds" .
-                        " <br>End Time : " . $endTime . " seconds" .
-                        " <br><br> Elapsed time is: " . $elapsed . " seconds";
-
-                        $title = "EndTime";
-                        $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | SiteCode : " . $SiteCode . " | " . $endTime;
-                        $PDO->InsertLogs($title, $errormessage);
-
-                        $title = "ElapsedTime";
-                        $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | SiteCode : " . $SiteCode . " | " . $elapsed;
-                        $PDO->InsertLogs($title, $errormessage);
-                    }
-
                     $counterTN = $counterTN + 1;
                     continue;
                 }
 
                 $counterTN = $counterTN + 1;
             }
+            $elapsed = (microtime(true) - $startTime);
+            $endTime = microtime(true);
+
+            echo
+            " <br>Result: <br><br> Start Time : " . $startTime . " seconds" .
+            " <br>End Time : " . $endTime . " seconds" .
+            " <br><br> Elapsed time is: " . $elapsed . " seconds";
+
+            $title = "EndTime";
+            $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | SiteCode : " . $SiteCode . " | " . $endTime;
+            $PDO->InsertLogs($title, $errormessage);
+
+            $title = "ElapsedTime";
+            $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | SiteCode : " . $SiteCode . " | " . $elapsed;
+            $PDO->InsertLogs($title, $errormessage);
         } else {
             echo "<script>alert('Exceeds Maximum Terminals that can process. Please limit it to " . $max_terminal_process . " pairs of Regular/VIP terminals only!');</script>";
             $title = "ProcessChangeTerminalPassword";
