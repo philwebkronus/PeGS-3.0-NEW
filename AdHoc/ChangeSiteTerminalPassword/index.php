@@ -23,7 +23,7 @@ if ($_SERVER['REMOTE_ADDR']) {
                     <script src="js/jquery.min.js"></script>
                     <style>
                         body{
-                            margin-top : 50px;
+                            overflow: hidden;
                             font-family: helvetica, sans-serif;
                         }
                         .ajax-loader {
@@ -35,20 +35,20 @@ if ($_SERVER['REMOTE_ADDR']) {
                             z-index: +100 !important;
                             width: 100%;
                             height: 100%;
+                            top: 0;
                         }
                         .ajax-loader img {
                             position: relative;
-                            top:50%;
-                            left:50%;
+                            top:35%;
+                            left:35%;
                         }
-
                         /* The navigation bar */
                         .navbar {
                             overflow: hidden;
                             background-color: #333;
                             position: fixed; /* Set the navbar to fixed position */
                             top: 0; /* Position the navbar at the top of the page */
-                            width: 100%; /* Full width */
+                            width: 99%; /* Full width */
                         }
 
                         /* Links inside the navbar */
@@ -72,8 +72,6 @@ if ($_SERVER['REMOTE_ADDR']) {
                             margin-top: 30px; /* Add a top margin to avoid content overlay */
                         } 
                         #footer {
-                            /*                    background: #ccc;
-                                                border-top: 4px solid red;*/
                             clear: both;
                             height: 70px;
                             margin-top: 100px;
@@ -96,8 +94,8 @@ if ($_SERVER['REMOTE_ADDR']) {
                             <a href="logout.php" title="Logout"><span>LOGOUT AS <?php echo strtoupper($_SESSION['loggedin']); ?></span></a>
                         </div>
                     </div>
-                    <div style="width: 100%;">
-                        <div style="float:left; width: 49%; border: 1px solid black;">
+                    <div style="width: 100%; margin-top : 50px;">
+                        <div style="float:left; width: 45%; border: 1px solid black;">
                             <legend>
                                 <h1>Change Site Terminal Password Web Tool</h1>
                                 <hr><br>
@@ -153,7 +151,7 @@ if ($_SERVER['REMOTE_ADDR']) {
                                 <div id="result"></div>
                             </legend>
                         </div>
-                        <div style="float:right;width: 49% ;border: 1px solid black;">
+                        <div style="float:right;width: 54% ;border: 1px solid black;">
                             <h1>Logs</h1>
                             <hr><br>
                             <div id="contents" style="height : 600px;overflow-y:scroll; font-size : 8px;"></div> 

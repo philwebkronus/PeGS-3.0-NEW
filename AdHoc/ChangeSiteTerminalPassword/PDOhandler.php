@@ -190,7 +190,7 @@ class PDOhandler {
             $query = $this->_connection->prepare('UPDATE terminalservices ts 
                                         INNER JOIN terminals t ON t.TerminalID = ts.TerminalID
                                         SET ts.ServicePassword = "' . $PlainPassword . '" , ts.HashedServicePassword = "' . $HashedPasswword . '" , Remarks = "' . $remarks . '" 
-                                        WHERE TerminalCode IN ("' . $TerminalCode . '") AND ServiceID = "' . $serviceID . '"');
+                                        WHERE TerminalCode = "' . $TerminalCode . '" AND ServiceID = "' . $serviceID . '"');
 
             if ($query->execute()) {
                 return 1;
@@ -283,3 +283,4 @@ class PDOhandler {
     }
 
 }
+

@@ -33,7 +33,7 @@ if (isset($_GET['TerminalIDs'])) {
             foreach ($_GET['TerminalIDs'] as $terminalID) {
                 if ($counterTN == 0) {
                     $startTime = microtime(true);
-                    $title = "StartTime";
+                    $title = "\n\nStartTime";
                     $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | SiteCode : " . $SiteCode . " | " . $startTime;
                     $PDO->InsertLogs($title, $errormessage);
                 }
@@ -68,17 +68,7 @@ if (isset($_GET['TerminalIDs'])) {
                     $counterTN = $counterTN + 1;
                     continue;
                 }
-                //Get Service Password
-                $getServicePassword = $PDO->getServicePassword($terminalID, $serviceID);
-                if ($getServicePassword != false) {
-                    $OldPassword = $getServicePassword[0];
-                } else {
-                    $title = "GetServicePassword";
-                    $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | TerminalID : " . $terminalID . " | TerminalCode : " . $login . " | SiteCode : " . $SiteCode . " | ServiceID : " . $serviceID . " | Terminal does not have " . $CasinoCode . " account created.";
-                    $PDO->InsertLogs($title, $errormessage);
-                    $counterTN = $counterTN + 1;
-                    continue;
-                }
+
                 //Get Generated Password Pool
                 $getGeneratedPasswordPool = $PDO->getGeneratedPasswordPool($ServiceGroupID);
                 if ($getGeneratedPasswordPool != false) {
@@ -92,7 +82,19 @@ if (isset($_GET['TerminalIDs'])) {
                     continue;
                 }
 
+                //Get Service Password Normal
+                $getServicePassword = $PDO->getServicePassword($terminalID, $serviceID);
+                if ($getServicePassword != false) {
+                    $OldPassword = $getServicePassword[0];
+                } else {
+                    $title = "GetServicePassword";
+                    $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | TerminalID : " . $terminalID . " | TerminalCode : " . $login . " | SiteCode : " . $SiteCode . " | ServiceID : " . $serviceID . " | Terminal does not have " . $CasinoCode . " account created.";
+                    $PDO->InsertLogs($title, $errormessage);
+                    $counterTN = $counterTN + 1;
+                    continue;
+                }
 
+                /* NORMAL */
 
                 if ($serviceID == 22) {
                     //CALL ChangePlayer API to RTG
@@ -119,109 +121,10 @@ if (isset($_GET['TerminalIDs'])) {
                         $title = "UpdateTerminalServices";
                         $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | TerminalID : " . $terminalID . " | TerminalCode : " . $login . " | SiteCode : " . $SiteCode . " | ServiceID : " . $serviceID . " | Successful Update Terminal Services.";
                         $PDO->InsertLogs($title, $errormessage);
-
-                        $login = 'ICSA-' . trim($terminalName[$counterTN]) . "VIP";
-                        $getTerminalID = $PDO->getTerminalID($login);
-                        $terminalID = $getTerminalID[0];
-
-                        if (empty($terminalID) || count($terminalID) == 0 || $terminalID == null) {
-                            continue;
-                        }
-
-
-                        if ($serviceID == 22) {
-                            //CALL ChangePlayer API to RTG
-                            //$changePlayerPassword = $RTG->changePlayerPassword($serviceID, $login, $OldPassword, $NewPlainPassword);
-                            $changePlayerPassword = $rtgWcfPlayerApi->changePlayerPassword($login, $OldPassword, $NewPlainPassword);
-                        }
-
-                        if ($serviceID == 25) {
-                            //CALL UpdatePlayerPassword API to Habanero
-                            $changePlayerPassword = $Habanero->UpdatePlayerPassword($login, $NewPlainPassword);
-                            if ($changePlayerPassword['updatepasswordmethodResult']['Success'] == true) {
-                                $changePlayerPassword['ChangePasswordResult']['ErrorCode'] = 0;
-                            } else {
-                                $changePlayerPassword['ChangePasswordResult']['ErrorCode'] = 1;
-                            }
-                        }
-
-                        if (isset($changePlayerPassword['ChangePasswordResult']['ErrorCode']) && $changePlayerPassword['ChangePasswordResult']['ErrorCode'] == 0) {
-
-                            //If succesfull Update terminalservices
-                            $UpdateTerminalServices = $PDO->UpdateTerminalServices($login, $serviceID, $NewPlainPassword, $NewHashedPassword);
-
-                            if ($UpdateTerminalServices == 1) {
-                                $title = "UpdateTerminalServices";
-                                $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | TerminalID : " . $terminalID . " | TerminalCode : " . $login . " | SiteCode : " . $SiteCode . " | ServiceID : " . $serviceID . " | Successful Update Terminal Services.";
-                                $PDO->InsertLogs($title, $errormessage);
-                            } else {
-                                $title = "UpdateTerminalServices";
-                                $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | TerminalID : " . $terminalID . " | TerminalCode : " . $login . " | SiteCode : " . $SiteCode . " | ServiceID : " . $serviceID . " | Fail to Update Terminal Services.";
-                                $PDO->InsertLogs($title, $errormessage);
-                                $counterTN = $counterTN + 1;
-                                continue;
-                            }
-                        } else {
-                            $title = "ChangePlayerPassword";
-                            $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | TerminalID : " . $terminalID . " | TerminalCode : " . $login . " | SiteCode : " . $SiteCode . " | ServiceID : " . $serviceID . " | Fail to Change Password | " . $changePlayerPassword['ChangePasswordResult']['Message'];
-                            $PDO->InsertLogs($title, $errormessage);
-                            $counterTN = $counterTN + 1;
-                            continue;
-                        }
                     } else {
                         $title = "UpdateTerminalServices";
                         $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | TerminalID : " . $terminalID . " | TerminalCode : " . $login . " | SiteCode : " . $SiteCode . " | ServiceID : " . $serviceID . " | Fail to Update Terminal Services.";
                         $PDO->InsertLogs($title, $errormessage);
-
-
-                        $login = 'ICSA-' . trim($terminalName[$counterTN]) . "VIP";
-                        $getTerminalID = $PDO->getTerminalID($login);
-                        $terminalID = $getTerminalID[0];
-
-                        if (empty($terminalID) || count($terminalID) == 0 || $terminalID == null) {
-                            continue;
-                        }
-
-
-                        if ($serviceID == 22) {
-                            //CALL ChangePlayer API to RTG
-                            //$changePlayerPassword = $RTG->changePlayerPassword($serviceID, $login, $OldPassword, $NewPlainPassword);
-                            $changePlayerPassword = $rtgWcfPlayerApi->changePlayerPassword($login, $OldPassword, $NewPlainPassword);
-                        }
-
-                        if ($serviceID == 25) {
-                            //CALL UpdatePlayerPassword API to Habanero
-                            $changePlayerPassword = $Habanero->UpdatePlayerPassword($login, $NewPlainPassword);
-                            if ($changePlayerPassword['updatepasswordmethodResult']['Success'] == true) {
-                                $changePlayerPassword['ChangePasswordResult']['ErrorCode'] = 0;
-                            } else {
-                                $changePlayerPassword['ChangePasswordResult']['ErrorCode'] = 1;
-                            }
-                        }
-
-                        if (isset($changePlayerPassword['ChangePasswordResult']['ErrorCode']) && $changePlayerPassword['ChangePasswordResult']['ErrorCode'] == 0) {
-
-                            //If succesfull Update terminalservices
-                            $UpdateTerminalServices = $PDO->UpdateTerminalServices($login, $serviceID, $NewPlainPassword, $NewHashedPassword);
-
-                            if ($UpdateTerminalServices == 1) {
-                                $title = "UpdateTerminalServices";
-                                $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | TerminalID : " . $terminalID . " | TerminalCode : " . $login . " | SiteCode : " . $SiteCode . " | ServiceID : " . $serviceID . " | Successful Update Terminal Services.";
-                                $PDO->InsertLogs($title, $errormessage);
-                            } else {
-                                $title = "UpdateTerminalServices";
-                                $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | TerminalID : " . $terminalID . " | TerminalCode : " . $login . " | SiteCode : " . $SiteCode . " | ServiceID : " . $serviceID . " | Fail to Update Terminal Services.";
-                                $PDO->InsertLogs($title, $errormessage);
-                                $counterTN = $counterTN + 1;
-                                continue;
-                            }
-                        } else {
-                            $title = "ChangePlayerPassword";
-                            $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | TerminalID : " . $terminalID . " | TerminalCode : " . $login . " | SiteCode : " . $SiteCode . " | ServiceID : " . $serviceID . " | Fail to Change Password | " . $changePlayerPassword['ChangePasswordResult']['Message'];
-                            $PDO->InsertLogs($title, $errormessage);
-                            $counterTN = $counterTN + 1;
-                            continue;
-                        }
 
                         $counterTN = $counterTN + 1;
                         continue;
@@ -230,8 +133,66 @@ if (isset($_GET['TerminalIDs'])) {
                     $title = "ChangePlayerPassword";
                     $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | TerminalID : " . $terminalID . " | TerminalCode : " . $login . " | SiteCode : " . $SiteCode . " | ServiceID : " . $serviceID . " | Fail to Change Password | " . $changePlayerPassword['ChangePasswordResult']['Message'];
                     $PDO->InsertLogs($title, $errormessage);
+                    
                     $counterTN = $counterTN + 1;
                     continue;
+                }
+
+                /* VIP */
+                $VIPTerminalCode = $login . "VIP";
+                $getVIPTerminalID = $PDO->getTerminalID($VIPTerminalCode);
+                $VIPTerminalID = $getVIPTerminalID['TerminalID'];
+
+                if (!empty($VIPTerminalID) || $VIPTerminalID != null) {
+                    //Get Service Password VIP
+                    $getServicePassword = $PDO->getServicePassword($VIPTerminalID, $serviceID);
+                    if ($getServicePassword != false) {
+                        $OldPassword = $getServicePassword[0];
+                    } else {
+                        $title = "GetServicePassword";
+                        $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | TerminalID : " . $VIPTerminalID . " | TerminalCode : " . $VIPTerminalCode . " | SiteCode : " . $SiteCode . " | ServiceID : " . $serviceID . " | Terminal does not have " . $CasinoCode . " account created.";
+                        $PDO->InsertLogs($title, $errormessage);
+                        
+                   }
+
+                    if ($serviceID == 22) {
+                        //CALL ChangePlayer API to RTG
+                        //$changePlayerPassword = $RTG->changePlayerPassword($serviceID, $login, $OldPassword, $NewPlainPassword);
+                        $changePlayerPassword = $rtgWcfPlayerApi->changePlayerPassword($VIPTerminalCode, $OldPassword, $NewPlainPassword);
+                    }
+
+                    if ($serviceID == 25) {
+                        //CALL UpdatePlayerPassword API to Habanero
+                        $changePlayerPassword = $Habanero->UpdatePlayerPassword($VIPTerminalCode, $NewPlainPassword);
+                        if ($changePlayerPassword['updatepasswordmethodResult']['Success'] == true) {
+                            $changePlayerPassword['ChangePasswordResult']['ErrorCode'] = 0;
+                        } else {
+                            $changePlayerPassword['ChangePasswordResult']['ErrorCode'] = 1;
+                        }
+                    }
+
+                    if (isset($changePlayerPassword['ChangePasswordResult']['ErrorCode']) && $changePlayerPassword['ChangePasswordResult']['ErrorCode'] == 0) {
+
+                        //If succesfull Update terminalservices
+                        $UpdateTerminalServices = $PDO->UpdateTerminalServices($VIPTerminalCode, $serviceID, $NewPlainPassword, $NewHashedPassword);
+
+                        if ($UpdateTerminalServices == 1) {
+                            $title = "UpdateTerminalServices";
+                            $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | TerminalID : " . $VIPTerminalID . " | TerminalCode : " . $VIPTerminalCode . " | SiteCode : " . $SiteCode . " | ServiceID : " . $serviceID . " | Successful Update Terminal Services.";
+                            $PDO->InsertLogs($title, $errormessage);
+                        } else {
+                            $title = "UpdateTerminalServices";
+                            $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | TerminalID : " . $VIPTerminalID . " | TerminalCode : " . $VIPTerminalCode . " | SiteCode : " . $SiteCode . " | ServiceID : " . $serviceID . " | Fail to Update Terminal Services.";
+                            $PDO->InsertLogs($title, $errormessage);
+
+                            
+                        }
+                    } else {
+                        $title = "ChangePlayerPassword";
+                        $errormessage = "Username : " . $_SESSION['loggedin'] . " | IP Address " . $_SESSION['IP_Adddress'] . " | TerminalID : " . $VIPTerminalID . " | TerminalCode : " . $VIPTerminalCode . " | SiteCode : " . $SiteCode . " | ServiceID : " . $serviceID . " | Fail to Change Password | " . $changePlayerPassword['ChangePasswordResult']['Message'];
+                        $PDO->InsertLogs($title, $errormessage);
+                        
+                    }
                 }
 
                 $counterTN = $counterTN + 1;
@@ -264,6 +225,7 @@ if (isset($_GET['TerminalIDs'])) {
         $PDO->InsertLogs($title, $errormessage);
     }
 }
+
 
 
 
