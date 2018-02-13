@@ -691,6 +691,29 @@ if ($connected)
                             $password = $vgenpassword; //casino password
                             switch (true) 
                             {
+                                // CCT 01/19/2018 BEGIN
+                                case strstr($vprovidername, "EB"):
+                                    $url = '';
+                                    $capiusername = '';
+                                    $capipassword = '';
+                                    $currency = '';
+                                    $hashedPassword = '';
+                                    $capiplayername = '';
+                                    $capiserverID = '';                                    
+                                    
+                                    if (strstr($vlogin, "VIP") == true) 
+                                    {
+                                        $isVIP = 1;
+                                    } 
+                                    else 
+                                    {
+                                        $isVIP = 0;
+                                    }
+                                    $login = '';
+                                    $password = '';
+                                    $vaccountExist = 0;
+                                    break;
+                                // CCT 01/19/2018 END
                                 case strstr($vprovidername, "HAB"):
                                     $url = $_ServiceAPI[$serverId-1];
                                     $capiusername = $_HABbrandID;
@@ -718,31 +741,31 @@ if ($connected)
                                     $vaccountExistCount = $_CasinoGamingPlayerAPI->validateHabCasinoAccount($url, $capiusername, $capipassword, $login, $password);
                                     $vaccountExist = $vaccountExistCount['Count'];
                                     break;
-                                    
-                                case strstr($vprovidername, "MG"):
-                                    $_MGCredentials = $_PlayerAPI[$serverId - 1];
-                                    list($mgurl, $mgserverID) = $_MGCredentials;
-                                    $url = $mgurl;
-                                    $hashedPassword = '';
-                                    $aid = $_MicrogamingUserType;
-                                    $currency = $_MicrogamingCurrency;
-                                    $capiusername = $_CAPIUsername;
-                                    $capipassword = $_CAPIPassword;
-                                    $capiplayername = $_CAPIPlayerName;
-                                    $capiserverID = $mgserverID;
-                                    if (strstr($vlogin, "VIP") == true) 
-                                    {
-                                        $isVIP = 1;
-                                    } 
-                                    else 
-                                    {
-                                        $isVIP = 0;
-                                    }
-                                    $MGID = $_CasinoGamingPlayerAPI->validateCasinoAccount($login, $serverId, $url, $capiusername, $capipassword, $capiplayername, $capiserverID, $password);
-                                    $PID = $MGID['AccountInfo']['UserExists'];
-                                    $vaccountExist=$PID;
-                                    break;
-                                    
+                                // Comment Out CCT 02/06/2018 BEGIN    
+                                //case strstr($vprovidername, "MG"):
+                                //    $_MGCredentials = $_PlayerAPI[$serverId - 1];
+                                //    list($mgurl, $mgserverID) = $_MGCredentials;
+                                //    $url = $mgurl;
+                                //    $hashedPassword = '';
+                                //    $aid = $_MicrogamingUserType;
+                                //    $currency = $_MicrogamingCurrency;
+                                //    $capiusername = $_CAPIUsername;
+                                //    $capipassword = $_CAPIPassword;
+                                //    $capiplayername = $_CAPIPlayerName;
+                                //    $capiserverID = $mgserverID;
+                                //    if (strstr($vlogin, "VIP") == true) 
+                                //    {
+                                //        $isVIP = 1;
+                                //    } 
+                                //    else 
+                                //    {
+                                //        $isVIP = 0;
+                                //    }
+                                //    $MGID = $_CasinoGamingPlayerAPI->validateCasinoAccount($login, $serverId, $url, $capiusername, $capipassword, $capiplayername, $capiserverID, $password);
+                                //    $PID = $MGID['AccountInfo']['UserExists'];
+                                //    $vaccountExist=$PID;
+                                //    break;
+                                // Comment Out CCT 02/06/2018 END    
                                 case strstr($vprovidername, "RTG2"):
                                     $url = $_PlayerAPI[$serverId - 1];
                                     $cashierurl = $_ServiceAPI[$serverId - 1];
@@ -805,35 +828,35 @@ if ($connected)
                                         $isVIP = 0;
                                     }
                                     break;
-                                    
-                                case strstr($vprovidername, "PT"):
-                                    $url = $_PlayerAPI[$serverId - 1];
-                                    $password = $password;
-                                    $capipassword = $_ptsecretkey;
-                                    $capiusername = $_ptcasinoname;
-                                    $capiplayername = '';
-                                    $hashedPassword = $vgenhashed;
-                                    $currency = $_ptcurrency;
-                                    $email = $lname . '@yopmail.com';
-
-                                    //check if VIP, then pass appropriate VIP parameter
-                                    if (strstr($vlogin, "VIP") == true) 
-                                    {
-                                        $isVIP = $_ptvip;
-                                    } 
-                                    else 
-                                    {
-                                        $isVIP = $_ptreg;
-                                    }
-                                    $capiserverID = '';
-
-                                    //replace number in the lastname with its equivalent value  in words.
-                                    $number = 0;
-                                    preg_match("/\d{1,}/", $lname, $number);
-                                    $replace = strtoupper(helper::convert_number_to_words((int) $number[0]));
-                                    $lname = preg_replace('/\d{1,}/', $replace, $lname);
-                                    break;
-                                    
+                                // Comment Out CCT 02/06/2018 BEGIN    
+                                //case strstr($vprovidername, "PT"):
+                                //    $url = $_PlayerAPI[$serverId - 1];
+                                //    $password = $password;
+                                //    $capipassword = $_ptsecretkey;
+                                //    $capiusername = $_ptcasinoname;
+                                //    $capiplayername = '';
+                                //    $hashedPassword = $vgenhashed;
+                                //    $currency = $_ptcurrency;
+                                //    $email = $lname . '@yopmail.com';
+                                //        
+                                //    //check if VIP, then pass appropriate VIP parameter
+                                //    if (strstr($vlogin, "VIP") == true) 
+                                //    {
+                                //        $isVIP = $_ptvip;
+                                //    } 
+                                //    else 
+                                //    {
+                                //        $isVIP = $_ptreg;
+                                //    }
+                                //    $capiserverID = '';
+                                //            
+                                //    //replace number in the lastname with its equivalent value  in words.
+                                //    $number = 0;
+                                //    preg_match("/\d{1,}/", $lname, $number);
+                                //    $replace = strtoupper(helper::convert_number_to_words((int) $number[0]));
+                                //    $lname = preg_replace('/\d{1,}/', $replace, $lname);
+                                //    break;
+                                // Comment Out CCT 02/06/2018 END    
                                 default:
                                     echo 'Invalid Casino Name.';
                                     break;
@@ -859,7 +882,11 @@ if ($connected)
                             {
                                 $vapiResult = array('IsSucceed' => true);
                             }
-                            if ($usermode == 0) 
+                            
+                            // CCT EDITED 01/24/2018 BEGIN
+                            //if ($usermode == 0) 
+                            if (($usermode == 0) || ($usermode == 4))
+                            // CCT EDITED 01/24/2018 END
                             {
                                 if ($vaccountExist<=0)
                                 {
@@ -881,13 +908,16 @@ if ($connected)
                             {
                                 $vapiResult = $_CasinoGamingPlayerAPI->createTerminalAccount($vprovidername, $serverId, $url, $login, $password, $aid, $currency, $email, $fname, $lname, $dayphone, $evephone, $addr1, $addr2, $city, $country, $state, $zip, $userID, $birthdate, $fax, $occupation, $sex, $alias, $casinoID, $ip, $mac, $downloadID, $clientID, $putInAffPID, $calledFromCasino, $hashedPassword, $agentID, $currentPosition, $thirdPartyPID, $capiusername, $capipassword, $capiplayername, $capiserverID, $isVIP, $usermode);
                             }
-
+                            
                             //API returns successfull creation
                             if (isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true) 
                             {
                                 $apisuccess = 1;
 
-                                if ($usermode == 0 || $usermode == 2) 
+                                // CCT EDITED 01/24/2018 BEGIN
+                                //if ($usermode == 0 || $usermode == 2) 
+                                if ($usermode == 0 || $usermode == 2 || $usermode == 4) 
+                                // CCT EDITED 01/24/2018 END
                                 {
                                     if ($vprovidername == 'RTG2') 
                                     {
@@ -933,7 +963,10 @@ if ($connected)
                                                     $vapiResult = array('IsSucceed' => true);
                                                 }
 
-                                                if ($usermode == 0) 
+                                                // CCT EDITED 01/24/2018 BEGIN
+                                                //if ($usermode == 0) 
+                                                if (($usermode == 0) || ($usermode == 4))
+                                                // CCT EDITED 01/24/2018 END
                                                 {
                                                     $vapiResult = $_CasinoGamingPlayerAPI->changeTerminalPassword($vprovidername, $serverId, $url, $casinoID, $login, $vrtgoldpwd, $password, $capiusername, $capipassword, $capiplayername, $capiserverID, $usermode);
                                                     if($vapiResult == NULL) 
@@ -977,38 +1010,40 @@ if ($connected)
                                             break;
                                         }
                                     }
+                                    // Comment Out CCT 02/06/2018 BEGIN
                                     //if provider is MG, then
-                                    else if (strstr($vprovidername, "MG") == true) 
-                                    {
-                                        $vaccountExist = '';
-
-                                        //Call API to verify if account exists in MG
-                                        $vapiResult = $_CasinoGamingPlayerAPI->validateCasinoAccount($login, $serverId, $url, $capiusername, $capipassword, $capiplayername, $capiserverID, $password);
-
-                                        //Verify if API Call was successful
-                                        if (isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true) 
-                                        {
-                                            $vaccountExist = $vapiResult['AccountInfo']['UserExists'];
-
-                                            //check if account exists for MG Casino
-                                            if ($vaccountExist) 
-                                            {
-                                                //Call Reset Password API if MG
-                                                $vapiResult = $_CasinoGamingPlayerAPI->resetCasinoPassword($login, $password, $serverId, $url, $capiusername, $capipassword, $capiplayername, $capiserverID);
-                                            }
-                                        }
-                                    }
+                                    //else if (strstr($vprovidername, "MG") == true) 
+                                    //{
+                                    //    $vaccountExist = '';
+                                    //        
+                                    //    //Call API to verify if account exists in MG
+                                    //    $vapiResult = $_CasinoGamingPlayerAPI->validateCasinoAccount($login, $serverId, $url, $capiusername, $capipassword, $capiplayername, $capiserverID, $password);
+                                    //        
+                                    //    //Verify if API Call was successful
+                                    //    if (isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true) 
+                                    //    {
+                                    //        $vaccountExist = $vapiResult['AccountInfo']['UserExists'];
+                                    //                
+                                    //        //check if account exists for MG Casino
+                                    //        if ($vaccountExist) 
+                                    //        {
+                                    //            //Call Reset Password API if MG
+                                    //            $vapiResult = $_CasinoGamingPlayerAPI->resetCasinoPassword($login, $password, $serverId, $url, $capiusername, $capipassword, $capiplayername, $capiserverID);
+                                    //        }
+                                    //    }
+                                    //}
                                     //if Provider is PT, then
                                     //EDITED CCT 12/14/2017 BEGIN
                                     //else 
-                                    else if (strstr($vprovidername, "PT") == true)
+                                    //else if (strstr($vprovidername, "PT") == true)
                                     //EDITED CCT 12/14/2017 END
-                                    {
-                                        $vaccountExist = '';
-                                        $voldpw = '';
-                                        //Call Reset Password API if PT
-                                        $vapiResult = $_CasinoGamingPlayerAPI->changeTerminalPassword($vprovidername, $serverId, $url, $casinoID, $login, $voldpw, $password, $capiusername, $capipassword, $capiplayername, $capiserverID);
-                                    }
+                                    //{
+                                    //    $vaccountExist = '';
+                                    //    $voldpw = '';
+                                    //    //Call Reset Password API if PT
+                                    //    $vapiResult = $_CasinoGamingPlayerAPI->changeTerminalPassword($vprovidername, $serverId, $url, $casinoID, $login, $voldpw, $password, $capiusername, $capipassword, $capiplayername, $capiserverID);
+                                    //}
+                                    // Comment Out CCT 02/06/2018 END
                                     //if Provider is Habanero, then
                                     // ADDED CCT 12/14/2017 BEGIN
                                     else if (strstr($vprovidername, "HAB") == true)
@@ -1033,7 +1068,7 @@ if ($connected)
                                         }
                                     }
                                     // ADDED CCT 12/14/2017 END
-
+    
                                     //verify if API for change password (RTG & PT) and reset password (MG) is successfull
                                     if (isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true)
                                         $apisuccess = 1;
@@ -1045,6 +1080,7 @@ if ($connected)
                                     $apisuccess = 0;
                                 }
                             }
+                            
                             //Check if every Casino API Call was successfull
                             if ($apisuccess == 1) 
                             {
@@ -1430,6 +1466,8 @@ if ($connected)
                 break;
                 
             //populate combobox w/ terminals that has MG but not yet mapped (terminalmapping.php)
+            // Comment Out CCT 02/06/2018 BEGIN
+            /*    
             case 'DisplayMGTerminals':
                 $vsiteID = $_POST['cmbsite'];
                 $vprovidername = "MG"; //provider that will be searched
@@ -1457,7 +1495,8 @@ if ($connected)
                 $oterminal->close();
                 exit;
                 break;
-                
+             */
+            // Comment Out CCT 02/06/2018 END    
             case 'GetServiceGroup':
                 $vserviceid = $_POST['serviceid'];
                 $rservicegrp = $oterminal->viewterminalservices(0, $vserviceid);

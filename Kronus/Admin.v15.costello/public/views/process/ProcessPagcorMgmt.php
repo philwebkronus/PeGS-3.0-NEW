@@ -822,10 +822,12 @@ if($connected)
                     {
                         $vtransid = 'LP'.$vrowid.','.$vtranstype.','.$vresult[$vctr]['TerminalID'].','.$vresult[$vctr]['SiteID'];
                     }
-                    if($vresult[$vctr]['Code'] == 'VV')
-                    {
-                        $vtransid = $vresult[$vctr]['ServiceTransactionID'];
-                    }
+                    // Comment Out CCT 02/06/2018 BEGIN
+                    //if($vresult[$vctr]['Code'] == 'VV')
+                    //{
+                    //    $vtransid = $vresult[$vctr]['ServiceTransactionID'];
+                    //}
+                    // Comment Out CCT 02/06/2018 END
                    array_push($vconsolidatedlp,array($vrowid,$vplayerid,$vtransdesc, number_format($vamount, 2),$vgaming,$vcreateon,$vtranstat,$vtransid));
                    $vctr++;
                 }
@@ -886,9 +888,11 @@ if($connected)
                           case 'RTG':
                               $vserviceref = $vresult[$vctr]['TrackingInfo']; 
                               break;
-                          case 'MG':
-                              $vserviceref = $vresult[$vctr]['ServiceTransactionID']; 
-                              break;
+                          // Comment Out CCT 02/06/2018 BEGIN
+                          //case 'MG':
+                          //    $vserviceref = $vresult[$vctr]['ServiceTransactionID']; 
+                          //    break;
+                          // Comment Out CCT 02/06/2018 END
                       }
                       $vusername = $vresult[$vctr]['UserName']; 
                       array_push($vconsolidated,array($vterminalCode,$vtranstype,$vstartdate, number_format($vamount, 2),$vtransref,$vserviceref,$vusername));

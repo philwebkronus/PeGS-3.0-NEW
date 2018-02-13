@@ -675,21 +675,26 @@ if($connected)
                            $fax = '';
                            $occupation = '';
                            
+                           // Comment Out CCT 02/06/2018 BEGIN
                            //if provider is MG, then
-                           if(strstr($vprovidername, "RTG") == false)
-                           {
-                                $_MGCredentials = $_PlayerAPI[$vnewserviceID -1]; 
-                                list($mgurl, $mgserverID) =  $_MGCredentials;
-                                $url = $mgurl;
-                                $hashedPassword = '';
-                                $aid = $_MicrogamingUserType;
-                                $currency = $_MicrogamingCurrency;
-                                $capiusername = $_CAPIUsername;
-                                $capipassword = $_CAPIPassword;
-                                $capiplayername = $_CAPIPlayerName;
-                                $capiserverID = $mgserverID;
-                           }
-                           else
+                           //if(strstr($vprovidername, "RTG") == false)
+                           //{
+                           //     $_MGCredentials = $_PlayerAPI[$vnewserviceID -1]; 
+                           //     list($mgurl, $mgserverID) =  $_MGCredentials;
+                           //     $url = $mgurl;
+                           //     $hashedPassword = '';
+                           //     $aid = $_MicrogamingUserType;
+                           //     $currency = $_MicrogamingCurrency;
+                           //     $capiusername = $_CAPIUsername;
+                           //     $capipassword = $_CAPIPassword;
+                           //     $capiplayername = $_CAPIPlayerName;
+                           //     $capiserverID = $mgserverID;
+                           //}
+                           // Comment Out CCT 02/06/2018 END
+                           // EDITED CCT 02/06/2018 BEGIN
+                           //else
+                           if(strstr($vprovidername, "RTG") == true)
+                           // EDITED CCT 02/06/2018 END
                            {
                                $url = $_PlayerAPI[$vnewserviceID -1]; 
                                $hashedpass = sha1($vpassword);
@@ -701,6 +706,7 @@ if($connected)
                                $capiplayername = '';
                                $capiserverID = '';
                            }
+                           
                            $vplayerResult = $_CasinoGamingPlayerAPI->createTerminalAccount($vprovidername, 
                                   $vnewserviceID, $url, $login, $password, $aid, $currency, $email, $fname, 
                                   $lname, $dayphone, $evephone, $addr1, $addr2, $city, $country, $state, 
@@ -713,10 +719,12 @@ if($connected)
                            {
                                $vStatus = 1;
                            }
-                           elseif(($vplayerResult['IsSucceed'] == false) && (strstr($vprovidername, "MG") == true))
-                           {
-                               $vStatus = 6; //if account exists in MG
-                           }
+                           // Comment Out CCT 02/06/2018 BEGIN
+                           //elseif(($vplayerResult['IsSucceed'] == false) && (strstr($vprovidername, "MG") == true))
+                           //{
+                           //    $vStatus = 6; //if account exists in MG
+                           //}
+                           // Comment Out CCT 02/06/2018 END
                            else
                            {
                                if($vplayerResult['ErrorID'] == 5)
@@ -742,9 +750,11 @@ if($connected)
                               $msg = "RTG Server: successfully changed";
                           break;
                           //Account already exists in MG but this must be created in Kronus
-                          case 6:
-                              $msg = "MG Server: successfully changed";
-                          break;
+                          // Comment Out CCT 02/06/2018 BEGIN
+                          //case 6:
+                          //    $msg = "MG Server: successfully changed";
+                          //break;
+                          // Comment Out CCT 02/06/2018 END
                           default:
                               $msg = "RTG Server : Error in creating service terminal account";
                           break;
@@ -1106,14 +1116,16 @@ if($connected)
                 if(strstr($vservicename, "RTG")){
                     $key = "RTG";
                 }
+                // Comment Out CCT 02/06/2018 BEGIN
                 //verify if MG Server
-                if(strstr($vservicename, "MG")){
-                    $key = "MG";
-                }
+                //if(strstr($vservicename, "MG")){
+                //    $key = "MG";
+                //}
                 //verify if Playtech 
-                if(strstr($vservicename, "PT")){
-                    $key = "PT";
-                }
+                //if(strstr($vservicename, "PT")){
+                //    $key = "PT";
+                //}
+                // Comment Out CCT 02/06/2018 END
                 foreach($rservice as $row)
                 {
                     $rserverID = $row['ServiceID'];
@@ -1174,18 +1186,25 @@ if($connected)
                         $vterminalID = $_POST['txtterminalID'];
                         $vprovidername = $_POST['txtservice'];
                         
+                        // Comment Out CCT 02/06/2018 BEGIN
                         //if provider is MG, then
-                        if (strstr($vprovidername, "RTG") == false) {
-                            $_MGCredentials = $_PlayerAPI[$vserviceID -1]; 
-                            list($mgurl, $mgserverID) =  $_MGCredentials;
-                            $url = $mgurl;
-                            $aid = $_MicrogamingUserType;
-                            $currency = $_MicrogamingCurrency;
-                            $capiusername = $_CAPIUsername;
-                            $capipassword = $_CAPIPassword;
-                            $capiplayername = $_CAPIPlayerName;
-                            $capiserverID = $mgserverID;
-                        } else {
+                        //if (strstr($vprovidername, "RTG") == false) {
+                        //    $_MGCredentials = $_PlayerAPI[$vserviceID -1]; 
+                        //    list($mgurl, $mgserverID) =  $_MGCredentials;
+                        //    $url = $mgurl;
+                        //    $aid = $_MicrogamingUserType;
+                        //    $currency = $_MicrogamingCurrency;
+                        //    $capiusername = $_CAPIUsername;
+                        //    $capipassword = $_CAPIPassword;
+                        //    $capiplayername = $_CAPIPlayerName;
+                        //    $capiserverID = $mgserverID;
+                        //} 
+                        // Comment Out CCT 02/06/2018 END
+                        // EDITED CCT 02/06/2018 BEGIN
+                        //else 
+                        if (strstr($vprovidername, "RTG") == true) 
+                        // EDITED CCT 02/06/2018 END    
+                        {
                             $url = $_PlayerAPI[$vserviceID -1];
                             $cashierurl = $_ServiceAPI[$vserviceID-1];
                             $aid = 0;

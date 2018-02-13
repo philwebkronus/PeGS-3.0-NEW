@@ -10,7 +10,7 @@
 
 require_once( ROOT_DIR . 'sys/class/nusoap/nusoap.php' );
 require_once( ROOT_DIR . 'sys/class/nusoap/class.wsdlcache.php' );
-require_once( ROOT_DIR . 'sys/class/MicrogamingAPIWrapper.class.php' );
+//require_once( ROOT_DIR . 'sys/class/MicrogamingAPIWrapper.class.php' ); // Comment Out CCT 02/06/2018
 require_once( ROOT_DIR . 'sys/class/RealtimeGamingAPIWrapper.class.php' );
 require_once( ROOT_DIR . 'sys/class/helper/common.class.php' );
 
@@ -20,8 +20,8 @@ class CasinoAPIHandler
      * Casino Provider
      */
     const RTG = 1;
-    const PT = 2;
-    const MG = 3;    
+    // const PT = 2; // Comment Out CCT 02/06/2018
+    //const MG = 3;  // Comment Out CCT 02/06/2018
 
     /**
      * Default casino provider
@@ -74,22 +74,27 @@ class CasinoAPIHandler
         $this->_isCaching = $configuration[ 'isCaching' ];
         $this->_isDebug = $configuration[ 'isDebug' ];
         
-        if ( $this->_gamingProvider == self::MG )
-        {
-            $sessionGUID = $configuration[ 'sessionGUID' ];
-            
-            if ( $configuration[ 'currency' ] )
-            {
-                $this->_currency = $configuration[ 'currency' ];
-            }
-
-            $this->_API = new MicrogamingAPIWrapper( $this->_URI, '' , '', $sessionGUID, $this->_currency );
-        }
-        else if ( $this->_gamingProvider == self::PT )
-        {
-            // TODO
-        }
-        else if ( $this->_gamingProvider == self::RTG )
+        // Comment Out CCT 02/06/2018 BEGIN
+        //if ( $this->_gamingProvider == self::MG )
+        //{
+        //    $sessionGUID = $configuration[ 'sessionGUID' ];
+        //    
+        //    if ( $configuration[ 'currency' ] )
+        //    {
+        //        $this->_currency = $configuration[ 'currency' ];
+        //    }
+        //
+        //    $this->_API = new MicrogamingAPIWrapper( $this->_URI, '' , '', $sessionGUID, $this->_currency );
+        //}
+        //else if ( $this->_gamingProvider == self::PT )
+        //{
+        //    // TODO
+        //}
+        // Comment Out CCT 02/06/2018 END
+        // EDITED CCT 02/06/2018 BEGIN
+        //else if ( $this->_gamingProvider == self::RTG )
+        if ( $this->_gamingProvider == self::RTG )
+        // EDITED CCT 02/06/2018 END
         {
             $certFilePath = $configuration[ 'certFilePath' ];
             $keyFilePath = $configuration[ 'keyFilePath' ];
@@ -141,11 +146,16 @@ class CasinoAPIHandler
      */
     public function GetBalance( $login )
     {
-        if ( $this->_gamingProvider == self::MG )
-        {
-            return $this->_API->GetBalance( $login );
-        }
-        else if ( $this->_gamingProvider == self::RTG )
+        // Comment Out CCT 02/06/2018 BEGIN
+        //if ( $this->_gamingProvider == self::MG )
+        //{
+        //    return $this->_API->GetBalance( $login );
+        //}
+        // Comment Out CCT 02/06/2018 END
+        // EDITED CCT 02/06/2018 BEGIN
+        //else if ( $this->_gamingProvider == self::RTG )
+        if ( $this->_gamingProvider == self::RTG )
+        // EDITED CCT 02/06/2018 END
         {            
            return $this->_API->GetBalance( $login );
            
@@ -165,11 +175,16 @@ class CasinoAPIHandler
      */
     public function Deposit( $login, $amount, $tracking1 = '', $tracking2 = '', $tracking3 = '', $tracking4 = '' )
     {
-        if ( $this->_gamingProvider == self::MG )
-        {
-            return $this->_API->Deposit( $login, $amount, $this->_currency );
-        }
-        else if ( $this->_gamingProvider == self::RTG )
+        // Comment Out CCT 02/06/2018 BEGIN
+        //if ( $this->_gamingProvider == self::MG )
+        //{
+        //    return $this->_API->Deposit( $login, $amount, $this->_currency );
+        //}
+        // Comment Out CCT 02/06/2018 END
+        // EDITED CCT 02/06/2018 BEGIN
+        //else if ( $this->_gamingProvider == self::RTG )
+        if ( $this->_gamingProvider == self::RTG )
+        // EDITED CCT 02/06/2018 END
         {
             return $this->_API->Deposit( $login, $amount, $tracking1, $tracking2, $tracking3, $tracking4 );
         }
@@ -188,11 +203,16 @@ class CasinoAPIHandler
      */
     public function Withdraw( $login, $amount, $tracking1 = '', $tracking2 = '', $tracking3 = '', $tracking4 = '' )
     {
-        if ( $this->_gamingProvider == self::MG )
-        {
-            return $this->_API->Withdraw( $login, $amount );
-        }
-        else if ( $this->_gamingProvider == self::RTG )
+        // Comment Out CCT 02/06/2018 BEGIN
+        //if ( $this->_gamingProvider == self::MG )
+        //{
+        //    return $this->_API->Withdraw( $login, $amount );
+        //}
+        // Comment Out CCT 02/06/2018 END
+        // EDITED CCT 02/06/2018 BEGIN
+        //else if ( $this->_gamingProvider == self::RTG )
+        if ( $this->_gamingProvider == self::RTG )
+        // EDITED CCT 02/06/2018 END
         {
             return $this->_API->Withdraw( $login, $amount, $tracking1, $tracking2, $tracking3, $tracking4 );
         }
@@ -217,16 +237,16 @@ class CasinoAPIHandler
         }
     }
     
-    
-    public function GetMyBalance()
-    {
-        if ( $this->_gamingProvider == self::MG )
-        {
-            return $this->_API->GetMyBalance();
-        }
-        
-    }
-    
+    // Comment Out CCT 02/06/2018 BEGIN
+    //public function GetMyBalance()
+    //{
+    //    if ( $this->_gamingProvider == self::MG )
+    //    {
+    //        return $this->_API->GetMyBalance();
+    //    }
+    //    
+    //}
+    // Comment Out CCT 02/06/2018 END
 }
 
 ?>

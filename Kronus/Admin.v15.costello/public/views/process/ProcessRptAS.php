@@ -121,6 +121,9 @@ if($connected)
                          case 0: $usermode = 'Terminal Based'; break;
                          case 1: $usermode = 'User Based'; break;
                          case 2: $usermode = 'Terminal Based'; break;
+                         // CCT ADDED 01/24/2018 BEGIN
+                         case 4: $usermode = 'Terminal Based'; break;
+                         // CCT ADDED 01/24/2018 END
                          default:
                              break;
                      }
@@ -196,6 +199,9 @@ if($connected)
                          case 0: $usermode = 'Terminal Based'; break;
                          case 1: $usermode = 'User Based'; break;
                          case 2: $usermode = 'Terminal Based'; break;
+                         // CCT ADDED 01/24/2018 BEGIN
+                         case 4: $usermode = 'Terminal Based'; break;
+                         // CCT ADDED 01/24/2018 END
                          default:
                              break;
                      }
@@ -281,6 +287,9 @@ if($connected)
                           case 0: $usermode = 'Terminal Based'; break;
                           case 1: $usermode = 'User Based'; break;
                           case 2: $usermode = 'Terminal Based'; break;
+                          // CCT ADDED 01/24/2018 BEGIN
+                          case 4: $usermode = 'Terminal Based'; break;
+                          // CCT ADDED 01/24/2018 END
                           default:
                               break;
                       }
@@ -344,8 +353,8 @@ if($connected)
             $pdf->html.='<div style="text-align:center;">From ' . $datefrom . ' to '.$dateto.'</div>';
             $pdf->SetFontSize(10);
             $pdf->c_tableHeader2(array(
-                      array('value'=>'Site', 'width' => '40px'),
-                      array('value'=>'Terminal', 'width'),
+                      array('value'=>'Site', 'width' => '50px'),
+                      array('value'=>'Terminal', 'width' => '50px'),
                       array('value'=>'Transaction Type'),
                       array('value'=>'Amount'),
                       array('value'=>'Service Name'),
@@ -379,6 +388,9 @@ if($connected)
                           case 0: $usermode = 'Terminal Based'; break;
                           case 1: $usermode = 'User Based'; break;
                           case 2: $usermode = 'Terminal Based'; break;
+                          // CCT ADDED 01/24/2018 BEGIN
+                          case 4: $usermode = 'Terminal Based'; break;
+                          // CCT ADDED 01/24/2018 END
                           default:
                               break;
                       }
@@ -391,8 +403,8 @@ if($connected)
 
                       $sitecode = preg_split("/ICSA-/", $vview['SiteCode']);
                       $pdf->c_tableRow2(array(
-                          array('value'=>$sitecode[1], 'width' => '40px'),
-                          array('value'=> $results[1]),
+                          array('value'=>$sitecode[1], 'width' => '50px'),
+                          array('value'=> $results[1], 'width' => '50px'),
                           array('value'=>$vtranstype),
                           array('value'=>number_format($vview['Amount'],2), 'align' => 'right'),
                           array('value'=>$vview['ServiceName']),

@@ -585,7 +585,7 @@ if($connected)
                 $orptoptr->close();
                 exit;
                 break;
-                
+
             case "RptGrossHold":
                 $page = $_POST['page']; // get the requested page
                 $limit = $_POST['rows']; // get how many rows we want to have into the grid
@@ -601,7 +601,7 @@ if($connected)
                 $result = array();
                 $total = 0;
                 $subtotal = 0;
-                $MG_total = 0;
+                //$MG_total = 0; // Comment Out CCT 02/06/2018
                 $costello_total = 0;
                 $abbott_total = 0;
                 if (count($siteIDs) > 0) 
@@ -610,14 +610,19 @@ if($connected)
                     {
                         //get D, R, W and MR of respective casinos
                         $siteCode = $orptoptr->getsitecode($siteID['SiteID']);
+                        // Comment Out CCT 02/06/2018 BEGIN
                         //for MG
-                        $serviceID_MG             = array(2);
-                        $deposit_reload_MG        = $orptoptr->getGrossHoldTB($siteID['SiteID'], $serviceID_MG, "DR", $datefrom, $dateto);
-                        $withdraw_MG              = $orptoptr->getGrossHoldTB($siteID['SiteID'], $serviceID_MG, "W", $datefrom, $dateto);
-                        $mr_MG                    = $orptoptr->getManualRedemptionTrans($siteID['SiteID'], $serviceID_MG, $datefrom, $dateto);
-                        $grosshold_MG             = $deposit_reload_MG['Amount'] - ($withdraw_MG['Amount'] + $mr_MG['Amount']);
+                        //$serviceID_MG             = array(2);
+                        //$deposit_reload_MG        = $orptoptr->getGrossHoldTB($siteID['SiteID'], $serviceID_MG, "DR", $datefrom, $dateto);
+                        //$withdraw_MG              = $orptoptr->getGrossHoldTB($siteID['SiteID'], $serviceID_MG, "W", $datefrom, $dateto);
+                        //$mr_MG                    = $orptoptr->getManualRedemptionTrans($siteID['SiteID'], $serviceID_MG, $datefrom, $dateto);
+                        //$grosshold_MG             = $deposit_reload_MG['Amount'] - ($withdraw_MG['Amount'] + $mr_MG['Amount']);
+                        // Comment Out CCT 02/06/2018 END
                         //for Costello
-                        $serviceID_COSTELLO       = array(1);
+                        // EDITED CCT 02/08/2018 BEGIN
+                        //$serviceID_COSTELLO       = array(1);
+                        $serviceID_COSTELLO       = array(1, 6); // Added Habanero
+                        // EDITED CCT 02/08/2018 END
                         $deposit_reload_COSTELLO  = $orptoptr->getGrossHoldTB($siteID['SiteID'], $serviceID_COSTELLO, "DR", $datefrom, $dateto);
                         $withdraw_COSTELLO        = $orptoptr->getGrossHoldTB($siteID['SiteID'], $serviceID_COSTELLO, "W", $datefrom, $dateto);
                         $mr_COSTELLO              = $orptoptr->getManualRedemptionTrans($siteID['SiteID'], $serviceID_COSTELLO, $datefrom, $dateto);
@@ -626,7 +631,10 @@ if($connected)
                         $loads = $orptoptr->getGrossHoldeSAFE($siteID['SiteID'], $datefrom, $dateto);
 
                         $gh = $loads['StartBalance']+$loads['WalletReloads'] - $loads['EndBalance'] - $loads['GenesisWithdrawal'];
-                        $subtotal = $grosshold_MG + $grosshold_COSTELLO + $gh;
+                        // EDITED CCT 02/06/2018 BEGIN
+                        //$subtotal = $grosshold_MG + $grosshold_COSTELLO + $gh;
+                        $subtotal = $grosshold_COSTELLO + $gh;
+                        // EDITED CCT 02/06/2018 END
                         $results[] = 
                             array(
                                 'SubTotal' => number_format($subtotal, 2, ".", ","), 
@@ -1080,7 +1088,14 @@ if($connected)
                 $data1 = $orptoptr->getActiveSessionCountMod($cardnumber = '', $usermode, $siteID);
                 $usermode = 2;
                 $data2 = $orptoptr->getActiveSessionCountMod($cardnumber = '', $usermode, $siteID);
-                $data = $data1 + $data2;
+                // CCT ADDED 01/24/2018 BEGIN
+                $usermode = 4;
+                $data3 = $orptoptr->getActiveSessionCountMod($cardnumber = '', $usermode, $siteID);
+                // CCT ADDED 01/24/2018 END
+                // CCT EDITED 01/24/2018 BEGIN
+                //$data = $data1 + $data2;
+                $data = $data1 + $data2 + $data3;
+                // CCT EDITED 01/24/2018 END
                 break;
 
             case "sessioncountub":
@@ -1099,7 +1114,14 @@ if($connected)
                 $data1 = $orptoptr->getActiveSessionCountMod($cardnumber, $usermode, $siteID = '');
                 $usermode = 2;
                 $data2 = $orptoptr->getActiveSessionCountMod($cardnumber, $usermode, $siteID = '');
-                $data = $data1 + $data2;
+                // CCT ADDED 01/24/2018 BEGIN
+                $usermode = 4;
+                $data3 = $orptoptr->getActiveSessionCountMod($cardnumber, $usermode, $siteID = '');
+                // CCT ADDED 01/24/2018 END
+                // CCT EDITED 01/24/2018 BEGIN
+                //$data = $data1 + $data2;
+                $data = $data1 + $data2 + $data3;
+                // CCT EDITED 01/24/2018 END
                 break;
 
             case "sessioncountub1":
@@ -2623,7 +2645,7 @@ if($connected)
         $result = array();
         $total = 0;
         $subtotal = 0;
-        $MG_total = 0;
+        // $MG_total = 0;  // Comment Out CCT 02/06/2018
         $costello_total = 0;
         $abbott_total = 0;
         if (count($siteIDs) > 0) 
@@ -2632,14 +2654,19 @@ if($connected)
             {
                 //get D, R, W and MR of respective casinos
                 $siteCode = $orptoptr->getsitecode($siteID['SiteID']);
+                // Comment Out CCT 02/06/2018 BEGIN
                 //for MG
-                $serviceID_MG             = array(2); //service group id
-                $deposit_reload_MG        = $orptoptr->getGrossHoldTB($siteID['SiteID'], $serviceID_MG, "DR", $datefrom, $dateto);
-                $withdraw_MG              = $orptoptr->getGrossHoldTB($siteID['SiteID'], $serviceID_MG, "W", $datefrom, $dateto);
-                $mr_MG                    = $orptoptr->getManualRedemptionTrans($siteID['SiteID'], $serviceID_MG, $datefrom, $dateto);
-                $grosshold_MG             = $deposit_reload_MG['Amount'] - ($withdraw_MG['Amount'] + $mr_MG['Amount']);
+                //$serviceID_MG             = array(2); //service group id
+                //$deposit_reload_MG        = $orptoptr->getGrossHoldTB($siteID['SiteID'], $serviceID_MG, "DR", $datefrom, $dateto);
+                //$withdraw_MG              = $orptoptr->getGrossHoldTB($siteID['SiteID'], $serviceID_MG, "W", $datefrom, $dateto);
+                //$mr_MG                    = $orptoptr->getManualRedemptionTrans($siteID['SiteID'], $serviceID_MG, $datefrom, $dateto);
+                //$grosshold_MG             = $deposit_reload_MG['Amount'] - ($withdraw_MG['Amount'] + $mr_MG['Amount']);
+                // Comment Out CCT 02/06/2018 END
                 //for Costello
-                $serviceID_COSTELLO       = array(1); //service group id
+                //EDITED CCT 02/08/2018 BEGIN
+                //$serviceID_COSTELLO       = array(1); //service group id
+                $serviceID_COSTELLO       = array(1, 6); // Added Habanero
+                //EDITED CCT 02/08/2018 END
                 $deposit_reload_COSTELLO  = $orptoptr->getGrossHoldTB($siteID['SiteID'], $serviceID_COSTELLO, "DR", $datefrom, $dateto);
                 $withdraw_COSTELLO        = $orptoptr->getGrossHoldTB($siteID['SiteID'], $serviceID_COSTELLO, "W", $datefrom, $dateto);
                 $mr_COSTELLO              = $orptoptr->getManualRedemptionTrans($siteID['SiteID'], $serviceID_COSTELLO, $datefrom, $dateto);
@@ -2648,7 +2675,10 @@ if($connected)
                 $loads = $orptoptr->getGrossHoldeSAFE($siteID['SiteID'], $datefrom, $dateto);
                 //appending results
                 $gh = $loads['StartBalance']+$loads['WalletReloads'] - $loads['EndBalance'] - $loads['GenesisWithdrawal'];
-                $subtotal += ($grosshold_MG + $grosshold_COSTELLO + $gh);
+                // EDITED CCT 02/06/2018 BEGIN
+                //$subtotal += ($grosshold_MG + $grosshold_COSTELLO + $gh);
+                $subtotal += ($grosshold_COSTELLO + $gh);
+                // EDITED CCT 02/06/2018 END
                 $arr_grosshold[] = array( 'SiteCode' => $siteCode['SiteCode'], 
                 'SubTotal' => $subtotal);
                 $total += $subtotal;
@@ -2696,7 +2726,7 @@ if($connected)
         $result = array();
         $total = 0;
         $subtotal = 0;
-        $MG_total = 0;
+        // $MG_total = 0; // Comment Out CCT 02/06/2018 BEGIN
         $costello_total = 0;
         $abbott_total = 0;
         if (count($siteIDs) > 0) 
@@ -2705,14 +2735,19 @@ if($connected)
             {
                 //get D, R, W and MR of respective casinos
                 $siteCode = $orptoptr->getsitecode($siteID['SiteID']);
+                // Comment Out CCT 02/06/2018 BEGIN
                 //for MG
-                $serviceID_MG             = array(2); //service group id
-                $deposit_reload_MG        = $orptoptr->getGrossHoldTB($siteID['SiteID'], $serviceID_MG, "DR", $datefrom, $dateto);
-                $withdraw_MG              = $orptoptr->getGrossHoldTB($siteID['SiteID'], $serviceID_MG, "W", $datefrom, $dateto);
-                $mr_MG                    = $orptoptr->getManualRedemptionTrans($siteID['SiteID'], $serviceID_MG, $datefrom, $dateto);
-                $grosshold_MG             = $deposit_reload_MG['Amount'] - ($withdraw_MG['Amount'] + $mr_MG['Amount']);
+                //$serviceID_MG             = array(2); //service group id
+                //$deposit_reload_MG        = $orptoptr->getGrossHoldTB($siteID['SiteID'], $serviceID_MG, "DR", $datefrom, $dateto);
+                //$withdraw_MG              = $orptoptr->getGrossHoldTB($siteID['SiteID'], $serviceID_MG, "W", $datefrom, $dateto);
+                //$mr_MG                    = $orptoptr->getManualRedemptionTrans($siteID['SiteID'], $serviceID_MG, $datefrom, $dateto);
+                //$grosshold_MG             = $deposit_reload_MG['Amount'] - ($withdraw_MG['Amount'] + $mr_MG['Amount']);
+                // Comment Out CCT 02/06/2018 END
                 //for Costello
-                $serviceID_COSTELLO       = array(1); //service group id
+                // EDITED CCT 02/08/2018 BEGIN
+                //$serviceID_COSTELLO       = array(1); //service group id
+                $serviceID_COSTELLO       = array(1, 6); // Added Habanero
+                // EDITED CCT 02/08/2018 END
                 $deposit_reload_COSTELLO  = $orptoptr->getGrossHoldTB($siteID['SiteID'], $serviceID_COSTELLO, "DR", $datefrom, $dateto);
                 $withdraw_COSTELLO        = $orptoptr->getGrossHoldTB($siteID['SiteID'], $serviceID_COSTELLO, "W", $datefrom, $dateto);
                 $mr_COSTELLO              = $orptoptr->getManualRedemptionTrans($siteID['SiteID'], $serviceID_COSTELLO, $datefrom, $dateto);
@@ -2722,8 +2757,10 @@ if($connected)
 
                 //appending results
                 $gh = $loads['StartBalance']+$loads['WalletReloads'] - $loads['EndBalance'] - $loads['GenesisWithdrawal'];
-                $subtotal += ($grosshold_MG + $grosshold_COSTELLO + $gh);
-
+                // EDITED CCT 02/06/2018 BEGIN
+                //$subtotal += ($grosshold_MG + $grosshold_COSTELLO + $gh);
+                $subtotal += ($grosshold_COSTELLO + $gh);
+                // EDITED CCT 02/06/2018 END
                 $arr_grosshold[] = array( 'SiteCode' => str_replace("ICSA-", "", $siteCode['SiteCode']), 'SubTotal' => $subtotal);
 
                 $total += $subtotal;

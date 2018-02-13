@@ -43,14 +43,20 @@ class CSManagement extends DBHandler{
           {
               $stmt = "SELECT DISTINCT a.ServiceID, b.ServiceName FROM terminalservices AS a 
                   INNER JOIN ref_services AS b ON a.ServiceID = b.ServiceID 
-                  WHERE a.TerminalID = '".$zTerminalID."' AND a.Status = 1 AND b.UserMode IN (0,2)
+                  -- CCT EDITED 01/24/2018 BEGIN
+                  -- WHERE a.TerminalID = '".$zTerminalID."' AND a.Status = 1 AND b.UserMode IN (0,2)
+                  WHERE a.TerminalID = '".$zTerminalID."' AND a.Status = 1 AND b.UserMode IN (0,2,4)
+                  -- CCT EDITED 01/24/2018 END
                   ORDER BY ServiceName ASC";
           }
           else
           {
               $stmt = "SELECT DISTINCT a.ServiceID, b.ServiceName FROM terminalservices AS a 
                        INNER JOIN ref_services AS b ON a.ServiceID = b.ServiceID 
-                       WHERE b.UserMode IN (0,2) AND a.Status = 1 ORDER BY ServiceName ASC";
+                       -- CCT EDITED 01/24/2018 BEGIN
+                       -- WHERE b.UserMode IN (0,2) AND a.Status = 1 ORDER BY ServiceName ASC
+                       WHERE b.UserMode IN (0,2,4) AND a.Status = 1 ORDER BY ServiceName ASC";
+                       // CCT EDITED 01/24/2018 BEGIN
           }
           $this->executeQuery($stmt);
           return $this->fetchAllData();

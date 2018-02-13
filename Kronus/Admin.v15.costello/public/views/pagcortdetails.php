@@ -51,7 +51,9 @@ $vaccesspages = array('11');
                     <select id="cmbservices" name="cmbservices">
                         <option value="-1">Please Select</option>
                         <option value="RTG">RTG</option>
-                        <option value="MG">MG</option>
+                        <!--  Comment Out CCT 02/06/2018 BEGIN -->
+                        <!--<option value="MG">MG</option>-->
+                        <!--  Comment Out CCT 02/06/2018 END -->
                     </select>
                 </td>
             </tr>

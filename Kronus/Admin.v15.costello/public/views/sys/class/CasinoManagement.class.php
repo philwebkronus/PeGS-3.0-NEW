@@ -150,6 +150,12 @@ class CasinoManagement extends DBHandler
             case 2:
                 $zusermode = "Terminal based";
             break;
+            // CCT ADDED 01/23/2018 BEGIN
+            // e-Bingo
+            case 4:
+                $zusermode = "Terminal based";
+            break;
+            // CCT ADDED 01/23/2018 END
             default:
                 $zusermode = "Invalid User Mode";
             break;
@@ -234,6 +240,10 @@ class CasinoManagement extends DBHandler
                             WHEN '0' THEN 'Terminal Based'
                             WHEN '1' THEN 'User Based'
                             WHEN '2' THEN 'Terminal Based'
+                            -- CCT ADDED 01/23/2018 BEGIN
+                            -- e-Bingo
+                            WHEN '4' THEN 'Terminal Based'
+                            -- CCT ADDED 01/23/2018 END
                          END) as UserModeName
                         FROM ref_servicegroups a INNER JOIN ref_services b ON a.ServiceGroupID = b.ServiceGroupID 
                         WHERE b.ServiceID =  '".$zsiteID."' ORDER BY b.ServiceID ASC";
@@ -246,6 +256,10 @@ class CasinoManagement extends DBHandler
                             WHEN '0' THEN 'Terminal Based'
                             WHEN '1' THEN 'User Based'
                             WHEN '2' THEN 'Terminal Based'
+                            -- CCT ADDED 01/23/2018 BEGIN
+                            -- e-Bingo
+                            WHEN '4' THEN 'Terminal Based'
+                            -- CCT ADDED 01/23/2018 END                            
                          END) as UserModeName
                     FROM ref_servicegroups a INNER JOIN ref_services b ON a.ServiceGroupID = b.ServiceGroupID
                     WHERE b.ServiceID =  '".$zsiteID."' ORDER BY b.ServiceID ASC";
@@ -412,6 +426,10 @@ class CasinoManagement extends DBHandler
                         WHEN '0' THEN 'Terminal Based'
                         WHEN '1' THEN 'User Based'
                         WHEN '2' THEN 'Terminal Based'
+                        -- CCT ADDED 01/23/2018 BEGIN
+                        -- e-Bingo
+                        WHEN '4' THEN 'Terminal Based'
+                        -- CCT ADDED 01/23/2018 END
                     END) as UserModeName
                 FROM ref_services GROUP BY UserModeName ASC";
          $this->executeQuery($stmt);

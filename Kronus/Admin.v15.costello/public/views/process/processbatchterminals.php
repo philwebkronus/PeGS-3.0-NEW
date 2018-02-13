@@ -68,7 +68,9 @@ if ($connected)
                 if (isset($_POST['cmbsitename']) && isset($_POST['cmbterminals'])
                    // EDITED CCT 12/15/2017                        
                    // && (isset($_POST['optserver']) || isset($_POST['optserver1']) || isset($_POST['optserver2']))) 
-                   && (isset($_POST['optserver']) || isset($_POST['optserver1']) || isset($_POST['optserver2']) || isset($_POST['optserver3'])) )
+                   // EDITED CCT 01/22/2018     
+                   //&& (isset($_POST['optserver']) || isset($_POST['optserver1']) || isset($_POST['optserver2']) || isset($_POST['optserver3'])) )
+                   && (isset($_POST['optserver']) || isset($_POST['optserver1']) || isset($_POST['optserver2']) || isset($_POST['optserver3'])) || isset($_POST['optserver4']))
                 {
                     $vsiteID = $_POST['cmbsitename'];
                     $vterminals = $_POST['cmbterminals']; // no. of terminals that will be created
@@ -142,9 +144,11 @@ if ($connected)
                         $_CasinoGamingPlayerAPIUB = new CasinoGamingCAPIUB();
                         $isassigned = 0;
                         $isapisuccess = 0;
-                        $mgUsedServer = 0;
+                        //$mgUsedServer = 0; // Comment Out CCT 02/06/2018 
                         $rtgUsedServer = 0;
-                        $ptUsedServer = 0;
+                        //$ptUsedServer = 0; // Comment Out CCT 02/06/2018 
+                        $habUsedServer = 0; // ADDED CCT 01/22/2018 
+                        $ebUsedServer = 0; // ADDED CCT 01/22/2018 
                         
                         //loop through number of selected terminals to be assigned in its
                         //chosen casino provider
@@ -157,14 +161,16 @@ if ($connected)
 
                             if (isset($arrserverID) && isset($arrserverID[$ctrterminal])) 
                             {
+                                // Comment Out CCT 02/06/2018 BEGIN
                                 //explode radiobox of MG
                                 $servers = explode(':', $arrserverID[$ctrterminal]);
-                                $vservicegrpid = $servers[2];
-                                $vserviceID = $servers[1];
-                                $vprovider = $servers[0];
-                                $usermode = $obatch->getServiceUserMode($vserviceID);
-                                $servicegroupname = $obatch->getServiceGrpNameById($vserviceID);
-                                $vprovider = $servicegroupname;
+                                //$vservicegrpid = $servers[2];
+                                //$vserviceID = $servers[1];
+                                //$vprovider = $servers[0];
+                                //$usermode = $obatch->getServiceUserMode($vserviceID);
+                                //$servicegroupname = $obatch->getServiceGrpNameById($vserviceID);
+                                //$vprovider = $servicegroupname;
+                                // Comment Out CCT 02/06/2018 END
                                 //-----------------  explode radiobox of RTG ----------------------- //
                                 $rtggrpid = $servers[2];
                                 $rtgvserviceID = $servers[1];
@@ -172,13 +178,15 @@ if ($connected)
                                 $usermode = $obatch->getServiceUserMode($rtgvserviceID);
                                 $servicegroupname = $obatch->getServiceGrpNameById($rtgvserviceID);
                                 $rtgvprovider = $servicegroupname;
+                                // Comment Out CCT 02/06/2018 BEGIN
                                 //-----------------  explode radiobox of PT ----------------------- //
-                                $ptgrpid = $servers[2];
-                                $ptvserviceID = $servers[1];
-                                $ptvprovider = $servers[0];
-                                $usermode = $obatch->getServiceUserMode($ptvserviceID);
-                                $servicegroupname = $obatch->getServiceGrpNameById($ptvserviceID);
-                                $ptvprovider = $servicegroupname;
+                                //$ptgrpid = $servers[2];
+                                //$ptvserviceID = $servers[1];
+                                //$ptvprovider = $servers[0];
+                                //$usermode = $obatch->getServiceUserMode($ptvserviceID);
+                                //$servicegroupname = $obatch->getServiceGrpNameById($ptvserviceID);
+                                //$ptvprovider = $servicegroupname;
+                                // Comment Out CCT 02/06/2018 END
                                 // ADDED CCT 12/15/2017 BEGIN
                                 //-----------------  radiobox of Habanero ----------------------- //
                                 $habgrpid = $servers[2];
@@ -187,6 +195,14 @@ if ($connected)
                                 $servicegroupname = $obatch->getServiceGrpNameById($habvserviceID);
                                 $habvprovider = $servicegroupname;
                                 // ADDED CCT 12/15/2017 END
+                                // ADDED CCT 01/22/2018 BEGIN
+                                //-----------------  radiobox of e-Bingo ----------------------- //
+                                $ebgrpid = $servers[2];
+                                $ebvserviceID = $servers[1];
+                                $usermode = $obatch->getServiceUserMode($ebvserviceID);
+                                $servicegroupname = $obatch->getServiceGrpNameById($ebvserviceID);
+                                $ebvprovider = $servicegroupname;
+                                // ADDED CCT 01/22/2018 END                                
                             }
                     //                            //explode radiobox of RTG
                     //                            if(isset($arrserverID1) && isset($arrserverID1[$ctrterminal]))
@@ -228,7 +244,10 @@ if ($connected)
                                 //check if casino is e-Bingo
                                 if ((int) $usermode != 2) 
                                 {
-                                    $servicename = $obatch->viewterminalservices(0, $ptvserviceID);
+                                    // EDITED CCT 02/06/2018 BEGIN
+                                    //$servicename = $obatch->viewterminalservices(0, $ptvserviceID);
+                                    $servicename = $obatch->viewterminalservices(0, $vserviceID);
+                                    // EDITED CCT 02/06/2018 END
                                     $errmsg = "Cannot Map " . $servicename[0]['ServiceName'] . " to an e-Bingo site";
                                     $isapisuccess = 0;
                                     $nebingo = false;
@@ -243,7 +262,10 @@ if ($connected)
                             {
                                 if ((int) $usermode == 2) 
                                 {
-                                    $servicename = $obatch->viewterminalservices(0, $ptvserviceID);
+                                    // EDITED CCT 02/06/2018 BEGIN
+                                    //$servicename = $obatch->viewterminalservices(0, $ptvserviceID);
+                                    $servicename = $obatch->viewterminalservices(0, $vserviceID);
+                                    // EDITED CCT 02/06/2018 END
                                     $errmsg = "Cannot Map " . $servicename[0]['ServiceName'] . " to a non e-Bingo site";
                                     $isapisuccess = 0;
                                     $nebingo = false;
@@ -262,6 +284,7 @@ if ($connected)
                                 //Check if assigned casino provider is Habanero
                                 if (isset($habvprovider) && $habvprovider == "HAB") 
                                 {
+                                    $habUsedServer = 1;
                                     //get password and encrypted password for Habanero
                                     $vretrievepwd = $obatch->getgeneratedpassword($vgenpwdid, $habgrpid);
                                     $vgenpassword = $vretrievepwd['PlainPassword'];
@@ -400,6 +423,81 @@ if ($connected)
                                 }
                                 // ADDED CCT 12/15/2017 END 
 
+                                // ADDED CCT 01/22/2018 BEGIN
+                                //Check if assigned casino provider is e-Bingo
+                                if (isset($ebvprovider) && $ebvprovider == "EB") 
+                                {
+                                    $ebUsedServer = 1;
+                                    //set password and encrypted password for e-Bingo
+                                    //$vretrievepwd = $obatch->getgeneratedpassword($vgenpwdid, $habgrpid);
+                                    $vgenpassword = '';
+                                    $vgenhashed = '';;
+                                    $password = '';
+                                    //sets creation of regular terminal account in Habanero
+                                    $vterminalName = "TERMINAL" . $vstartcode;
+                                    $vterminalCode = $terminalcode . $vsitecode . $vstartcode; //(icsa-) + sitecode + terminalno
+                                    $visVIP = 0;
+                                    $login = $vterminalCode;
+                                    $regterminal = $vterminalCode;
+                                    $eburl = $_ServiceAPI[$ebvserviceID-1];
+                                    $hashedPassword = $password;
+                                    $aid = 0;
+                                    $currency = '';
+                                    $capiusername = '';
+                                    $capipassword = '';
+                                    $capiplayername = '';
+                                    $capiserverID = '';
+                                    
+                                    // CCT EDITED 01/24/2018 BEGIN
+                                    //if ($usermode == 0)
+                                    if (($usermode == 0) || ($usermode == 4))
+                                    // CCT EDITED 01/24/2018 END
+                                    {
+                                        //Creates regular terminal account in e-Bingo
+                                        $vplayerResult = $_CasinoGamingPlayerAPI->createTerminalAccount($ebvprovider, $ebvserviceID, $eburl, $login, $password, $aid, $currency, $email, $fname, $lname, $dayphone, $evephone, $addr1, $addr2, $city, $country, $state, $zip, $userID, $birthdate, $fax, $occupation, $sex, $alias, $casinoID, $ip, $mac, $downloadID, $clientID, $putInAffPID, $calledFromCasino, $hashedPassword, $agentID, $currentPosition, $thirdPartyPID, $capiusername, $capipassword, $capiplayername, $capiserverID, $visVIP, $usermode);
+
+                                        if ($vplayerResult == NULL) 
+                                        { // proceeed if certificate does not match
+                                            $vplayerResult = $_CasinoGamingPlayerAPI->createTerminalAccount($ebvprovider, $ebvserviceID, $eburl, $login, $password, $aid, $currency, $email, $fname, $lname, $dayphone, $evephone, $addr1, $addr2, $city, $country, $state, $zip, $userID, $birthdate, $fax, $occupation, $sex, $alias, $casinoID, $ip, $mac, $downloadID, $clientID, $putInAffPID, $calledFromCasino, $hashedPassword, $agentID, $currentPosition, $thirdPartyPID, $capiusername, $capipassword, $capiplayername, $capiserverID, $visVIP);
+                                        }
+
+                                        $isapisuccess = 1;
+                                        $isrecorded = $obatch->createbatchterminals($isapisuccess, $vterminalName, $vterminalCode, $vsiteID, 1, $vCreatedByAID, $visVIP, $ebvserviceID, 1, $password, $password);
+                                        array_push($arrterminalID, $isrecorded);
+                                        $vplayerResult['IsSucceed'] = true;
+                                        $vplayerResult['Added'] = true;
+                                        //LOG creation of e-Bingo Accounts
+                                        $logterminals = $obatch->logbatchterminals($vsiteID, $regterminal, $isapisuccess, $vCreatedByAID, $ebvserviceID);
+                                        
+                                        //check if regular terminal account was successfully created in e-Bingo
+                                        if (isset($vplayerResult['IsSucceed']) && $vplayerResult['IsSucceed'] == true) 
+                                        {
+                                            /*************************** CREATE VIP ***********************************/
+                                            $vterminalName = "TERMINAL" . $vstartcode . "VIP";
+                                            $vterminalCode = $terminalcode . $vsitecode . $vstartcode . "VIP"; //(icsa-) + sitecode + terminalno
+                                            $visVIP = 1;
+                                            $login = $vterminalCode;
+                                            $vipterminal = $vterminalCode;
+
+                                            $vplayerResult = $_CasinoGamingPlayerAPI->createTerminalAccount($ebvprovider, $ebvserviceID, $eburl, $login, $password, $aid, $currency, $email, $fname, $lname, $dayphone, $evephone, $addr1, $addr2, $city, $country, $state, $zip, $userID, $birthdate, $fax, $occupation, $sex, $alias, $casinoID, $ip, $mac, $downloadID, $clientID, $putInAffPID, $calledFromCasino, $hashedPassword, $agentID, $currentPosition, $thirdPartyPID, $capiusername, $capipassword, $capiplayername, $capiserverID, $visVIP, $usermode);
+                                            if ($vplayerResult == NULL) 
+                                            { // proceeed if certificate does not match
+                                                $vplayerResult = $_CasinoGamingPlayerAPI->createTerminalAccount($ebvprovider, $ebvserviceID, $eburl, $login, $password, $aid, $currency, $email, $fname, $lname, $dayphone, $evephone, $addr1, $addr2, $city, $country, $state, $zip, $userID, $birthdate, $fax, $occupation, $sex, $alias, $casinoID, $ip, $mac, $downloadID, $clientID, $putInAffPID, $calledFromCasino, $hashedPassword, $agentID, $currentPosition, $thirdPartyPID, $capiusername, $capipassword, $capiplayername, $capiserverID, $visVIP);
+                                            }
+                                            
+                                            $isapisuccess = 1;
+                                            $isrecorded = $obatch->createbatchterminals($isapisuccess, $vterminalName, $vterminalCode, $vsiteID, 1, $vCreatedByAID, $visVIP, $ebvserviceID, 1, $password, $password);
+                                            array_push($arrterminalID, $isrecorded);
+                                            $vplayerResult['IsSucceed'] = true;
+                                            $vplayerResult['Added'] = true;                                                
+                                            //LOG creation of Habanero Accounts
+                                            $logterminals = $obatch->logbatchterminals($vsiteID, $vipterminal, $isapisuccess, $vCreatedByAID, $ebvserviceID);
+                                        } 
+                                    }
+                                }
+                                // ADDED CCT 01/22/2018 END 
+                                // Comment Out CCT 02/06/2018 BEGIN
+                                /*
                                 //check if assigned casino provider is MG
                                 if (isset($vprovider) && $vprovider == "MG") 
                                 {
@@ -568,6 +666,8 @@ if ($connected)
                                     //LOG creation of MG Accounts
                                     $logterminals = $obatch->logbatchterminals($vsiteID, $regterminal, $isapisuccess, $vCreatedByAID, $vserviceID);
                                 }
+                                */
+                                // Comment Out CCT 02/06/2018 END
 
                                 //Check if assigned casino provider is RTG
                                 if (isset($rtgvprovider) && $rtgvprovider == "RTG") 
@@ -1143,7 +1243,9 @@ if ($connected)
                                     $logterminals = $obatch->logbatchterminals($vsiteID, $regterminal, $isapisuccess, $vCreatedByAID, $rtgvserviceID);
                                 }
 
+                                // Comment Out CCT 02/06/2018 BEGIN
                                 //Check if assigned casino provider was Playtech (PT)
+                                /*
                                 if (isset($ptvprovider) && $ptvprovider == 'PT') 
                                 {
                                     $ptUsedServer = 1;
@@ -1268,8 +1370,13 @@ if ($connected)
                                         $logterminals = $obatch->logbatchterminals($vsiteID, $regterminal, $isapisuccess, $vCreatedByAID, $ptvserviceID);
                                     }
                                 }
+                                */
+                                // Comment Out CCT 02/06/2018 END
                                 $vterminalno++;
-                                unset($vserviceID, $rtgvserviceID, $ptvserviceID, $servers, $rtgservers, $ptservers, $vprovider, $rtgvprovider, $ptvprovider);
+                                // EDIT CCT 02/06/2018 BEGIN
+                                //unset($vserviceID, $rtgvserviceID, $ptvserviceID, $servers, $rtgservers, $ptservers, $vprovider, $rtgvprovider, $ptvprovider);
+                                unset($vserviceID, $rtgvserviceID, $servers, $rtgservers, $vprovider, $rtgvprovider);
+                                // EDIT CCT 02/06/2018 END
                             } 
                             else 
                             {
@@ -1298,18 +1405,54 @@ if ($connected)
                                 $vtransdetails = "Site Code " . $vsitecode . " no. of terminals " . $vterminals . " servers ";
 
                                 //sets condition to properly logged in audit trail
-                                if ($mgUsedServer == 1)
-                                    $vtransdetails = $vtransdetails . 'MG';
+                                // ADDED CCT 01/22/2018 BEGIN
+                                if ($habUsedServer == 1)
+                                {
+                                    $vtransdetails = $vtransdetails . ' HAB';
+                                }
 
-                                if ($rtgUsedServer == 1 && $mgUsedServer != 1)
-                                    $vtransdetails = $vtransdetails . 'RTG';
-                                else if ($rtgUsedServer == 1 && $mgUsedServer == 1)
-                                    $vtransdetails = $vtransdetails . ", RTG";
+                                if ($ebUsedServer == 1)
+                                {
+                                    if (($habUsedServer == 1) || ($rtgUsedServer == 1))
+                                    {
+                                        $vtransdetails = $vtransdetails . ', EB';
+                                    }
+                                    else
+                                    {
+                                        $vtransdetails = $vtransdetails . ' EB';
+                                    }    
+                                }
+                                // ADDED CCT 01/22/2018 END
+                                
+                                // Comment Out CCT 02/06/2018 BEGIN
+                                //if ($mgUsedServer == 1)
+                                //    $vtransdetails = $vtransdetails . ', MG';
+                                // Comment Out CCT 02/06/2018 END
 
-                                if ($ptUsedServer == 1 && $rtgUsedServer != 1)
-                                    $vtransdetails = $vtransdetails . 'PT';
-                                else if ($ptUsedServer == 1 && $rtgUsedServer == 1)
-                                    $vtransdetails = $vtransdetails . ", PT";
+                                // EDITED CCT 01/22/2018 BEGIN
+                                //if ($rtgUsedServer == 1 && $mgUsedServer != 1)
+                                //    $vtransdetails = $vtransdetails . ' RTG';
+                                //else if ($rtgUsedServer == 1 && $mgUsedServer == 1)
+                                //    $vtransdetails = $vtransdetails . ", RTG";
+                                if ($rtgUsedServer == 1)
+                                {
+                                    if (($habUsedServer == 1) || ($ebUsedServer == 1))
+                                    {    
+                                        $vtransdetails = $vtransdetails . ', RTG';
+                                    }
+                                    else
+                                    {
+                                        $vtransdetails = $vtransdetails . ' RTG';                                        
+                                    }
+                                }
+                                // EDITED CCT 01/22/2018 END
+                                
+                                // Comment Out CCT 02/06/2018 BEGIN
+                                //if ($ptUsedServer == 1 && $rtgUsedServer != 1)
+                                //    $vtransdetails = $vtransdetails . ' PT';
+                                //else if ($ptUsedServer == 1 && $rtgUsedServer == 1)
+                                //    $vtransdetails = $vtransdetails . ", PT";
+                                // Comment Out CCT 02/06/2018 END
 
                                 $vauditfuncID = 34;
                                 $obatch->logtoaudit($new_sessionid, $vCreatedByAID, $vtransdetails, $vdateupdated, $vipaddress, $vauditfuncID);
@@ -1383,7 +1526,6 @@ if ($connected)
                 $rserviceAll = array();
                 $rresult = $obatch->getallservices();
                 //$rserviceAll = array_splice($rresult, 2); //remove pt and mg
-                //remove PT
                 foreach ($rresult as $result) 
                 {
                     if (substr($result['ServiceName'], 0, 2)) 
