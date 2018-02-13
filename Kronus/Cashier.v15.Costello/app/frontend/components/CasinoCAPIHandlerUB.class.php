@@ -9,15 +9,14 @@
  * @modified elperez
  * with MG CAPI Integration
  */
+class CasinoCAPIHandlerUB {
 
-class CasinoCAPIHandlerUB
-{
     /**
      * Casino Provider
      */
     const RTG = 1;
     const PT = 2;
-    const MG = 3;    
+    const MG = 3;
 
     /**
      * Default casino provider
@@ -42,13 +41,13 @@ class CasinoCAPIHandlerUB
      * @var string
      */
     private $_URI;
-    
+
     /**
      * API Endpoint
      * @var string
      */
     private $_URIPID;
-    
+
     /**
      * API Endpoint
      * @var string
@@ -66,16 +65,10 @@ class CasinoCAPIHandlerUB
      * @var boolean
      */
     private $_isDebug = FALSE;
-    
-    
     private $_authLogin;
-
     private $_authPassword;
-    
     private $_playerName;
-    
     private $_serverId;
-    
 
     /**
      * Class constructor
@@ -84,70 +77,71 @@ class CasinoCAPIHandlerUB
      * @param array $configuration
      * @return void
      */
-    public function __construct( $gamingProvider, $configuration )
-    {
+    public function __construct($gamingProvider, $configuration) {
         $this->_gamingProvider = $gamingProvider;
 
-        $this->_URI = $configuration[ 'URI' ];
-        $this->_isCaching = $configuration[ 'isCaching' ];
-        $this->_isDebug = $configuration[ 'isDebug' ];
-        
-        if ( $this->_gamingProvider == self::MG )
-        {
-            if ( $configuration['authLogin'] &&
-                 $configuration['authPassword'] && $configuration['playerName'] &&
-                 $configuration['serverID'])
-            {
-                $this->_authLogin = $configuration['authLogin'];
-                $this->_authPassword = $configuration['authPassword'];
-                $this->_playerName = $configuration['playerName'];
-                $this->_serverId = $configuration['serverID'];
-            }
-            
-            $this->_API = new MicrogamingCAPIWrapper( $this->_URI, $this->_authLogin, 
-                    $this->_authPassword, $this->_playerName,  $this->_serverId );
-        }
-        else if ( $this->_gamingProvider == self::PT )
-        {
-            if(!isset($configuration['REVERT_BROKEN_GAME_MODE'])){
-                $casinoName = $configuration['pt_casino_name'];
-                $secretKey = $configuration['pt_secret_key'];
-                $this->_API = new PlayTechAPIWrapper($this->_URI, $casinoName, $secretKey);
-            } else {
-                $this->_URIPID = $configuration[ 'URI_RBAPI' ];
-                $certFilePath = $configuration['certFilePath'];
-                $keyFilePath = $configuration['keyFilePath'];
-                $this->_API = new PlayTechAPIWrapper($this->_URIPID, '', '',$certFilePath, $keyFilePath,1);  
-            } 
-        }
-        else if ( $this->_gamingProvider == self::RTG )
-        {
+        $this->_URI = $configuration['URI'];
+        $this->_isCaching = $configuration['isCaching'];
+        $this->_isDebug = $configuration['isDebug'];
+        /*
+         * Commented By JAV
+         * Date 02-06-2018
+         * 
+          if ( $this->_gamingProvider == self::MG )
+          {
+          if ( $configuration['authLogin'] &&
+          $configuration['authPassword'] && $configuration['playerName'] &&
+          $configuration['serverID'])
+          {
+          $this->_authLogin = $configuration['authLogin'];
+          $this->_authPassword = $configuration['authPassword'];
+          $this->_playerName = $configuration['playerName'];
+          $this->_serverId = $configuration['serverID'];
+          }
+
+          $this->_API = new MicrogamingCAPIWrapper( $this->_URI, $this->_authLogin,
+          $this->_authPassword, $this->_playerName,  $this->_serverId );
+          }
+          else  if ($this->_gamingProvider == self::PT) {
+          if (!isset($configuration['REVERT_BROKEN_GAME_MODE'])) {
+          $casinoName = $configuration['pt_casino_name'];
+          $secretKey = $configuration['pt_secret_key'];
+          $this->_API = new PlayTechAPIWrapper($this->_URI, $casinoName, $secretKey);
+          } else {
+          $this->_URIPID = $configuration['URI_RBAPI'];
+          $certFilePath = $configuration['certFilePath'];
+          $keyFilePath = $configuration['keyFilePath'];
+          $this->_API = new PlayTechAPIWrapper($this->_URIPID, '', '', $certFilePath, $keyFilePath, 1);
+          }
+          } else
+         * 
+         */
+        if ($this->_gamingProvider == self::RTG) {
+
             $this->_URIPID = $configuration['URI_PID'];
             $this->_URIPID2 = $configuration['URI_PID2'];
-            $certFilePath = $configuration[ 'certFilePath' ];
-            $keyFilePath = $configuration[ 'keyFilePath' ];
-                
-            if($configuration['APIType'] == 2){
-                    $this->_API = new RealtimeGamingUBAPIWrapper( $this->_URIPID, RealtimeGamingUBAPIWrapper::GAME_API, $certFilePath, $keyFilePath, $this->_isCaching );
-            } else if($configuration['APIType'] == 0){
-                    $this->_API = new RealtimeGamingUBAPIWrapper( $this->_URI, RealtimeGamingUBAPIWrapper::CASHIER_API, $certFilePath, $keyFilePath, $this->_isCaching );
-            } else{
-                    $this->_API = new RealtimeGamingUBAPIWrapper( $this->_URIPID2, RealtimeGamingUBAPIWrapper::PLAYER_API, $certFilePath, $keyFilePath, $this->_isCaching );
+            $certFilePath = $configuration['certFilePath'];
+            $keyFilePath = $configuration['keyFilePath'];
+
+            if ($configuration['APIType'] == 2) {
+                $this->_API = new RealtimeGamingUBAPIWrapper($this->_URIPID, RealtimeGamingUBAPIWrapper::GAME_API, $certFilePath, $keyFilePath, $this->_isCaching);
+            } else if ($configuration['APIType'] == 0) {
+                $this->_API = new RealtimeGamingUBAPIWrapper($this->_URI, RealtimeGamingUBAPIWrapper::CASHIER_API, $certFilePath, $keyFilePath, $this->_isCaching);
+            } else {
+                $this->_API = new RealtimeGamingUBAPIWrapper($this->_URIPID2, RealtimeGamingUBAPIWrapper::PLAYER_API, $certFilePath, $keyFilePath, $this->_isCaching);
             }
 
-            $this->_API->SetDebug( $this->_isDebug );
-            $this->_API->SetDepositMethodId( $configuration[ 'depositMethodId' ] );
-            $this->_API->SetWithdrawalMethodId( $configuration[ 'withdrawalMethodId' ] );
+            $this->_API->SetDebug($this->_isDebug);
+            $this->_API->SetDepositMethodId($configuration['depositMethodId']);
+            $this->_API->SetWithdrawalMethodId($configuration['withdrawalMethodId']);
         }
     }
 
     /**
      * Class destructor
      */
-    public function __destruct()
-    {
-        if ( $this->_API )
-        {
+    public function __destruct() {
+        if ($this->_API) {
             $this->_API = NULL;
         }
     }
@@ -158,38 +152,34 @@ class CasinoCAPIHandlerUB
      * @param none
      * @return boolean
      */
-    public function IsAPIServerOK()
-    {
+    public function IsAPIServerOK() {
         $port = 80;
-        
-        $urlInfo = parse_url( $this->_URI );        
 
-        if ( $urlInfo[ 'scheme' ] == 'https' )
-        {
+        $urlInfo = parse_url($this->_URI);
+
+        if ($urlInfo['scheme'] == 'https') {
             $port = 443;
         }
 
-        return common::isHostReachable( $this->_URI, $port );
+        return common::isHostReachable($this->_URI, $port);
     }
-    
+
     /**
      * Checks if API endpoint is reachable
      *
      * @param none
      * @return boolean
      */
-    public function IsAPIServerOK2()
-    {
+    public function IsAPIServerOK2() {
         $port = 80;
-        
-        $urlInfo = parse_url( $this->_URIPID );        
 
-        if ( $urlInfo[ 'scheme' ] == 'https' )
-        {
+        $urlInfo = parse_url($this->_URIPID);
+
+        if ($urlInfo['scheme'] == 'https') {
             $port = 443;
         }
 
-        return common::isHostReachable( $this->_URIPID, $port );
+        return common::isHostReachable($this->_URIPID, $port);
     }
 
     /**
@@ -198,16 +188,15 @@ class CasinoCAPIHandlerUB
      * @param string $login
      * @return array
      */
-    public function GetBalance( $login )
-    {
-        if ( $this->_gamingProvider == self::MG )
-           return $this->_API->GetBalance( $login );
-        
-        if ( $this->_gamingProvider == self::RTG )            
-           return $this->_API->GetBalance( $login );
-        
-        if( $this->_gamingProvider == self::PT )
-           return $this->_API->GetBalance ( $login );
+    public function GetBalance($login) {
+        if ($this->_gamingProvider == self::MG)
+            return $this->_API->GetBalance($login);
+
+        if ($this->_gamingProvider == self::RTG)
+            return $this->_API->GetBalance($login);
+
+        if ($this->_gamingProvider == self::PT)
+            return $this->_API->GetBalance($login);
     }
 
     /**
@@ -221,26 +210,35 @@ class CasinoCAPIHandlerUB
      * @param string $tracking4
      * @return array
      */
-    public function Deposit( $login, $amount, $tracking1 = '', $tracking2 = '', 
-                             $tracking3 = '', $tracking4 = '', $terminalPassword = '', 
-                             $event_id = '', $transaction_id = '', $locatorname = '' )
-    {
-        if ( $this->_gamingProvider == self::MG )
-            return $this->_API->Deposit( $login, $terminalPassword, $amount, $transaction_id, $event_id, $transaction_id);        
-        
-        if ( $this->_gamingProvider == self::RTG ){
-            if(!empty($locatorname)){
-                return $this->_API->Deposit( $login, $amount, $tracking1, $tracking2, $tracking3, $tracking4,  $terminalPassword, $locatorname);
+    public function Deposit($login, $amount, $tracking1 = '', $tracking2 = '', $tracking3 = '', $tracking4 = '', $terminalPassword = '', $event_id = '', $transaction_id = '', $locatorname = '') {
+
+        /*
+         * Commented By JAV
+         * Date 02-06-2018
+         * 
+          if ($this->_gamingProvider == self::MG)
+          return $this->_API->Deposit($login, $terminalPassword, $amount, $transaction_id, $event_id, $transaction_id);
+         * 
+         */
+
+        if ($this->_gamingProvider == self::RTG) {
+            if (!empty($locatorname)) {
+                return $this->_API->Deposit($login, $amount, $tracking1, $tracking2, $tracking3, $tracking4, $terminalPassword, $locatorname);
             } else {
-                return $this->_API->Deposit( $login, $amount, $tracking1, $tracking2, $tracking3, $tracking4,  $terminalPassword);
+                return $this->_API->Deposit($login, $amount, $tracking1, $tracking2, $tracking3, $tracking4, $terminalPassword);
             }
         }
-            
-        if ( $this->_gamingProvider == self::PT )
-            return $this->_API->Deposit($login, $terminalPassword, $amount, $tracking1);
-        
+
+        /*
+         * Commented By JAV
+         * Date 02-06-2018
+         * 
+          if ($this->_gamingProvider == self::PT)
+          return $this->_API->Deposit($login, $terminalPassword, $amount, $tracking1);
+         * 
+         */
     }
-    
+
     /**
      * Perform withdraw from casino account
      *
@@ -252,23 +250,33 @@ class CasinoCAPIHandlerUB
      * @param string $tracking4
      * @return array
      */
-    public function Withdraw( $login, $amount, $tracking1 = '', $tracking2 = '', 
-                              $tracking3 = '', $tracking4 = '',  $terminalPassword = '', 
-                              $event_id = '', $transaction_id = '', $locatorname = '' )
-    {
-        if ( $this->_gamingProvider == self::MG )
-            return $this->_API->Withdraw( $login, $terminalPassword, $amount, $transaction_id, $event_id, $transaction_id );
-        
-        if ( $this->_gamingProvider == self::RTG ){
-            if(!empty($locatorname)){
-                return $this->_API->Withdraw( $login, $amount, $tracking1, $tracking2, $tracking3, $tracking4, $terminalPassword, $locatorname );
+    public function Withdraw($login, $amount, $tracking1 = '', $tracking2 = '', $tracking3 = '', $tracking4 = '', $terminalPassword = '', $event_id = '', $transaction_id = '', $locatorname = '') {
+        /*
+         * Commented By JAV
+         * Date 02-06-2018
+         * 
+          if ($this->_gamingProvider == self::MG)
+          return $this->_API->Withdraw($login, $terminalPassword, $amount, $transaction_id, $event_id, $transaction_id);
+         * 
+         */
+
+        if ($this->_gamingProvider == self::RTG) {
+            if (!empty($locatorname)) {
+                return $this->_API->Withdraw($login, $amount, $tracking1, $tracking2, $tracking3, $tracking4, $terminalPassword, $locatorname);
             } else {
-                return $this->_API->Withdraw( $login, $amount, $tracking1, $tracking2, $tracking3, $tracking4, $terminalPassword );
+                return $this->_API->Withdraw($login, $amount, $tracking1, $tracking2, $tracking3, $tracking4, $terminalPassword);
             }
         }
-        
-        if( $this->_gamingProvider == self::PT ) 
-            return $this->_API->Withdraw($login, $terminalPassword, $amount, $tracking1);
+
+
+        /*
+         * Commented By JAV
+         * Date 02-06-2018
+         * 
+          if ($this->_gamingProvider == self::PT)
+          return $this->_API->Withdraw($login, $terminalPassword, $amount, $tracking1);
+         * 
+         */
     }
 
     /**
@@ -282,30 +290,35 @@ class CasinoCAPIHandlerUB
      * @param string $tracking4
      * @return array
      */
-    public function TransactionSearchInfo( $login, $tracking1 = '', $tracking2 = '', 
-                                           $tracking3 = '', $tracking4 = '', $ticket_id = '' )
-    {
-        if ( $this->_gamingProvider == self::RTG )
-            return $this->_API->TransactionSearchInfo( $login, $tracking1, $tracking2, $tracking3, $tracking4 );
-        
-        if ( $this->_gamingProvider == self::MG )
-            return $this->_API->GetMethodStatus( $ticket_id );
-        
-        if ( $this->_gamingProvider == self::PT )
-            return $this->_API->CheckTransaction( $tracking1 );
-        
+    public function TransactionSearchInfo($login, $tracking1 = '', $tracking2 = '', $tracking3 = '', $tracking4 = '', $ticket_id = '') {
+        if ($this->_gamingProvider == self::RTG)
+            return $this->_API->TransactionSearchInfo($login, $tracking1, $tracking2, $tracking3, $tracking4);
+
+        /*
+         * Commented By JAV
+         * Date 02-06-2018
+         * 
+          if ($this->_gamingProvider == self::MG)
+          return $this->_API->GetMethodStatus($ticket_id);
+
+          if ($this->_gamingProvider == self::PT)
+          return $this->_API->CheckTransaction($tracking1);
+         * 
+         */
     }
-    
-    
-    public function GetMyBalance()
-    {
-        if ( $this->_gamingProvider == self::MG )
-        {
+
+    public function GetMyBalance() {
+        /*
+         * Commented By JAV
+         * Date 02-06-2018
+         * 
+        if ($this->_gamingProvider == self::MG) {
             return $this->_API->GetMyBalance();
         }
-        
+         * 
+         */
     }
-    
+
     /**
      * create terminal account whether RTG / MG
      * @param type $login
@@ -342,95 +355,108 @@ class CasinoCAPIHandlerUB
      * @param type $thirdPartyPID
      * @return type 
      */
-    public function CreateTerminalAccount($login, $password, $aid, $currency, $email, $fname,
-            $lname, $dayphone, $evephone, $addr1, $addr2, $city, $country, $province,
-            $zip, $userID, $birthdate, $fax, $occupation, $sex, $alias, $casinoID, $ip, 
-            $mac, $downloadID, $clientID, $putInAffPID, $calledFromCasino, $hashedPassword,
-            $agentID,$currentPosition, $thirdPartyPID)
-    {
-        if ( $this->_gamingProvider == self::RTG)
-        {
-            return $this->_API->AddUser($login, $password, $aid, $country, $casinoID, 
-                    $fname, $lname, $email, $dayphone, $evephone, $addr1, $addr2, $city, 
-                    $province, $zip, $ip, $mac, $userID, $downloadID, $birthdate, $clientID, 
-                    $putInAffPID, $calledFromCasino, $hashedPassword, $agentID, $currentPosition, 
-                    $thirdPartyPID);
+    public function CreateTerminalAccount($login, $password, $aid, $currency, $email, $fname, $lname, $dayphone, $evephone, $addr1, $addr2, $city, $country, $province, $zip, $userID, $birthdate, $fax, $occupation, $sex, $alias, $casinoID, $ip, $mac, $downloadID, $clientID, $putInAffPID, $calledFromCasino, $hashedPassword, $agentID, $currentPosition, $thirdPartyPID) {
+        if ($this->_gamingProvider == self::RTG) {
+            return $this->_API->AddUser($login, $password, $aid, $country, $casinoID, $fname, $lname, $email, $dayphone, $evephone, $addr1, $addr2, $city, $province, $zip, $ip, $mac, $userID, $downloadID, $birthdate, $clientID, $putInAffPID, $calledFromCasino, $hashedPassword, $agentID, $currentPosition, $thirdPartyPID);
         }
-        else if ( $this->_gamingProvider == self::MG)
-        {
-            return $this->_API->AddUser($aid, $login, $password, $email, 
-                    $fname, $lname, $dayphone, $evephone, $fax, $addr1, $addr2, $city, 
-                    $country, $province, $zip, $userID, $currency, $occupation, $sex, $birthdate, $alias);
-        }
+        /*
+         * Commented By JAV
+         * Date 02-06-2018
+         * 
+          else if ($this->_gamingProvider == self::MG) {
+          return $this->_API->AddUser($aid, $login, $password, $email, $fname, $lname, $dayphone, $evephone, $fax, $addr1, $addr2, $city, $country, $province, $zip, $userID, $currency, $occupation, $sex, $birthdate, $alias);
+          }
+         * 
+         */
     }
-    
-    public function UnlockUserAccount($login)
-    {
-        if($this->_gamingProvider == self::MG){
-            return $this->_API->UnlockUserAccount($login);
-        }
-    }
-    
-    /**
+
+    /*
+     * Commented By JAV
+     * Date 02-06-2018
+     * 
+      public function UnlockUserAccount($login) {
+      if ($this->_gamingProvider == self::MG) {
+      return $this->_API->UnlockUserAccount($login);
+      }
+      }
+
+
+      /**
      * Change Account Status
      * @param str $login
      * @param int $status 
      * @return object
      */
-    public function ChangeAccountStatus($login, $status){
-        if($this->_gamingProvider == self::PT) 
-            return $this->_API->FreezePlayer($login, $status);
-    }
-    
+
+    /*
+     * Commented By JAV
+     * Date 02-06-2018
+     * 
+      public function ChangeAccountStatus($login, $status) {
+      if ($this->_gamingProvider == self::PT)
+      return $this->_API->FreezePlayer($login, $status);
+      }
+     *
+     */
+
+
+
     /**
      * Kick Player 
      * @param type $login
      * @return object 
      */
-    public function KickPlayer($login) {
-        if($this->_gamingProvider == self::PT)
-            return $this->_API->KickPlayer($login);
-    }
-    
+    /*
+     * Commented By JAV
+     * Date 02-06-2018
+     * 
+      public function KickPlayer($login) {
+      if ($this->_gamingProvider == self::PT)
+      return $this->_API->KickPlayer($login);
+      }
+     * 
+     */
+
     /**
      * Logout Player
      * @param type $pid
      * @return object 
      */
     public function LogoutPlayer($pid) {
-        if($this->_gamingProvider == self::RTG)
+        if ($this->_gamingProvider == self::RTG)
             return $this->_API->LogoutPlayer($pid);
     }
-    
+
     /**
      * Get Pending Game Bet
      * @param type $PID
      * @return object 
      */
-    public function GetPendingGames($PID)
-    {
-        if ( $this->_gamingProvider == self::RTG )
+    public function GetPendingGames($PID) {
+        if ($this->_gamingProvider == self::RTG)
             return $this->_API->GetPendingGamesByPID($PID);
-
     }
-    
+
     /**
      * Get Pending Game Bet
      * @param type $login
      * @return object 
      */
-    public function GetPIDLogin($login)
-    {
-        if ( $this->_gamingProvider == self::RTG )
-            $pidResults =  $this->_API->GetPIDUsingLogin($login);
-            return $pidResults["PID"];
-
-    }
-    
-    public function RevertBrokenGamesAPI( $username, $playerMode, $revertMode ){
-        return $this->_API->RevertBrokenGames( $username, $playerMode, $revertMode );
+    public function GetPIDLogin($login) {
+        if ($this->_gamingProvider == self::RTG)
+            $pidResults = $this->_API->GetPIDUsingLogin($login);
+        return $pidResults["PID"];
     }
 
+    /*
+     * Commented By JAV
+     * Date 02-06-2018
+     * 
+      public function RevertBrokenGamesAPI($username, $playerMode, $revertMode) {
+      return $this->_API->RevertBrokenGames($username, $playerMode, $revertMode);
+      }
+     * 
+     */
 }
 
 ?>

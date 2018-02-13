@@ -1,119 +1,119 @@
 <script type="text/javascript" src="jscripts/autoNumeric-1.6.2.js"></script>
 <script type="text/javascript">
-$(document).ready(function()
-{
-    $('input.auto').autoNumeric();
-    $('#StartSessionFormModel_voucher_code').hide();
-    $('.bankContainer').hide();
-    // CCT - BEGIN uncomment
-    $('.hideControls').hide();
-    // CCT - END uncomment
-    // CCT - BEGIN added VIP
-    //$('.hideControlsVIP').hide();
-    //$('#StartSessionFormModel_vip_type').val(0);       
-    //$('#StartSessionFormModel_lvip_type').val(0);      
-    //if($('#viptypeVIP').is(':checked') || $('#viptypeSVIP').is(':checked'))
-    //{
-    //    $('.hideControlsVIP').show();
-    //}    
-    //else
-    //{
-    //    $('.hideControlsVIP').hide();
-    //}    
-    // CCT - END added VIP      
-    
-    var usermode = <?php echo $usermode;?>;
-    
-    if(usermode == 2)
+    $(document).ready(function()
     {
-        $('.hideControls').show();
-    }
-    
-    $(document).keypress(function(e) 
-    {
-        if(e.keyCode == 13 || e.keyCode== 32) 
+        $('input.auto').autoNumeric();
+        $('#StartSessionFormModel_voucher_code').hide();
+        $('.bankContainer').hide();
+        // CCT - BEGIN uncomment
+        $('.hideControls').hide();
+        // CCT - END uncomment
+        // CCT - BEGIN added VIP
+        //$('.hideControlsVIP').hide();
+        //$('#StartSessionFormModel_vip_type').val(0);       
+        //$('#StartSessionFormModel_lvip_type').val(0);      
+        //if($('#viptypeVIP').is(':checked') || $('#viptypeSVIP').is(':checked'))
+        //{
+        //    $('.hideControlsVIP').show();
+        //}    
+        //else
+        //{
+        //    $('.hideControlsVIP').hide();
+        //}    
+        // CCT - END added VIP      
+
+        var usermode = <?php echo $usermode; ?>;
+
+        if (usermode == 2)
         {
-            e.preventDefault();
-            $('#StartSessionFormModel_loyalty_card').focus();
+            $('.hideControls').show();
         }
-    });
-    
-    // CCT - BEGIN uncomment
-    $('#StartSessionFormModel_loyalty_card').bind('keydown', function(event) 
-    {
-        if (event.keyCode == 13 || event.charCode == 13 || event.keyCode==9) 
+
+        $(document).keypress(function(e)
         {
-            var cardNumber = $('#StartSessionFormModel_loyalty_card').val();
-            if(cardNumber=='')
+            if (e.keyCode == 13 || e.keyCode == 32)
             {
-                alert('Please enter loyalty card number.');
-                return false;
+                e.preventDefault();
+                $('#StartSessionFormModel_loyalty_card').focus();
             }
-            var issuccess = identifyCard();
-            if(issuccess == "false")
+        });
+
+        // CCT - BEGIN uncomment
+        $('#StartSessionFormModel_loyalty_card').bind('keydown', function(event)
+        {
+            if (event.keyCode == 13 || event.charCode == 13 || event.keyCode == 9)
             {
-                $('.btnSubmit').focus();
-                $('#StartSessionFormModel_sel_amount').focus();
+                var cardNumber = $('#StartSessionFormModel_loyalty_card').val();
+                if (cardNumber == '')
+                {
+                    alert('Please enter loyalty card number.');
+                    return false;
+                }
+
+                var issuccess = identifyCard();
+
+                var usermode = $('#mode').val();
+                if (issuccess === "false")
+                {
+                    if (usermode === 4)
+                    {
+                        $('.hideControls').hide();
+                        $('.btnSubmit').focus();
+                    }
+                    else {
+                        $('#StartSessionFormModel_sel_amount').focus();
+                        $('.btnSubmit').focus();
+                    }
+
+                    return false;
+                }
+            }
+
+            if (event.keyCode != 9)
+            {
+                $('.hideControls').hide();
                 // CCT - BEGIN added VIP
-                //var isvip = <?php //echo $is_vip;?>;
-                //if(isvip == 1)
-                //{
-                //    if ($('#siteclassification').val() == 2) // Platinum
-                //    {
-                //        $('.hideControlsVIP').show();
-                //        $('#viptypeVIP').attr('checked', 'checked');
-                //    }
-                //}
-                // CCT - END added VIP               
-                return false;
+                //$('.hideControlsVIP').hide();
+                //$('#StartSessionFormModel_vip_type').val(0);   
+                //$('#StartSessionFormModel_lvip_type').val(0);   
+                // CCT - END added VIP              
+                $('.bankContainer').hide();
+                isEwalletSessionMode = false;
+                isValidated = false;
+                $('#StartSessionFormModel_sel_amount').val(0);
+                $('#StartSessionFormModel_amount').val('');
+                $('#StartSessionFormModel_voucher_code').val('');
+                $('#StartSessionFormModel_trace_number').val('');
+                $('#StartSessionFormModel_reference_number').val('');
+                $('#StartSessionFormModel_amount').autoNumeric();
+                document.getElementById('StartSessionFormModel_sel_amount').selectedIndex = 0;
             }
-        }
-        
-        if(event.keyCode !=9)
-        {
-            $('.hideControls').hide();
-            // CCT - BEGIN added VIP
-            //$('.hideControlsVIP').hide();
-            //$('#StartSessionFormModel_vip_type').val(0);   
-            //$('#StartSessionFormModel_lvip_type').val(0);   
-            // CCT - END added VIP              
-            $('.bankContainer').hide();
-            isEwalletSessionMode = false;
-            isValidated = false;
-            $('#StartSessionFormModel_sel_amount').val(0);
-            $('#StartSessionFormModel_amount').val('');
-            $('#StartSessionFormModel_voucher_code').val('');
-            $('#StartSessionFormModel_trace_number').val('');
-            $('#StartSessionFormModel_reference_number').val('');
-            $('#StartSessionFormModel_amount').autoNumeric();
-            document.getElementById('StartSessionFormModel_sel_amount').selectedIndex = 0;
-        }
-   });
-   // CCT - END uncomment
-});
- 
-function emptyForm()
-{
-     // CCT - BEGIN uncomment
-    $('.hideControls').hide();
-     // CCT - END uncomment
-    // CCT - BEGIN added VIP
-    //$('.hideControlsVIP').hide();
-    //$('#StartSessionFormModel_vip_type').val(0);       
-    //$('#StartSessionFormModel_lvip_type').val(0);      
-    // CCT - END added VIP  
-    $('.bankContainer').hide();
-    isEwalletSessionMode = false;
-    isValidated = false;
-    
-    $('#StartSessionFormModel_amount').val('');
-    $('#StartSessionFormModel_voucher_code').val('');
-    $('#StartSessionFormModel_trace_number').val('');
-    $('#StartSessionFormModel_reference_number').val('');
-    $('#StartSessionFormModel_amount').autoNumeric();
-    $('#StartSessionFormModel_sel_amount').val(0);
-    document.getElementById('StartSessionFormModel_sel_amount').selectedIndex = 0;
-}
+        });
+        // CCT - END uncomment
+    });
+
+    function emptyForm()
+    {
+        // CCT - BEGIN uncomment
+        $('.hideControls').hide();
+        // CCT - END uncomment
+        // CCT - BEGIN added VIP
+        //$('.hideControlsVIP').hide();
+        //$('#StartSessionFormModel_vip_type').val(0);       
+        //$('#StartSessionFormModel_lvip_type').val(0);      
+        // CCT - END added VIP  
+        $('.bankContainer').hide();
+        isEwalletSessionMode = false;
+        isValidated = false;
+
+        $('#StartSessionFormModel_amount').val('');
+        $('#StartSessionFormModel_voucher_code').val('');
+        $('#StartSessionFormModel_trace_number').val('');
+        $('#StartSessionFormModel_reference_number').val('');
+        $('#StartSessionFormModel_amount').autoNumeric();
+        $('#StartSessionFormModel_sel_amount').val(0);
+        document.getElementById('StartSessionFormModel_sel_amount').selectedIndex = 0;
+    }
 
 </script>
 <form id="frmstartsession">
@@ -125,8 +125,9 @@ function emptyForm()
     <input type="hidden" name="sitecode" id="sitecode" value="<?php echo $_SESSION['site_code'] ?>" />
     <input type="hidden" name="siteamountinfo" id="siteamountinfo" value="<?php echo $siteAmountInfo; ?>" />
     <input type="hidden" name="tcode" id="tcode" value="<?php echo $tcode; ?>" />
+    <input type="hidden" name="mode" id="mode" value="<?php echo $usermode; ?>"/>
     <!-- CCT BEGIN added VIP -->
-    <!-- <?php //echo MI_HTML::inputHidden($startSession, 'lvip_type') ?> -->
+    <!-- <?php //echo MI_HTML::inputHidden($startSession, 'lvip_type')    ?> -->
     <!-- CCT END added VIP -->
     <?php //if($startSession->error_count): ?>
     <?php //echo $startSession->getErrorMessages(); ?>
@@ -136,10 +137,10 @@ function emptyForm()
             <!--
             // CCT - BEGIN uncomment
             -->
-            <?php if($usermode != 2){?>
-            <tr>
-                <th><?php echo MI_HTML::label($startSession, 'loyalty_card', 'Membership Card') ?></th><td><?php echo MI_HTML::inputPassword($startSession, 'loyalty_card',  array('class'=>'width200')); ?></td>
-            </tr>
+            <?php if ($usermode != 2) { ?>
+                <tr>
+                    <th><?php echo MI_HTML::label($startSession, 'loyalty_card', 'Membership Card') ?></th><td><?php echo MI_HTML::inputPassword($startSession, 'loyalty_card', array('class' => 'width200')); ?></td>
+                </tr>
             <?php } ?>
             <!--
              // CCT - END uncomment
@@ -151,7 +152,7 @@ function emptyForm()
             <!-- CCT BEGIN ADDED VIP -->
             <!--
             <tr class='hideControlsVIP'>
-                <th><?php //echo MI_HTML::label($startSession, 'vip_type', 'VIP TYPE') ?></th>
+                <th><?php //echo MI_HTML::label($startSession, 'vip_type', 'VIP TYPE')    ?></th>
                 <td>
                     <div>
                         <input type="radio" id="viptypeVIP" name="vip_type" value="1"/> VIP <input type="radio" id="viptypeSVIP" name="vip_type" value="2"/> SVIP  
@@ -164,53 +165,53 @@ function emptyForm()
                 <th><?php echo MI_HTML::label($startSession, 'sel_amount', 'AMOUNT') ?></th>
                 <td>
                     <div>
-                        <?php echo MI_HTML::dropDown($startSession, 'sel_amount', $denomination,array(''=>'Select Amount'),array('--'=>'Other denomination','voucher'=>'Voucher', 'bancnet'=>'Bancnet'), array('class'=>'width204')); ?>
+                        <?php echo MI_HTML::dropDown($startSession, 'sel_amount', $denomination, array('' => 'Select Amount'), array('--' => 'Other denomination', 'voucher' => 'Voucher', 'bancnet' => 'Bancnet'), array('class' => 'width204')); ?>
                     </div>
-                    <?php echo MI_HTML::inputText($startSession, 'amount',array('readonly'=>'readonly','class'=>'auto width200','maxlength'=>8)); ?>
-                    <?php echo MI_HTML::inputText($startSession, 'voucher_code',array('maxlength'=>20, 'class'=>'width200')); ?>
+                    <?php echo MI_HTML::inputText($startSession, 'amount', array('readonly' => 'readonly', 'class' => 'auto width200', 'maxlength' => 8)); ?>
+                    <?php echo MI_HTML::inputText($startSession, 'voucher_code', array('maxlength' => 20, 'class' => 'width200')); ?>
                 </td>
             </tr>
             <tr class="hideControls">
                 <th class='bankContainer'><?php echo MI_HTML::label($startSession, 'lbl_traceNumber', 'TRACE NUMBER') ?></th>
-                <td class='bankContainer'><?php echo MI_HTML::inputText($startSession, 'trace_number',array('class'=>'width200','maxlength'=>20)); ?> <td>
+                <td class='bankContainer'><?php echo MI_HTML::inputText($startSession, 'trace_number', array('class' => 'width200', 'maxlength' => 20)); ?> <td>
             </tr>
             <tr class="hideControls">
                 <th class='bankContainer'><?php echo MI_HTML::label($startSession, 'lbl_refNumber', 'REFERENCE NUMBER') ?></th>
-                <td class='bankContainer'><?php echo MI_HTML::inputText($startSession, 'reference_number',array('class'=>'width200','maxlength'=>20)); ?><td>
-                    
+                <td class='bankContainer'><?php echo MI_HTML::inputText($startSession, 'reference_number', array('class' => 'width200', 'maxlength' => 20)); ?><td>
+
             </tr>
             <tr class='hideControls'>
                 <th><?php echo MI_HTML::label($startSession, 'casino', 'CASINO'); ?></th>
-                <td><?php echo MI_HTML::dropDown($startSession, 'casino', $casinos, array(), array(), array('class'=>'width204')) ?></td>
+                <td><?php echo MI_HTML::dropDown($startSession, 'casino', $casinos, array(), array(), array('class' => 'width204')) ?></td>
             </tr>
             <tr>
                 <th colspan="2" class="childtableCell center" style="padding-left:100px;">
-                    <div><input id="btnInitailDeposit" mode="<?php echo $usermode; ?>"  type="button" value="Submit" class="btnSubmit" /></div>
-                    <div><input class="btnClose" type="button" value="Cancel" /></div>
-                </th>
+        <div><input id="btnInitailDeposit" mode="<?php echo $usermode; ?>"  type="button" value="Submit" class="btnSubmit" /></div>
+        <div><input class="btnClose" type="button" value="Cancel" /></div>
+        </th>
 <!--                <td class="">
-                    <div><input id="btnInitailDeposit" type="button" value="Submit" /></div>
-                    <div><input class="btnClose" type="button" value="Cancel" /></div>
-                </td>-->
-            </tr>
+            <div><input id="btnInitailDeposit" type="button" value="Submit" /></div>
+            <div><input class="btnClose" type="button" value="Cancel" /></div>
+        </td>-->
+        </tr>
         </tbody>
     </table>
 </form>    
 <script type="text/javascript">
-jQuery(document).ready(function()
-{
-    if ($('#siteamountinfo').val() == 0)
+    jQuery(document).ready(function()
     {
-        showLightbox(function()
+        if ($('#siteamountinfo').val() == 0)
         {
-            updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold; width: 600px;">Error[011]: Site amount is not set.</label>' + 
-            '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' + 
-            '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' + 
-            '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
-            ''          
-            );   
-        });
-    }
- });
+            showLightbox(function()
+            {
+                updateLightbox('<center><label  style="font-size: 24px; color: red; font-weight: bold; width: 600px;">Error[011]: Site amount is not set.</label>' +
+                        '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' +
+                        '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' +
+                        '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
+                        ''
+                        );
+            });
+        }
+    });
 </script>    
 <?php Mirage::loadLibraries('LoyaltyScripts'); ?>

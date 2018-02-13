@@ -256,6 +256,14 @@ class FrontendController extends MI_Controller {
             $casinoServiceID = $val['ServiceID'];
         }
 
+        
+        $eBingoServiceIDs = Mirage::app()->param['eBingoServiceID'];
+        if (in_array($casinoServiceID, $eBingoServiceIDs)) {
+            $message = "Reload is not applicable on e-Bingo Terminals.";
+            logger($message);
+            $this->throwError($message);
+        }
+
         $ref_service = $refServicesModel->getServiceById($casinoServiceID);
         if ($casinoUserMode != 2) {
             if ($ref_service['Code'] == 'MM') {
@@ -416,9 +424,9 @@ class FrontendController extends MI_Controller {
                                     $loyalty = new LoyaltyAPIWrapper();
 
                                     //Insert to loyaltyrequestlogs
-                                    $loyaltyrequestlogsID = $loyaltyrequestlogs->insert($mid, 'D', $terminal_id, toInt($amount), $result["trans_details_id"], $paymentType, 1);
+                                    $loyaltyrequestlogsID = $loyaltyrequestlogs->insert($mid, 'R', $terminal_id, toInt($amount), $result["trans_details_id"], $paymentType, 1);
                                     $transdate = CasinoApi::udate('Y-m-d H:i:s.u');
-                                    $isSuccessful = $loyalty->processPoints($loyaltyCardNo, $transdate, $paymentType, 'D', toInt($amount), $siteid, $result["trans_details_id"], $result['terminal_name'], 1, $vouchercode, $cid, $isCreditable);
+                                    $isSuccessful = $loyalty->processPoints($loyaltyCardNo, $transdate, $paymentType, 'R', toInt($amount), $siteid, $result["trans_details_id"], $result['terminal_name'], 1, $vouchercode, $cid, $isCreditable);
 
                                     //check if the loyaltydeposit is successful, if success insert to loyaltyrequestlogs and status = 1 else 2
                                     if ($isSuccessful) {
@@ -617,7 +625,7 @@ class FrontendController extends MI_Controller {
                     $loyalty = new LoyaltyAPIWrapper();
 
                     //Insert to loyaltyrequestlogs
-                    $loyaltyrequestlogsID = $loyaltyrequestlogs->insert($mid, 'D', $terminal_id, toInt($amount), $result["trans_details_id"], $paymentType, 1);
+                    $loyaltyrequestlogsID = $loyaltyrequestlogs->insert($mid, 'R', $terminal_id, toInt($amount), $result["trans_details_id"], $paymentType, 1);
                     $transdate = CasinoApi::udate('Y-m-d H:i:s.u');
                     $isSuccessful = $loyalty->processPoints($loyaltyCardNo, $transdate, $paymentType, 'D', toInt($amount), $siteid, $result["trans_details_id"], $result['terminal_name'], 1, $vouchercode, $cid, $isCreditable);
 
@@ -982,7 +990,7 @@ class FrontendController extends MI_Controller {
 
                 // e-BINGO v15
                 $terminalname = $terminalsmodel->getTerminalName($startSessionFormModel->terminal_id);
-                if (($ref_service['UserMode'] == 0 || $ref_service['UserMode'] == 2) && $CPV == 'v15') {
+                if (($ref_service['UserMode'] == 0 || $ref_service['UserMode'] == 2 || $ref_service['UserMode'] == 4) && $CPV == 'v15') {
                     if ($ref_service['UserMode'] == 2) {
                         $mid = $startSessionFormModel->terminal_id;
                         $loyaltyCardNo = $startSessionFormModel->terminal_id;
@@ -1407,7 +1415,7 @@ class FrontendController extends MI_Controller {
      */
     protected function _startSession($startSessionFormModel, $return = false) {
         Mirage::loadComponents(array('CommonStartSession', 'LoyaltyAPIWrapper.class', 'VoucherManagement',
-            'CasinoApi', 'CommonUBStartSession', 'AsynchronousRequest.class', 'PCWSAPI.class'));
+            'CasinoApi', 'CommonUBStartSession', 'AsynchronousRequest.class', 'PCWSAPI.class', 'CommonStartSessionBingo'));
 
         Mirage::loadModels(array('TerminalSessionsModel', 'RefServicesModel', 'SitesModel', 'LoyaltyRequestLogsModel',
             'VMSRequestLogsModel', 'TerminalsModel', 'SpyderRequestLogsModel', 'CompPointsLogsModel', 'SpyderTerminalModel'));
@@ -1425,6 +1433,8 @@ class FrontendController extends MI_Controller {
         $asynchronousRequest = new AsynchronousRequest();
         $spyderReqLogsModel = new SpyderRequestLogsModel();
         $spyderTerminalModel = new SpyderTerminalModel();
+
+        $commonStartSessionBingo = new CommonStartSessionBingo();
 
         $terminal_id = $startSessionFormModel->terminal_id;
         $siteid = $this->site_id;
@@ -1600,7 +1610,7 @@ class FrontendController extends MI_Controller {
                             $casinoServiceID = '';
                             $casinoStatus = '';
 
-                            if ($ref_service['UserMode'] != 2) {
+                            if ($ref_service['UserMode'] != 2 || $ref_service['UserMode'] != 4) {
                                 for ($ctr = 0; $ctr < $casinoarray_count; $ctr++) {
                                     if ($ref_service['ServiceID'] == $casinos[$ctr]['ServiceID']) {
                                         $casinoUsername = $casinos[$ctr]['ServiceUsername'];
@@ -1628,9 +1638,10 @@ class FrontendController extends MI_Controller {
                                 }
                                 $CPV = (!empty($CPV) ? $CPV : "");
                                 if ($CPV != NULL || $CPV != '') {
+
                                     // e-BINGO v15
                                     $terminalname = $terminalsmodel->getTerminalName($startSessionFormModel->terminal_id);
-                                    if (($ref_service['UserMode'] == 0 || $ref_service['UserMode'] == 2) && $CPV == 'v15') {
+                                    if (($ref_service['UserMode'] == 0 || $ref_service['UserMode'] == 2 || $ref_service['UserMode'] == 4) && $CPV == 'v15') {
                                         if ($ref_service['UserMode'] == 2) {
                                             $mid = $startSessionFormModel->terminal_id;
                                             $loyaltyCardNo = $startSessionFormModel->terminal_id;
@@ -1667,7 +1678,13 @@ class FrontendController extends MI_Controller {
                                           }
                                          */
                                         // CCT END added
-                                        $result = $commonStartSession->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino, toInt($this->getSiteBalance()), toInt($amount), $accid, $loyaltyCardNo, $startSessionFormModel->voucher_code, $trackingId, $casinoUsername, $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'], $traceNumber, $referenceNumber, $locatorname, $CPV);
+                                        if ($ref_service['UserMode'] == 0 || $ref_service['UserMode'] == 2) {
+                                            $result = $commonStartSession->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino, toInt($this->getSiteBalance()), toInt($amount), $accid, $loyaltyCardNo, $startSessionFormModel->voucher_code, $trackingId, $casinoUsername, $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'], $traceNumber, $referenceNumber, $locatorname, $CPV);
+                                        } else {
+                                            $amount = 0;
+                                            $result = $commonStartSessionBingo->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino, toInt($this->getSiteBalance()), $amount, $accid, $loyaltyCardNo, $startSessionFormModel->voucher_code, $trackingId, $casinoUsername, $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'], $locatorname, $CPV);
+                                        }
+
                                         //$casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'],$traceNumber,$referenceNumber,$locatorname,$CPV,$viptype); // CCT added viptype;
                                         //checking if casino is terminal based
                                     } else if (($ref_service['UserMode'] == 0 || $ref_service['UserMode'] == 2) && $CPV == 'v12') {
@@ -1907,7 +1924,7 @@ class FrontendController extends MI_Controller {
 
                         // e-BINGO v15
                         $terminalname = $terminalsmodel->getTerminalName($startSessionFormModel->terminal_id);
-                        if (($ref_service['UserMode'] == 0 || $ref_service['UserMode'] == 2) && $CPV == 'v15') {
+                        if (($ref_service['UserMode'] == 0 || $ref_service['UserMode'] == 2 || $ref_service['UserMode'] == 4) && $CPV == 'v15') {
                             if ($ref_service['UserMode'] == 2) {
                                 $mid = $startSessionFormModel->terminal_id;
                                 $loyaltyCardNo = $startSessionFormModel->terminal_id;
@@ -1931,20 +1948,13 @@ class FrontendController extends MI_Controller {
                                     $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID];
                                 }
                             }
-                            // --> SVIP/VIP TYPE
-                            // CCT BEGIN added
-                            /*
-                              if ($isVIP == 0)
-                              {
-                              $viptype = 0;
-                              }
-                              else
-                              {
-                              $viptype = $startSessionFormModel->lvip_type;
-                              }
-                             */
-                            // CCT END added                            
-                            $result = $commonStartSession->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino, toInt($this->getSiteBalance()), toInt($amount), $accid, $loyaltyCardNo, $startSessionFormModel->voucher_code, $trackingId, $casinoUsername, $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'], $traceNumber, $referenceNumber, $locatorname, $CPV);
+
+                            if ($ref_service['UserMode'] == 0 || $ref_service['UserMode'] == 2) {
+                                $result = $commonStartSession->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino, toInt($this->getSiteBalance()), toInt($amount), $accid, $loyaltyCardNo, $startSessionFormModel->voucher_code, $trackingId, $casinoUsername, $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'], $traceNumber, $referenceNumber, $locatorname, $CPV);
+                            } else {
+                                $amount = 0;
+                                $result = $commonStartSessionBingo->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino, toInt($this->getSiteBalance()), toInt($amount), $accid, $loyaltyCardNo, $startSessionFormModel->voucher_code, $trackingId, $casinoUsername, $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'], $locatorname, $CPV);
+                            }
                             //$casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'],$traceNumber,$referenceNumber,$locatorname,$CPV,$viptype); // CCT added viptype;
                         }
                         //checking if casino is terminal based

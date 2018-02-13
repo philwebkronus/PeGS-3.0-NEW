@@ -84,18 +84,24 @@ class CommonReload {
             CasinoApi::throwError($message);
         }
 
-        //get last transaction ID if service is MG
-        if (strpos($service_name, 'MG') !== false) {
-            $trans_origin_id = 0; //cashier origin Id
-            $transaction_id = $terminalsModel->insertserviceTransRef($service_id, $trans_origin_id);
-            if (!$transaction_id) {
-                $message = "Error: Failed to insert record in transaction table [0001].";
-                logger($message);
-                CasinoApi::throwError($message);
-            }
-        } else {
-            $transaction_id = '';
-        }
+        /*
+         * Commented By JAV
+         * Date 02-06-2018
+         * 
+          //get last transaction ID if service is MG
+          if (strpos($service_name, 'MG') !== false) {
+          $trans_origin_id = 0; //cashier origin Id
+          $transaction_id = $terminalsModel->insertserviceTransRef($service_id, $trans_origin_id);
+          if (!$transaction_id) {
+          $message = "Error: Failed to insert record in transaction table [0001].";
+          logger($message);
+          CasinoApi::throwError($message);
+          }
+          } else {
+          $transaction_id = '';
+          }
+         * 
+         */
 
         //get terminal password 
         $terminal_pwd_res = $terminalsModel->getTerminalPassword($terminal_id, $service_id);
@@ -178,20 +184,26 @@ class CommonReload {
                     $apiresult = $transSearchInfo['TransactionInfo']['TrackingInfoTransactionSearchResult']['transactionStatus'];
                     $transrefid = $transSearchInfo['TransactionInfo']['TrackingInfoTransactionSearchResult']['transactionID'];
                 }
-                //MG / Vibrant Vegas
-                if (isset($transSearchInfo['TransactionInfo']['MG'])) {
-                    //$amount = abs($transSearchInfo['TransactionInfo']['Balance']);
-                    $transrefid = $transSearchInfo['TransactionInfo']['MG']['TransactionId'];
-                    $apiresult = $transSearchInfo['TransactionInfo']['MG']['TransactionStatus'];
-                }
-                //PT / PlayTech
-                if (isset($transSearchInfo['TransactionInfo']['PT'])) {
-                    //$initial_deposit = $transSearchInfo['TransactionInfo']['PT']['']; //need to ask if reported amount will be passed from PT
-                    $transrefid = $transSearchInfo['TransactionInfo']['PT']['id'];
-                    $apiresult = $transSearchInfo['TransactionInfo']['PT']['status'];
-                }
+                /*
+                 * Commented By JAV
+                 * Date 02-06-2018
+                 * 
+                  //MG / Vibrant Vegas
+                  if (isset($transSearchInfo['TransactionInfo']['MG'])) {
+                  //$amount = abs($transSearchInfo['TransactionInfo']['Balance']);
+                  $transrefid = $transSearchInfo['TransactionInfo']['MG']['TransactionId'];
+                  $apiresult = $transSearchInfo['TransactionInfo']['MG']['TransactionStatus'];
+                  }
+                  //PT / PlayTech
+                  if (isset($transSearchInfo['TransactionInfo']['PT'])) {
+                  //$initial_deposit = $transSearchInfo['TransactionInfo']['PT']['']; //need to ask if reported amount will be passed from PT
+                  $transrefid = $transSearchInfo['TransactionInfo']['PT']['id'];
+                  $apiresult = $transSearchInfo['TransactionInfo']['PT']['status'];
+                  }
+                 * 
+                 */
                 //Habanero
-                if (isset($transSearchInfo['TransactionInfo'])) {
+                if (isset($transSearchInfo['TransactionInfo']) && ($transrefid == null || empty($transrefid))) {
                     //$amount = abs($transSearchInfo['TransactionInfo']['Balance']); //returns 0 value
                     $transrefid = $resultwithdraw['TransactionInfo']['TransactionId'];
                     $apiresult = $resultwithdraw['TransactionInfo']['Success'];
@@ -219,20 +231,26 @@ class CommonReload {
                     $apiresult = $resultdeposit['TransactionInfo']['DepositGenericResult']['transactionStatus'];
                     $apierrmsg = $resultdeposit['TransactionInfo']['DepositGenericResult']['errorMsg'];
                 }
-                //MG / Vibrant Vegas
-                if (isset($resultdeposit['TransactionInfo']['MG'])) {
-                    $transrefid = $resultdeposit['TransactionInfo']['MG']['TransactionId'];
-                    $apiresult = $resultdeposit['TransactionInfo']['MG']['TransactionStatus'];
-                    $apierrmsg = $resultdeposit['ErrorCode'];
-                }
-                //PT / PlayTech
-                if (isset($resultdeposit['TransactionInfo']['PT'])) {
-                    $transrefid = $resultdeposit['TransactionInfo']['PT']['TransactionId'];
-                    $apiresult = $resultdeposit['TransactionInfo']['PT']['TransactionStatus'];
-                    $apierrmsg = $resultdeposit['ErrorMessage'];
-                }
+                /*
+                 * Commented By JAV
+                 * Date 02-06-2018
+                 * 
+                  //MG / Vibrant Vegas
+                  if (isset($resultdeposit['TransactionInfo']['MG'])) {
+                  $transrefid = $resultdeposit['TransactionInfo']['MG']['TransactionId'];
+                  $apiresult = $resultdeposit['TransactionInfo']['MG']['TransactionStatus'];
+                  $apierrmsg = $resultdeposit['ErrorCode'];
+                  }
+                  //PT / PlayTech
+                  if (isset($resultdeposit['TransactionInfo']['PT'])) {
+                  $transrefid = $resultdeposit['TransactionInfo']['PT']['TransactionId'];
+                  $apiresult = $resultdeposit['TransactionInfo']['PT']['TransactionStatus'];
+                  $apierrmsg = $resultdeposit['ErrorMessage'];
+                  }
+                 * 
+                 */
                 //Habanero
-                if (isset($resultdeposit['TransactionInfo'])) {
+                if (isset($resultdeposit['TransactionInfo']) && ($transrefid == null || empty($transrefid))) {
                     $transrefid = $resultdeposit['TransactionInfo']['TransactionId'];
                     $apiresult = $resultdeposit['TransactionInfo']['Message'];
                 }

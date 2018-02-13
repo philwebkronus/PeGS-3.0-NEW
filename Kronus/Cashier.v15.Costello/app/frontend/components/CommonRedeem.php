@@ -48,8 +48,14 @@ class CommonRedeem {
         //check terminal type if Genesis = 1
         $terminalType = $terminalsModel->checkTerminalType($terminal_id);
 
-        //call PT, freeze and force logout of session
-        $casinoApi->_doCasinoRules($terminal_id, $service_id, $terminalname);
+        /*
+         * Commented By JAV
+         * Date 02-06-2018
+         * 
+          //call PT, freeze and force logout of session
+          $casinoApi->_doCasinoRules($terminal_id, $service_id, $terminalname);
+         * 
+         */
 
         if ($userMode == 2) {
             $loyalty_card = $terminal_id;
@@ -93,18 +99,23 @@ class CommonRedeem {
         } else {
             $terminal_name = $terminalname;
         }
-
-        //revert player bet on hand regardless of the current bet, for PT only
-        if (strpos($service_name, 'PT') !== false) {
-            $result = $casinoApi->RevertBrokenGamesAPI($terminal_id, $service_id, $terminal_name);
-            if ($result['RevertBrokenGamesReponse'][0] == false) {
-                //unfreeze PT account 
-                $casinoApiHandler->ChangeAccountStatus($terminal_name, 0);
-                //unlock launchpad gaming terminal
-                $casinoApi->callSpyderAPI($commandId = 0, $terminal_id, $terminal_name, $login_pwd, $service_id);
-                CasinoApi::throwError("Unable to revert bet on hand.");
-            }
-        }
+        /*
+         * Commented By JAV
+         * Date 02-06-2018
+         * 
+          //revert player bet on hand regardless of the current bet, for PT only
+          if (strpos($service_name, 'PT') !== false) {
+          $result = $casinoApi->RevertBrokenGamesAPI($terminal_id, $service_id, $terminal_name);
+          if ($result['RevertBrokenGamesReponse'][0] == false) {
+          //unfreeze PT account
+          $casinoApiHandler->ChangeAccountStatus($terminal_name, 0);
+          //unlock launchpad gaming terminal
+          $casinoApi->callSpyderAPI($commandId = 0, $terminal_id, $terminal_name, $login_pwd, $service_id);
+          CasinoApi::throwError("Unable to revert bet on hand.");
+          }
+          }
+         * 
+         */
 
         //check if there was a pending game bet for RTG
         if (strpos($service_name, 'RTG') !== false) {
@@ -140,6 +151,7 @@ class CommonRedeem {
         //logout player Habanero
         if (strpos($service_name, 'HAB') !== false) {
             $test = $casinoApi->LogoutPlayerHabanero($terminal_id, $service_id, $terminal_name, $terminal_pwd);
+            logger($test . '  TerminalID=' . $terminal_id . ' ServiceID=' . $service_id);
         }
 
 
@@ -154,18 +166,24 @@ class CommonRedeem {
             CasinoApi::throwError($message);
         }
 
-        //get last transaction ID if service is MG
-        if (strpos($service_name, 'MG') !== false) {
-            $trans_origin_id = 0; //cashier origin Id
-            $transaction_id = $terminalsModel->insertserviceTransRef($service_id, $trans_origin_id);
-            if (!$transaction_id) {
-                $message = "Error: Failed to insert record in transaction table [0001].";
-                logger($message);
-                CasinoApi::throwError($message);
-            }
-        } else {
-            $transaction_id = '';
-        }
+        /*
+         * Commented By JAV
+         * Date 02-06-2018
+         * 
+          //get last transaction ID if service is MG
+          if (strpos($service_name, 'MG') !== false) {
+          $trans_origin_id = 0; //cashier origin Id
+          $transaction_id = $terminalsModel->insertserviceTransRef($service_id, $trans_origin_id);
+          if (!$transaction_id) {
+          $message = "Error: Failed to insert record in transaction table [0001].";
+          logger($message);
+          CasinoApi::throwError($message);
+          }
+          } else {
+          $transaction_id = '';
+          }
+         * 
+         */
 
         $udate = CasinoApi::udate('YmdHisu');
 
@@ -244,19 +262,25 @@ class CommonRedeem {
                         $apiresult = $transSearchInfo['TransactionInfo']['TrackingInfoTransactionSearchResult']['transactionStatus'];
                         $transrefid = $transSearchInfo['TransactionInfo']['TrackingInfoTransactionSearchResult']['transactionID'];
                     }
-                    //MG / Vibrant Vegas
-                    elseif (isset($transSearchInfo['TransactionInfo']['MG'])) {
-                        //$amount = abs($transSearchInfo['TransactionInfo']['Balance']); //returns 0 value
-                        $transrefid = $transSearchInfo['TransactionInfo']['MG']['TransactionId'];
-                        $apiresult = $transSearchInfo['TransactionInfo']['MG']['TransactionStatus'];
-                    }
-                    //PT / PlayTech
-                    else if (isset($transSearchInfo['TransactionInfo']['PT'])) {
-                        $transrefid = $transSearchInfo['TransactionInfo']['PT']['id'];
-                        $apiresult = $transSearchInfo['TransactionInfo']['PT']['status'];
-                    }
+                    /*
+                     * Commented By JAV
+                     * Date 02-06-2018
+                     * 
+                      //MG / Vibrant Vegas
+                      elseif (isset($transSearchInfo['TransactionInfo']['MG'])) {
+                      //$amount = abs($transSearchInfo['TransactionInfo']['Balance']); //returns 0 value
+                      $transrefid = $transSearchInfo['TransactionInfo']['MG']['TransactionId'];
+                      $apiresult = $transSearchInfo['TransactionInfo']['MG']['TransactionStatus'];
+                      }
+                      //PT / PlayTech
+                      else if (isset($transSearchInfo['TransactionInfo']['PT'])) {
+                      $transrefid = $transSearchInfo['TransactionInfo']['PT']['id'];
+                      $apiresult = $transSearchInfo['TransactionInfo']['PT']['status'];
+                      }
+                     * 
+                     */
                     //Habanero
-                    else if (isset($transSearchInfo['TransactionInfo']['querytransmethodResult'])) {
+                    else if (isset($transSearchInfo['TransactionInfo']['querytransmethodResult']) && ($transrefid == null || empty($transrefid))) {
                         //$amount = abs($transSearchInfo['TransactionInfo']['Balance']); //returns 0 value
                         $transrefid = $resultwithdraw['TransactionInfo']['TransactionId'];
                         $apiresult = $resultwithdraw['TransactionInfo']['Success'];
@@ -286,18 +310,24 @@ class CommonRedeem {
                         $transrefid = $resultwithdraw['TransactionInfo']['WithdrawGenericResult']['transactionID'];
                         $apiresult = $resultwithdraw['TransactionInfo']['WithdrawGenericResult']['transactionStatus'];
                     }
-                    //MG / Vibrant Vegas
-                    if (isset($resultwithdraw['TransactionInfo']['MG'])) {
-                        $transrefid = $resultwithdraw['TransactionInfo']['MG']['TransactionId'];
-                        $apiresult = $resultwithdraw['TransactionInfo']['MG']['TransactionStatus'];
-                    }
-                    //PT / Rocking Reno
-                    if (isset($resultwithdraw['TransactionInfo']['PT'])) {
-                        $transrefid = $resultwithdraw['TransactionInfo']['PT']['TransactionId'];
-                        $apiresult = $resultwithdraw['TransactionInfo']['PT']['TransactionStatus'];
-                    }
+                    /*
+                     * Commented By JAV
+                     * Date 02-06-2018
+                     * 
+                      //MG / Vibrant Vegas
+                      if (isset($resultwithdraw['TransactionInfo']['MG'])) {
+                      $transrefid = $resultwithdraw['TransactionInfo']['MG']['TransactionId'];
+                      $apiresult = $resultwithdraw['TransactionInfo']['MG']['TransactionStatus'];
+                      }
+                      //PT / Rocking Reno
+                      if (isset($resultwithdraw['TransactionInfo']['PT'])) {
+                      $transrefid = $resultwithdraw['TransactionInfo']['PT']['TransactionId'];
+                      $apiresult = $resultwithdraw['TransactionInfo']['PT']['TransactionStatus'];
+                      }
+                     * 
+                     */
                     //Habanero
-                    if (isset($resultwithdraw['TransactionInfo'])) {
+                    if (isset($resultwithdraw['TransactionInfo']) && ($transrefid == null || empty($transrefid))) {
                         $transrefid = $resultwithdraw['TransactionInfo']['TransactionId'];
                         $apiresult = $resultwithdraw['TransactionInfo']['Message'];
                     }

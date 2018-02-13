@@ -301,15 +301,18 @@ class CasinoApi {
         if (strpos($service_name, 'RTG') !== false) {
             $service_name = 'RTG';
         }
+        /*
+          if (strpos($service_name, 'MG') !== false) {
+          $service_name = 'MG';
+          }
 
-        if (strpos($service_name, 'MG') !== false) {
-            $service_name = 'MG';
+          if (strpos($service_name, 'PT') !== false) {
+          $service_name = 'PT';
+          }
+         */
+        if (strpos($service_name, 'HAB') !== false) {
+            $service_name = 'HAB';
         }
-
-        if (strpos($service_name, 'PT') !== false) {
-            $service_name = 'PT';
-        }
-
         switch ($service_name) {
             // RTG Magic Macau
             case 'RTG':
@@ -338,7 +341,7 @@ class CasinoApi {
                 $balanceinfo = $casinoApiHandler->GetBalanceHabanero($terminal_name, $terminal_pwd);
                 break;
         }
-        
+
         /*
          * John Aaron Vida
          * 12/14/2017
@@ -367,15 +370,18 @@ class CasinoApi {
         }
 
         $currentbet = 0;
-        //For PT --> denied redemption if there was a current bet
-        if ($service_name == 'PT' && $transtype == 'W') {
+        /*
+          //For PT --> denied redemption if there was a current bet
+          if ($service_name == 'PT' && $transtype == 'W') {
 
-            if ($balanceinfo['BalanceInfo']['CurrentBet'] > 0) {
-                $currentbet = $balanceinfo['BalanceInfo']['CurrentBet'];
-            } else {
-                $currentbet = 0;
-            }
-        }
+          if ($balanceinfo['BalanceInfo']['CurrentBet'] > 0) {
+          $currentbet = $balanceinfo['BalanceInfo']['CurrentBet'];
+          } else {
+          $currentbet = 0;
+          }
+          }
+         * 
+         */
 
         $terminalSessionsModel->updateTerminalSessionById($terminal_id, $service_id, $terminal_balance);
         return array($terminal_balance, $service_name, $terminalSessionsModel, $transReqLogsModel, $redeemable_amount, $casinoApiHandler, $mgaccount, $currentbet);
@@ -397,12 +403,16 @@ class CasinoApi {
             $service_name = 'RTG';
         }
 
-        if (strpos($service_name, 'MG') !== false) {
-            $service_name = 'MG';
-        }
+//        if (strpos($service_name, 'MG') !== false) {
+//            $service_name = 'MG';
+//        }
+//
+//        if (strpos($service_name, 'PT') !== false) {
+//            $service_name = 'PT';
+//        }
 
-        if (strpos($service_name, 'PT') !== false) {
-            $service_name = 'PT';
+        if (strpos($service_name, 'HAB') !== false) {
+            $service_name = 'HAB';
         }
 
         switch ($service_name) {
@@ -464,14 +474,16 @@ class CasinoApi {
 
 
         $currentbet = 0;
-        //For PT --> denied redemption if there was a current bet
-        if ($service_name == 'PT' && $transtype == 'W') {
-            if ($balanceinfo['BalanceInfo']['CurrentBet'] > 0) {
-                $currentbet = $balanceinfo['BalanceInfo']['CurrentBet'];
-            } else {
-                $currentbet = 0;
-            }
-        }
+        /*
+          //For PT --> denied redemption if there was a current bet
+          if ($service_name == 'PT' && $transtype == 'W') {
+          if ($balanceinfo['BalanceInfo']['CurrentBet'] > 0) {
+          $currentbet = $balanceinfo['BalanceInfo']['CurrentBet'];
+          } else {
+          $currentbet = 0;
+          }
+          }
+         */
 
         return array($terminal_balance, $service_name, $terminalSessionsModel, $transReqLogsModel, $redeemable_amount, $casinoApiHandler, $currentbet);
     }
@@ -650,22 +662,28 @@ class CasinoApi {
                 MI_Database::close();
                 $balanceinfo = $casinoApiHandler->GetBalance($terminal_name);
                 break;
-            case 'Vibrant Vegas':
-                $casinoApiHandler = $this->configureMg($terminal_id, $service_id);
-                MI_Database::close();
-                $balanceinfo = $casinoApiHandler->GetBalance($terminal_name);
-                break;
-            case 'Swinging Singapore':
-                $casinoApiHandler = $this->configurePT($terminal_id, $service_id);
-                MI_Database::close();
-                $balanceinfo = $casinoApiHandler->GetBalance($terminal_name);
-                break;
+            /*
+              case 'Vibrant Vegas':
+              $casinoApiHandler = $this->configureMg($terminal_id, $service_id);
+              MI_Database::close();
+              $balanceinfo = $casinoApiHandler->GetBalance($terminal_name);
+              break;
+              case 'Swinging Singapore':
+              $casinoApiHandler = $this->configurePT($terminal_id, $service_id);
+              MI_Database::close();
+              $balanceinfo = $casinoApiHandler->GetBalance($terminal_name);
+              break;
+             *
+             */
+
+
             /*
              * John Aaron Vida
              * 12/14/2017
              * Added ::Habanero
              */
-            case 'Habanero':
+            //case 'Habanero':
+            case 'Vibrant Vegas':
                 $casinoApiHandler = $this->configureHabanero($terminal_id, $service_id, 0);
                 MI_Database::close();
                 $balanceinfo = $casinoApiHandler->GetBalanceHabanero($terminal_name, $terminal_pwd);
@@ -678,13 +696,14 @@ class CasinoApi {
          * 12/14/2017
          * Added :: For Habanero
          */
-        if ($service_name == 'Habanero') {
+        //if ($service_name == 'habanero') {
+        if ($service_name == 'Vibrant Vegas') {
             $terminal_balance = $balanceinfo['TransactionInfo']['RealBalance'];
             $redeemable_amount = $terminal_balance;
         }
 
 
-        if ($service_name == "Magic Macau" || $service_name == "Swinging Singapore") {
+        if ($service_name == "Magic Macau") {
             if (!isset($balanceinfo['BalanceInfo']['Balance'])) {
                 return false;
             }
@@ -738,22 +757,27 @@ class CasinoApi {
                 MI_Database::close();
                 $balanceinfo = $casinoApiHandler->GetBalance($casinoUsername);
                 break;
-            case 'Vibrant Vegas':
-                $casinoApiHandler = $this->configureMg($terminal_id, $service_id);
-                MI_Database::close();
-                $balanceinfo = $casinoApiHandler->GetBalance($casinoUsername);
-                break;
-            case 'Swinging Singapore':
-                $casinoApiHandler = $this->configurePT($terminal_id, $service_id);
-                MI_Database::close();
-                $balanceinfo = $casinoApiHandler->GetBalance($casinoUsername);
-                break;
+            /*
+              case 'Vibrant Vegas':
+              $casinoApiHandler = $this->configureMg($terminal_id, $service_id);
+              MI_Database::close();
+              $balanceinfo = $casinoApiHandler->GetBalance($casinoUsername);
+              break;
+              case 'Swinging Singapore':
+              $casinoApiHandler = $this->configurePT($terminal_id, $service_id);
+              MI_Database::close();
+              $balanceinfo = $casinoApiHandler->GetBalance($casinoUsername);
+              break;
+             * /
+             */
+
             /*
              * John Aaron Vida
              * 12/14/2017
              * Added ::Habanero
              */
-            case 'HAB':
+            //case 'Habanero':
+            case 'Vibrant Vegas':
                 $casinoApiHandler = $this->configureHabanero($terminal_id, $service_id, 0);
                 MI_Database::close();
                 $balanceinfo = $casinoApiHandler->GetBalanceHabanero($terminal_name, $terminal_pwd);
@@ -764,12 +788,13 @@ class CasinoApi {
          * 12/14/2017
          * Added :: For Habanero
          */
-        if ($service_name == 'Habanero') {
+        //if ($service_name == 'Habanero') {
+        if ($service_name == 'Vibrant Vegas') {
             $terminal_balance = $balanceinfo['TransactionInfo']['RealBalance'];
             $redeemable_amount = $terminal_balance;
         }
 
-        if ($service_name == "Magic Macau" || $service_name == "Swinging Singapore") {
+        if ($service_name == "Magic Macau") {
             if (!isset($balanceinfo['BalanceInfo']['Balance'])) {
                 return false;
             }
@@ -942,4 +967,3 @@ class CasinoApi {
     }
 
 }
-

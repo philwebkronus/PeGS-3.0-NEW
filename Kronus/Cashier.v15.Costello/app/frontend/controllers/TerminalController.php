@@ -41,7 +41,6 @@ class TerminalController extends FrontendController {
         }
         else {
             $denominationtype = DENOMINATION_TYPE::INITIAL_DEPOSIT;
-            $usermode = $this->getCasinoTerminalMode($_POST['terminal_id']);
         }
         $deno_casino_min_max = $this->_getDenoCasinoMinMax($denominationtype);
         if(isset($_POST['isreload'])) {
@@ -89,7 +88,8 @@ class TerminalController extends FrontendController {
                 'terminal_session_data'=>$terminal_session_data,'terminal_balance'=>toMoney($terminal_balance), 'usermode' => $casinoUserMode));
         }
         $casinoUserMode = (!empty($casinoUserMode) ? $casinoUserMode : "");
-        $deno_casino_min_max = array_merge($deno_casino_min_max,array('usermode'=>$casinoUserMode));
+        $usermode = $this->getCasinoTerminalMode($_POST['terminal_id']);
+        $deno_casino_min_max = array_merge($deno_casino_min_max,array('usermode'=>$usermode, 'casinousermode'=>$usermode));
         echo json_encode($deno_casino_min_max);
         Mirage::app()->end();
     }
@@ -507,6 +507,12 @@ class TerminalController extends FrontendController {
             $loyaltyCardNo = $val['LoyaltyCardNumber'];
             $casinoUserMode = $val['UserMode'];
             $casinoServiceID = $val['ServiceID'];
+        }
+        
+         if ($casinoUserMode == 4) {
+            $message = "Reload is not applicable on e-Bingo Terminals.";
+            logger($message);
+            $this->throwError($message);
         }
         
         // get balance

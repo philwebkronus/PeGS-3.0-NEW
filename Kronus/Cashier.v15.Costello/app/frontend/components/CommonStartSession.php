@@ -196,18 +196,24 @@ class CommonStartSession {
             CasinoApi::throwError($message);
         }
 
-        //if PT, unfreeze its account
-        if (strpos($service_name, 'PT') !== false) {
-            $changeStatusResult = $casinoApiHandler->ChangeAccountStatus($terminal_name, 0);
-            if (!$changeStatusResult['IsSucceed']) {
-                $transReqLogsModel->update($trans_req_log_last_id, 'false', 2, null, $terminal_id);
-                $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
-                $egmSessionsModel->deleteEgmSessionById($terminal_id);
-                $message = "Info: Failed to unlock the terminal in Swinging Singapore.";
-                logger($message);
-                CasinoApi::throwError($message);
-            }
-        }
+        /*
+         * Commented By JAV
+         * Date 02-06-2018
+         * 
+          //if PT, unfreeze its account
+          if (strpos($service_name, 'PT') !== false) {
+          $changeStatusResult = $casinoApiHandler->ChangeAccountStatus($terminal_name, 0);
+          if (!$changeStatusResult['IsSucceed']) {
+          $transReqLogsModel->update($trans_req_log_last_id, 'false', 2, null, $terminal_id);
+          $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
+          $egmSessionsModel->deleteEgmSessionById($terminal_id);
+          $message = "Info: Failed to unlock the terminal in Swinging Singapore.";
+          logger($message);
+          CasinoApi::throwError($message);
+          }
+          }
+         * 
+         */
 
         /*         * *********************** DEPOSIT *********************************** */
         $resultdeposit = $casinoApiHandler->Deposit($terminal_name, $initial_deposit, $tracking1, $tracking2, $tracking3, $tracking4, $terminal_pwd, $event_id, $transaction_id, $locatorname);
@@ -245,18 +251,24 @@ class CommonStartSession {
                     $apiresult = $transSearchInfo['TransactionInfo']['TrackingInfoTransactionSearchResult']['transactionStatus'];
                     $transrefid = $transSearchInfo['TransactionInfo']['TrackingInfoTransactionSearchResult']['transactionID'];
                 }
-                //MG / Vibrant Vegas
-                elseif (isset($transSearchInfo['TransactionInfo']['MG'])) {
-                    //$initial_deposit = $transSearchInfo['TransactionInfo']['MG']['Balance'];
-                    $transrefid = $transSearchInfo['TransactionInfo']['MG']['TransactionId'];
-                    $apiresult = $transSearchInfo['TransactionInfo']['MG']['TransactionStatus'];
-                }
-                //PT / PlayTech
-                elseif (isset($transSearchInfo['TransactionInfo']['PT'])) {
-                    //$initial_deposit = $transSearchInfo['TransactionInfo']['PT']['']; //need to ask if reported amount will be passed from PT
-                    $transrefid = $transSearchInfo['TransactionInfo']['PT']['id'];
-                    $apiresult = $transSearchInfo['TransactionInfo']['PT']['status'];
-                }
+                /*
+                 * Commented By JAV
+                 * Date 02-06-2018
+                 * 
+                  //MG / Vibrant Vegas
+                  elseif (isset($transSearchInfo['TransactionInfo']['MG'])) {
+                  //$initial_deposit = $transSearchInfo['TransactionInfo']['MG']['Balance'];
+                  $transrefid = $transSearchInfo['TransactionInfo']['MG']['TransactionId'];
+                  $apiresult = $transSearchInfo['TransactionInfo']['MG']['TransactionStatus'];
+                  }
+                  //PT / PlayTech
+                  elseif (isset($transSearchInfo['TransactionInfo']['PT'])) {
+                  //$initial_deposit = $transSearchInfo['TransactionInfo']['PT']['']; //need to ask if reported amount will be passed from PT
+                  $transrefid = $transSearchInfo['TransactionInfo']['PT']['id'];
+                  $apiresult = $transSearchInfo['TransactionInfo']['PT']['status'];
+                  }
+                 * 
+                 */
                 //Habanero
                 elseif (isset($transSearchInfo['TransactionInfo']['querytransmethodResult'])) {
                     //$amount = abs($transSearchInfo['TransactionInfo']['Balance']); //returns 0 value
@@ -287,18 +299,24 @@ class CommonStartSession {
                     $apiresult = $resultdeposit['TransactionInfo']['DepositGenericResult']['transactionStatus'];
                     $apierrmsg = $resultdeposit['TransactionInfo']['DepositGenericResult']['errorMsg'];
                 }
-                //MG / Vibrant Vegas
-                else if (isset($resultdeposit['TransactionInfo']['MG'])) {
-                    $transrefid = $resultdeposit['TransactionInfo']['MG']['TransactionId'];
-                    $apiresult = $resultdeposit['TransactionInfo']['MG']['TransactionStatus'];
-                    $apierrmsg = $resultdeposit['ErrorMessage'];
-                }
-                //Rockin Reno
-                else if (isset($resultdeposit['TransactionInfo']['PT'])) {
-                    $transrefid = $resultdeposit['TransactionInfo']['PT']['TransactionId'];
-                    $apiresult = $resultdeposit['TransactionInfo']['PT']['TransactionStatus'];
-                    $apierrmsg = $resultdeposit['TransactionInfo']['PT']['TransactionStatus'];
-                }
+                /*
+                 * Commented By JAV
+                 * Date 02-06-2018
+                 * 
+                  //MG / Vibrant Vegas
+                  else if (isset($resultdeposit['TransactionInfo']['MG'])) {
+                  $transrefid = $resultdeposit['TransactionInfo']['MG']['TransactionId'];
+                  $apiresult = $resultdeposit['TransactionInfo']['MG']['TransactionStatus'];
+                  $apierrmsg = $resultdeposit['ErrorMessage'];
+                  }
+                  //Rockin Reno
+                  else if (isset($resultdeposit['TransactionInfo']['PT'])) {
+                  $transrefid = $resultdeposit['TransactionInfo']['PT']['TransactionId'];
+                  $apiresult = $resultdeposit['TransactionInfo']['PT']['TransactionStatus'];
+                  $apierrmsg = $resultdeposit['TransactionInfo']['PT']['TransactionStatus'];
+                  }
+                 * 
+                 */
                 //Habanero
                 else if (isset($resultdeposit['TransactionInfo'])) {
                     $transrefid = $resultdeposit['TransactionInfo']['TransactionId'];
@@ -354,15 +372,21 @@ class CommonStartSession {
                 'udate' => $udate, 'terminal_name' => $terminal_name, 'trans_ref_id' => $transrefid, 'trans_summary_id' => $trans_summary_id["trans_summary_max_id"],
                 'trans_details_id' => $trans_summary_id["transdetails_max_id"]);
         } else {
-            //if PT and failed in start session, freeze its account
-            if (strpos($service_name, 'PT') !== false) {
-                $changeStatusResult = $casinoApiHandler->ChangeAccountStatus($terminal_name, 1);
-                if (!$changeStatusResult['IsSucceed']) {
-                    $message = $changeStatusResult['ErrorMessage'];
-                    logger($message);
-                    CasinoApi::throwError($message);
-                }
-            }
+            /*
+             * Commented By JAV
+             * Date 02-06-2018
+             * 
+              //if PT and failed in start session, freeze its account
+              if (strpos($service_name, 'PT') !== false) {
+              $changeStatusResult = $casinoApiHandler->ChangeAccountStatus($terminal_name, 1);
+              if (!$changeStatusResult['IsSucceed']) {
+              $message = $changeStatusResult['ErrorMessage'];
+              logger($message);
+              CasinoApi::throwError($message);
+              }
+              }
+             * 
+             */
 
             $transReqLogsModel->update($trans_req_log_last_id, $apiresult, 2, null, $terminal_id);
             $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
