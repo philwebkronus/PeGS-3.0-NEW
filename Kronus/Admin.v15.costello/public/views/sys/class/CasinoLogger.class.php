@@ -42,12 +42,14 @@ class CasinoLogger {
             case "RTG":
                 $message = '[' . $this->uDateTime('Y-m-d H:i:s.u') . '][' . $casino . '][' . $this->errorType[$type] . '] ' . $message . "\n";
                 break;
-            case "MG":
-                $message = '[' . $this->uDateTime('Y-m-d H:i:s.u') . '][' . $casino . '][' . $this->errorType[$type] . '] ' . $message . "\n";
-                break;
-            case "PT":
-                $message = '[' . $this->uDateTime('Y-m-d H:i:s.u') . '][' . $casino . '][' . $this->errorType[$type] . '] ' . $message . "\n";
-                break;
+            // Comment Out CCT 02/06/2018 BEGIN
+            //case "MG":
+            //    $message = '[' . $this->uDateTime('Y-m-d H:i:s.u') . '][' . $casino . '][' . $this->errorType[$type] . '] ' . $message . "\n";
+            //    break;
+            //case "PT":
+            //    $message = '[' . $this->uDateTime('Y-m-d H:i:s.u') . '][' . $casino . '][' . $this->errorType[$type] . '] ' . $message . "\n";
+            //    break;
+            // Comment Out CCT 02/06/2018 END
             default:
                 $message = '[' . $this->uDateTime('Y-m-d H:i:s.u') . ']' . '[' . $casino . '] ' . $message . "\n";
                 break;
@@ -81,12 +83,14 @@ class CasinoLogger {
             case "RTG":
                 $message = '[' . $this->uDateTime('Y-m-d H:i:s.u') . '][' . $this->errorType[$type] . '][' . $casino . '] ' . $message . "\n";
                 break;
-            case "MG":
-                $message = '[' . $this->uDateTime('Y-m-d H:i:s.u') . '][' . $this->errorType[$type] . '][' . $casino . '] ' . $message . "\n";
-                break;
-            case "PT":
-                $message = '[' . $this->uDateTime('Y-m-d H:i:s.u') . '][' . $this->errorType[$type] . '][' . $casino . '] ' . $message . "\n";
-                break;
+            // Comment Out CCT 02/06/2018 BEGIN            
+            //case "MG":
+            //    $message = '[' . $this->uDateTime('Y-m-d H:i:s.u') . '][' . $this->errorType[$type] . '][' . $casino . '] ' . $message . "\n";
+            //    break;
+            //case "PT":
+            //    $message = '[' . $this->uDateTime('Y-m-d H:i:s.u') . '][' . $this->errorType[$type] . '][' . $casino . '] ' . $message . "\n";
+            //    break;
+            // Comment Out CCT 02/06/2018 END
         }
 
         if ($newLine)

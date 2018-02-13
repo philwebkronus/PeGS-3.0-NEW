@@ -156,7 +156,10 @@ if ($connected && $connected2)
                     }
 
                     //show user mode
-                    if ($usermode == 0 || $usermode == 2) 
+                    // CCT EDITED 01/25/2018 BEGIN
+                    //if ($usermode == 0 || $usermode == 2) 
+                    if ($usermode == 0 || $usermode == 2 || $usermode == 4) 
+                    // CCT EDITED 01/25/2018 END
                     {
                         $usermode = 'Terminal Based';
                     } 
@@ -463,6 +466,25 @@ if ($connected && $connected2)
                 //check if casino is RTG, MG or PT
                 switch ($servicegroupname) 
                 {
+                    // CCT ADDED 01/23/2018 BEGIN
+                    case "EB":
+                        //check source if cashier or launchpad
+                        if ($source == 'Cashier') 
+                        {
+                            $transactionid = $maf->getTransactionID($serviceID, $cmbterm);
+                            $tracking1 = $transactionid['TransactionRequestLogID'];
+                        } 
+                        $url = $_ServiceAPI[$serviceID - 1];
+                        $capiusername = '';
+                        $capipassword = '';
+                        $capiplayername = '';
+                        $capiserverID = '';
+                        if ($usermode == 0 || $usermode == 4)  
+                        {
+                            $transSearchInfo = $CasinoGamingCAPI->TransSearchInfo($servicegroupname, $serviceID, $url, $login, $capiusername, $capipassword, $capiplayername, $capiserverID, $tracking1, $tracking2, $tracking3, $tracking4, $usermode);
+                        }
+                        break;
+                    // CCT ADDED 01/23/2018 END                    
                     // CCT ADDED 12/27/2017 BEGIN
                     case "HAB":
                         //check source if cashier or launchpad
@@ -533,47 +555,48 @@ if ($connected && $connected2)
                         $capiserverID = '';
                         $transSearchInfo = $CasinoGamingCAPI->TransSearchInfo($servicegroupname, $serviceID, $url, $login, $capiusername, $capipassword, $capiplayername, $capiserverID, $tracking1, $tracking2, $tracking3, $tracking4);
                         break;
-                    case "MG":
-                        //check source if cashier or launchpad
-                        if ($source == 'Cashier') 
-                        {
-                            $transactionid = $maf->getServiceTransactionID($transrefid);
-                            $tracking4 = $transactionid['ServiceTransactionID'];
-                        } 
+                    // Comment Out CCT 02/06/2018 BEGIN
+                    //case "MG":
+                    //    //check source if cashier or launchpad
+                    //    if ($source == 'Cashier') 
+                    //    {
+                    //        $transactionid = $maf->getServiceTransactionID($transrefid);
+                    //        $tracking4 = $transactionid['ServiceTransactionID'];
+                    //    } 
                 //                        elseif ($source == 'Launchpad') {
                 //                            $transactionid = $maf->getServiceTransactionIDLP($transrefid);
                 //                            $tracking4 = $transactionid['ServiceTransactionID'];
                 //                        }
 
-                        $_MGCredentials = $_ServiceAPI[$serviceID - 1];
-                        list($mgurl, $mgserverID) = $_MGCredentials;
-                        $url = $mgurl;
-                        $capiusername = $_CAPIUsername;
-                        $capipassword = $_CAPIPassword;
-                        $capiplayername = $_CAPIPlayerName;
-                        $capiserverID = $mgserverID;
-                        $transSearchInfo = $CasinoGamingCAPI->TransSearchInfo($servicegroupname, $serviceID, $url, $login, $capiusername, $capipassword, $capiplayername, $capiserverID, $tracking1, $tracking2, $tracking3, $tracking4);
-                        break;
-                    case "PT":
+                    //    $_MGCredentials = $_ServiceAPI[$serviceID - 1];
+                    //    list($mgurl, $mgserverID) = $_MGCredentials;
+                    //    $url = $mgurl;
+                    //    $capiusername = $_CAPIUsername;
+                    //    $capipassword = $_CAPIPassword;
+                    //    $capiplayername = $_CAPIPlayerName;
+                    //    $capiserverID = $mgserverID;
+                    //    $transSearchInfo = $CasinoGamingCAPI->TransSearchInfo($servicegroupname, $serviceID, $url, $login, $capiusername, $capipassword, $capiplayername, $capiserverID, $tracking1, $tracking2, $tracking3, $tracking4);
+                    //    break;
+                    //case "PT":
                         //check source if cashier or launchpad
-                        if ($source == 'Cashier') 
-                        {
-                            $transactionid = $maf->getTransactionID($serviceID, $cmbterm);
-                            $tracking1 = $transactionid['TransactionRequestLogID'];
-                        } 
+                    //    if ($source == 'Cashier') 
+                    //    {
+                    //        $transactionid = $maf->getTransactionID($serviceID, $cmbterm);
+                    //        $tracking1 = $transactionid['TransactionRequestLogID'];
+                    //    } 
                 //                        elseif ($source == 'Launchpad') {
                 //                            $transactionid = $maf->getTransactionIDLP($serviceID, $cmbterm);
                 //                            $tracking1 = $transactionid['TransactionRequestLogLPID'];
                 //                            $tracking1 = "LP" . $tracking1;
                 //                        }
-
-                        $url = $_ServiceAPI[$serviceID - 1];
-                        $capiusername = $_ptcasinoname;
-                        $capipassword = $_ptsecretkey;
-                        $capiplayername = $_CAPIPlayerName;
-                        $capiserverID = '';
-                        $transSearchInfo = $CasinoGamingCAPI->TransSearchInfo($servicegroupname, $serviceID, $url, $login, $capiusername, $capipassword, $capiplayername, $capiserverID, $tracking1, $tracking2, $tracking3, $tracking4);
-                        break;
+                    //    $url = $_ServiceAPI[$serviceID - 1];
+                    //    $capiusername = $_ptcasinoname;
+                    //    $capipassword = $_ptsecretkey;
+                    //    $capiplayername = $_CAPIPlayerName;
+                    //    $capiserverID = '';
+                    //    $transSearchInfo = $CasinoGamingCAPI->TransSearchInfo($servicegroupname, $serviceID, $url, $login, $capiusername, $capipassword, $capiplayername, $capiserverID, $tracking1, $tracking2, $tracking3, $tracking4);
+                    //    break;
+                    // Comment Out CCT 02/06/2018 END
                 }
 
                 //check if transaction is not successful
@@ -595,26 +618,28 @@ if ($connected && $connected2)
                             $apiresult = $transSearchInfo['TransactionInfo']['TrackingInfoTransactionSearchResult']['transactionStatus'];
                             $transrefid = $transSearchInfo['TransactionInfo']['TrackingInfoTransactionSearchResult']['transactionID'];
                         }
+                        // Comment Out CCT 02/06/2018 BEGIN
                         //MG / Vibrant Vegas
-                        elseif (isset($transSearchInfo['TransactionInfo']['MG'])) 
-                        {
-                            $transrefid = $transSearchInfo['TransactionInfo']['MG']['TransactionId'];
-                            $apiresult = $transSearchInfo['TransactionInfo']['MG']['TransactionStatus'];
-                        }
+                        //elseif (isset($transSearchInfo['TransactionInfo']['MG'])) 
+                        //{
+                        //    $transrefid = $transSearchInfo['TransactionInfo']['MG']['TransactionId'];
+                        //    $apiresult = $transSearchInfo['TransactionInfo']['MG']['TransactionStatus'];
+                        //}
                         //PT / PlayTech
-                        elseif (isset($transSearchInfo['TransactionInfo']['PT'])) 
-                        {
-                            $apiresult = $transSearchInfo['TransactionInfo']['PT']['status'];
-
-                            if ($apiresult == 'missing') 
-                            {
-                                $transrefid = 0;
-                            } 
-                            else 
-                            {
-                                $transrefid = $transSearchInfo['TransactionInfo']['PT']['id'];
-                            }
-                        }
+                        //elseif (isset($transSearchInfo['TransactionInfo']['PT'])) 
+                        //{
+                        //    $apiresult = $transSearchInfo['TransactionInfo']['PT']['status'];
+                        //    
+                        //    if ($apiresult == 'missing') 
+                        //    {
+                        //        $transrefid = 0;
+                        //    } 
+                        //    else 
+                        //    {
+                        //        $transrefid = $transSearchInfo['TransactionInfo']['PT']['id'];
+                        //    }
+                        //}
+                        // Comment Out CCT 02/06/2018 END
                         //CCT ADDED 12/27/2017 BEGIN
                         //Habanero
                         elseif (isset($transSearchInfo['TransactionInfo']['querytransmethodResult'])) 
@@ -623,6 +648,14 @@ if ($connected && $connected2)
                             $transrefid = $transSearchInfo['TransactionInfo']['querytransmethodResult']['TransactionId'];
                         }    
                         //CCT ADDED 12/27/2017 BEGIN
+                        //CCT ADDED 01/23/2018 BEGIN
+                        //Habanero
+                        elseif (isset($transSearchInfo['TransactionInfo']['EB'])) 
+                        {
+                            $apiresult = "TRANSACTIONSTATUS_APPROVED";
+                            $transrefid = $transSearchInfo['TransactionInfo']['EB']['TransactionId'];
+                        }    
+                        //CCT ADDED 01/23/2018 BEGIN                        
                     } 
                     else 
                     {
@@ -847,28 +880,30 @@ if ($connected && $connected2)
                                     $terminal_balance = $balance;
                                     $total_terminal_balance = $terminal_balance;
                                     break;
-                                case (strstr($txtcasino, "MG")):
-                                    $_MGCredentials = $_ServiceAPI[$serviceid - 1];
-                                    list($mgurl, $mgserverID) = $_MGCredentials;
-                                    $url = $mgurl;
-                                    $capiusername = $_CAPIUsername;
-                                    $capipassword = $_CAPIPassword;
-                                    $capiplayername = $_CAPIPlayerName;
-                                    $capiserverID = $mgserverID;
-                                    $balance = $CasinoGamingCAPI->getBalance($txtcasino, $serviceid, $url, $txtusername, $capiusername, $capipassword, $capiplayername, $capiserverID);
-                                    $terminal_balance = $balance;
-                                    $total_terminal_balance = $terminal_balance;
-                                    break;
-                                case (strstr($txtcasino, "PT")):
-                                    $url = $_ServiceAPI[$serviceid - 1];
-                                    $capiusername = $_ptcasinoname;
-                                    $capipassword = $_ptsecretkey;
-                                    $capiplayername = $_CAPIPlayerName;
-                                    $capiserverID = '';
-                                    $balance = $CasinoGamingCAPI->getBalance($txtcasino, $serviceid, $url, $txtusername, $capiusername, $capipassword, $capiplayername, $capiserverID);
-                                    $terminal_balance = $balance;
-                                    $total_terminal_balance = $terminal_balance;
-                                    break;
+                                // Comment Out CCT 02/06/2018 BEGIN                                    
+                                //case (strstr($txtcasino, "MG")):
+                                //    $_MGCredentials = $_ServiceAPI[$serviceid - 1];
+                                //    list($mgurl, $mgserverID) = $_MGCredentials;
+                                //    $url = $mgurl;
+                                //    $capiusername = $_CAPIUsername;
+                                //    $capipassword = $_CAPIPassword;
+                                //    $capiplayername = $_CAPIPlayerName;
+                                //    $capiserverID = $mgserverID;
+                                //    $balance = $CasinoGamingCAPI->getBalance($txtcasino, $serviceid, $url, $txtusername, $capiusername, $capipassword, $capiplayername, $capiserverID);
+                                //    $terminal_balance = $balance;
+                                //    $total_terminal_balance = $terminal_balance;
+                                //    break;
+                                //case (strstr($txtcasino, "PT")):
+                                //    $url = $_ServiceAPI[$serviceid - 1];
+                                //    $capiusername = $_ptcasinoname;
+                                //    $capipassword = $_ptsecretkey;
+                                //    $capiplayername = $_CAPIPlayerName;
+                                //    $capiserverID = '';
+                                //    $balance = $CasinoGamingCAPI->getBalance($txtcasino, $serviceid, $url, $txtusername, $capiusername, $capipassword, $capiplayername, $capiserverID);
+                                //    $terminal_balance = $balance;
+                                //    $total_terminal_balance = $terminal_balance;
+                                //    break;
+                                // Comment Out CCT 02/06/2018 END
                             }
                             //insert in terminal sessions is successful
                             if ($insrttermsess == true) 
@@ -972,12 +1007,14 @@ if ($connected && $connected2)
                         $status = '3';
                         switch (true) 
                         {
-                            case (strstr($txtcasino, "MG")):
-                                $apiresult = ($apiresult) ? 'true' : 'false';
-                                break;
-                            case (strstr($txtcasino, "PT")):
-                                $apiresult = $apiresult;
-                                break;
+                            // Comment Out CCT 02/06/2018 BEGIN
+                            //case (strstr($txtcasino, "MG")):
+                            //    $apiresult = ($apiresult) ? 'true' : 'false';
+                            //    break;
+                            //case (strstr($txtcasino, "PT")):
+                            //    $apiresult = $apiresult;
+                            //    break;
+                            // Comment Out CCT 02/06/2018 END
                             case (strstr($txtcasino, "RTG")):
                                 $apiresult = $apiresult;
                                 break;
@@ -986,6 +1023,11 @@ if ($connected && $connected2)
                                 $apiresult = $apiresult;
                                 break;
                             // CCT ADDED 12/27/2017 END
+                            // CCT ADDED 01/23/2018 BEGIN
+                            case (strstr($txtcasino, "EB")):
+                                $apiresult = $apiresult;
+                                break;
+                            // CCT ADDED 01/23/2018 END                            
                         }
                         $uptrans = $maf->uptransactionreqlogs($status, $txttransrefid, $transrefid, $apiresult);
 
@@ -1284,12 +1326,14 @@ if ($connected && $connected2)
                                 $converted_res = $apiresult;
                                 break;
                             // CCT ADDED 12/27/2017 END                            
-                            case (strstr($txtcasino, "MG")):
-                                $converted_res = ($apiresult) ? 'true' : 'false';
-                                break;
-                            case (strstr($txtcasino, "PT")):
-                                $converted_res = $apiresult;
-                                break;
+                            // Comment Out CCT 02/06/2018 BEGIN
+                            //case (strstr($txtcasino, "MG")):
+                            //    $converted_res = ($apiresult) ? 'true' : 'false';
+                            //    break;
+                            //case (strstr($txtcasino, "PT")):
+                            //    $converted_res = $apiresult;
+                            //    break;
+                            // Comment Out CCT 02/06/2018 END
                             case (strstr($txtcasino, "RTG")):
                                 $converted_res = $apiresult;
                                 break;

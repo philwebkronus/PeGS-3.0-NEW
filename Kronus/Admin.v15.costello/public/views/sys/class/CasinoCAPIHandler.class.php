@@ -10,12 +10,12 @@
 
 //require_once( ROOT_DIR . 'sys/class/nusoap/nusoap.php' );
 require_once( ROOT_DIR . 'sys/class/nusoap/class.wsdlcache.php' );
-require_once( ROOT_DIR . 'sys/class/MicrogamingCAPIWrapper.class.php' );
+//require_once( ROOT_DIR . 'sys/class/MicrogamingCAPIWrapper.class.php' ); // Comment Out CCT 02/06/2018 
 require_once( ROOT_DIR . 'sys/class/Array2XML.class.php');
 require_once( ROOT_DIR . 'sys/class/RealtimeGamingAPIWrapper.class.php' );
 require_once( ROOT_DIR . 'sys/class/RealtimeGamingUBAPIWrapper.class.php' );
 require_once( ROOT_DIR . 'sys/class/helper/common.class.php' );
-require_once( ROOT_DIR . 'sys/class/PlayTechAPIWrapper.class.php' );
+// require_once( ROOT_DIR . 'sys/class/PlayTechAPIWrapper.class.php' ); // Comment Out CCT 02/06/2018
 require_once( ROOT_DIR . 'sys/class/HabaneroAPIWrapper.class.php' ); // ADDED CCT 11/24/2017
 
 class CasinoCAPIHandler
@@ -24,8 +24,8 @@ class CasinoCAPIHandler
      * Casino Provider
      */
     const RTG = 1;
-    const PT = 2;
-    const MG = 3;    
+    // const PT = 2;  // Comment Out CCT 02/06/2018
+    //const MG = 3;   // Comment Out CCT 02/06/2018
     const RTG2 = 4;    
     const HAB = 6; // ADDED CCT 11/24/2017
 
@@ -92,29 +92,34 @@ class CasinoCAPIHandler
         $this->_isCaching = $configuration[ 'isCaching' ];
         $this->_isDebug = $configuration[ 'isDebug' ];
         
-        if ( $this->_gamingProvider == self::MG )
-        {
-            if ( $configuration['authLogin'] &&
-                 $configuration['authPassword'] && $configuration['playerName'] &&
-                 $configuration['serverID'])
-            {
-                $this->_authLogin = $configuration['authLogin'];
-                $this->_authPassword = $configuration['authPassword'];
-                $this->_playerName = $configuration['playerName'];
-                $this->_serverId = $configuration['serverID'];
-            }
-            
-            $this->_API = new MicrogamingCAPIWrapper( $this->_URI, $this->_authLogin, 
-                    $this->_authPassword, $this->_playerName,  $this->_serverId );
-        }
-        else if ( $this->_gamingProvider == self::PT )
-        {
-            $this->_URI = $configuration['URI'];
-            $this->_authLogin = $configuration['authLogin'];
-            $this->_secretKey = $configuration['secretKey'];
-            $this->_API = new PlayTechAPIWrapper($this->_URI, $this->_authLogin, $this->_secretKey);
-        }
-        else if ( $this->_gamingProvider == self::RTG )
+        // Comment Out CCT 02/06/2018 BEGIN
+        //if ( $this->_gamingProvider == self::MG )
+        //{
+        //    if ( $configuration['authLogin'] &&
+        //         $configuration['authPassword'] && $configuration['playerName'] &&
+        //         $configuration['serverID'])
+        //    {
+        //        $this->_authLogin = $configuration['authLogin'];
+        //        $this->_authPassword = $configuration['authPassword'];
+        //        $this->_playerName = $configuration['playerName'];
+        //        $this->_serverId = $configuration['serverID'];
+        //    }
+        //    
+        //    $this->_API = new MicrogamingCAPIWrapper( $this->_URI, $this->_authLogin, 
+        //            $this->_authPassword, $this->_playerName,  $this->_serverId );
+        //}
+        //else if ( $this->_gamingProvider == self::PT )
+        //{
+        //    $this->_URI = $configuration['URI'];
+        //    $this->_authLogin = $configuration['authLogin'];
+        //    $this->_secretKey = $configuration['secretKey'];
+        //    $this->_API = new PlayTechAPIWrapper($this->_URI, $this->_authLogin, $this->_secretKey);
+        //}
+        // Comment Out CCT 02/06/2018 END
+        // EDITED CCT 02/06/2018 BEGIN
+        //else if ( $this->_gamingProvider == self::RTG )
+        if ( $this->_gamingProvider == self::RTG )
+        // EDITED CCT 02/06/2018 END
         {
             if(isset ($configuration[ 'depositMethodId' ]) && isset($configuration[ 'withdrawalMethodId' ])) 
             {
@@ -208,18 +213,25 @@ class CasinoCAPIHandler
     //public function GetBalance( $login )
     public function GetBalance( $login , $password = "") // EDITED CCT 11/24/2017
     {
-        if ( $this->_gamingProvider == self::MG )
-        {
-            return $this->_API->GetBalance( $login );
-        }
-        else if ( $this->_gamingProvider == self::RTG || $this->_gamingProvider == self::RTG2)
+        // Comment Out CCT 02/06/2018 BEGIN
+        //if ( $this->_gamingProvider == self::MG )
+        //{
+        //    return $this->_API->GetBalance( $login );
+        //}
+        // Comment Out CCT 02/06/2018 END
+        // EDITED CCT 02/06/2018 BEGIN
+        //else if ( $this->_gamingProvider == self::RTG || $this->_gamingProvider == self::RTG2)
+        if ( $this->_gamingProvider == self::RTG || $this->_gamingProvider == self::RTG2)
+        // EDITED CCT 02/06/2018 END
         {            
            return $this->_API->GetBalance( $login ); 
         }
-        else if ( $this->_gamingProvider == self::PT )
-        {            
-           return $this->_API->GetBalance( $login ); 
-        }
+        // Comment Out CCT 02/06/2018 BEGIN
+        //else if ( $this->_gamingProvider == self::PT )
+        //{            
+        //   return $this->_API->GetBalance( $login ); 
+        //}
+        // Comment Out CCT 02/06/2018 END
         else if ( $this->_gamingProvider == self::HAB ) // Habanero ADDED CCT 11/24/2017
         {            
            return $this->_API->GetBalance( $login, $password ); 
@@ -239,18 +251,25 @@ class CasinoCAPIHandler
      */
     public function Deposit( $login, $amount, $tracking1 = '', $tracking2 = '', $tracking3 = '', $tracking4 = '' )
     {
-        if ( $this->_gamingProvider == self::MG )
-        {   
-            return $this->_API->Deposit( $login, $tracking1, $amount, $tracking2, $tracking3, $tracking4 );
-        }
-        else if ( $this->_gamingProvider == self::RTG )
+        // Comment Out CCT 02/06/2018 BEGIN
+        //if ( $this->_gamingProvider == self::MG )
+        //{   
+        //    return $this->_API->Deposit( $login, $tracking1, $amount, $tracking2, $tracking3, $tracking4 );
+        //}
+        // Comment Out CCT 02/06/2018 END
+        /// EDITED CCT 02/06/2018 BEGIN
+        //else if ( $this->_gamingProvider == self::RTG )
+        if ( $this->_gamingProvider == self::RTG )
+        /// EDITED CCT 02/06/2018 END
         {
             return $this->_API->Deposit( $login, $amount, $tracking1, $tracking2, $tracking3, $tracking4 );
         }
-        else if ( $this->_gamingProvider == self::PT )
-        {
-            return $this->_API->Deposit( $login, $tracking1, $amount, $tracking4 );
-        }
+        // Comment Out CCT 02/06/2018 BEGIN
+        //else if ( $this->_gamingProvider == self::PT )
+        //{
+        //    return $this->_API->Deposit( $login, $tracking1, $amount, $tracking4 );
+        //}
+        // Comment Out CCT 02/06/2018 END
     }
     
     /**
@@ -268,18 +287,25 @@ class CasinoCAPIHandler
     public function Withdraw( $login, $amount, $tracking1 = '', $tracking2 = '', $tracking3 = '', $tracking4 = '', $methodname = '', $locatorName = '', $password = '') 
             // EDITED CCT 11/27/2017
     {
-        if ( $this->_gamingProvider == self::MG )
-        {
-            return $this->_API->Withdraw( $login, $tracking1, $amount, $tracking2, $tracking3, $tracking4, $methodname );
-        }
-        else if ( $this->_gamingProvider == self::RTG || $this->_gamingProvider == self::RTG2)
+        // Comment Out CCT 02/06/2018 BEGIN
+        //if ( $this->_gamingProvider == self::MG )
+        //{
+        //    return $this->_API->Withdraw( $login, $tracking1, $amount, $tracking2, $tracking3, $tracking4, $methodname );
+        //}
+        // Comment Out CCT 02/06/2018 END
+        // EDITED CCT 02/06/2018 BEGIN
+        //else if ( $this->_gamingProvider == self::RTG || $this->_gamingProvider == self::RTG2)
+        if ( $this->_gamingProvider == self::RTG || $this->_gamingProvider == self::RTG2)
+        // EDITED CCT 02/06/2018 END    
         {
             return $this->_API->Withdraw( $login, $amount, $tracking1, $tracking2, $tracking3, $tracking4, $locatorName );
         }
-        else if ( $this->_gamingProvider == self::PT )
-        {
-            return $this->_API->Withdraw($login,$tracking1,$amount,$tracking2);
-        }
+        // Comment Out CCT 02/06/2018 BEGIN
+        //else if ( $this->_gamingProvider == self::PT )
+        //{
+        //    return $this->_API->Withdraw($login,$tracking1,$amount,$tracking2);
+        //}
+        // Comment Out CCT 02/06/2018 END
         else if ( $this->_gamingProvider === self::HAB ) // Habanero ADDED CCT 11/27/2017
         {
             return $this->_API->Withdraw($login, $amount, $password, $tracking1);
@@ -307,14 +333,16 @@ class CasinoCAPIHandler
         {
             return $this->_API->TransactionSearchInfo( $login, $tracking1, $tracking2, $tracking3, $tracking4 );
         }
-        else if ( $this->_gamingProvider == self::MG )
-        {
-            return $this->_API->GetMethodStatus( $tracking4 );
-        }
-        elseif ( $this->_gamingProvider == self::PT ) 
-        {
-            return $this->_API->CheckTransaction($tracking1);
-        }
+        // Comment Out CCT 02/06/2018 BEGIN        
+        //else if ( $this->_gamingProvider == self::MG )
+        //{
+        //    return $this->_API->GetMethodStatus( $tracking4 );
+        //}
+        //elseif ( $this->_gamingProvider == self::PT ) 
+        //{
+        //    return $this->_API->CheckTransaction($tracking1);
+        //}
+        // Comment Out CCT 02/06/2018 END
         // CCT ADDED 12/27/2017 BEGIN
         elseif ( $this->_gamingProvider == self::HAB ) 
         {
@@ -323,13 +351,15 @@ class CasinoCAPIHandler
         // CCT ADDED 12/27/2017 END
     }
     
-    public function GetMyBalance()
-    {
-        if ( $this->_gamingProvider == self::MG )
-        {
-            return $this->_API->GetMyBalance();
-        }
-    }
+    // Comment Out CCT 02/06/2018 BEGIN
+    //public function GetMyBalance()
+    //{
+    //    if ( $this->_gamingProvider == self::MG )
+    //    {
+    //        return $this->_API->GetMyBalance();
+    //    }
+    //}
+    // Comment Out CCT 02/06/2018 END
     
     /**
      * create terminal account whether RTG / MG
@@ -389,17 +419,19 @@ class CasinoCAPIHandler
                     $putInAffPID, $calledFromCasino, $hashedPassword, $agentID, $currentPosition, 
                     $thirdPartyPID, $isVIP);
         }
-        else if ( $this->_gamingProvider == self::MG)
-        {
-            return $this->_API->AddUser($aid, $login, $password, $email, 
-                    $fname, $lname, $dayphone, $evephone, $fax, $addr1, $addr2, $city, 
-                    $country, $province, $zip, $userID, $currency, $occupation, $sex, $birthdate, $alias);
-        }
-        else if ( $this->_gamingProvider == self::PT)
-        {
-            return $this->_API->NewPlayer($login,$password,$email,$fname,$lname,$birthdate,
-                    $addr1,$city,$country,$dayphone,$zip,$currency,$isVIP);
-        }
+        // Comment Out CCT 02/06/2018 BEGIN
+        //else if ( $this->_gamingProvider == self::MG)
+        //{
+        //    return $this->_API->AddUser($aid, $login, $password, $email, 
+        //            $fname, $lname, $dayphone, $evephone, $fax, $addr1, $addr2, $city, 
+        //            $country, $province, $zip, $userID, $currency, $occupation, $sex, $birthdate, $alias);
+        //}
+        //else if ( $this->_gamingProvider == self::PT)
+        //{
+        //    return $this->_API->NewPlayer($login,$password,$email,$fname,$lname,$birthdate,
+        //            $addr1,$city,$country,$dayphone,$zip,$currency,$isVIP);
+        //}
+        // Comment Out CCT 02/06/2018 END
         else if ( $this->_gamingProvider == self::HAB) // Habanero  ADDED CCT 12/14/2017
         {
             return $this->_API->AddUser($login, $password, $isVIP);
@@ -424,14 +456,16 @@ class CasinoCAPIHandler
         {
             return $this->_API->ChangePassword($casinoID, $loginName, $oldPassword, $newPassword);
         }
-        else if ($this->_gamingProvider == self::MG)
-        {
-            return $this->_API->ChangePassword($loginName, $oldPassword, $newPassword);
-        }
-        else if($this->_gamingProvider == self::PT)
-        {
-            return $this->_API->ChangePassword($loginName,$newPassword);
-        }
+        // Comment Out CCT 02/06/2018 BEGIN         
+        //else if ($this->_gamingProvider == self::MG)
+        //{
+        //    return $this->_API->ChangePassword($loginName, $oldPassword, $newPassword);
+        //}
+        //else if($this->_gamingProvider == self::PT)
+        //{
+        //    return $this->_API->ChangePassword($loginName,$newPassword);
+        //}
+        // Comment Out CCT 02/06/2018 END
         else if ( $this->_gamingProvider == self::HAB) // Habanero  ADDED CCT 12/14/2017
         {
             return $this->_API->ChangePassword($loginName, $newPassword);
@@ -453,14 +487,16 @@ class CasinoCAPIHandler
         {
             return $this->_API->GetAccountInfoByLogin($login);
         }
-        if( $this->_gamingProvider == self::MG)
-        {
-            return $this->_API->AccountExists($login);
-        }
-        if( $this->_gamingProvider == self::PT)
-        {
-            return $this->_API->GetPlayerInfo($login,$password);
-        }
+        // Comment Out CCT 02/06/2018 BEGIN
+        //if( $this->_gamingProvider == self::MG)
+        //{
+        //    return $this->_API->AccountExists($login);
+        //}
+        //if( $this->_gamingProvider == self::PT)
+        //{
+        //    return $this->_API->GetPlayerInfo($login,$password);
+        //}
+        // Comment Out CCT 02/06/2018 END
         // ADDED CCT 12/14/2017 BEGIN
         if( $this->_gamingProvider == self::HAB)
         { 
@@ -475,31 +511,34 @@ class CasinoCAPIHandler
      * @param type $password
      * @return type 
      */
-    public function ResetPassword($login, $password)
-    {
-        if( $this->_gamingProvider == self::MG)
-        {
-            return $this->_API->ResetPassword($login, $password);
-        }
-    }
+    // Comment Out CCT 02/06/2018 BEGIN
+    //public function ResetPassword($login, $password)
+    //{
+    //    if( $this->_gamingProvider == self::MG)
+    //    {
+    //        return $this->_API->ResetPassword($login, $password);
+    //    }
+    //}
+    // Comment Out CCT 02/06/2018 END
     
     /**
      * Unfreeze's player in PT, regardless of old password
      * @param type $login
      * @return type 
      */
-    public function unfreezePlayer($login, $frozen)
-    {
-        if( $this->_gamingProvider == self::PT)
-        {
-            return $this->_API->FreezePlayer($login, $frozen);
-        }
-        
-        if( $this->_gamingProvider == self::MG)
-        {
-            return $this->_API->UnlockUserAccount($login);
-        }
-    }
+    // Comment Out CCT 02/06/2018 BEGIN
+    //public function unfreezePlayer($login, $frozen)
+    //{
+    //    if( $this->_gamingProvider == self::PT)
+    //    {
+    //        return $this->_API->FreezePlayer($login, $frozen);
+    //    }
+    //    if( $this->_gamingProvider == self::MG)
+    //    {
+    //        return $this->_API->UnlockUserAccount($login);
+    //    }
+    //}
+    // Comment Out CCT 02/06/2018 END
     
     public function ChangeplayerClassification($pid, $playerClassID, $userID) 
     {       

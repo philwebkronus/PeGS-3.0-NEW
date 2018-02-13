@@ -117,7 +117,10 @@ class ApplicationSupport extends DBHandler
           if($ztransstatus[0] == 'All' && $ztranstype == 'All')
           {
               $stmt = "SELECT td.TransactionDetailsID, td.TransactionReferenceID, td.SiteID, tm.TerminalCode, td.TerminalID, td.TransactionType, td.Amount, td.Option2 AS LoyaltyCard, rf.ServiceName,
-                  td.DateCreated, td.Status, trl.ServiceTransactionID, a.Name FROM transactiondetails td 
+              -- EDITED CCT 02/08/2018 BEGIN  
+              --  td.DateCreated, td.Status, trl.ServiceTransactionID, a.Name FROM transactiondetails td 
+                  td.DateCreated, td.Status, trl.ServiceTransactionID, a.Name, td.LoyaltyCardNumber FROM transactiondetails td 
+              -- EDITED CCT 02/08/2018 END      
                   INNER JOIN transactionrequestlogs trl ON td.TransactionReferenceID = trl.TransactionReferenceID 
                   INNER JOIN accountdetails a ON td.CreatedByAID = a.AID
                   INNER JOIN terminals tm ON td.TerminalID = tm.TerminalID
@@ -134,7 +137,10 @@ class ApplicationSupport extends DBHandler
           elseif($ztransstatus[0] <> 'All' && $ztranstype == 'All')
           {
               $stmt = "SELECT td.TransactionDetailsID, td.TransactionReferenceID, td.SiteID, tm.TerminalCode, td.TerminalID, td.TransactionType, td.Amount, td.Option2 AS LoyaltyCard, rf.ServiceName,
-                  td.DateCreated, td.Status, trl.ServiceTransactionID, a.Name FROM transactiondetails td 
+              -- EDITED CCT 02/08/2018 BEGIN                    
+              --  td.DateCreated, td.Status, trl.ServiceTransactionID, a.Name FROM transactiondetails td 
+                  td.DateCreated, td.Status, trl.ServiceTransactionID, a.Name, td.LoyaltyCardNumber FROM transactiondetails td 
+              -- EDITED CCT 02/08/2018 END
                   INNER JOIN transactionrequestlogs trl ON td.TransactionReferenceID = trl.TransactionReferenceID 
                   INNER JOIN accountdetails a ON td.CreatedByAID = a.AID
                   INNER JOIN terminals tm ON td.TerminalID = tm.TerminalID
@@ -151,7 +157,10 @@ class ApplicationSupport extends DBHandler
           elseif($ztransstatus[0] == 'All' && $ztranstype <> 'All')
           {
               $stmt = "SELECT td.TransactionDetailsID, td.TransactionReferenceID, td.SiteID, tm.TerminalCode, td.TerminalID, td.TransactionType, td.Amount, td.Option2 AS LoyaltyCard, rf.ServiceName,
-                  td.DateCreated, td.Status, trl.ServiceTransactionID, a.Name FROM transactiondetails td 
+              -- EDITED CCT 02/08/2018 BEGIN                    
+              --  td.DateCreated, td.Status, trl.ServiceTransactionID, a.Name FROM transactiondetails td 
+                  td.DateCreated, td.Status, trl.ServiceTransactionID, a.Name, td.LoyaltyCardNumber FROM transactiondetails td 
+              -- EDITED CCT 02/08/2018 END
                   INNER JOIN transactionrequestlogs trl ON td.TransactionReferenceID = trl.TransactionReferenceID 
                   INNER JOIN accountdetails a ON td.CreatedByAID = a.AID
                   INNER JOIN terminals tm ON td.TerminalID = tm.TerminalID
@@ -169,7 +178,10 @@ class ApplicationSupport extends DBHandler
           else
           {
               $stmt = "SELECT td.TransactionDetailsID, td.TransactionReferenceID, td.SiteID, tm.TerminalCode, td.TerminalID, td.TransactionType, td.Amount, td.Option2 AS LoyaltyCard, rf.ServiceName,
-                  td.DateCreated, td.Status, trl.ServiceTransactionID, a.Name FROM transactiondetails td 
+              -- EDITED CCT 02/08/2018 BEGIN                    
+              --  td.DateCreated, td.Status, trl.ServiceTransactionID, a.Name FROM transactiondetails td 
+                  td.DateCreated, td.Status, trl.ServiceTransactionID, a.Name, td.LoyaltyCardNumber FROM transactiondetails td 
+              -- EDITED CCT 02/08/2018 END
                   INNER JOIN transactionrequestlogs trl ON td.TransactionReferenceID = trl.TransactionReferenceID 
                   INNER JOIN accountdetails a ON td.CreatedByAID = a.AID
                   INNER JOIN terminals tm ON td.TerminalID = tm.TerminalID
@@ -817,7 +829,10 @@ class ApplicationSupport extends DBHandler
                         INNER JOIN terminalservices ts ON  t.TerminalID = ts.TerminalID 
                         INNER JOIN ref_services rs ON ts.ServiceID = rs.ServiceID
                         where t.SiteID = '".$zsiteID."' AND t.Status = 1 
-                        AND t.isVIP = 0 AND rs.UserMode IN (0,2) AND rs.Status=1
+                        -- CCT EDITED 01/24/2018 BEGIN    
+                        -- AND t.isVIP = 0 AND rs.UserMode IN (0,2) AND rs.Status=1
+                        AND t.isVIP = 0 AND rs.UserMode IN (0,2,4) AND rs.Status=1
+                        -- CCT EDITED 01/24/2018 END
                       ORDER BY TerminalID ASC";
           }
           else
@@ -825,7 +840,10 @@ class ApplicationSupport extends DBHandler
               $stmt = "Select DISTINCT(t.TerminalID), t.TerminalCode from terminals t 
                         INNER JOIN terminalservices ts ON  t.TerminalID = ts.TerminalID 
                         INNER JOIN ref_services rs ON ts.ServiceID = rs.ServiceID 
-                        WHERE t.Status = 1 AND t.isVIP = 0 AND rs.UserMode IN(0,2) 
+                        -- CCT EDITED 01/24/2018 BEGIN
+                        -- WHERE t.Status = 1 AND t.isVIP = 0 AND rs.UserMode IN(0,2) 
+                        WHERE t.Status = 1 AND t.isVIP = 0 AND rs.UserMode IN(0,2,4) 
+                        -- CCT EDITED 01/24/2018 END
                       AND rs.Status=1 ORDER BY TerminalID ASC";
           }
           $this->executeQuery($stmt);

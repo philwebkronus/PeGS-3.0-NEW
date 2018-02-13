@@ -230,8 +230,8 @@ if($connected)
                     $oldusermode = $_POST['txtoldusermode'];
                     $mode = $upServiceMode;
                     $sessioncount = 0;
-                    
-                      // check if user mode change
+
+                    // check if user mode change
                     if($oldusermode != $upServiceMode)
                     {
                         //then check if has existing sessions
@@ -253,6 +253,20 @@ if($connected)
                     {
                         $msg = "Casino Services Update : Service Casino updated";
                     }
+                    
+                    // CCT ADDED 01/23/2018 BEGIN
+                    if ($upServiceGrp == "6") // Habanero
+                    {
+                        $mode = 0;
+                        $upServiceMode = 0;
+                    }
+
+                    if ($upServiceGrp == "7") // e-Bingo
+                    {
+                        $mode = 4;
+                        $upServiceMode = 4;
+                    }
+                    // CCT ADDED 01/23/2018 END                    
                     
                     //update service details and usermode
                     $serviceid = $ocasino->updateService($upServiceName, $upServiceAlias,

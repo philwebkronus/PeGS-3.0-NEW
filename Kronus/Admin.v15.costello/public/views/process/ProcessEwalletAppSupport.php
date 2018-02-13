@@ -856,6 +856,9 @@ if($connected && $connected2 && $connected3)
                                         case 0: $usermode = 'Terminal Based'; break;
                                         case 1: $usermode = 'User Based'; break;
                                         case 2: $usermode = 'Terminal Based'; break;
+                                        // CCT ADDED 01/25/2018 BEGIN
+                                        case 4: $usermode = 'Terminal Based'; break;
+                                        // CCT ADDED 01/25/2018 END
                                         default:
                                             break;
                                     }
@@ -1371,8 +1374,11 @@ if($connected && $connected2 && $connected3)
                             $arrsucccreated = array();
                             $errmsg = '';
                             
-                            if($usermode == 0 || $usermode == 2){
-                                
+                            // CCT EDITED 01/25/2018 BEGIN
+                            //if($usermode == 0 || $usermode == 2){
+                            if($usermode == 0 || $usermode == 2 || $usermode == 4)
+                            {
+                            // CCT EDITED 01/25/2018 END    
                                 foreach($rbatch as $val)
                                 {
                                    $vterminalID = $val['TerminalID'];
@@ -1392,6 +1398,8 @@ if($connected && $connected2 && $connected3)
 
                                    $password = $vgenpassword;
 
+                                   // Comment Out CCT 02/06/2018 BEGIN
+                                   /*
                                    //if provider is MG, then
                                    if(strstr($vprovidername, "MG") == true)
                                    {
@@ -1446,7 +1454,12 @@ if($connected && $connected2 && $connected3)
                                            $apisuccess = 0;
                                         }
                                    }
-                                   else
+                                   */
+                                   // Comment Out CCT 02/06/2018 END
+                                   // EDITED CCT 02/06/2018 BEGIN
+                                   //else
+                                   if(strstr($vprovidername, "MG") == false)
+                                   // EDITED CCT 02/06/2018 END
                                    {
                                        $cashierurl = $_ServiceAPI[$vserviceID -1]; 
                                        $playerurl = $_PlayerAPI[$vserviceID -1];
@@ -1474,7 +1487,11 @@ if($connected && $connected2 && $connected3)
                                                $vrtgoldpwd = $vapiResult['AccountInfo']['password'];
 
                                                //Call API Change Password
-                                               if($usermode == 0 || $usermode == 2){
+                                               // CCT EDITED 01/25/2018 BEGIN
+                                               //if($usermode == 0 || $usermode == 2){
+                                               if ($usermode == 0 || $usermode == 2 || $usermode == 4)
+                                               {
+                                               // CCT EDITED 01/25/2018 END
                                                    $vapiResult = $_CasinoGamingPlayerAPI->changeTerminalPassword($vprovidername, 
                                                                 $vserviceID, $playerurl, $casinoID, $login, $vrtgoldpwd, $password, 
                                                                 $capiusername, $capipassword, $capiplayername, $capiserverID);
@@ -1492,7 +1509,11 @@ if($connected && $connected2 && $connected3)
                                        else
                                        {
                                            //call CasinoAPI creation (RTG / MG)
-                                           if($usermode == 0 || $usermode == 2){
+                                           // CCT EDITED 01/25/2018 BEGIN
+                                           //if($usermode == 0 || $usermode == 2){
+                                           if($usermode == 0 || $usermode == 2 || $usermode == 4)
+                                           {
+                                           // CCT EDITED 01/25/2018 END
                                                $vapiResult = $_CasinoGamingPlayerAPI->createTerminalAccount($vprovidername, 
                                                                   $vserviceID, $playerurl, $login, $password, $aid, $currency, $email, $fname, 
                                                                   $lname, $dayphone, $evephone, $addr1, $addr2, $city, $country, $state, 
@@ -1515,8 +1536,11 @@ if($connected && $connected2 && $connected3)
                                    if(isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true)
                                    {
                                        $apisuccess = 1;
-
-                                       if($usermode == 0 || $usermode == 2){
+                                       // CCT EDITED 01/25/2018 BEGIN     
+                                       //if($usermode == 0 || $usermode == 2){
+                                       if($usermode == 0 || $usermode == 2 || $usermode == 4)
+                                       {
+                                       // CCT EDITED 01/25/2018 END
                                            if($vprovidername == 'RTG2'){
                                                 if(strstr($login, "VIP") == true){
                                                     $pid = $vapiResult['PID'];
@@ -2106,14 +2130,16 @@ if($connected && $connected2 && $connected3)
                 if(strstr($vservicename, "RTG")){
                     $key = "RTG";
                 }
+                // Comment Out CCT 02/06/2018 BEGIN
                 //verify if MG Server
-                if(strstr($vservicename, "MG")){
-                    $key = "MG";
-                }
+                //if(strstr($vservicename, "MG")){
+                //    $key = "MG";
+                //}
                 //verify if Playtech 
-                if(strstr($vservicename, "PT")){
-                    $key = "PT";
-                }
+                //if(strstr($vservicename, "PT")){
+                //    $key = "PT";
+                //}
+                // Comment Out CCT 02/06/2018 END
                 foreach($rservice as $row)
                 {
                     $rserverID = $row['ServiceID'];
@@ -2290,6 +2316,8 @@ if($connected && $connected2 && $connected3)
                                
                                $password = $vgenpassword;
                                
+                               // Comment Out CCT 02/06/2018 BEGIN
+                               /*
                                //if provider is MG, then
                                if(strstr($vprovidername, "MG") == true)
                                {
@@ -2353,8 +2381,13 @@ if($connected && $connected2 && $connected3)
                                        $apisuccess = 0;
                                     }
                                }
+                               */
+                               // Comment Out CCT 02/06/2018 END
                                //if provider is RTG, then
-                               else if(strstr($vprovidername, "RTG") == true)
+                               // EDITED CCT 02/06/2018 BEGIN
+                               //else if(strstr($vprovidername, "RTG") == true)
+                               if(strstr($vprovidername, "RTG") == true)
+                               // EDITED CCT 02/06/2018 END
                                {
                                    $cashierurl = $_ServiceAPI[$vserviceID -1]; 
                                    $playerurl = $_PlayerAPI[$vserviceID -1];
@@ -2383,7 +2416,11 @@ if($connected && $connected2 && $connected3)
                                            $isexists = 1;
                                            $oldpassword = $vapiResult['AccountInfo']['password'];
                                            
-                                           if($usermode == 0 || $usermode == 2){
+                                           // CCT EDITED 01/25/2018 BEGIN
+                                           //if($usermode == 0 || $usermode == 2){
+                                           if($usermode == 0 || $usermode == 2 || $usermode == 4)
+                                           {
+                                           // CCT EDITED 01/25/2018 END
                                                $vapiResult = $_CasinoGamingPlayerAPI->changeTerminalPassword($vprovidername, 
                                                             $vserviceID, $playerurl, $casinoID, $login, $oldpassword, $password, 
                                                             $capiusername, $capipassword, $capiplayername, $capiserverID);
@@ -2412,7 +2449,11 @@ if($connected && $connected2 && $connected3)
                                         else{
                                             //call CasinoAPI creation (RTG / MG)
                                             
-                                            if($usermode == 0 || $usermode == 2){
+                                            // CCT EDITED 01/25/2018 BEGIN
+                                            //if($usermode == 0 || $usermode == 2){
+                                            if($usermode == 0 || $usermode == 2 || $usermode == 4)
+                                            {
+                                            // CCT EDITED 01/25/2018 END
                                                 $vapiResult = $_CasinoGamingPlayerAPIUB->createTerminalAccount($vprovidername, 
                                                                   $vserviceID, $playerurl, $login, $password, $aid, $currency, $email, $fname, 
                                                                   $lname, $dayphone, $evephone, $addr1, $addr2, $city, $country, $state, 
@@ -2431,7 +2472,9 @@ if($connected && $connected2 && $connected3)
                                         }
                                    }
                                }
+                               // Comment Out CCT 02/06/2018 BEGIN
                                //if provider is PT, then
+                               /*
                                else
                                {
                                    $url = $_PlayerAPI[$vserviceID-1];
@@ -2485,6 +2528,8 @@ if($connected && $connected2 && $connected3)
                                         }
                                    } 
                                }
+                               */
+                               // Comment Out CCT 02/06/2018 END
                    
                                ///Check if API Result was successfull
                                if(isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true)
@@ -2693,23 +2738,25 @@ if($connected && $connected2 && $connected3)
                       }
                       
                       switch($vservicegrpID){
-                          case '2': //if provider is MG, then
-                                $_MGCredentials = $_PlayerAPI[$vserviceID -1]; 
-                                list($mgurl, $mgserverID) = $_MGCredentials;
-                                $url = $mgurl;
-                                $hashedPassword = '';
-                                $aid = $_MicrogamingUserType;
-                                $currency = $_MicrogamingCurrency;
-                                $capiusername = $_CAPIUsername;
-                                $capipassword = $_CAPIPassword;
-                                $capiplayername = $_CAPIPlayerName;
-                                $capiserverID = $mgserverID;
-                                break;
-                          case '3': //if provider is PT, then
-                                $url = $_PlayerAPI[$vserviceID-1];
-                                $capipassword = $_ptsecretkey;
-                                $capiusername = $_ptcasinoname;
-                                break;
+                          // Comment Out CCT 02/06/2018 BEGIN
+                          //case '2': //if provider is MG, then
+                          //      $_MGCredentials = $_PlayerAPI[$vserviceID -1]; 
+                          //      list($mgurl, $mgserverID) = $_MGCredentials;
+                          //      $url = $mgurl;
+                          //      $hashedPassword = '';
+                          //      $aid = $_MicrogamingUserType;
+                          //      $currency = $_MicrogamingCurrency;
+                          //      $capiusername = $_CAPIUsername;
+                          //      $capipassword = $_CAPIPassword;
+                          //      $capiplayername = $_CAPIPlayerName;
+                          //      $capiserverID = $mgserverID;
+                          //      break;
+                          //case '3': //if provider is PT, then
+                          //      $url = $_PlayerAPI[$vserviceID-1];
+                          //      $capipassword = $_ptsecretkey;
+                          //      $capiusername = $_ptcasinoname;
+                          //      break;
+                          // Comment Out CCT 02/06/2018 END
                           default :
                                 echo "Invalid Casino Provider";
                                 break;
@@ -2747,27 +2794,27 @@ if($connected && $connected2 && $connected3)
                            $password = $vgenpassword;
                            
                            switch($vservicegrpID){
-                               case '2': //if provider is MG, then
-                                    //Unlock Casino Account of MG
-                                    $vunlockResult = $_CasinoGamingPlayerAPI->unlockCasinoAccount($login, $vserviceID,$url, 
-                                                                                $capiusername, $capipassword, $capiplayername, $capiserverID);
-                                    
-                                   if(isset($vunlockResult['IsSucceed']) && $vunlockResult['IsSucceed'] == true){
-                                       //Call Reset Password API of MG
-                                    $vapiResult = $_CasinoGamingPlayerAPI->resetCasinoPassword($login, $password, $vserviceID, $url, 
-                                                                                               $capiusername, $capipassword, $capiplayername, 
-                                                                                               $capiserverID);
-                                   } else {
-                                       $vapiResult['IsSucceed'] = false;
-                                   }
-                                   
-                                    break;
-                                case '3': //if provider is PT, then
-                                    //$frozen = 0 for unfreeze state
-                                    $frozen = 0;
-                                    //call unfreeze function in PT
-                                    $vapiResult = $_CasinoGamingPlayerAPI->unfreeze($login, $url, $capiusername, $capipassword, $frozen);
-                                    break;
+                               // Comment Out CCT 02/06/2018 BEGIN
+                               //case '2': //if provider is MG, then
+                               //     //Unlock Casino Account of MG
+                               //     $vunlockResult = $_CasinoGamingPlayerAPI->unlockCasinoAccount($login, $vserviceID,$url, 
+                               //                                                 $capiusername, $capipassword, $capiplayername, $capiserverID);
+                               //    if(isset($vunlockResult['IsSucceed']) && $vunlockResult['IsSucceed'] == true){
+                               //        //Call Reset Password API of MG
+                               //     $vapiResult = $_CasinoGamingPlayerAPI->resetCasinoPassword($login, $password, $vserviceID, $url, 
+                               //                                                   $capiusername, $capipassword, $capiplayername, $capiserverID);
+                               //    } else {
+                               //        $vapiResult['IsSucceed'] = false;
+                               //    }
+                               //    
+                               //     break;
+                                //case '3': //if provider is PT, then
+                                //    //$frozen = 0 for unfreeze state
+                                //    $frozen = 0;
+                                //    //call unfreeze function in PT
+                                //    $vapiResult = $_CasinoGamingPlayerAPI->unfreeze($login, $url, $capiusername, $capipassword, $frozen);
+                                //    break;
+                                // Comment Out CCT 02/06/2018 END
                                 default :
                                     echo "Invalid Casino Provider";
                                     break;
@@ -2808,7 +2855,10 @@ if($connected && $connected2 && $connected3)
                 else
                     $msg = "Reset Casino Account: Invalid fields.";
                unset($vapiResult,$vsiteID, $vterminal, $vserviceID, $vsitecode, 
-                     $rservicegrpID, $_MGCredentials, $url, $login, $roldsite, 
+                     // EDITED CCT 02/06/2018 BEGIN
+                     //$rservicegrpID, $_MGCredentials, $url, $login, $roldsite, 
+                     $rservicegrpID, $url, $login, $roldsite, 
+                     // EDITED CCT 02/06/2018 END
                      $vgenpwdid, $isoldsite, $vretrievepwd);
                $_SESSION['mess'] = $msg;
                $oas->close();
@@ -2866,23 +2916,25 @@ if($connected && $connected2 && $connected3)
 
                         //set casino credentials
                         switch (true){
-                                case strstr($servername, "MG"): //if provider is MG, then
-                                    $_MGCredentials = $_PlayerAPI[$vserviceID -1]; 
-                                    list($mgurl, $mgserverID) = $_MGCredentials;
-                                    $url = $mgurl;
-                                    $hashedPassword = '';
-                                    $aid = $_MicrogamingUserType;
-                                    $currency = $_MicrogamingCurrency;
-                                    $capiusername = $_CAPIUsername;
-                                    $capipassword = $_CAPIPassword;
-                                    $capiplayername = $_CAPIPlayerName;
-                                    $capiserverID = $mgserverID;
-                                    break;
-                                case strstr($servername, "PT"): //if provider is PT, then
-                                    $url = $_PlayerAPI[$vserviceID-1];
-                                    $capipassword = $_ptsecretkey;
-                                    $capiusername = $_ptcasinoname;
-                                    break;
+                                // Comment Out CCT 02/06/2018 BEGIN
+                                //ase strstr($servername, "MG"): //if provider is MG, then
+                                //    $_MGCredentials = $_PlayerAPI[$vserviceID -1]; 
+                                //    list($mgurl, $mgserverID) = $_MGCredentials;
+                                //    $url = $mgurl;
+                                //    $hashedPassword = '';
+                                //    $aid = $_MicrogamingUserType;
+                                //    $currency = $_MicrogamingCurrency;
+                                //    $capiusername = $_CAPIUsername;
+                                //    $capipassword = $_CAPIPassword;
+                                //    $capiplayername = $_CAPIPlayerName;
+                                //    $capiserverID = $mgserverID;
+                                //    break;
+                                //case strstr($servername, "PT"): //if provider is PT, then
+                                //    $url = $_PlayerAPI[$vserviceID-1];
+                                //    $capipassword = $_ptsecretkey;
+                                //    $capiusername = $_ptcasinoname;
+                                //    break;
+                                // Comment Out CCT 02/06/2018 END
                                 default :
                                     echo "Reset Casino Account User Based: Invalid Casino Provider";
                                     break;
@@ -2894,27 +2946,27 @@ if($connected && $connected2 && $connected3)
 
                         //call casino api's to reset particular casino account
                         switch (true){
-                            case strstr($servername, "MG"): //if provider is MG, then
-                                    //Unlock Casino Account of MG
-                                    $vunlockResult = $_CasinoGamingPlayerAPI->unlockCasinoAccount($login, $vserviceID,$url, 
-                                                                                $capiusername, $capipassword, $capiplayername, $capiserverID);
-
-                                   if(isset($vunlockResult['IsSucceed']) && $vunlockResult['IsSucceed'] == true){
-                                    //Call Reset Password API of MG
-                                    $vapiResult = $_CasinoGamingPlayerAPI->resetCasinoPassword($login, $password, $vserviceID, $url, 
-                                                                                               $capiusername, $capipassword, $capiplayername, 
-                                                                                               $capiserverID);
-                                   } else {
-                                       $vapiResult['IsSucceed'] = false;
-                                   }
-
-                                    break;
-                            case strstr($servername, "PT"): //if provider is PT, then
-                                    //$frozen 0 for unfreeze state
-                                    $frozen = 0;
-                                    //call unfreeze function in PT
-                                    $vapiResult = $_CasinoGamingPlayerAPI->unfreeze($login, $url, $capiusername, $capipassword, $frozen);
-                                    break;
+                            // Comment Out CCT 02/06/2018 BEGIN
+                            //case strstr($servername, "MG"): //if provider is MG, then
+                            //        //Unlock Casino Account of MG
+                            //        $vunlockResult = $_CasinoGamingPlayerAPI->unlockCasinoAccount($login, $vserviceID,$url, 
+                            //                                                    $capiusername, $capipassword, $capiplayername, $capiserverID);
+                            //       if(isset($vunlockResult['IsSucceed']) && $vunlockResult['IsSucceed'] == true){
+                            //        //Call Reset Password API of MG
+                            //        $vapiResult = $_CasinoGamingPlayerAPI->resetCasinoPassword($login, $password, $vserviceID, $url, 
+                            //                      $capiusername, $capipassword, $capiplayername, $capiserverID);
+                            //       } else {
+                            //           $vapiResult['IsSucceed'] = false;
+                            //       }
+                            //        break;
+                            // Comment Out CCT 02/06/2018 BEGIN
+                            //case strstr($servername, "PT"): //if provider is PT, then
+                            //        //$frozen 0 for unfreeze state
+                            //        $frozen = 0;
+                            //        //call unfreeze function in PT
+                            //        $vapiResult = $_CasinoGamingPlayerAPI->unfreeze($login, $url, $capiusername, $capipassword, $frozen);
+                            //        break;
+                            // Comment Out CCT 02/06/2018 END
                             default :
                                 echo "Reset Casino Account User Based Invalid Casino Provider";
                             break;
@@ -2937,7 +2989,10 @@ if($connected && $connected2 && $connected3)
                         $msg = "Reset Casino Account User Based: Invalid fields.";
                    
                     unset($vapiResult,$vsiteID, $vterminal, $vserviceID, $vsitecode, 
-                         $rservicegrpID, $_MGCredentials, $url, $login, $roldsite, 
+                         // EDITED CCT 02/06/2018 BEGIN
+                         //$rservicegrpID, $_MGCredentials, $url, $login, $roldsite, 
+                         $rservicegrpID, $url, $login, $roldsite, 
+                         // EDITED CCT 02/06/2018 END
                          $vgenpwdid, $isoldsite, $vretrievepwd);
            }
            
@@ -3272,11 +3327,14 @@ if($connected && $connected2 && $connected3)
         foreach($rresult as $val){
             $vserver = $val['ServiceName'];
             $vserviceID = $val['ServiceID'];
-            if(strstr($vserver, "MG")){
-                array_push($mgprovider, array("ServiceName"=>$vserver,"ServiceID"=>$vserviceID));
-            } else if(strstr($vserver, "PT")){
-                array_push($mgprovider, array("ServiceName"=>$vserver,"ServiceID"=>$vserviceID));
-            }
+            // Comment Out CCT 02/06/2018 BEGIN
+            //if(strstr($vserver, "MG")){
+            //    array_push($mgprovider, array("ServiceName"=>$vserver,"ServiceID"=>$vserviceID));
+            //} 
+            //else if(strstr($vserver, "PT")){
+            //    array_push($mgprovider, array("ServiceName"=>$vserver,"ServiceID"=>$vserviceID));
+            //}
+            // Comment Out CCT 02/06/2018 END
         }
         if(count($mgprovider) > 0)
         {

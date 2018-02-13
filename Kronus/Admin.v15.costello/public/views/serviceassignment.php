@@ -268,33 +268,45 @@ if (isset($_SESSION['acctype']))
                                 }
                             }
                         }
+                        // Comment Out CCT 02/06/2018 BEGIN
                         //if "MG" (regardless of case sensetivity) was found on the menugroup, then display only MG server/s
-                        if (preg_match("/MG/i", $menugroup))
-                        {
-                            //select only MG Servers from the DB 
-                            if ($vservicegroup == "2")
-                            {
-                                echo "<option value=\"" . $vserviceID . "\">" . $vname . "</option>";
-                            }
-                        }
-                        if (preg_match("/PT/i", $menugroup))
-                        {
-                            //select only MG Servers from the DB 
-                            if ($vservicegroup == "3")
-                            {
-                                echo "<option value=\"" . $vserviceID . "\">" . $vname . "</option>";
-                            }
-                        }
+                        //if (preg_match("/MG/i", $menugroup))
+                        //{
+                        //    //select only MG Servers from the DB 
+                        //    if ($vservicegroup == "2")
+                        //    {
+                        //        echo "<option value=\"" . $vserviceID . "\">" . $vname . "</option>";
+                        //    }
+                        //}
+                        //if (preg_match("/PT/i", $menugroup))
+                        //{
+                        //    //select only PT Servers from the DB 
+                        //    if ($vservicegroup == "3")
+                        //    {
+                        //        echo "<option value=\"" . $vserviceID . "\">" . $vname . "</option>";
+                        //    }
+                        //}
+                        // Comment Out CCT 02/06/2018 END
                         // CCT ADDED 12/14/2017 BEGIN
                         if (preg_match("/Habanero/i", $menugroup))
                         {
-                            //select only MG Servers from the DB 
+                            //select only Habanero Servers from the DB 
                             if ($vservicegroup == "6")
                             {
                                 echo "<option value=\"" . $vserviceID . "\">" . $vname . "</option>";
                             }
                         } 
                         // CCT ADDED 12/14/2017 END
+                        // CCT ADDED 01/18/2018 BEGIN
+                        if (preg_match("/e-Bingo/i", $menugroup))
+                        {
+                            //select only eBingo Servers from the DB 
+                            if ($vservicegroup == "7")
+                            {
+                                echo "<option value=\"" . $vserviceID . "\">" . $vname . "</option>";
+                            }
+                        } 
+                        // CCT ADDED 01/18/2018 END                        
                     }
                     echo "</select>";
                 ?>

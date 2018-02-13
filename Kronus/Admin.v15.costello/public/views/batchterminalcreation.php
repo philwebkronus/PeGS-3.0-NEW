@@ -110,13 +110,21 @@ if(isset($_SESSION['acctype']))
                         dataType: 'json',
                         success: function(data)
                         {
-                            var pt = 0;
+                            // var pt = 0;  //Comment Out CCT 02/06/2018
                             var rtg = 0;
-                            var mg = 0;
+                            //var mg = 0; // Comment Out CCT 02/06/2018
                             var hab = 0; // CCT ADDED 12/15/2017
+                            var eb = 0; // CCT ADDED 01/22/2018
                             
                             jQuery.each(data, function()
                             {
+                                // ADDED CCT 01/22/2018 BEGIN
+                                if(this.ServiceGroupID == 7)
+                                {
+                                    eb = parseInt(eb) + 1;
+                                }
+                                // ADDED CCT 01/22/2018 END
+                                
                                 // ADDED CCT 12/15/2017 BEGIN
                                 if(this.ServiceGroupID == 6)
                                 {
@@ -124,11 +132,13 @@ if(isset($_SESSION['acctype']))
                                 }
                                 // ADDED CCT 12/15/2017 END
 
-                                if(this.ServiceGroupID == 2)
-                                {
-                                    mg = parseInt(mg) + 1;
-                                }
-
+                                // Comment Out CCT 02/06/2018 BEGIN    
+                                //if(this.ServiceGroupID == 2)
+                                //{
+                                //    mg = parseInt(mg) + 1;
+                                //}
+                                // Comment Out CCT 02/06/2018 END
+                                
                                 if(this.ServiceGroupID == 1)
                                 {
                                     rtg = parseInt(rtg) + 1;
@@ -138,11 +148,13 @@ if(isset($_SESSION['acctype']))
                                 {
                                     rtg = parseInt(rtg) + 1;
                                 }
-
-                                if(this.ServiceGroupID == 3)
-                                {
-                                    pt = parseInt(pt) + 1;
-                                }
+                                    
+                                // Comment Out CCT 02/06/2018 BEGIN    
+                                //if(this.ServiceGroupID == 3)
+                                //{
+                                //    pt = parseInt(pt) + 1;
+                                //}
+                                // Comment Out CCT 02/06/2018 END
                             });
 
                             var terminals = jQuery("#cmbterminals").val();
@@ -153,6 +165,13 @@ if(isset($_SESSION['acctype']))
 
                             tblRow += "<tr>";
                             tblRow += "<td>Terminal</td>";
+                            // ADDED CCT 01/22/2018 BEGIN
+                            if(eb > 0)
+                            {
+                                tblRow += "<td id=\"eb\" style=\"text-align: center;\"> e-Bingo Servers</td>";
+                            }
+                            // ADDED CCT 01/22/2018 END
+                            
                             // ADDED CCT 12/15/2017 BEGIN
                             if(hab > 0)
                             {
@@ -160,26 +179,31 @@ if(isset($_SESSION['acctype']))
                             }
                             // ADDED CCT 12/15/2017 END
 
-                            if(mg > 0)
-                            {
-                                tblRow += "<td id =\"mg\" style=\"text-align: center;\"> MG Servers</td>";
-                            }
+                            // Comment Out CCT 02/06/2018 BEGIN
+                            //if(mg > 0)
+                            //{
+                            //    tblRow += "<td id =\"mg\" style=\"text-align: center;\"> MG Servers</td>";
+                            //}
+                            // Comment Out CCT 02/06/2018 END
                             
                             if(rtg > 0)
                             {
                                 tblRow += "<td id=\"rtg\" style=\"text-align: center;\"> RTG Servers</td>";
                             }
                             
-                            if(pt > 0)
-                            {
-                                tblRow += "<td id=\"pt\" style=\"text-align: center;\"> PT Servers</td>";
-                            }
+                            // Comment Out CCT 02/06/2018 BEGIN
+                            //if(pt > 0)
+                            //{
+                            //    tblRow += "<td id=\"pt\" style=\"text-align: center;\"> PT Servers</td>";
+                            //}
+                            // Comment Out CCT 02/06/2018 END
                             tblRow += "</tr>";
                             
-                            mgserver = 0;
+                            //mgserver = 0; // Comment Out CCT 02/06/2018 
                             rtgserver = 0;
-                            ptserver = 0;
+                            // ptserver = 0;  // Comment Out CCT 02/06/2018
                             habserver = 0; // ADDED CCT 12/15/2017
+                            ebserver = 0; // ADDED CCT 01/22/2018
 
                             for(ctr = 1; ctr <= terminals; ctr++ )
                             {
@@ -194,16 +218,24 @@ if(isset($_SESSION['acctype']))
 
                                     switch(this.ServiceGroupID)
                                     {
+                                        // ADDED CCT 01/22/2018 BEGIN
+                                        case '7':
+                                            ebserver = ebserver + 1;
+                                            tblRow += "<td><input type=\"radio\" id=\"optserver4["+ctr+"]\" name=\"optserver["+ctr+"]\" value="+id+" />"+this.ServiceName+"</td>";
+                                            break;                                            
+                                        // ADDED CCT 01/22/2018 END
                                         // ADDED CCT 12/15/2017 BEGIN
                                         case '6':
                                             habserver = habserver + 1;
                                             tblRow += "<td><input type=\"radio\" id=\"optserver3["+ctr+"]\" name=\"optserver["+ctr+"]\" value="+id+" />"+this.ServiceName+"</td>";
                                             break;                                            
                                         // ADDED CCT 12/15/2017 END
-                                        case '2':
-                                            mgserver = mgserver + 1;
-                                            tblRow += "<td><input type=\"radio\" id=\"optserver["+ctr+"]\" name=\"optserver["+ctr+"]\" value="+id+" />"+this.ServiceName+"</td>";
-                                            break;
+                                        // Comment Out CCT 02/06/2018 BEGIN
+                                        //case '2':
+                                        //    mgserver = mgserver + 1;
+                                        //    tblRow += "<td><input type=\"radio\" id=\"optserver["+ctr+"]\" name=\"optserver["+ctr+"]\" value="+id+" />"+this.ServiceName+"</td>";
+                                        //    break;
+                                        // Comment Out CCT 02/06/2018 END
                                         case '1':
                                             rtgserver = rtgserver + 1;
                                             tblRow += "<td><input type=\"radio\" id=\"optserver1["+ctr+"]\" name=\"optserver["+ctr+"]\" value="+id+" />"+this.ServiceName+"</td>";
@@ -211,26 +243,30 @@ if(isset($_SESSION['acctype']))
                                         case '4':
                                             rtgserver = rtgserver + 1;
                                             tblRow += "<td><input type=\"radio\" id=\"optserver1["+ctr+"]\" name=\"optserver["+ctr+"]\" value="+id+" />"+this.ServiceName+"</td>";
-                                            break;    
-                                        case '3':
-                                            ptserver = ptserver + 1;
-                                            tblRow += "<td><input type=\"radio\" id=\"optserver2["+ctr+"]\" name=\"optserver["+ctr+"]\" value="+id+" />"+this.ServiceName+"</td>";
-                                            break;
+                                            break; 
+                                        // Comment Out CCT 02/06/2018 BEGIN
+                                        //case '3':
+                                        //    ptserver = ptserver + 1;
+                                        //    tblRow += "<td><input type=\"radio\" id=\"optserver2["+ctr+"]\" name=\"optserver["+ctr+"]\" value="+id+" />"+this.ServiceName+"</td>";
+                                        //    break;
+                                        // Comment Out CCT 02/06/2018 END
                                     }
                                 });
                                 
+                                ebcolspan = ebserver/terminals; // ADDED CCT 01/22/2018
                                 habcolspan = habserver/terminals; // ADDED CCT 12/15/2017
-                                mgcolspan = mgserver/terminals;                                
+                                // mgcolspan = mgserver/terminals; // Comment Out CCT 02/06/2018                               
                                 rtgcolspan = rtgserver/terminals;
-                                ptcolspan = ptserver/terminals;
+                                // ptcolspan = ptserver/terminals; // Comment Out CCT 02/06/2018
                                 tblRow += "</tr>";
                             }
 
                             jQuery("#terminals").html(tblRow);
+                            jQuery("#eb").attr('colspan',ebcolspan); // ADDED CCT 01/22/2018                                                        
                             jQuery("#hab").attr('colspan',habcolspan); // ADDED CCT 12/15/2017                            
-                            jQuery("#mg").attr('colspan',mgcolspan);                            
+                            //jQuery("#mg").attr('colspan',mgcolspan); // Comment Out CCT 02/06/2018                           
                             jQuery("#rtg").attr('colspan',rtgcolspan); 
-                            jQuery("#pt").attr('colspan',ptcolspan);
+                            //jQuery("#pt").attr('colspan',ptcolspan); // Comment Out CCT 02/06/2018
                         },
                         error: function(XMLHttpRequest, e)
                         {
