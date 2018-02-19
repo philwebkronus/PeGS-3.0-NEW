@@ -65,7 +65,7 @@ class HabaneroAPIWrapper {
     }
 
     public function TransactionSearchInfo($RequestId) {
-        $queryTransferResponse = $this->_API->QueryPlayer($RequestId);
+        $queryTransferResponse = $this->_API->QueryTransfer($RequestId);
 
         if (!$this->_API->GetError()) {
             if (is_array($queryTransferResponse)) {

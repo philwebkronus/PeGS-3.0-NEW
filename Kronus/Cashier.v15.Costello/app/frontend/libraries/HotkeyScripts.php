@@ -1033,7 +1033,7 @@
             alert(mode);
             if (mode != 2 && mode != 4)
             {
-                if (!startSessionStandAloneChecking())
+                if (!startSessionChecking())
                 {
                     return false;
                 }

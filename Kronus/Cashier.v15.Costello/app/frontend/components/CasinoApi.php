@@ -320,16 +320,19 @@ class CasinoApi {
                 MI_Database::close();
                 $balanceinfo = $casinoApiHandler->GetBalance($casinoUsername);
                 break;
-            case 'MG':
-                $casinoApiHandler = $this->configureMg($terminal_id, $service_id);
-                MI_Database::close();
-                $balanceinfo = $casinoApiHandler->GetBalance($casinoUsername);
-                break;
-            case 'PT':
-                $casinoApiHandler = $this->configurePT($terminal_id, $service_id);
-                MI_Database::close();
-                $balanceinfo = $casinoApiHandler->GetBalance($casinoUsername);
-                break;
+            /*
+              case 'MG':
+              $casinoApiHandler = $this->configureMg($terminal_id, $service_id);
+              MI_Database::close();
+              $balanceinfo = $casinoApiHandler->GetBalance($casinoUsername);
+              break;
+              case 'PT':
+              $casinoApiHandler = $this->configurePT($terminal_id, $service_id);
+              MI_Database::close();
+              $balanceinfo = $casinoApiHandler->GetBalance($casinoUsername);
+              break;
+             * 
+             */
             /*
              * John Aaron Vida
              * 12/14/2017
@@ -422,16 +425,19 @@ class CasinoApi {
                 MI_Database::close();
                 $balanceinfo = $casinoApiHandler->GetBalance($casinoUsername);
                 break;
-            case 'MG':
-                $casinoApiHandler = $this->configureMg($terminal_id, $service_id);
-                MI_Database::close();
-                $balanceinfo = $casinoApiHandler->GetBalance($casinoUsername);
-                break;
-            case 'PT':
-                $casinoApiHandler = $this->configurePT($terminal_id, $service_id);
-                MI_Database::close();
-                $balanceinfo = $casinoApiHandler->GetBalance($casinoUsername);
-                break;
+            /*
+              case 'MG':
+              $casinoApiHandler = $this->configureMg($terminal_id, $service_id);
+              MI_Database::close();
+              $balanceinfo = $casinoApiHandler->GetBalance($casinoUsername);
+              break;
+              case 'PT':
+              $casinoApiHandler = $this->configurePT($terminal_id, $service_id);
+              MI_Database::close();
+              $balanceinfo = $casinoApiHandler->GetBalance($casinoUsername);
+              break;
+             * 
+             */
 
             /*
              * John Aaron Vida
@@ -556,16 +562,19 @@ class CasinoApi {
                 MI_Database::close();
                 $balanceinfo = $casinoApiHandler->GetBalance($terminal_name);
                 break;
-            case 'MG':
-                $casinoApiHandler = $this->configureMg($terminal_id, $service_id);
-                MI_Database::close();
-                $balanceinfo = $casinoApiHandler->GetBalance($terminal_name);
-                break;
-            case 'PT':
-                $casinoApiHandler = $this->configurePT($terminal_id, $service_id);
-                MI_Database::close();
-                $balanceinfo = $casinoApiHandler->GetBalance($terminal_name);
-                break;
+            /*
+              case 'MG':
+              $casinoApiHandler = $this->configureMg($terminal_id, $service_id);
+              MI_Database::close();
+              $balanceinfo = $casinoApiHandler->GetBalance($terminal_name);
+              break;
+              case 'PT':
+              $casinoApiHandler = $this->configurePT($terminal_id, $service_id);
+              MI_Database::close();
+              $balanceinfo = $casinoApiHandler->GetBalance($terminal_name);
+              break;
+             * 
+             */
 
             /*
              * John Aaron Vida
@@ -663,7 +672,7 @@ class CasinoApi {
                 $balanceinfo = $casinoApiHandler->GetBalance($terminal_name);
                 break;
             /*
-              case 'Vibrant Vegas':
+              case 'Viva Las Vegas':
               $casinoApiHandler = $this->configureMg($terminal_id, $service_id);
               MI_Database::close();
               $balanceinfo = $casinoApiHandler->GetBalance($terminal_name);
@@ -683,7 +692,7 @@ class CasinoApi {
              * Added ::Habanero
              */
             //case 'Habanero':
-            case 'Vibrant Vegas':
+            case 'Viva Las Vegas':
                 $casinoApiHandler = $this->configureHabanero($terminal_id, $service_id, 0);
                 MI_Database::close();
                 $balanceinfo = $casinoApiHandler->GetBalanceHabanero($terminal_name, $terminal_pwd);
@@ -697,7 +706,7 @@ class CasinoApi {
          * Added :: For Habanero
          */
         //if ($service_name == 'habanero') {
-        if ($service_name == 'Vibrant Vegas') {
+        if ($service_name == 'Viva Las Vegas') {
             $terminal_balance = $balanceinfo['TransactionInfo']['RealBalance'];
             $redeemable_amount = $terminal_balance;
         }
@@ -758,7 +767,7 @@ class CasinoApi {
                 $balanceinfo = $casinoApiHandler->GetBalance($casinoUsername);
                 break;
             /*
-              case 'Vibrant Vegas':
+              case 'Viva Las Vegas':
               $casinoApiHandler = $this->configureMg($terminal_id, $service_id);
               MI_Database::close();
               $balanceinfo = $casinoApiHandler->GetBalance($casinoUsername);
@@ -776,8 +785,7 @@ class CasinoApi {
              * 12/14/2017
              * Added ::Habanero
              */
-            //case 'Habanero':
-            case 'Vibrant Vegas':
+            case 'Viva Las Vegas':
                 $casinoApiHandler = $this->configureHabanero($terminal_id, $service_id, 0);
                 MI_Database::close();
                 $balanceinfo = $casinoApiHandler->GetBalanceHabanero($terminal_name, $terminal_pwd);
@@ -789,7 +797,7 @@ class CasinoApi {
          * Added :: For Habanero
          */
         //if ($service_name == 'Habanero') {
-        if ($service_name == 'Vibrant Vegas') {
+        if ($service_name == 'Viva Las Vegas') {
             $terminal_balance = $balanceinfo['TransactionInfo']['RealBalance'];
             $redeemable_amount = $terminal_balance;
         }
@@ -853,28 +861,30 @@ class CasinoApi {
 
         $refservicesmodel = new RefServicesModel();
         $service_name = $refservicesmodel->getServiceNameById($service_id);
+        /*
+          //if PT, freeze and force logout its account
+          if (strpos($service_name, 'PT') !== false || strpos($service_name, 'Rockin\' Reno') !== false) {
+          $casinoApiHandler = $this->configurePT($terminal_id, $service_id);
+          MI_Database::close();
 
-        //if PT, freeze and force logout its account
-        if (strpos($service_name, 'PT') !== false || strpos($service_name, 'Rockin\' Reno') !== false) {
-            $casinoApiHandler = $this->configurePT($terminal_id, $service_id);
-            MI_Database::close();
+          $kickPlayerResult = $casinoApiHandler->KickPlayer($username);
 
-            $kickPlayerResult = $casinoApiHandler->KickPlayer($username);
+          $changeStatusResult = $casinoApiHandler->ChangeAccountStatus($username, 1);
 
-            $changeStatusResult = $casinoApiHandler->ChangeAccountStatus($username, 1);
+          if (!$changeStatusResult['IsSucceed']) {
+          $message = $changeStatusResult['ErrorMessage'];
+          logger($message);
+          CasinoApi::throwError($message);
+          }
 
-            if (!$changeStatusResult['IsSucceed']) {
-                $message = $changeStatusResult['ErrorMessage'];
-                logger($message);
-                CasinoApi::throwError($message);
-            }
-
-            if (!$kickPlayerResult['IsSucceed']) {
-                $message = $kickPlayerResult['ErrorMessage'];
-                logger($message);
-                CasinoApi::throwError($message);
-            }
-        }
+          if (!$kickPlayerResult['IsSucceed']) {
+          $message = $kickPlayerResult['ErrorMessage'];
+          logger($message);
+          CasinoApi::throwError($message);
+          }
+          }
+         * 
+         */
     }
 
     /**
@@ -896,15 +906,17 @@ class CasinoApi {
      * @param int $service_id
      * @param str $username
      * @return type
+
+      public function RevertBrokenGamesAPI($terminal_id, $service_id, $username) {
+      $isRevert = 1; //0-No, 1-Yes
+      $_casinoAPIHandler = $this->configurePT($terminal_id, $service_id, $isRevert);
+      $game_mode = Mirage::app()->param['revertbroken_api']['REVERT_BROKEN_GAME_MODE'];
+      $player_mode = Mirage::app()->param['revertbroken_api']['PLAYER_MODE'];
+      $response = $_casinoAPIHandler->RevertBrokenGamesAPI($username, $player_mode, $game_mode);
+      return $response;
+      }
+     *  
      */
-    public function RevertBrokenGamesAPI($terminal_id, $service_id, $username) {
-        $isRevert = 1; //0-No, 1-Yes
-        $_casinoAPIHandler = $this->configurePT($terminal_id, $service_id, $isRevert);
-        $game_mode = Mirage::app()->param['revertbroken_api']['REVERT_BROKEN_GAME_MODE'];
-        $player_mode = Mirage::app()->param['revertbroken_api']['PLAYER_MODE'];
-        $response = $_casinoAPIHandler->RevertBrokenGamesAPI($username, $player_mode, $game_mode);
-        return $response;
-    }
 
     /**
      * Call sapi to lock | unlock lp terminal
