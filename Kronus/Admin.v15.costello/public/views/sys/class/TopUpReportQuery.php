@@ -10,6 +10,1301 @@ include_once "AppendArray.class.php";
 
 class TopUpReportQuery extends DBHandler
 {
+    // CCT ADDED 02/19/2018 BEGIN
+    /*
+    * Get old gross hold balance if queried date is not today
+    */
+    public function getoldGHCutoffPAGCOR($startdate, $enddate, $zsiteid, $servProvider) 
+    {      
+        $serviceProvider = $servProvider;
+
+        switch ($zsiteid)
+        {
+            case 'All':
+                //Query for the generated site gross hold per cutoff (this is only up to the last Cut off)
+                $query1 = "SELECT sgc.SiteID, sgc.BeginningBalance, ad.Name, sd.SiteDescription, sgc.Coupon,
+                            s.SiteCode, s.POSAccountNo,sgc.ReportDate, sgc.DateCutOff,sgc.Deposit AS InitialDeposit, 
+                            sgc.Reload AS Reload , sgc.Withdrawal AS Redemption, sgc.EwalletDeposits,  sgc.EwalletWithdrawals 
+                        FROM sitegrossholdcutoff sgc
+                            INNER JOIN sites s ON s.SiteID = sgc.SiteID
+                            INNER JOIN accountdetails ad ON ad.AID = s.OwnerAID
+                            INNER JOIN sitedetails sd ON sd.SiteID = sgc.SiteID
+                        WHERE sgc.DateCutOff > ? AND sgc.DateCutOff <= ?
+                        ORDER BY s.SiteCode, sgc.DateCutOff";          
+
+                //Query for Replenishments
+                $query2 = "SELECT SiteID, Amount, DateCreated FROM replenishments WHERE DateCreated >= ? AND DateCreated < ? ";
+
+                //Query for Collection
+                $query3 = "SELECT SiteID, Amount, DateCreated FROM siteremittance WHERE Status = 3 AND DateCreated >= ? AND DateCreated < ? ";
+                
+                //Query for Manual Redemption (per site/per cut off)
+                if($serviceProvider == -1) // All
+                {      
+                    $query4 = "SELECT SiteID, ActualAmount AS ActualAmount,TransactionDate 
+                        FROM manualredemptions  
+                        WHERE TransactionDate >= ? AND TransactionDate < ? ";     
+                }
+                else // Specific service provider
+                {
+                    $query4 = "SELECT SiteID, ActualAmount AS ActualAmount,TransactionDate 
+                        FROM manualredemptions  
+                        WHERE TransactionDate >= ? AND TransactionDate < ? AND ServiceID = ?";     
+                    
+                }
+
+                //Query for Deposit (Cash,Coupon,Ticket),  Reload (Cash,Coupon,Ticket) and Redemption (Cashier,Genesis)
+                $query5 = "SELECT  tr.TransactionType AS TransType,
+
+                                -- TOTAL DEPOSIT --
+                                CASE tr.TransactionType
+                                  WHEN 'D' THEN SUM(tr.Amount)
+                                  ELSE 0
+                                END As TotalDeposit,
+
+                                -- DEPOSIT COUPON --
+                                SUM(CASE tr.TransactionType
+                                  WHEN 'D' THEN
+                                    CASE tr.PaymentType
+                                      WHEN 2 THEN tr.Amount
+                                      ELSE 0
+                                     END
+                                  ELSE 0 END) As DepositCoupon,
+
+                                -- DEPOSIT CASH --
+                                SUM(CASE tr.TransactionType
+                                   WHEN 'D' THEN
+                                     CASE tr.PaymentType
+                                       WHEN 2 THEN 0 -- Coupon
+                                       ELSE -- Not Coupon
+                                         CASE IFNULL(tr.StackerSummaryID, '')
+                                           WHEN '' THEN tr.Amount -- Cash
+                                           ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
+                                             (SELECT IFNULL(SUM(Amount), 0)
+                                             FROM stackermanagement.stackerdetails sdtls
+                                             WHERE sdtls.stackersummaryID = tr.StackerSummaryID
+                                                   AND sdtls.TransactionType = 1
+                                                   AND sdtls.PaymentType = 0)  -- Deposit, Cash
+                                         END
+                                    END
+                                   ELSE 0 -- Not Deposit
+                                END) As DepositCash,
+
+                                -- DEPOSIT TICKET --
+                                SUM(CASE tr.TransactionType
+                                  WHEN 'D' THEN
+                                    CASE tr.PaymentType
+                                      WHEN 2 THEN 0 -- Coupon
+                                      ELSE -- Not Coupon
+                                        CASE IFNULL(tr.StackerSummaryID, '')
+                                          WHEN '' THEN 0 -- Cash
+                                          ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
+                                            (SELECT IFNULL(SUM(Amount), 0)
+                                            FROM stackermanagement.stackerdetails sdtls
+                                            WHERE sdtls.stackersummaryID = tr.StackerSummaryID
+                                                  AND sdtls.TransactionType = 1
+                                                  AND sdtls.PaymentType = 2)  -- Deposit, Ticket
+                                        END
+                                    END
+                                  ELSE 0 -- Not Deposit
+                                END) As DepositTicket,
+
+                                -- TOTAL RELOAD --
+                                CASE tr.TransactionType
+                                  WHEN 'R' THEN SUM(tr.Amount)
+                                  ELSE 0 -- Not Reload
+                                END As TotalReload,
+
+                                -- RELOAD COUPON --
+                                SUM(CASE tr.TransactionType
+                                  WHEN 'R' THEN
+                                    CASE tr.PaymentType
+                                      WHEN 2 THEN tr.Amount
+                                      ELSE 0
+                                     END
+                                  ELSE 0 END) As ReloadCoupon,
+
+                                -- RELOAD CASH --
+                                SUM(CASE tr.TransactionType
+                                   WHEN 'R' THEN
+                                     CASE tr.PaymentType
+                                       WHEN 2 THEN 0 -- Coupon
+                                       ELSE -- Not Coupon
+                                         CASE IFNULL(tr.StackerSummaryID, '')
+                                           WHEN '' THEN tr.Amount -- Cash
+                                           ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
+                                              (SELECT IFNULL(SUM(Amount), 0)
+                                             FROM stackermanagement.stackerdetails sdtls
+                                             WHERE sdtls.stackersummaryID = tr.StackerSummaryID
+                                                   AND tr.TransactionDetailsID = sdtls.TransactionDetailsID
+                                                   AND sdtls.TransactionType = 2
+                                                   AND sdtls.PaymentType = 0)  -- Reload, Cash
+                                         END
+                                     END
+                                   ELSE 0 -- Not Reload
+                                END) As ReloadCash,
+
+                                -- RELOAD TICKET --
+                                SUM(CASE tr.TransactionType
+                                  WHEN 'R' THEN
+                                    CASE tr.PaymentType
+                                      WHEN 2 THEN 0 -- Coupon
+                                      ELSE -- Not Coupon
+                                        CASE IFNULL(tr.StackerSummaryID, '')
+                                          WHEN '' THEN 0 -- Cash
+                                          ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
+                                            (SELECT IFNULL(SUM(Amount), 0)
+                                            FROM stackermanagement.stackerdetails sdtls
+                                            WHERE sdtls.stackersummaryID = tr.StackerSummaryID
+                                                   AND tr.TransactionDetailsID = sdtls.TransactionDetailsID
+                                                  AND sdtls.TransactionType = 2
+                                                  AND sdtls.PaymentType = 2)  -- Reload, Ticket
+                                        END
+                                    END
+                                  ELSE 0 -- Not Reload
+                                END) As ReloadTicket,
+
+                                -- TOTAL REDEMPTION --
+                                CASE tr.TransactionType
+                                  WHEN 'W' THEN SUM(tr.Amount)
+                                  ELSE 0
+                                END As TotalRedemption,
+
+                                -- REDEMPTION CASHIER --
+                                CASE tr.TransactionType
+                                  WHEN 'W' THEN
+                                    CASE a.AccountTypeID
+                                      WHEN 4 THEN SUM(tr.Amount) -- Cashier
+                                      ELSE 0
+                                    END -- Genesis
+                                  ELSE 0 --  Not Redemption
+                                END As RedemptionCashier,
+
+                                -- REDEMPTION GENESIS --
+                                CASE tr.TransactionType
+                                  WHEN 'W' THEN
+                                    CASE a.AccountTypeID
+                                      WHEN 15 THEN SUM(tr.Amount) -- Genesis
+                                      ELSE 0
+                                    END -- Cashier
+                                  ELSE 0 -- Not Redemption
+                                END As RedemptionGenesis,
+
+                                tr.DateCreated, tr.SiteID
+                        FROM transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)
+                            INNER JOIN transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
+                            INNER JOIN terminals t ON t.TerminalID = tr.TerminalID
+                            INNER JOIN accounts a ON tr.CreatedByAID = a.AID
+                        WHERE tr.DateCreated >= ? AND tr.DateCreated < ? ";
+                if($serviceProvider == -1) // All
+                {        
+                    $query5 = $query5 . " AND tr.Status IN(1,4) 
+                        GROUP By tr.TransactionType, tr.TransactionSummaryID 
+                        ORDER BY tr.TerminalID, tr.DateCreated DESC"; 
+                }
+                else // Specific service provider
+                {
+                    $query5 = $query5 . " AND tr.Status IN(1,4)  
+                                          AND tr.ServiceID = ? 
+                        GROUP By tr.TransactionType, tr.TransactionSummaryID 
+                        ORDER BY tr.TerminalID, tr.DateCreated DESC"; 
+                }                
+                
+                //Query for Unused or Active Tickets of the Pick Date (per site/per cutoff)
+                $query6 = "SELECT SUM(Amount) AS UnusedTickets, SiteID, DateCreated  
+                       FROM vouchermanagement.tickets 
+                       WHERE DateCreated >= :startdate               -- Get Printed Tickets for the day 
+                           AND DateCreated < :enddate  
+                           AND TicketCode NOT IN (SELECT TicketCode FROM ((SELECT stckr.TicketCode FROM stackermanagement.stackersummary stckr -- Cancelled Tickets in Stacker 
+                                INNER JOIN accounts acct ON stckr.CreatedByAID = acct.AID
+                                INNER JOIN siteaccounts sa ON acct.AID = sa.AID
+                                WHERE stckr.DateCancelledOn >= :startdate AND stckr.DateCancelledOn < :enddate
+                                AND acct.AccountTypeID IN (4, 15))
+                       UNION
+                            (SELECT TicketCode FROM vouchermanagement.tickets WHERE DateUpdated >= :startdate  
+                            AND DateUpdated < :enddate AND DateEncashed IS NULL)
+                            UNION
+                            (SELECT TicketCode FROM vouchermanagement.tickets tckt  -- Encashed Tickets
+                            WHERE tckt.DateEncashed >= :startdate AND tckt.DateEncashed < :enddate 
+                            AND tckt.EncashedByAID IN (SELECT acct.AID FROM accounts acct WHERE acct.AccountTypeID = 4
+                            AND acct.AID IN (SELECT sacct.AID FROM siteaccounts sacct))))
+                            AS GetLessTicketCode
+                            ) GROUP BY SiteID";
+                
+                //Query for Printed Tickets of the pick date (per site/per cutoff)
+                $query7 = "SELECT SiteID, SUM(PrintedTickets) AS PrintedTickets, DateCreated FROM (
+                    SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets, tr.DateCreated 
+                    FROM transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)  -- Printed Tickets through W
+                            INNER JOIN transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
+                            INNER JOIN terminals t ON t.TerminalID = tr.TerminalID
+                            INNER JOIN accounts a ON ts.CreatedByAID = a.AID
+                            LEFT JOIN stackermanagement.stackersummary stckr ON stckr.StackerSummaryID = tr.StackerSummaryID
+                    WHERE tr.DateCreated >= :startdate AND tr.DateCreated < :enddate 
+                              AND tr.Status IN(1,4)
+                              AND tr.TransactionType = 'W'
+                              AND tr.StackerSummaryID IS NOT NULL
+                              GROUP BY tr.SiteID 
+                    UNION ALL
+                    SELECT SiteID, SUM(Amount) as PrintedTickets, StartDate 
+                    FROM ewallettrans 
+                    WHERE StartDate >= :startdate
+                            AND StartDate < :enddate AND Status IN (1,3) AND TransType='W' AND Source = 1 GROUP BY SiteID) 
+                        AS sum GROUP BY SiteID";
+                
+                //Query for Encashed Tickets of the pick date (per site/per cutoff)
+                $query8 = "SELECT tckt.SiteID, IFNULL(SUM(tckt.Amount), 0) AS EncashedTickets, tckt.DateEncashed as DateCreated 
+                        FROM vouchermanagement.tickets tckt  -- Encashed Tickets
+                        WHERE tckt.DateEncashed >= ? AND tckt.DateEncashed < ?
+                                        AND tckt.SiteID = ?
+                                        GROUP BY tckt.SiteID";
+                
+                //Query for Encashed Tickets of the pick date (per site/per cutoff)
+                $query9 = "SELECT et.SiteID, 
+                                CASE
+                                  WHEN (substr(StartDate, 12, 2) < '06') THEN substr(date_add(StartDate, INTERVAL -1 DAY), 1, 10)
+                                  ELSE substr(StartDate, 1, 10)
+                                END AS ReportDate,
+                                
+                                -- Total e-SAFE Deposits
+                                SUM(CASE et.TransType
+                                        WHEN 'D' THEN et.Amount -- if deposit
+                                        ELSE 0 -- if not deposit
+                                END) AS EwalletDeposits,
+
+                                -- Total e-SAFE Withdrawal
+                                SUM(CASE et.TransType
+                                        WHEN 'W' THEN et.Amount -- if redemption
+                                        ELSE 0 -- if not redemption
+                                END) AS EwalletRedemption,
+                                
+                                SUM(CASE IFNULL(et.TraceNumber,'')
+                                        WHEN '' THEN  
+                                                CASE IFNULL(et.ReferenceNumber, '')
+                                                WHEN '' THEN -- if not bancnet
+                                                        CASE et.TransType
+                                                        WHEN 'D' THEN -- if deposit
+                                                                CASE et.PaymentType 
+                                                                WHEN 1 THEN et.Amount -- if Cash
+                                                                ELSE 0 -- if not Cash
+                                                                END
+                                                        ELSE 0 -- if not deposit
+                                                        END
+                                                ELSE 0 -- if bancnet
+                                                END
+                                        ELSE 0
+                                END) AS EwalletCashDeposit,
+                                
+                                SUM(CASE IFNULL(et.TraceNumber,'')
+                                        WHEN '' THEN 0
+                                        ELSE CASE IFNULL(et.ReferenceNumber, '')
+                                                WHEN '' THEN 0 -- if not bancnet
+                                                ELSE CASE et.TransType -- if bancnet
+                                                        WHEN 'D' THEN et.Amount -- if deposit
+                                                        ELSE 0 -- if not deposit
+                                                        END
+                                                END
+                                END) AS EwalletBancnetDeposit,
+                                
+                                SUM(CASE et.TransType
+                                        WHEN 'D' THEN -- if deposit
+                                                CASE et.PaymentType
+                                                WHEN 2 THEN et.Amount -- if voucher
+                                                ELSE 0 -- if not voucher
+                                                END
+                                        ELSE 0 -- if not deposit
+                                END) AS EwalletVoucherDeposit, 
+                                
+                                SUM(CASE et.TransType
+                                        WHEN 'D' THEN -- if deposit
+                                                CASE et.PaymentType
+                                                WHEN 3 THEN et.Amount -- if voucher
+                                                ELSE 0 -- if not voucher
+                                                END
+                                        ELSE 0 -- if not deposit
+                                END) AS EwalletTicketDeposit 
+
+                            FROM ewallettrans et
+                            WHERE et.StartDate >= ? AND et.StartDate < ?
+                                AND et.Status IN (1,3)
+                                GROUP BY et.SiteID";
+                
+                $query10 = "SELECT IFNULL(SUM(Amount), 0) AS EncashedTicketsV2, t.DateEncashed, t.UpdatedByAID, t.SiteID, ad.Name   
+                   FROM vouchermanagement.tickets t 
+                       LEFT JOIN accountdetails ad ON t.UpdatedByAID = ad.AID
+                   WHERE t.DateEncashed >= ? AND t.DateEncashed < ?  
+                       AND TicketCode NOT IN (
+                           SELECT IFNULL(ss.TicketCode, '') FROM stackermanagement.stackersummary ss 
+                           INNER JOIN ewallettrans ewt ON ewt.StackerSummaryID = ss.StackerSummaryID 
+                           WHERE ewt.TransType = 'W' 
+                   )
+                   GROUP BY t.SiteID";
+
+                // to get beginning balance, sitecode, sitename
+                $this->prepare($query1);
+                $this->bindparameter(1, $startdate);
+                $this->bindparameter(2, $enddate);
+                $this->execute(); 
+                $rows1 = $this->fetchAllData();        
+                $qr1 = array();
+                
+                foreach($rows1 as $row1) 
+                {
+                    $qr1[] = array('SiteID'=>$row1['SiteID'],'BegBal'=>$row1['BeginningBalance'],
+                        'POSAccountNo' => $row1['POSAccountNo'],'SiteName' => $row1['Name'],'SiteCode'=>$row1['SiteCode'], 
+                        'InitialDeposit'=>'0.00','Reload'=>'0.00','Redemption'=> '0.00',
+                        'ReportDate'=>$row1['ReportDate'],'CutOff'=>$row1['DateCutOff'],'ManualRedemption'=>0,'Coupon'=>'0.00',
+                        'PrintedTickets'=>'0.00','EncashedTickets'=>'0.00', 'RedemptionCashier'=>'0.00',
+                        'RedemptionGenesis'=>'0.00','DepositCash'=>'0.00','ReloadCash'=>'0.00','UnusedTickets'=>'0.00','DepositTicket'=>'0.00',
+                        'ReloadTicket'=>'0.00','DepositCoupon'=>'0.00','ReloadCoupon'=>'0.00', 'Replenishment'=>0,'Collection'=>0,
+                        'EwalletDeposits' => $row1['EwalletDeposits'], 'EwalletWithdrawals' => $row1['EwalletWithdrawals'], 
+                        'EwalletCashLoads' => 0, 'EwalletRedemptionGenesis' => 0,  'EwalletWithdraw' =>0, 'EwalletLoads'=>0,
+                        'EncashedTicketsV15' => 0, 'EwalletTicketDeposit' => 0, 'TotalRedemption'=>0, 'ewalletCoupon'=>0 , 'LoadTickets'=>0
+                        );
+                }
+                
+                // to get confirmation made by cashier from provincial sites
+                $this->prepare($query2);
+                $this->bindparameter(1, $startdate);
+                $this->bindparameter(2, $enddate);                
+                $this->execute();
+                $rows2 = $this->fetchAllData();
+                $qr2 = array();
+
+                foreach($rows2 as $row2) 
+                {
+                    $qr2[] = array('SiteID'=>$row2['SiteID'],'DateCreated'=>$row2['DateCreated'],'Amount'=>$row2['Amount']);
+                }
+
+                // to get deposits made by cashier from metro manila
+                $this->prepare($query3);
+                $this->bindparameter(1, $startdate);
+                $this->bindparameter(2, $enddate);                
+                $this->execute();
+                $rows3 = $this->fetchAllData();
+                $qr3 = array();
+                
+                foreach($rows3 as $row3) 
+                {
+                    $qr3[] = array('SiteID'=>$row3['SiteID'],'DateCreated'=>$row3['DateCreated'],'Amount'=>$row3['Amount']);
+                }  
+                
+                // to get manual redemptions based on date range
+                $this->prepare($query4);
+                $this->bindparameter(1, $startdate);
+                $this->bindparameter(2, $enddate);                
+                if($serviceProvider != -1) // Specific service provider
+                {    
+                    $this->bindparameter(3, $serviceProvider);
+                }                
+                $this->execute();
+                $rows4 = $this->fetchAllData();
+                $qr4 = array();
+
+                foreach($rows4 as $row4)
+                {
+                    $qr4[] = array('SiteID'=>$row4['SiteID'],'ManualRedemption'=>$row4['ActualAmount'],'MRTransDate'=>$row4['TransactionDate']);
+                } 
+                
+                //Total the Deposit and Reload Cash, Deposit and Reload Coupons, Deposit and Reload Tickets in EGM
+                //Total Redemption made by the cashier and the EGM
+                $this->prepare($query5);
+                $this->bindparameter(1, $startdate);
+                $this->bindparameter(2, $enddate);
+                if($serviceProvider != -1) // Specific service provider
+                {    
+                    $this->bindparameter(3, $serviceProvider);
+                }
+                
+                $this->execute();  
+                $rows5 =  $this->fetchAllData();                
+                
+                foreach ($rows5 as $row5) 
+                {
+                    foreach ($qr1 as $keys => $value1) 
+                    {
+                        if($row5["SiteID"] == $value1["SiteID"])
+                        {
+                            if(($row5['DateCreated'] >= $value1['ReportDate']." ".BaseProcess::$cutoff) && ($row5['DateCreated'] < $value1['CutOff']))
+                            {
+                                if($row5["DepositCash"] != '0.00')
+                                {
+                                    $qr1[$keys]["DepositCash"] = (float)$qr1[$keys]["DepositCash"] + (float)$row5["DepositCash"];
+                                    $qr1[$keys]["InitialDeposit"] = (float)$qr1[$keys]["InitialDeposit"] + (float)$row5["DepositCash"];
+                                }
+                                if($row5["ReloadCash"] != '0.00')
+                                {
+                                    $qr1[$keys]["ReloadCash"] = (float)$qr1[$keys]["ReloadCash"] + (float)$row5["ReloadCash"];
+                                    $qr1[$keys]["Reload"] = (float)$qr1[$keys]["Reload"] + (float)$row5["ReloadCash"];
+                                }
+                                if($row5["RedemptionCashier"] != '0.00')
+                                {
+                                    $qr1[$keys]["RedemptionCashier"] = (float)$qr1[$keys]["RedemptionCashier"] + (float)$row5["RedemptionCashier"];
+                                    $qr1[$keys]["Redemption"] = (float)$qr1[$keys]["Redemption"] + (float)$row5["RedemptionCashier"];
+                                }
+                                if($row5["RedemptionGenesis"] != '0.00')
+                                {
+                                    $qr1[$keys]["RedemptionGenesis"] = (float)$qr1[$keys]["RedemptionGenesis"] + (float)$row5["RedemptionGenesis"];
+                                    $qr1[$keys]["Redemption"] = (float)$qr1[$keys]["Redemption"] + (float)$row5["RedemptionGenesis"];
+                                }
+                                if($row5["DepositCoupon"] != '0.00')
+                                {
+                                    $qr1[$keys]["DepositCoupon"] = (float)$qr1[$keys]["DepositCoupon"] + (float)$row5["DepositCoupon"];
+                                    $qr1[$keys]["Coupon"] = (float)$qr1[$keys]["Coupon"] + (float)$row5["DepositCoupon"];
+                                    $qr1[$keys]["InitialDeposit"] = (float)$qr1[$keys]["InitialDeposit"] + (float)$row5["DepositCoupon"];
+                                }
+                                if($row5["ReloadCoupon"] != '0.00')
+                                {
+                                    $qr1[$keys]["ReloadCoupon"] = (float)$qr1[$keys]["ReloadCoupon"] + (float)$row5["ReloadCoupon"];
+                                    $qr1[$keys]["Coupon"] = (float)$qr1[$keys]["Coupon"] + (float)$row5["ReloadCoupon"];
+                                    $qr1[$keys]["Reload"] = (float)$qr1[$keys]["Reload"] + (float)$row5["ReloadCoupon"];
+                                }
+                                if($row5["DepositTicket"] != '0.00')
+                                {
+                                    $qr1[$keys]["LoadTickets"] = (float)$qr1[$keys]["LoadTickets"] + (float)$row5["DepositTicket"];
+                                    $qr1[$keys]["InitialDeposit"] = (float)$qr1[$keys]["InitialDeposit"] + (float)$row5["DepositTicket"];
+                                }
+                                if($row5["ReloadTicket"] != '0.00')
+                                {
+                                    $qr1[$keys]["LoadTickets"] = (float)$qr1[$keys]["LoadTickets"] + (float)$row5["ReloadTicket"];
+                                    $qr1[$keys]["Reload"] = (float)$qr1[$keys]["Reload"] + (float)$row5["ReloadTicket"];
+                                }
+                                if($row5["TotalRedemption"] != '0.00')
+                                {
+                                    $qr1[$keys]["TotalRedemption"] = (float)$qr1[$keys]["TotalRedemption"] + (float)$row5["TotalRedemption"];                                
+                                }
+                            }
+                        }
+                    }     
+                }
+                
+                foreach ($qr1 as $keys => $value2) 
+                {
+                    //Get the total Unused Tickets per site
+                    $this->prepare($query6);
+                    $this->bindparameter(":startdate", $value2["ReportDate"]." ".BaseProcess::$cutoff);
+                    $this->bindparameter(":enddate", $value2["CutOff"]);
+                    $this->bindparameter(":siteid", $value2["SiteID"]);
+                    $this->execute();  
+                    $rows6 =  $this->fetchAllData();
+                    
+                    foreach ($rows6 as $row6) 
+                    {
+                        if($row6["SiteID"] == $value2["SiteID"])
+                        {
+                            if(($row6['DateCreated'] >= $value2['ReportDate']." ".BaseProcess::$cutoff) && ($row6['DateCreated'] < $value2['CutOff']))
+                            {
+                                $qr1[$keys]["UnusedTickets"] = (float)$row6["UnusedTickets"];
+                            }
+                        }
+                    }
+                    
+                    //Get the total Printed Tickets per site
+                    $this->prepare($query7);
+                    $this->bindparameter(":startdate", $value2["ReportDate"]." ".BaseProcess::$cutoff);
+                    $this->bindparameter(":enddate", $value2["CutOff"]);
+                    $this->execute();  
+                    $rows7 =  $this->fetchAllData();
+                    
+                    foreach ($rows7 as $row7) 
+                    {
+                        if($row7["SiteID"] == $value2["SiteID"]){
+                            if(($row7['DateCreated'] >= $value2['ReportDate']." ".BaseProcess::$cutoff) && ($row7['DateCreated'] < $value2['CutOff']))
+                            {
+                                $qr1[$keys]["PrintedTickets"] = (float)$row7["PrintedTickets"];
+                            }
+                            break;
+                        }
+                    }
+                    
+                    //Get the total Encashed Tickets per site
+                    $this->prepare($query8);
+                    $this->bindparameter(1, $value2["ReportDate"]." ".BaseProcess::$cutoff);
+                    $this->bindparameter(2, $value2["CutOff"]);
+                    $this->bindparameter(3, $value2["SiteID"]);
+                    $this->execute();  
+                    $rows8 =  $this->fetchAllData();
+                    
+                    foreach ($rows8 as $row8) 
+                    {
+                        if($row8["SiteID"] == $value2["SiteID"])
+                        {
+                            if(($row8['DateCreated'] >= $value2['ReportDate']." ".BaseProcess::$cutoff) && ($row8['DateCreated'] < $value2['CutOff']))
+                            {
+                                $qr1[$keys]["EncashedTickets"] = (float)$row8["EncashedTickets"];
+                            }
+                            break;
+                        }
+                    }  
+                } 
+                
+                //Get the total Encashed Tickets per site
+                $this->prepare($query9);
+                $this->bindparameter(1, $startdate);
+                $this->bindparameter(2, $enddate);
+                $this->execute();  
+                $rows9 =  $this->fetchAllData();
+
+                foreach ($rows9 as $value1) 
+                {
+                    foreach ($qr1 as $keys => $value2) 
+                    {
+                        if($value1["SiteID"] == $value2["SiteID"])
+                        {
+                            if($value1['ReportDate'] == $value2['ReportDate'])
+                            {
+                                $qr1[$keys]["EwalletCashLoads"] += (float)$value1["EwalletCashDeposit"];
+                                $qr1[$keys]["EwalletCashLoads"] += (float)$value1["EwalletBancnetDeposit"];
+                                $qr1[$keys]["EwalletWithdraw"] += (float)$value1["EwalletRedemption"];
+                                $qr1[$keys]["EwalletLoads"] += (float)$value1["EwalletDeposits"];
+                                $qr1[$keys]["ewalletCoupon"] += (float)$value1["EwalletVoucherDeposit"];
+                                $qr1[$keys]["LoadTickets"] += (float)$qr1[$keys]["LoadTickets"] + (float)$value1["EwalletTicketDeposit"];
+                            }
+                            break;
+                        }
+                    }  
+                }
+                
+                /****************Get Encashed Tickets for V15******************************/
+                $this->prepare($query10);
+                $this->bindparameter(1, $startdate);
+                $this->bindparameter(2, $enddate);
+                $this->execute();  
+                $rows10 =  $this->fetchAllData();
+                
+                foreach ($rows10 as $value1) 
+                {
+                    foreach ($qr1 as $keys => $value2) 
+                    {
+                        if($value1["SiteID"] == $value2["SiteID"])
+                        {
+                            if(($value1['DateEncashed'] >= $value2['ReportDate']." ".BaseProcess::$cutoff) && ($value1['DateEncashed'] < $value2['CutOff']))
+                            {
+                                $qr1[$keys]["EncashedTicketsV15"] = (float)$value1["EncashedTicketsV2"];
+                            }
+                            break;
+                        }
+                    }  
+                }
+                
+                $ctr = 0;
+                while($ctr < count($qr1))
+                {
+                    $ctr2 = 0; // counter for manual redemptions array
+                    while($ctr2 < count($qr4))
+                    {
+                        if($qr1[$ctr]['SiteID'] == $qr4[$ctr2]['SiteID'])
+                        {
+                            $amount = 0;
+                            if(($qr4[$ctr2]['MRTransDate'] >= $qr1[$ctr]['ReportDate']." ".BaseProcess::$cutoff) && ($qr4[$ctr2]['MRTransDate'] < $qr1[$ctr]['CutOff']))
+                            {              
+                                 if($qr1[$ctr]['ManualRedemption'] == 0) 
+                                     $qr1[$ctr]['ManualRedemption'] = $qr4[$ctr2]['ManualRedemption'];
+                                 else
+                                 {
+                                     $amount = $qr1[$ctr]['ManualRedemption'];
+                                     $qr1[$ctr]['ManualRedemption'] = $amount + $qr4[$ctr2]['ManualRedemption'];
+                                 }
+                            }
+                        }
+                        $ctr2 = $ctr2 + 1;
+                    }           
+
+                    $ctr3 = 0; //counter for grossholdconfirmation array
+                    while($ctr3 < count($qr2))
+                    {
+                        if($qr1[$ctr]['SiteID'] == $qr2[$ctr3]['SiteID'])
+                        {
+                            $amount = 0;
+                            if(($qr2[$ctr3]['DateCreated'] >= $qr1[$ctr]['ReportDate']." ".BaseProcess::$cutoff) && ($qr2[$ctr3]['DateCreated'] < $qr1[$ctr]['CutOff']))
+                            {
+                                if($qr1[$ctr]['Replenishment'] == 0) 
+                                    $qr1[$ctr]['Replenishment'] = $qr2[$ctr3]['Amount'];
+                                else
+                                {
+                                    $amount = $qr1[$ctr]['Replenishment'];
+                                    $qr1[$ctr]['Replenishment'] = $amount + $qr2[$ctr3]['Amount'];
+                                }                         
+                            }                   
+                        }
+                        $ctr3 = $ctr3 + 1;
+                    }
+                    
+                    $ctr4 = 0; //counter for collection array
+                    while($ctr4 < count($qr3))
+                    {
+                        if($qr1[$ctr]['SiteID'] == $qr3[$ctr4]['SiteID'])
+                        {         
+                            $amount = 0;
+                            if(($qr3[$ctr4]['DateCreated'] >= $qr1[$ctr]['ReportDate']." ".BaseProcess::$cutoff) && ($qr3[$ctr4]['DateCreated'] < $qr1[$ctr]['CutOff']))
+                            {
+                                if($qr1[$ctr]['Collection'] == 0) 
+                                {
+                                    $qr1[$ctr]['Collection'] = $qr3[$ctr4]['Amount'];         
+                                }      
+                                else
+                                {
+                                    $amount = $qr1[$ctr]['Collection'];
+                                    $qr1[$ctr]['Collection'] = $amount + $qr3[$ctr4]['Amount'];                                
+                                }                           
+                            }                    
+                        }
+                        $ctr4 = $ctr4 + 1;
+                    }            
+                    $ctr = $ctr + 1;
+                }
+                break;
+            case $zsiteid > 0 :
+                //Query for the generated site gross hold per cutoff (this is only up to the last Cut off)
+                $query1 = "SELECT sgc.SiteID, sgc.BeginningBalance, ad.Name, sgc.Coupon,
+                            s.SiteCode, s.POSAccountNo,sgc.ReportDate, sgc.DateCutOff,sgc.Deposit AS InitialDeposit, 
+                            sgc.Reload AS Reload , sgc.Withdrawal AS Redemption, sgc.EwalletDeposits,  sgc.EwalletWithdrawals
+                        FROM sitegrossholdcutoff sgc
+                            INNER JOIN sites s ON s.SiteID = sgc.SiteID
+                            INNER JOIN accountdetails ad ON ad.AID = s.OwnerAID
+                            INNER JOIN sitedetails sd ON sd.SiteID = sgc.SiteID
+                        WHERE sgc.DateCutOff > ?
+                            AND sgc.DateCutOff <= ? AND sgc.SiteID = ?
+                            ORDER BY s.SiteCode, sgc.DateCutOff";          
+
+                //Query for Replenishments
+                $query2 = "SELECT SiteID, Amount, DateCreated FROM replenishments
+                                   WHERE DateCreated >= ? AND DateCreated < ? AND SiteID = ?";
+
+                //Query for Collection
+                $query3 = "SELECT SiteID, Amount, DateCreated FROM siteremittance
+                                    WHERE Status = 3 AND DateCreated >= ? AND DateCreated < ? AND SiteID = ? ";
+
+                //Query for Manual Redemption (per site/per cut off)
+                if($serviceProvider == -1) // All
+                {        
+                    $query4 = "SELECT SiteID, ActualAmount AS ActualAmount, TransactionDate FROM manualredemptions " . 
+                            "WHERE TransactionDate >= ? AND TransactionDate < ? AND SiteID = ? ";  
+                }
+                else // Specific service provider
+                {
+                    $query4 = "SELECT SiteID, ActualAmount AS ActualAmount, TransactionDate FROM manualredemptions " . 
+                            "WHERE TransactionDate >= ? AND TransactionDate < ? AND SiteID = ? AND ServiceID = ? ";  
+                }                
+                
+                //Query for Deposit (Cash,Coupon,Ticket),  Reload (Cash,Coupon,Ticket) and Redemption (Cashier,Genesis)
+                $query5 = "SELECT tr.TransactionType AS TransType,
+
+                                -- TOTAL DEPOSIT --
+                                CASE tr.TransactionType
+                                  WHEN 'D' THEN SUM(tr.Amount)
+                                  ELSE 0
+                                END As TotalDeposit,
+
+                                -- DEPOSIT COUPON --
+                                SUM(CASE tr.TransactionType
+                                  WHEN 'D' THEN
+                                    CASE tr.PaymentType
+                                      WHEN 2 THEN tr.Amount
+                                      ELSE 0
+                                     END
+                                  ELSE 0 END) As DepositCoupon,
+
+                                -- DEPOSIT CASH --
+                                SUM(CASE tr.TransactionType
+                                   WHEN 'D' THEN
+                                     CASE tr.PaymentType
+                                       WHEN 2 THEN 0 -- Coupon
+                                       ELSE -- Not Coupon
+                                         CASE IFNULL(tr.StackerSummaryID, '')
+                                           WHEN '' THEN tr.Amount -- Cash
+                                           ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
+                                             (SELECT IFNULL(SUM(Amount), 0)
+                                             FROM stackermanagement.stackerdetails sdtls
+                                             WHERE sdtls.stackersummaryID = tr.StackerSummaryID
+                                                   AND sdtls.TransactionType = 1
+                                                   AND sdtls.PaymentType = 0)  -- Deposit, Cash
+                                         END
+                                    END
+                                   ELSE 0 -- Not Deposit
+                                END) As DepositCash,
+
+                                -- DEPOSIT TICKET --
+                                SUM(CASE tr.TransactionType
+                                  WHEN 'D' THEN
+                                    CASE tr.PaymentType
+                                      WHEN 2 THEN 0 -- Coupon
+                                      ELSE -- Not Coupon
+                                        CASE IFNULL(tr.StackerSummaryID, '')
+                                          WHEN '' THEN 0 -- Cash
+                                          ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
+                                            (SELECT IFNULL(SUM(Amount), 0)
+                                            FROM stackermanagement.stackerdetails sdtls
+                                            WHERE sdtls.stackersummaryID = tr.StackerSummaryID
+                                                  AND sdtls.TransactionType = 1
+                                                  AND sdtls.PaymentType = 2)  -- Deposit, Ticket
+                                        END
+                                    END
+                                  ELSE 0 -- Not Deposit
+                                END) As DepositTicket,
+
+                                -- TOTAL RELOAD --
+                                CASE tr.TransactionType
+                                  WHEN 'R' THEN SUM(tr.Amount)
+                                  ELSE 0 -- Not Reload
+                                END As TotalReload,
+
+                                -- RELOAD COUPON --
+                                SUM(CASE tr.TransactionType
+                                  WHEN 'R' THEN
+                                    CASE tr.PaymentType
+                                      WHEN 2 THEN tr.Amount
+                                      ELSE 0
+                                     END
+                                  ELSE 0 END) As ReloadCoupon,
+
+                                -- RELOAD CASH --
+                                SUM(CASE tr.TransactionType
+                                   WHEN 'R' THEN
+                                     CASE tr.PaymentType
+                                       WHEN 2 THEN 0 -- Coupon
+                                       ELSE -- Not Coupon
+                                         CASE IFNULL(tr.StackerSummaryID, '')
+                                           WHEN '' THEN tr.Amount -- Cash
+                                           ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
+                                              (SELECT IFNULL(SUM(Amount), 0)
+                                             FROM stackermanagement.stackerdetails sdtls
+                                             WHERE sdtls.stackersummaryID = tr.StackerSummaryID
+                                                   AND tr.TransactionDetailsID = sdtls.TransactionDetailsID
+                                                   AND sdtls.TransactionType = 2
+                                                   AND sdtls.PaymentType = 0)  -- Reload, Cash
+                                         END
+                                     END
+                                   ELSE 0 -- Not Reload
+                                END) As ReloadCash,
+
+                                -- RELOAD TICKET --
+                                SUM(CASE tr.TransactionType
+                                  WHEN 'R' THEN
+                                    CASE tr.PaymentType
+                                      WHEN 2 THEN 0 -- Coupon
+                                      ELSE -- Not Coupon
+                                        CASE IFNULL(tr.StackerSummaryID, '')
+                                          WHEN '' THEN 0 -- Cash
+                                          ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
+                                            (SELECT IFNULL(SUM(Amount), 0)
+                                            FROM stackermanagement.stackerdetails sdtls
+                                            WHERE sdtls.stackersummaryID = tr.StackerSummaryID
+                                                   AND tr.TransactionDetailsID = sdtls.TransactionDetailsID
+                                                  AND sdtls.TransactionType = 2
+                                                  AND sdtls.PaymentType = 2)  -- Reload, Ticket
+                                        END
+                                    END
+                                  ELSE 0 -- Not Reload
+                                END) As ReloadTicket,
+
+                                -- TOTAL REDEMPTION --
+                                CASE tr.TransactionType
+                                  WHEN 'W' THEN SUM(tr.Amount)
+                                  ELSE 0
+                                END As TotalRedemption,
+
+                                -- REDEMPTION CASHIER --
+                                CASE tr.TransactionType
+                                  WHEN 'W' THEN
+                                    CASE a.AccountTypeID
+                                      WHEN 4 THEN SUM(tr.Amount) -- Cashier
+                                      ELSE 0
+                                    END -- Genesis
+                                  ELSE 0 --  Not Redemption
+                                END As RedemptionCashier,
+
+                                -- REDEMPTION GENESIS --
+                                CASE tr.TransactionType
+                                  WHEN 'W' THEN
+                                    CASE a.AccountTypeID
+                                      WHEN 15 THEN SUM(tr.Amount) -- Genesis
+                                      ELSE 0
+                                    END -- Cashier
+                                  ELSE 0 -- Not Redemption
+                                END As RedemptionGenesis,
+
+                                tr.DateCreated,  tr.SiteID
+                                FROM transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)
+                                    INNER JOIN transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
+                                    INNER JOIN terminals t ON t.TerminalID = tr.TerminalID
+                                    INNER JOIN accounts a ON tr.CreatedByAID = a.AID
+                                WHERE tr.DateCreated >= ? AND tr.DateCreated < ?
+                                  AND tr.SiteID = ? ";
+                if($serviceProvider == -1) // All
+                {        
+                    $query5 = $query5 . " AND tr.Status IN(1,4) 
+                                GROUP By tr.TransactionType, tr.TransactionSummaryID 
+                                ORDER BY tr.TerminalID, tr.DateCreated DESC"; 
+                }
+                else // Specific service provider
+                {
+                    $query5 = $query5 . " AND tr.Status IN(1,4) 
+                                          AND tr.ServiceID = ? 
+                                GROUP By tr.TransactionType, tr.TransactionSummaryID 
+                                ORDER BY tr.TerminalID, tr.DateCreated DESC"; 
+                }
+                
+                //Query for Unused or Active Tickets of the Pick Date (per site/per cutoff)
+                $query6 = "SELECT SUM(Amount) AS UnusedTickets, SiteID, DateCreated  
+                            FROM vouchermanagement.tickets 
+                            WHERE DateCreated >= :startdate               -- Get Printed Tickets for the day 
+                                AND DateCreated < :enddate  
+                                AND SiteID = :siteid
+                                AND TicketCode NOT IN (SELECT TicketCode FROM ((SELECT stckr.TicketCode FROM stackermanagement.stackersummary stckr -- Cancelled Tickets in Stacker 
+                                     INNER JOIN accounts acct ON stckr.CreatedByAID = acct.AID
+                                     INNER JOIN siteaccounts sa ON acct.AID = sa.AID
+                                     WHERE stckr.DateCancelledOn >= :startdate AND stckr.DateCancelledOn < :enddate
+                                     AND acct.AccountTypeID IN (4, 15))
+                            UNION
+                                 (SELECT TicketCode FROM vouchermanagement.tickets WHERE DateUpdated >= :startdate  
+                                 AND DateUpdated < :enddate AND DateEncashed IS NULL)
+                                 UNION
+                                 (SELECT TicketCode FROM vouchermanagement.tickets tckt  -- Encashed Tickets
+                                 WHERE tckt.DateEncashed >= :startdate AND tckt.DateEncashed < :enddate 
+                                 AND tckt.EncashedByAID IN (SELECT acct.AID FROM accounts acct WHERE acct.AccountTypeID = 4
+                                 AND acct.AID IN (SELECT sacct.AID FROM siteaccounts sacct))))
+                                 AS GetLessTicketCode
+                                 ) GROUP BY SiteID";
+                
+                //Query for Printed Tickets of the pick date (per site/per cutoff)
+                $query7 = "SELECT SiteID, SUM(PrintedTickets) AS PrintedTickets, DateCreated FROM (
+                    SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets, tr.DateCreated FROM transactiondetails tr 
+                    FORCE INDEX(IX_transactiondetails_DateCreated)  -- Printed Tickets through W
+                            INNER JOIN transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
+                            INNER JOIN terminals t ON t.TerminalID = tr.TerminalID
+                            INNER JOIN accounts a ON ts.CreatedByAID = a.AID
+                            LEFT JOIN stackermanagement.stackersummary stckr ON stckr.StackerSummaryID = tr.StackerSummaryID
+                    WHERE tr.DateCreated >= :startdate AND tr.DateCreated < :enddate 
+                              AND tr.SiteID = :siteid 
+                              AND tr.Status IN(1,4)
+                              AND tr.TransactionType = 'W'
+                              AND tr.StackerSummaryID IS NOT NULL
+                              GROUP BY tr.SiteID 
+                        UNION ALL
+                        SELECT SiteID, SUM(Amount) as PrintedTickets, StartDate FROM ewallettrans WHERE StartDate >= :startdate
+                            AND StartDate < :enddate AND Status IN (1,3) AND SiteID = :siteid AND TransType='W' AND Source = 1 GROUP BY SiteID) 
+                        AS sum GROUP BY SiteID";
+                
+                //Query for Encashed Tickets of the pick date (per site/per cutoff)
+                $query8 = "SELECT tckt.SiteID, IFNULL(SUM(tckt.Amount), 0) AS EncashedTickets, tckt.DateEncashed as DateCreated 
+                        FROM vouchermanagement.tickets tckt  -- Encashed Tickets
+                        WHERE tckt.DateEncashed >= ? AND tckt.DateEncashed < ?
+                                        AND tckt.SiteID = ?
+                                        GROUP BY tckt.SiteID";
+                
+                //Query for Encashed Tickets of the pick date (per site/per cutoff)
+                $query9 = "SELECT et.SiteID, 
+                                CASE
+                                  WHEN (substr(StartDate, 12, 2) < '06') THEN substr(date_add(StartDate, INTERVAL -1 DAY), 1, 10)
+                                  ELSE substr(StartDate, 1, 10)
+                                END AS ReportDate,
+                                
+                                -- Total e-SAFE Deposits
+                                SUM(CASE et.TransType
+                                        WHEN 'D' THEN et.Amount -- if deposit
+                                        ELSE 0 -- if not deposit
+                                END) AS EwalletDeposits,
+
+                                -- Total e-SAFE Withdrawal
+                                SUM(CASE et.TransType
+                                        WHEN 'W' THEN et.Amount -- if redemption
+                                        ELSE 0 -- if not redemption
+                                END) AS EwalletRedemption,
+                                
+                                SUM(CASE IFNULL(et.TraceNumber,'')
+                                        WHEN '' THEN  
+                                                CASE IFNULL(et.ReferenceNumber, '')
+                                                WHEN '' THEN -- if not bancnet
+                                                        CASE et.TransType
+                                                        WHEN 'D' THEN -- if deposit
+                                                                CASE et.PaymentType 
+                                                                WHEN 1 THEN et.Amount -- if Cash
+                                                                ELSE 0 -- if not Cash
+                                                                END
+                                                        ELSE 0 -- if not deposit
+                                                        END
+                                                ELSE 0 -- if bancnet
+                                                END
+                                        ELSE 0
+                                END) AS EwalletCashDeposit,
+                                
+                                SUM(CASE IFNULL(et.TraceNumber,'')
+                                        WHEN '' THEN 0
+                                        ELSE CASE IFNULL(et.ReferenceNumber, '')
+                                                WHEN '' THEN 0 -- if not bancnet
+                                                ELSE CASE et.TransType -- if bancnet
+                                                        WHEN 'D' THEN et.Amount -- if deposit
+                                                        ELSE 0 -- if not deposit
+                                                        END
+                                                END
+                                END) AS EwalletBancnetDeposit,
+                                
+                                SUM(CASE et.TransType
+                                        WHEN 'D' THEN -- if deposit
+                                                CASE et.PaymentType
+                                                WHEN 2 THEN et.Amount -- if voucher
+                                                ELSE 0 -- if not voucher
+                                                END
+                                        ELSE 0 -- if not deposit
+                                END) AS EwalletVoucherDeposit, 
+                                
+                                SUM(CASE et.TransType
+                                        WHEN 'D' THEN -- if deposit
+                                                CASE et.PaymentType
+                                                WHEN 3 THEN et.Amount -- if voucher
+                                                ELSE 0 -- if not voucher
+                                                END
+                                        ELSE 0 -- if not deposit
+                                END) AS EwalletTicketDeposit 
+
+                            FROM ewallettrans et
+                            WHERE et.StartDate >= ?  AND et.StartDate < ?
+                                AND et.SiteID IN (?) AND et.Status IN (1,3)
+                            GROUP BY et.SiteID";
+
+                $query10 = "SELECT IFNULL(SUM(Amount), 0) AS EncashedTicketsV2, t.DateEncashed, t.UpdatedByAID, t.SiteID, ad.Name   
+                   FROM vouchermanagement.tickets t 
+                       LEFT JOIN accountdetails ad ON t.UpdatedByAID = ad.AID
+                   WHERE t.DateEncashed >= ? AND t.DateEncashed < ? 
+                       AND t.SiteID = ?
+                       AND TicketCode NOT IN (
+                           SELECT IFNULL(ss.TicketCode, '') FROM stackermanagement.stackersummary ss 
+                           INNER JOIN ewallettrans ewt ON ewt.StackerSummaryID = ss.StackerSummaryID 
+                           WHERE ewt.TransType = 'W' 
+                   )
+                   GROUP BY t.SiteID";
+
+                // to get beginning balance, sitecode, sitename
+                $this->prepare($query1);
+                $this->bindparameter(1, $startdate);
+                $this->bindparameter(2, $enddate);                
+                $this->bindparameter(3, $zsiteid);                
+                $this->execute(); 
+                $rows1 = $this->fetchAllData();        
+                $qr1 = array();
+
+                foreach($rows1 as $row1) 
+                {
+                    $qr1[] = array('SiteID'=>$row1['SiteID'],'BegBal'=>$row1['BeginningBalance'],
+                            'POSAccountNo' => $row1['POSAccountNo'],'SiteName' => $row1['Name'],'SiteCode'=>$row1['SiteCode'], 
+                            'InitialDeposit'=>'0.00','Reload'=>'0.00','Redemption'=>'0.00',
+                            'ReportDate'=>$row1['ReportDate'],'CutOff'=>$row1['DateCutOff'],'ManualRedemption'=>0,'Coupon'=>'0.00',
+                            'PrintedTickets'=>'0.00','EncashedTickets'=>'0.00', 'RedemptionCashier'=>'0.00',
+                            'RedemptionGenesis'=>'0.00','DepositCash'=>'0.00','ReloadCash'=>'0.00','UnusedTickets'=>'0.00','DepositTicket'=>'0.00',
+                            'ReloadTicket'=>'0.00','DepositCoupon'=>'0.00','ReloadCoupon'=>'0.00', 'Replenishment'=>0,'Collection'=>0,
+                            'EwalletDeposits' => $row1['EwalletDeposits'], 'EwalletWithdrawals' => $row1['EwalletWithdrawals'],
+                            'EwalletCashLoads' => 0, 'EwalletRedemptionGenesis' => 0.00, 'EwalletWithdraw'=>0, 'EwalletLoads'=>0,
+                            'EncashedTicketsV15' => 0, 'EwalletTicketDeposit' => 0, 'ewalletCoupon'=>0, 'TotalRedemption'=>0, 'LoadTickets'=>0
+                        );
+                }
+
+                // to get confirmation made by cashier from provincial sites
+                $this->prepare($query2);
+                $this->bindparameter(1, $startdate);
+                $this->bindparameter(2, $enddate);                
+                $this->bindparameter(3, $zsiteid);                  
+                $this->execute();
+                $rows2 = $this->fetchAllData();
+                $qr2 = array();
+
+                foreach($rows2 as $row2) 
+                {
+                    $qr2[] = array('SiteID'=>$row2['SiteID'],'DateCreated'=>$row2['DateCreated'], 'Amount'=>$row2['Amount']);
+                }
+
+                // to get deposits made by cashier from metro manila
+                $this->prepare($query3);
+                $this->bindparameter(1, $startdate);
+                $this->bindparameter(2, $enddate);                
+                $this->bindparameter(3, $zsiteid);                  
+                $this->execute();
+                $rows3 = $this->fetchAllData();
+                $qr3 = array();
+                
+                foreach($rows3 as $row3) 
+                {
+                    $qr3[] = array('SiteID'=>$row3['SiteID'],'DateCreated'=>$row3['DateCreated'], 'Amount'=>$row3['Amount']);
+                }  
+
+                // to get manual redemptions based on date range
+                $this->prepare($query4);
+                $this->bindparameter(1, $startdate);
+                $this->bindparameter(2, $enddate);                
+                $this->bindparameter(3, $zsiteid);  
+                if($serviceProvider != -1) // Specific service provider
+                {    
+                    $this->bindparameter(4, $serviceProvider);
+                }
+                $this->execute();
+                $rows4 = $this->fetchAllData();
+                $qr4 = array();
+                
+                foreach($rows4 as $row4)
+                {
+                    $qr4[] = array('SiteID'=>$row4['SiteID'],'ManualRedemption'=>$row4['ActualAmount'],'MRTransDate'=>$row4['TransactionDate']);
+                } 
+                
+                //Total the Deposit and Reload Cash, Deposit and Reload Coupons, Deposit and Reload Tickets in EGM
+                //Total Redemption made by the cashier and the EGM
+                $this->prepare($query5);
+                $this->bindparameter(1, $startdate);
+                $this->bindparameter(2, $enddate);
+                $this->bindparameter(3, $zsiteid);
+                if($serviceProvider != -1) // Specific service provider
+                {    
+                    $this->bindparameter(4, $serviceProvider);
+                }
+                
+                $this->execute();  
+                $rows5 =  $this->fetchAllData();
+
+                foreach ($rows5 as $row5) 
+                {
+                    foreach ($qr1 as $keys => $value1) 
+                    {
+                        if($row5["SiteID"] == $value1["SiteID"])
+                        {
+                            if(($row5['DateCreated'] >= $value1['ReportDate']." ".BaseProcess::$cutoff) && ($row5['DateCreated'] < $value1['CutOff']))
+                            {
+                                if($row5["DepositCash"] != '0.00')
+                                {
+                                    $qr1[$keys]["DepositCash"] = (float)$qr1[$keys]["DepositCash"] + (float)$row5["DepositCash"];
+                                    $qr1[$keys]["InitialDeposit"] = (float)$qr1[$keys]["InitialDeposit"] + (float)$row5["DepositCash"];
+                                }
+                                if($row5["ReloadCash"] != '0.00')
+                                {
+                                    $qr1[$keys]["ReloadCash"] = (float)$qr1[$keys]["ReloadCash"] + (float)$row5["ReloadCash"];
+                                    $qr1[$keys]["Reload"] = (float)$qr1[$keys]["Reload"] + (float)$row5["ReloadCash"];
+                                }
+                                if($row5["RedemptionCashier"] != '0.00')
+                                {
+                                    $qr1[$keys]["RedemptionCashier"] = (float)$qr1[$keys]["RedemptionCashier"] + (float)$row5["RedemptionCashier"];
+                                    $qr1[$keys]["Redemption"] = (float)$qr1[$keys]["Redemption"] + (float)$row5["RedemptionCashier"];
+                                }
+                                if($row5["RedemptionGenesis"] != '0.00')
+                                {
+                                    $qr1[$keys]["RedemptionGenesis"] = (float)$qr1[$keys]["RedemptionGenesis"] + (float)$row5["RedemptionGenesis"];
+                                    $qr1[$keys]["Redemption"] = (float)$qr1[$keys]["Redemption"] + (float)$row5["RedemptionGenesis"];
+                                }
+                                if($row5["DepositCoupon"] != '0.00')
+                                {
+                                    $qr1[$keys]["DepositCoupon"] = (float)$qr1[$keys]["DepositCoupon"] + (float)$row5["DepositCoupon"];
+                                    $qr1[$keys]["Coupon"] = (float)$qr1[$keys]["Coupon"] + (float)$row5["DepositCoupon"];
+                                    $qr1[$keys]["InitialDeposit"] = (float)$qr1[$keys]["InitialDeposit"] + (float)$row5["DepositCoupon"];
+                                }
+                                if($row5["ReloadCoupon"] != '0.00')
+                                {
+                                    $qr1[$keys]["ReloadCoupon"] = (float)$qr1[$keys]["ReloadCoupon"] + (float)$row5["ReloadCoupon"];
+                                    $qr1[$keys]["Coupon"] = (float)$qr1[$keys]["Coupon"] + (float)$row5["ReloadCoupon"];
+                                    $qr1[$keys]["Reload"] = (float)$qr1[$keys]["Reload"] + (float)$row5["ReloadCoupon"];
+                                }
+                                if($row5["DepositTicket"] != '0.00')
+                                {
+                                    $qr1[$keys]["LoadTickets"] = (float)$qr1[$keys]["LoadTicket"] + (float)$row5["DepositTicket"];
+                                    $qr1[$keys]["InitialDeposit"] = (float)$qr1[$keys]["InitialDeposit"] + (float)$row5["DepositTicket"];
+                                }
+                                if($row5["ReloadTicket"] != '0.00')
+                                {
+                                    $qr1[$keys]["LoadTickets"] = (float)$qr1[$keys]["LoadTicket"] + (float)$row5["ReloadTicket"];
+                                    $qr1[$keys]["Reload"] = (float)$qr1[$keys]["Reload"] + (float)$row5["ReloadTicket"];
+                                }
+                                if($row5["TotalRedemption"] != '0.00')
+                                {
+                                    $qr1[$keys]["TotalRedemption"] = (float)$qr1[$keys]["TotalRedemption"] + (float)$row5["TotalRedemption"];                                
+                                    
+                                }
+                            }
+                        }
+                    }     
+                }
+
+                foreach ($qr1 as $keys => $value2) 
+                {
+                    //Get the total Unused Tickets per site
+                    $this->prepare($query6);
+                    $this->bindparameter(":siteid", $value2["SiteID"]);
+                    $this->bindparameter(":startdate", $value2["ReportDate"]." ".BaseProcess::$cutoff);
+                    $this->bindparameter(":enddate", $value2["CutOff"]);
+                    $this->execute();  
+                    $rows6 =  $this->fetchAllData();
+                    
+                    foreach ($rows6 as $row6) 
+                    {
+                        if($row6["SiteID"] == $value2["SiteID"])
+                        {
+                            if(($row6['DateCreated'] >= $value2['ReportDate']." ".BaseProcess::$cutoff) && ($row6['DateCreated'] < $value2['CutOff']))
+                            {
+                                $qr1[$keys]["UnusedTickets"] = (float)$row6["UnusedTickets"];
+                            }
+                        }
+                    }
+                    
+                    //Get the total Printed Tickets per site
+                    $this->prepare($query7);
+                    $this->bindparameter(":startdate", $value2["ReportDate"]." ".BaseProcess::$cutoff);
+                    $this->bindparameter(":enddate", $value2["CutOff"]);
+                    $this->bindparameter(":siteid", $value2["SiteID"]);
+                    $this->execute();  
+                    $rows7 =  $this->fetchAllData();
+
+                    foreach ($rows7 as $row7) 
+                    {
+                        if($row7["SiteID"] == $value2["SiteID"])
+                        {
+                            if(($row7['DateCreated'] >= $value2['ReportDate']." ".BaseProcess::$cutoff) && ($row7['DateCreated'] < $value2['CutOff']))
+                            {
+                                $qr1[$keys]["PrintedTickets"] = (float)$row7["PrintedTickets"];
+                            }
+                        }
+                    }
+                    
+                    //Get the total Encashed Tickets per site
+                    $this->prepare($query8);
+                    $this->bindparameter(1, $value2["ReportDate"]." ".BaseProcess::$cutoff);
+                    $this->bindparameter(2, $value2["CutOff"]);
+                    $this->bindparameter(3, $value2["SiteID"]);
+                    $this->execute();  
+                    $rows8 =  $this->fetchAllData();
+                    
+                    foreach ($rows8 as $row8) 
+                    {
+                        if($row8["SiteID"] == $value2["SiteID"])
+                        {
+                            if(($row8['DateCreated'] >= $value2['ReportDate']." ".BaseProcess::$cutoff) && ($row8['DateCreated'] < $value2['CutOff']))
+                            {
+                                $qr1[$keys]["EncashedTickets"] = (float)$row8["EncashedTickets"];
+                            }
+                            break;
+                        }
+                    }
+                }  
+                
+                //Get the total Encashed Tickets per site
+                $this->prepare($query9);
+                $this->bindparameter(1, $startdate);
+                $this->bindparameter(2, $enddate);
+                $this->bindparameter(3, $zsiteid);
+                $this->execute();  
+                $rows9 =  $this->fetchAllData();
+
+                foreach ($rows9 as $value1) 
+                {
+                    foreach ($qr1 as $keys => $value2) 
+                    {
+                        if($value1["SiteID"] == $value2["SiteID"])
+                        {
+                            if($value1['ReportDate'] == $value2['ReportDate'])
+                            {
+                                $qr1[$keys]["EwalletCashLoads"] += (float)$value1["EwalletCashDeposit"];
+                                $qr1[$keys]["EwalletCashLoads"] += (float)$value1["EwalletBancnetDeposit"];
+                                $qr1[$keys]["EwalletWithdraw"] += (float)$value1["EwalletRedemption"];
+                                $qr1[$keys]["EwalletLoads"] += (float)$value1["EwalletDeposits"];
+                                $qr1[$keys]["ewalletCoupon"] += (float)$value1["EwalletVoucherDeposit"];
+                                $qr1[$keys]["LoadTickets"] += (float)$qr1[$keys]["LoadTickets"] + (float)$value1["EwalletTicketDeposit"];
+                            }
+                            break;
+                        }
+                    }  
+                }
+                
+                /****************Get Encashed Tickets for V15******************************/
+                $this->prepare($query10);
+                $this->bindparameter(1, $startdate);
+                $this->bindparameter(2, $enddate);
+                $this->bindparameter(3, $zsiteid);
+                $this->execute();  
+                $rows10 =  $this->fetchAllData();
+                
+                foreach ($rows10 as $value1) 
+                {
+                    foreach ($qr1 as $keys => $value2) 
+                    {
+                        if($value1["SiteID"] == $value2["SiteID"])
+                        {
+                            if(($value1['DateEncashed'] >= $value2['ReportDate']." ".BaseProcess::$cutoff) && ($value1['DateEncashed'] < $value2['CutOff']))
+                            {
+                                $qr1[$keys]["EncashedTicketsV15"] = (float)$value1["EncashedTicketsV2"];
+                            }
+                            break;
+                        }
+                    }  
+                }
+                
+                $ctr = 0;
+                while($ctr < count($qr1))
+                {
+                    $ctr2 = 0; // counter for manual redemptions array
+                    while($ctr2 < count($qr4))
+                    {
+                        if($qr1[$ctr]['SiteID'] == $qr4[$ctr2]['SiteID'])
+                        {
+                            $amount = 0;
+                            if(($qr4[$ctr2]['MRTransDate'] >= $qr1[$ctr]['ReportDate']." ".BaseProcess::$cutoff) && ($qr4[$ctr2]['MRTransDate'] < $qr1[$ctr]['CutOff']))
+                            {              
+                                 if($qr1[$ctr]['ManualRedemption'] == 0) 
+                                     $qr1[$ctr]['ManualRedemption'] = $qr4[$ctr2]['ManualRedemption'];
+                                 else
+                                 {
+                                     $amount = $qr1[$ctr]['ManualRedemption'];
+                                     $qr1[$ctr]['ManualRedemption'] = $amount + $qr4[$ctr2]['ManualRedemption'];
+                                 }
+                            }
+                        }
+                        $ctr2 = $ctr2 + 1;
+                    }            
+
+                    $ctr3 = 0; //counter for grossholdconfirmation array
+                    while($ctr3 < count($qr2))
+                    {
+                        if($qr1[$ctr]['SiteID'] == $qr2[$ctr3]['SiteID'])
+                        {
+                            $amount = 0;
+                            if(($qr2[$ctr3]['DateCreated'] >= $qr1[$ctr]['ReportDate']." ".BaseProcess::$cutoff) && ($qr2[$ctr3]['DateCreated'] < $qr1[$ctr]['CutOff']))
+                            {
+                                if($qr1[$ctr]['Replenishment'] == 0) 
+                                    $qr1[$ctr]['Replenishment'] = $qr2[$ctr3]['Amount'];
+                                else
+                                {
+                                    $amount = $qr1[$ctr]['Replenishment'];
+                                    $qr1[$ctr]['Replenishment'] = $amount + $qr2[$ctr3]['Amount'];
+                                }                         
+                            }                   
+                        }
+                        $ctr3 = $ctr3 + 1;
+                    }
+
+                    $ctr4 = 0; //counter for collection array
+                    while($ctr4 < count($qr3))
+                    {
+                        if($qr1[$ctr]['SiteID'] == $qr3[$ctr4]['SiteID'])
+                        {         
+                            $amount = 0;
+                            if(($qr3[$ctr4]['DateCreated'] >= $qr1[$ctr]['ReportDate']." ".BaseProcess::$cutoff) && ($qr3[$ctr4]['DateCreated'] < $qr1[$ctr]['CutOff']))
+                            {
+                                if($qr1[$ctr]['Collection'] == 0) 
+                                {
+                                    $qr1[$ctr]['Collection'] = $qr3[$ctr4]['Amount'];         
+                                }      
+                                else
+                                {
+                                    $amount = $qr1[$ctr]['Collection'];
+                                    $qr1[$ctr]['Collection'] = $amount + $qr3[$ctr4]['Amount'];                                
+                                }                           
+                            }                    
+                        }
+                        $ctr4 = $ctr4 + 1;
+                    }            
+                    $ctr = $ctr + 1;
+                }                 
+            break;
+        }
+
+        unset($query1, $query2, $query3, $query4, $query5, $query6, $query7, $query8, $query9, $query10);
+        unset($rows1, $rows2, $rows3, $rows4, $rows5, $rows6, $rows7, $rows8, $rows9, $rows10);
+        unset($qr2, $qr3, $qr4);
+        return $qr1;
+    }
+    // CCT ADDED 02/19/2018 END
     
     // ADDED CCT 11/29/2017 BEGIN
    public function getMIDInfo($terminalID, $serviceID) 

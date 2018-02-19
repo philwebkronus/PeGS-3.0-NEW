@@ -7,6 +7,14 @@ switch($_GET['action']) {
     case 'grossholdbalanceoverview':
         $process->grossHoldBalanceOverview();
         break;
+    // ADDED CCT 02/15/2018 BEGIN
+    case 'grossholdbalancepagcoroverview':
+        $process->grossHoldBalancePAGCOROverview();
+        break;
+    case 'grossholdbalancepagcor':
+        $process->grossHoldBalancePAGCOR();
+        break;    
+    // ADDED CCT 02/15/2018 END
     case 'grossholdbalance':
         $process->grossHoldBalance();
         break;
@@ -29,6 +37,14 @@ switch($_GET['action']) {
     case 'replenishment':
         $process->replenishment();
         break;
+    // ADDED 02/12/2018 BEGIN
+    case 'grossholdmonitoringpagcor':
+        $process->grossHoldMonitoringPAGCOR();
+        break;
+    case 'getghdatapagcor':
+        $process->getGHdataPAGCOR();
+        break;
+    // ADDED 02/12/2018 END
     case 'grossholdmonitoring':
         $process->grossHoldMonitoring();
         break;

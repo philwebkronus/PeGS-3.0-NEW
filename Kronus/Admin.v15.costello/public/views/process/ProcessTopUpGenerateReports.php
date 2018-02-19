@@ -12,6 +12,155 @@ include_once 'BaseProcess.php';
 
 class ProcessTopUpGenerateReports extends BaseProcess
 {
+    // CCT ADDED 02/19/2018 BEGIN
+    //for gross hold monitoring per cut off (Excel)
+    public function grossHoldCutoffExcelPAGCOR() 
+    {
+        $startdate = $_POST['startdate']." ".BaseProcess::$cutoff;
+        $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startdate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff; 
+        $_SESSION['report_header'] = array('Site / PEGS Code','Cut Off Date','Beginning Balance','Deposit', 'e-SAFE Loads', 'Reload','Redemption', 'e-SAFE Withdrawal','Manual Redemption','Printed Tickets','Active Tickets for the Day','Coupon','Cash on Hand', 'Replenishment','Collection','Ending Balance');
+        $topreport = new TopUpReportQuery($this->getConnection());
+        $topreport->open();
+        $vsitecode = $_POST['selsitecode'];
+        $datenow = date("Y-m-d")." ".BaseProcess::$cutoff;
+        $rows = array();
+        $new_rows = array();
+        
+        //check if queried date is date today
+        if($datenow != $startdate)
+        {
+            $servProvider = $_GET['servProviderID'];
+            $rows = $topreport->getoldGHCutoffPAGCOR($startdate, $enddate, $vsitecode, $servProvider);
+        }
+        
+        if(count($rows) > 0)
+        {
+            foreach($rows as $row) 
+            {
+                $grosshold = (($row['InitialDeposit'] + $row['Reload']) - $row['Redemption']) - $row['ManualRedemption'];
+                if ($startdate < BaseProcess::$deploymentdate) 
+                {
+                    $cashonhand = (($row['DepositCash'] + $row['Coupon'] + $row['ReloadCash'] + $row['EwalletCashLoads'] + $row['ewalletCoupon']) - ($row['RedemptionCashier'] + $row['EwalletWithdraw']) - $row['ManualRedemption']) - $row["EncashedTicketsV15"];
+                }
+                else 
+                {
+                    $cashonhand = (($row['DepositCash'] + $row['Coupon'] + $row['ReloadCash'] + $row['EwalletCashLoads'] + $row['ewalletCoupon'] + $row['LoadTickets']) - ($row['TotalRedemption'] + $row['EwalletWithdraw']) - $row['ManualRedemption']) - $row["EncashedTicketsV15"];
+                }
+                $endbal = $cashonhand + $row['Replenishment'] - $row['Collection'];
+                $new_rows[] = array(
+                                substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
+                                $row['CutOff'],
+                                number_format($row['BegBal'],2),
+                                number_format($row['InitialDeposit'],2),
+                                number_format($row['EwalletLoads'],2),
+                                number_format($row['Reload'],2),
+                                number_format($row['Redemption'],2),
+                                number_format($row['EwalletWithdraw'],2),
+                                number_format($row['ManualRedemption'],2),
+                                number_format($row['PrintedTickets'],2),
+                                number_format($row['UnusedTickets'],2),
+                                number_format($row['Coupon']+$row['ewalletCoupon'],2),
+                                number_format($cashonhand,2),
+                                number_format($row['Replenishment'],2),
+                                number_format($row['Collection'],2),
+                                number_format($endbal,2),
+                );
+            }
+        }
+        
+        $_SESSION['report_values'] = $new_rows;
+        $_GET['fn'] = 'grossholdpercutoffPAGCOR';
+        include 'ProcessTopUpExcel.php';
+        unset($new_rows, $rows, $startdate, $enddate, $datenow);
+        $topreport->close();
+    }    
+    
+    public function grossHoldCutoffPdfPAGCOR() 
+    {
+        ini_set('memory_limit', '-1'); 
+        ini_set('max_execution_time', '180');
+        $topreport = new TopUpReportQuery($this->getConnection());
+        $topreport->open();
+        $startdate = $_POST['startdate']." ".BaseProcess::$cutoff;
+        $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startdate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;    
+        $vsitecode = $_POST['selsitecode'];
+        $datenow = date("Y-m-d")." ".BaseProcess::$cutoff;
+        $rows = array();
+        
+        //check if queried date is date today
+        if($datenow != $startdate)
+        {
+            $servProvider = $_GET['servProviderID'];
+            $rows = $topreport->getoldGHCutoffPAGCOR($startdate, $enddate, $vsitecode, $servProvider);
+        }
+        
+        $pdf = CTCPDF::c_getInstance();
+        $pdf->c_commonReportFormat();
+        $pdf->c_setHeader('Gross Hold Monitoring Per Cut-off');
+        $pdf->html.='<div style="text-align:center;">As of ' . date('l') . ', ' .
+              date('F d, Y') . ' ' . date('h:i:s A') .'</div>';
+        $pdf->SetFontSize(6);
+        $pdf->c_tableHeader2(array(
+                array('value'=>'Site / PEGS Code'),
+                array('value'=>'Cut Off Date', 'width' => '70px'),
+                array('value'=>'Beginning Balance'),
+                array('value'=>'Deposit'),
+                array('value'=>'e-SAFE Loads'),
+                array('value'=>'Reload'),
+                array('value'=>'Redemption'),
+                array('value'=>'e-SAFE Withdrawal'),
+                array('value'=>'Manual Redemption'),
+                array('value'=>'Printed Tickets'),
+                array('value'=>'Active Tickets for the Day'),
+                array('value'=>'Coupon'),
+                array('value'=>'Cash on Hand'),
+                array('value'=>'Replenishment'),
+                array('value'=>'Collection'),
+                array('value'=>'Ending Balance')
+             ));
+        
+        if(count($rows) > 0)
+        {
+            foreach($rows as $row) 
+            {
+                $grosshold = (($row['InitialDeposit'] + $row['Reload']) - $row['Redemption']) - $row['ManualRedemption'];
+                if ($startdate < BaseProcess::$deploymentdate) 
+                {
+                     $cashonhand = (($row['DepositCash'] + $row['Coupon'] + $row['ReloadCash'] + $row['EwalletCashLoads'] + $row['ewalletCoupon']) - ($row['RedemptionCashier'] + $row['EwalletWithdraw']) - $row['ManualRedemption']) - $row["EncashedTicketsV15"];
+                }
+                else 
+                {
+                    $cashonhand = (($row['DepositCash'] + $row['Coupon'] + $row['ReloadCash'] + $row['EwalletCashLoads'] + $row['ewalletCoupon'] + $row['LoadTickets']) - ($row['TotalRedemption'] + $row['EwalletWithdraw']) - $row['ManualRedemption']) - $row["EncashedTicketsV15"];
+                }
+                $endbal = $cashonhand + $row['Replenishment'] - $row['Collection'];
+                $pdf->c_tableRow2(array(
+                    array('value'=>substr($row['SiteCode'], strlen(BaseProcess::$sitecode))),
+                    array('value'=> $row['CutOff'], 'width' => '70px'),
+                    array('value'=>number_format($row['BegBal'],2), 'align' => 'right'),
+                    array('value'=>number_format($row['InitialDeposit'],2), 'align' => 'right'),
+                    array('value'=>number_format($row['EwalletLoads'],2), 'align' => 'right'),
+                    array('value'=>number_format($row['Reload'],2), 'align' => 'right'),
+                    array('value'=>number_format($row['Redemption'],2), 'align' => 'right'),
+                    array('value'=>number_format($row['EwalletWithdraw'],2), 'align' => 'right'),
+                    array('value'=>number_format($row['ManualRedemption'], 2), 'align' => 'right'),
+                    array('value'=>number_format($row['PrintedTickets'], 2), 'align' => 'right'),
+                    array('value'=>number_format($row['UnusedTickets'], 2), 'align' => 'right'),
+                    array('value'=>number_format($row['Coupon'] + $row['ewalletCoupon'], 2), 'align' => 'right'),
+                    array('value'=>number_format($cashonhand, 2), 'align' => 'right'),
+                    array('value'=>number_format($row['Replenishment'],2), 'align' => 'right'),
+                    array('value'=>number_format($row['Collection'],2), 'align' => 'right'),
+                    array('value'=>number_format($endbal,2), 'align' => 'right'),
+                 ));
+            }
+        }
+        
+        $pdf->c_tableEnd();
+        $pdf->c_generatePDF('grossholdpercutoffPAGCOR.pdf');
+        unset($startdate, $venddate, $enddate, $vsitecode, $datenow, $rows);
+        $topreport->close();
+    } 
+    // CCT ADDED 02/19/2018 END
+    
     //Gross Hold Monitoring Report (PDF)
     public function grossHoldMonPdf() 
     {
@@ -2236,6 +2385,14 @@ switch($_GET['action'])
     case 'playingbalexcelub':
         $reports->playingBalanceExcelUB();
         break;
+    // CCT ADDED 02/19/2018 BEGIN
+        case 'grossholdbalancepdfpagcor':
+        $reports->grossHoldCutoffPdfPAGCOR();
+        break;
+    case 'grossholdbalanceexcelpagcor':
+        $reports->grossHoldCutoffExcelPAGCOR();
+        break;    
+    // CCT ADDED 02/19/2018 END
     case 'grossholdbalancepdf':
         $reports->grossHoldCutoffPdf();
         break;
