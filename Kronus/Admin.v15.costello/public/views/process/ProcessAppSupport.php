@@ -301,8 +301,23 @@ if ($connected && $connected2 && $connected3)
                             } 
                             else 
                             {
-                                $services = "UB Transaction Tracking: Casino is empty";
-                                echo "$services";
+                                // EDITED CCT 02/20/2018 BEGIN
+                                // Revised output when there is no Account-Based record for the player
+                                //$services = "UB Transaction Tracking: Casino is empty";
+                                //echo "$services";
+                                $casinoinfo = array('UserName' => $obj_result->CardInfo->MemberName,
+                                                'MobileNumber' => $obj_result->CardInfo->MobileNumber,
+                                                'Email' => $obj_result->CardInfo->Email,
+                                                'Birthdate' => $obj_result->CardInfo->Birthdate,
+                                                'Casino' => '',
+                                                'Login' => '',
+                                                'CardNumber' => $obj_result->CardInfo->Username,
+                                                'StatusCode' => $obj_result->CardInfo->StatusCode,);
+                                array_push($casinoinfo2, $casinoinfo);
+                                $_SESSION['CasinoArray'] = $obj_result->CardInfo->CasinoArray;
+                                $_SESSION['MID'] = $obj_result->CardInfo->MemberID;
+                                echo json_encode($casinoinfo2);                                
+                                // EDITED CCT 02/20/2018 END
                             }
                         } 
                         else 
@@ -658,8 +673,23 @@ if ($connected && $connected2 && $connected3)
                                 } 
                                 else 
                                 {
-                                    $services = "Casino is empty";
-                                    echo "$services";
+                                    // EDITED CCT 02/20/2018 BEGIN
+                                    // Revised output when there is no Account-Based record for the player
+                                    //$services = "Casino is empty";
+                                    //echo "$services";
+                                    $casinoinfo = array('UserName' => $obj_result->CardInfo->MemberName,
+                                                'MobileNumber' => $obj_result->CardInfo->MobileNumber,
+                                                'Email' => $obj_result->CardInfo->Email,
+                                                'Birthdate' => $obj_result->CardInfo->Birthdate,
+                                                'Casino' => '',
+                                                'Login' => '',
+                                                'CardNumber' => $obj_result->CardInfo->Username,
+                                                'StatusCode' => $obj_result->CardInfo->StatusCode,);
+                                    array_push($casinoinfo2, $casinoinfo);
+                                    $_SESSION['CasinoArray'] = $obj_result->CardInfo->CasinoArray;
+                                    $_SESSION['MID'] = $obj_result->CardInfo->MemberID;  
+                                    echo json_encode($casinoinfo2);
+                                    // EDITED CCT 02/20/2018 END
                                 }
                             } 
                             else 

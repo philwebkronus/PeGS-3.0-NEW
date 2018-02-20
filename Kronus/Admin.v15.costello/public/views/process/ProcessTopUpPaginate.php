@@ -1140,8 +1140,23 @@ class ProcessTopUpPaginate extends BaseProcess
               }
               else
               {
-               $services = $service_title . " : Casino is empty";
-               echo "$services";
+                // EDITED CCT 02/20/2018 BEGIN  
+                // Revised output when there is no Account-Based record for the player
+                //$services = $service_title . " : Casino is empty";
+                //echo "$services";
+                $casinoinfo [0] = array
+                            ('UserName' => $obj_result->CardInfo->MemberName,
+                            'MobileNumber' => $obj_result->CardInfo->MobileNumber,
+                            'Email' => $obj_result->CardInfo->Email,
+                            'Birthdate' => $obj_result->CardInfo->Birthdate,
+                            'Casino' => '',
+                            'CardNumber' => $cardnumber,
+                            'Login' => '',
+                            'StatusCode' => $obj_result->CardInfo->StatusCode,);
+                $_SESSION['ServiceUserName'] = '';
+                $_SESSION['MID'] = $obj_result->CardInfo->MemberID;  
+                echo json_encode($casinoinfo);
+                // EDITED CCT 02/20/2018 END                  
               }
            }
            else

@@ -275,27 +275,28 @@ $vaccesspages = array('5','6', '18');
                                      +"<th>Login</th>"
                                      +"</tr>"
                                      +"</thead>";
-
                           $.each(data, function(i,user)
                           {
                               if(this.StatusCode == 9){
                                   alert("Card is Banned")
                               }
-                              
-                               if(this.CardNumber == null)
+                             
+                              // EDITED CCT 02/20/2018 BEGIN
+                              // If player has no user based account.
+                              //if(this.CardNumber == null)
+                              if (this.Casino != 'undefined')
                               {
-                                  alert("Invalid Card Number");
-                                  $('#light').hide();
-                                  $('#fade').hide();
-                              }
-                              else
-                              {
+                              //    alert("Invalid Card Number");
+                              //    $('#light').hide();
+                              //    $('#fade').hide();
+                              //}
+                              //else
+                              //{
                                   if(this.MobileNumber == null){
                                       this.MobileNumber = '';
                                   }
                                  document.getElementById('light').style.display='block';
                                  document.getElementById('fade').style.display='block';
-                             
                              
                                 tblRow +=
                                          "<tbody>"
@@ -311,6 +312,7 @@ $vaccesspages = array('5','6', '18');
                                          $('#userdata2').html(tblRow);
                                          
                                }
+                               // EDITED CCT 02/20/2018 END
                           });
                        
                    },

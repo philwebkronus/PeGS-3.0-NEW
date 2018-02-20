@@ -318,8 +318,24 @@ if($connected && $connected2)
                                 }
                                 else
                                 {
-                                    $services = "User Based Redemption: Casino is empty";
-                                    echo "$services";
+                                    // EDITED CCT 02/20/2018 BEGIN
+                                    // Revised output when there is no Account-Based record for the player
+                                    //$services = "User Based Redemption: Casino is empty";
+                                    //echo "$services";
+                                    $casinoinfo = array(
+                                                    array('UserName' => $obj_result->CardInfo->MemberName,
+                                                        'MobileNumber' => $obj_result->CardInfo->MobileNumber,
+                                                        'Email' => $obj_result->CardInfo->Email,
+                                                        'Birthdate' => $obj_result->CardInfo->Birthdate,
+                                                        'Casino' => '',
+                                                        'CardNumber' => $obj_result->CardInfo->CardNumber,
+                                                        'StatusCode' => $obj_result->CardInfo->StatusCode,
+                                                        ),
+                                                );
+                                    $_SESSION['CasinoArray'] = $obj_result->CardInfo->CasinoArray;
+                                    $_SESSION['MID'] = $obj_result->CardInfo->MemberID;
+                                    echo json_encode($casinoinfo);                                      
+                                    // EDITED CCT 02/20/2018 END
                                 }    
                             } 
                             else 
@@ -495,7 +511,21 @@ if($connected && $connected2)
                     }
                     else
                     {
-                        $service =  "User Based Redemption: Invalid Card Number";
+                        // EDITED CCT 02/20/2018 BEGIN
+                        // Revised output when there is no Account-Based record for the player
+                        //$service =  "User Based Redemption: Invalid Card Number";
+                        $casino2 = array(
+                                        "UserName"  => '',
+                                        "Password"  => '',
+                                        "ServiceName"  => '',
+                                        "ServiceID"  => '',    
+                                        "UserMode" => '',
+                                        "IsVIP" => '',
+                                        "Status" => '',
+                                        "Balance" => '',
+                                    );
+                        array_push($service, $casino2);  //
+                        // EDITED CCT 02/20/2018 END
                     }
 
                     echo json_encode($service);
