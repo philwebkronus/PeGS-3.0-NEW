@@ -2640,6 +2640,23 @@ class ApplicationSupport extends DBHandler
     {
     //--------Get Last Deposit From ewallettrans -------//
         
+        // ADDED CCT 02/20/2018 BEGIN
+        // Default values if no ewallet transactions
+        $results = '';
+        
+        $results['SiteCode'] = '';
+        $results['StartDate'] = '';
+        $results['Amount'] = 0;
+        $results['Status'] = '';
+        $results['ServiceName'] = '';
+        
+        $results['SiteCodeW'] = '';
+        $results['StartDateW'] = '';
+        $results['AmountW'] = 0;
+        $results['StatusW'] = '';
+        $results['ServiceNameW'] = '';
+        // ADDED CCT 02/20/2018 END
+        
         $query1 = "SELECT s.SiteCode, ew.StartDate, ew.Amount, 
                         (CASE ew.Status WHEN '0' THEN 'Pending'
 					WHEN '1' THEN 'Successful'
