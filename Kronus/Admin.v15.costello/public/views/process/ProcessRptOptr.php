@@ -11,6 +11,31 @@ require __DIR__.'/../sys/core/init.php';
 require_once __DIR__.'/../sys/class/CTCPDF.php';
 require_once __DIR__."/../sys/class/class.export_excel.php";
 
+// ADDED CCT 02/21/2018 BEGIN
+function multidimensional_search($parents, $searched) 
+{
+
+  if (empty($searched) || empty($parents)) 
+  { 
+    return false; 
+  } 
+
+  foreach ($parents as $key => $value) 
+  { 
+        $exists = true; 
+        foreach ($searched as $skey => $svalue) 
+        { 
+           $exists = ($exists && IsSet($parents[$key][$skey]) && $parents[$key][$skey] == $svalue); 
+        } 
+        if($exists)
+        { 
+            return $key; 
+        } 
+  } 
+  return false; 
+} 
+// ADDED CCT 02/21/2018 END
+
 $aid = 0;
 if(isset($_SESSION['sessionID']))
 {
@@ -94,6 +119,238 @@ if($connected)
         $vpage = $_POST['paginate'];
         switch($vpage)
         {
+            // CCT ADDED 02/21/2018 BEGIN
+            case "RptGrossHoldPerProvider":
+                $page = $_POST['page']; // get the requested page
+                $limit = $_POST['rows']; // get how many rows we want to have into the grid
+                $sidx = $_POST['sidx']; // get index row - i.e. user click to sort
+                $sord = $_POST['sord']; // get the direction
+                $datefrom = $_POST['date'];
+                $dateto = date ( 'Y-m-d' , strtotime ('+1 day' , strtotime($datefrom)));
+                
+                //get site operator's sites
+                $aid = $_SESSION['accID'];
+                $siteIDs = $orptoptr->getSiteByAID($aid);
+                
+                //get service ids with transaction for said date
+                $serviceGrpIDs = array(1, 6, 7);
+                $serviceIDs = $orptoptr->getServiceIDwithTransactions($serviceGrpIDs, $siteIDs, $datefrom, $dateto);
+                
+                // Prepare array structure
+                $siteIDarray = array();
+                if (count($siteIDs) > 0) 
+                {
+                    foreach ($siteIDs as $siteID) 
+                    {
+                        $siteIDarray [$siteID['SiteID']] =
+                            array('SiteID' => $siteID['SiteID'], 'SiteCode' => trim(str_replace("ICSA-", "", $siteID['SiteCode'])),);
+                            
+                        if (count($serviceIDs) > 0)
+                        {
+                            $serviceIDarray ['ServiceInfo'] = array();                        
+                            foreach ($serviceIDs as $serviceID)
+                            { 
+                                $tempserviceIDarray [$serviceID['ServiceID']] = array();
+                                $tempserviceIDarray = 
+                                    array(
+                                        'ServiceID'     => $serviceID['ServiceID'],
+                                        'ServiceName'   => $serviceID['ServiceName'],
+                                        'UserMode'      => $serviceID['UserMode'],
+                                        'TB_DR'         => 0,
+                                        'TB_W'          => 0,
+                                        'TB_MR'         => 0,
+                                        'TB_GH'         => 0,
+                                        'UB_GH'         => 0,
+                                        'SubTotal_GH'   => 0
+                                    );
+                                $resultarr = array_push($serviceIDarray ['ServiceInfo'], $tempserviceIDarray);
+                            }
+                            $siteIDarray[$siteID['SiteID']] = array_merge($siteIDarray[$siteID['SiteID']], $serviceIDarray);                            
+                        }
+                    }
+                }
+                
+                // Create additional total line entry
+                $siteIDarray ['Total'] = array('SiteID' => 'Total', 'SiteCode' => 'Total',);
+   
+                if (count($serviceIDs) > 0)
+                {
+                    $serviceIDarray ['ServiceInfo'] = array();                        
+                    foreach ($serviceIDs as $serviceID)
+                    { 
+                        $tempserviceIDarray [$serviceID['ServiceID']] = array();
+                        $tempserviceIDarray = 
+
+                            array(
+                                'ServiceID'     => $serviceID['ServiceID'],
+                                'ServiceName'   => $serviceID['ServiceName'],
+                                'UserMode'      => $serviceID['UserMode'],
+                                'TB_DR'         => 0,
+                                'TB_W'          => 0,
+                                'TB_MR'         => 0,
+                                'TB_GH'         => 0,
+                                'UB_GH'         => 0,
+                                'SubTotal_GH'   => 0
+                            );
+                        $resultarr = array_push($serviceIDarray ['ServiceInfo'], $tempserviceIDarray);
+                    }
+                    $siteIDarray ['Total'] = array_merge($siteIDarray ['Total'], $serviceIDarray);                            
+                }                
+
+                // Populate array with contents                
+                if (count($siteIDs) > 0) 
+                {
+                    foreach ($siteIDs as $siteID) 
+                    {
+                        if (count($serviceIDs) > 0)
+                        {    
+                            foreach ($serviceIDs as $serviceID)
+                            {    
+                                //get D, R, W and MR of respective serviceID
+
+                                // Check User Mode if TB or UB 
+                                $arrSiteIDKeyResult = multidimensional_search($siteIDarray, array('SiteID' => $siteID['SiteID']));
+                                $arrServiceIDKeyResult = multidimensional_search($siteIDarray [$arrSiteIDKeyResult] ['ServiceInfo'], array('ServiceID' => $serviceID['ServiceID']));
+                                $arrUserModeResult = $siteIDarray [$arrSiteIDKeyResult] ['ServiceInfo'] [$arrServiceIDKeyResult] ['UserMode'];
+                                
+                                $ub_info = 0;
+                                $ub_grosshold = 0;
+                                $tb_deposit_reload = 0;
+                                $tb_withdraw = 0;
+                                $tb_mr = 0;
+                                $tb_grosshold = 0;
+
+                                if ($arrUserModeResult == 1) // UB
+                                {
+                                    // for account based (Abbott)
+                                    $ub_info        = $orptoptr->getGrossHoldeSAFE($siteID['SiteID'], $datefrom, $dateto);
+                                    $ub_grosshold   = $ub_info['StartBalance'] + $ub_info['WalletReloads'] - $ub_info['EndBalance'] - $ub_info['GenesisWithdrawal'];
+                                    $siteIDarray [$arrSiteIDKeyResult] ['ServiceInfo'] [$arrServiceIDKeyResult] ['UB_GH'] = $ub_grosshold;
+                                }
+                                else // TB
+                                {    
+                                    // for terminal based (Sapphire/Topaz, Habanero, e-Bingo)
+                                    $tb_deposit_reload  = $orptoptr->getGrossHoldTBPerProvider($siteID['SiteID'], $serviceID['ServiceID'], "DR", $datefrom, $dateto);
+                                    $tb_withdraw        = $orptoptr->getGrossHoldTBPerProvider($siteID['SiteID'], $serviceID['ServiceID'], "W", $datefrom, $dateto);
+                                    $tb_mr              = $orptoptr->getManualRedemptionTBPerProvider($siteID['SiteID'], $serviceID['ServiceID'], $datefrom, $dateto);
+                                    $tb_grosshold       = $tb_deposit_reload['Amount'] - ($tb_withdraw['Amount'] + $tb_mr['Amount']);
+                                    $siteIDarray [$arrSiteIDKeyResult] ['ServiceInfo'] [$arrServiceIDKeyResult] ['TB_DR'] = $tb_deposit_reload;
+                                    $siteIDarray [$arrSiteIDKeyResult] ['ServiceInfo'] [$arrServiceIDKeyResult] ['TB_W'] = $tb_withdraw;
+                                    $siteIDarray [$arrSiteIDKeyResult] ['ServiceInfo'] [$arrServiceIDKeyResult] ['TB_MR'] = $tb_mr;
+                                    $siteIDarray [$arrSiteIDKeyResult] ['ServiceInfo'] [$arrServiceIDKeyResult] ['TB_GH'] = $tb_grosshold;
+                                }
+                                $siteIDarray [$arrSiteIDKeyResult] ['ServiceInfo'] [$arrServiceIDKeyResult] ['SubTotal_GH'] = 
+                                        $siteIDarray [$arrSiteIDKeyResult] ['ServiceInfo'] [$arrServiceIDKeyResult] ['UB_GH'] + 
+                                        $siteIDarray [$arrSiteIDKeyResult] ['ServiceInfo'] [$arrServiceIDKeyResult] ['TB_GH'];
+
+                                // for totals
+                                $siteIDarray ['Total'] ['ServiceInfo'] [$arrServiceIDKeyResult] ['UB_GH']+= 
+                                        ($ub_info['StartBalance'] + $ub_info['WalletReloads'] - $ub_info['EndBalance'] - $ub_info['GenesisWithdrawal']);
+                                $siteIDarray ['Total'] ['ServiceInfo'] [$arrServiceIDKeyResult] ['TB_DR'] += $tb_deposit_reload['Amount'];
+                                $siteIDarray ['Total'] ['ServiceInfo'] [$arrServiceIDKeyResult] ['TB_W'] += $tb_withdraw['Amount'];
+                                $siteIDarray ['Total'] ['ServiceInfo'] [$arrServiceIDKeyResult] ['TB_MR'] += $tb_mr['Amount'];
+                                $siteIDarray ['Total'] ['ServiceInfo'] [$arrServiceIDKeyResult] ['TB_GH'] += 
+                                        ($tb_deposit_reload['Amount'] - $tb_withdraw['Amount'] - $tb_mr['Amount']);
+                                $siteIDarray ['Total'] ['ServiceInfo'] [$arrServiceIDKeyResult] ['SubTotal_GH'] += 
+                                        ($ub_info['StartBalance'] + $ub_info['WalletReloads'] - $ub_info['EndBalance'] - $ub_info['GenesisWithdrawal'] +
+                                        $tb_deposit_reload['Amount'] - $tb_withdraw['Amount'] - $tb_mr['Amount']);                                  
+                            }
+                        }
+                    }
+
+                    $count = 0;
+                    $count = count($siteIDarray);
+                    if ($count > 0) 
+                    {
+                        if($count > 0 ) 
+                        {
+                            $total_pages = ceil($count/$limit);
+                        } 
+                        else 
+                        {
+                            $total_pages = 0;
+                        }
+
+                        if ($page > $total_pages)
+                        {
+                            $page = $total_pages;
+                            $start = $limit * $page - $limit;           
+                        }
+
+                        if($page == 0)
+                        {
+                            $start = 0;
+                        }
+                        else
+                        {
+                            $start = $limit * $page - $limit;   
+                        }
+                        $limit = (int)$limit;
+                        //paginate array
+                        $trans_details2 = $orptoptr->paginatetransaction($siteIDarray, $start, $limit);
+                        $response = new stdClass();
+                        $response->page = $page;
+                        $response->total = $total_pages;
+                        $response->records = $count; 
+
+                        //display to jqgrid
+                        $gh1 = 0;
+                        $gh2 = 0;
+                        $gh3 = 0;
+                        $j = 0;                        
+                        foreach($trans_details2 as $vview2)
+                        {
+                            $response->rows[$j]['id']=$vview2['SiteCode'];
+                            foreach($vview2['ServiceInfo'] as $servview2)
+                            {
+                                if ($servview2['ServiceID'] == 22) // RTG
+                                {
+                                    $gh1 = $servview2['SubTotal_GH'];
+                                }
+                                elseif ($servview2['ServiceID'] == 25) // Habanero
+                                {
+                                    $gh2 = $servview2['SubTotal_GH'];
+                                }
+                                elseif ($servview2['ServiceID'] == 26) // e-Bingo
+                                {
+                                    $gh3 = $servview2['SubTotal_GH'];
+                                }
+                            }
+                            
+                            if ($vview2['SiteCode'] == 'Total')
+                            {
+                                $response->rows[$j]['cell']=array('<b>'.$vview2['SiteCode'].'</b>', '<b>'.number_format($gh1, 2).'</b>', 
+                                                '<b>'.number_format($gh2, 2).'</b>', '<b>'.number_format($gh3, 2).'</b>', 
+                                                '<b>'.number_format($gh1 + $gh2 + $gh3, 2).'</b>');
+                            }
+                            else
+                            {
+                                $response->rows[$j]['cell']=array($vview2['SiteCode'], number_format($gh1, 2), number_format($gh2, 2), 
+                                                number_format($gh3, 2), number_format($gh1 + $gh2 + $gh3, 2));
+                            }
+                            $j++;
+                        }
+                    }
+                    else 
+                    {
+                        $j = 0;
+                        $response->page = $page;
+                        $response->total = $total_pages;
+                        $response->records = $count;
+                        $msg = "Gross Hold: No returned result";
+                        $response->msg = $msg;
+                    }
+                    echo json_encode($response);
+                    $orptoptr->close();
+                    exit;
+                }
+                else 
+                {
+                    $arr_r = array('ErrorCode' => 1, 'Message' => 'The operator has no site.');
+                }
+                break;
+            // CCT ADDED 02/21/2018 END
+                
             case 'DailySiteTransaction':
                 $page = $_POST['page']; // get the requested page
                 $limit = $_POST['rows']; // get how many rows we want to have into the grid
@@ -1258,6 +1515,195 @@ if($connected)
         }
     }
     /***************************** EXPORTING EXCEL STARTS HERE *******************************/
+    // CCT ADDED 02/23/2018 BEGIN
+    else if(isset($_GET['excel4']) == "grossholdexcelperprovider") 
+    {
+        $datefrom = $_GET['date'];
+        $dateto = date ( 'Y-m-d' , strtotime ('+1 day' , strtotime($datefrom)));
+        $fn = "Gross_Hold_per_Provider_".date('Y_m_d').".xls";
+        
+        //setting up excel
+        $excel_obj = new ExportExcel("$fn");
+        $rptheader = array('Gross Hold per Provider Report from '.$datefrom.' to '.$dateto,"" );
+        $array_headers = array('Site / PEGS Code', 'RTG', 'Habanero', 'e-Bingo', 'Total Gross Hold');  
+        $completeexcelvalues = array();
+        array_push($completeexcelvalues,array('','','','','')); // for Space between Header
+        array_push($completeexcelvalues, $array_headers);
+
+        //get site operator's sites
+        $aid = $_SESSION['accID'];
+        $siteIDs = $orptoptr->getSiteByAID($aid);
+
+        //get service ids with transaction for said date
+        $serviceGrpIDs = array(1, 6, 7);
+        $serviceIDs = $orptoptr->getServiceIDwithTransactions($serviceGrpIDs, $siteIDs, $datefrom, $dateto);
+
+        // Prepare array structure
+        $siteIDarray = array();
+        if (count($siteIDs) > 0) 
+        {
+            foreach ($siteIDs as $siteID) 
+            {
+                $siteIDarray [$siteID['SiteID']] =
+                    array('SiteID' => $siteID['SiteID'], 'SiteCode' => trim(str_replace("ICSA-", "", $siteID['SiteCode'])),);
+
+                if (count($serviceIDs) > 0)
+                {
+                    $serviceIDarray ['ServiceInfo'] = array();                        
+                    foreach ($serviceIDs as $serviceID)
+                    { 
+                        $tempserviceIDarray [$serviceID['ServiceID']] = array();
+                        $tempserviceIDarray = 
+                            array(
+                                'ServiceID'     => $serviceID['ServiceID'],
+                                'ServiceName'   => $serviceID['ServiceName'],
+                                'UserMode'      => $serviceID['UserMode'],
+                                'TB_DR'         => 0,
+                                'TB_W'          => 0,
+                                'TB_MR'         => 0,
+                                'TB_GH'         => 0,
+                                'UB_GH'         => 0,
+                                'SubTotal_GH'   => 0
+                            );
+                        $resultarr = array_push($serviceIDarray ['ServiceInfo'], $tempserviceIDarray);
+                    }
+                    $siteIDarray[$siteID['SiteID']] = array_merge($siteIDarray[$siteID['SiteID']], $serviceIDarray);                            
+                }
+            }
+        }
+
+        // Create additional total line entry
+        $siteIDarray ['Total'] = array('SiteID' => 'Total', 'SiteCode' => 'Total',);
+
+        if (count($serviceIDs) > 0)
+        {
+            $serviceIDarray ['ServiceInfo'] = array();                        
+            foreach ($serviceIDs as $serviceID)
+            { 
+                $tempserviceIDarray [$serviceID['ServiceID']] = array();
+                $tempserviceIDarray = 
+
+                    array(
+                        'ServiceID'     => $serviceID['ServiceID'],
+                        'ServiceName'   => $serviceID['ServiceName'],
+                        'UserMode'      => $serviceID['UserMode'],
+                        'TB_DR'         => 0,
+                        'TB_W'          => 0,
+                        'TB_MR'         => 0,
+                        'TB_GH'         => 0,
+                        'UB_GH'         => 0,
+                        'SubTotal_GH'   => 0
+                    );
+                $resultarr = array_push($serviceIDarray ['ServiceInfo'], $tempserviceIDarray);
+            }
+            $siteIDarray ['Total'] = array_merge($siteIDarray ['Total'], $serviceIDarray);                            
+        }                
+
+        // Populate array with contents                
+        if (count($siteIDs) > 0) 
+        {
+            foreach ($siteIDs as $siteID) 
+            {
+                if (count($serviceIDs) > 0)
+                {    
+                    foreach ($serviceIDs as $serviceID)
+                    {    
+                        //get D, R, W and MR of respective serviceID
+
+                        // Check User Mode if TB or UB 
+                        $arrSiteIDKeyResult = multidimensional_search($siteIDarray, array('SiteID' => $siteID['SiteID']));
+                        $arrServiceIDKeyResult = multidimensional_search($siteIDarray [$arrSiteIDKeyResult] ['ServiceInfo'], array('ServiceID' => $serviceID['ServiceID']));
+                        $arrUserModeResult = $siteIDarray [$arrSiteIDKeyResult] ['ServiceInfo'] [$arrServiceIDKeyResult] ['UserMode'];
+
+                        $ub_info = 0;
+                        $ub_grosshold = 0;
+                        $tb_deposit_reload = 0;
+                        $tb_withdraw = 0;
+                        $tb_mr = 0;
+                        $tb_grosshold = 0;
+
+                        if ($arrUserModeResult == 1) // UB
+                        {
+                            // for account based (Abbott)
+                            $ub_info        = $orptoptr->getGrossHoldeSAFE($siteID['SiteID'], $datefrom, $dateto);
+                            $ub_grosshold   = $ub_info['StartBalance'] + $ub_info['WalletReloads'] - $ub_info['EndBalance'] - $ub_info['GenesisWithdrawal'];
+                            $siteIDarray [$arrSiteIDKeyResult] ['ServiceInfo'] [$arrServiceIDKeyResult] ['UB_GH'] = $ub_grosshold;
+                        }
+                        else // TB
+                        {    
+                            // for terminal based (Sapphire/Topaz, Habanero, e-Bingo)
+                            $tb_deposit_reload  = $orptoptr->getGrossHoldTBPerProvider($siteID['SiteID'], $serviceID['ServiceID'], "DR", $datefrom, $dateto);
+                            $tb_withdraw        = $orptoptr->getGrossHoldTBPerProvider($siteID['SiteID'], $serviceID['ServiceID'], "W", $datefrom, $dateto);
+                            $tb_mr              = $orptoptr->getManualRedemptionTBPerProvider($siteID['SiteID'], $serviceID['ServiceID'], $datefrom, $dateto);
+                            $tb_grosshold       = $tb_deposit_reload['Amount'] - ($tb_withdraw['Amount'] + $tb_mr['Amount']);
+                            $siteIDarray [$arrSiteIDKeyResult] ['ServiceInfo'] [$arrServiceIDKeyResult] ['TB_DR'] = $tb_deposit_reload;
+                            $siteIDarray [$arrSiteIDKeyResult] ['ServiceInfo'] [$arrServiceIDKeyResult] ['TB_W'] = $tb_withdraw;
+                            $siteIDarray [$arrSiteIDKeyResult] ['ServiceInfo'] [$arrServiceIDKeyResult] ['TB_MR'] = $tb_mr;
+                            $siteIDarray [$arrSiteIDKeyResult] ['ServiceInfo'] [$arrServiceIDKeyResult] ['TB_GH'] = $tb_grosshold;
+                        }
+                        $siteIDarray [$arrSiteIDKeyResult] ['ServiceInfo'] [$arrServiceIDKeyResult] ['SubTotal_GH'] = 
+                                $siteIDarray [$arrSiteIDKeyResult] ['ServiceInfo'] [$arrServiceIDKeyResult] ['UB_GH'] + 
+                                $siteIDarray [$arrSiteIDKeyResult] ['ServiceInfo'] [$arrServiceIDKeyResult] ['TB_GH'];
+
+                        // for totals
+                        $siteIDarray ['Total'] ['ServiceInfo'] [$arrServiceIDKeyResult] ['UB_GH']+= 
+                                ($ub_info['StartBalance'] + $ub_info['WalletReloads'] - $ub_info['EndBalance'] - $ub_info['GenesisWithdrawal']);
+                        $siteIDarray ['Total'] ['ServiceInfo'] [$arrServiceIDKeyResult] ['TB_DR'] += $tb_deposit_reload['Amount'];
+                        $siteIDarray ['Total'] ['ServiceInfo'] [$arrServiceIDKeyResult] ['TB_W'] += $tb_withdraw['Amount'];
+                        $siteIDarray ['Total'] ['ServiceInfo'] [$arrServiceIDKeyResult] ['TB_MR'] += $tb_mr['Amount'];
+                        $siteIDarray ['Total'] ['ServiceInfo'] [$arrServiceIDKeyResult] ['TB_GH'] += 
+                                ($tb_deposit_reload['Amount'] - $tb_withdraw['Amount'] - $tb_mr['Amount']);
+                        $siteIDarray ['Total'] ['ServiceInfo'] [$arrServiceIDKeyResult] ['SubTotal_GH'] += 
+                                ($ub_info['StartBalance'] + $ub_info['WalletReloads'] - $ub_info['EndBalance'] - $ub_info['GenesisWithdrawal'] +
+                                $tb_deposit_reload['Amount'] - $tb_withdraw['Amount'] - $tb_mr['Amount']);                                  
+                    }
+                }
+            }
+
+            // Prepare array for excel file contents
+            $gh1 = 0;
+            $gh2 = 0;
+            $gh3 = 0;
+            $rrecord = array();
+            
+            foreach($siteIDarray as $sites)
+            {
+                foreach($sites['ServiceInfo'] as $serviceprov)
+                {
+                    if ($serviceprov['ServiceID'] == 22) // RTG
+                    {
+                        $gh1 = $serviceprov['SubTotal_GH'];
+                    }
+                    elseif ($serviceprov['ServiceID'] == 25) // Habanero
+                    {
+                        $gh2 = $serviceprov['SubTotal_GH'];
+                    }
+                    elseif ($serviceprov['ServiceID'] == 26) // e-Bingo
+                    {
+                        $gh3 = $serviceprov['SubTotal_GH'];
+                    }
+                }
+                
+                $rrecord = array(   0 => $sites['SiteCode'], 
+                                    1 => number_format($gh1, 2),
+                                    2 => number_format($gh2, 2),
+                                    3 => number_format($gh3, 2),
+                                    4 => number_format($gh1 + $gh2 + $gh3, 2),
+                                );
+
+                array_push($completeexcelvalues, $rrecord); 
+            }
+        }
+        else 
+        {
+            $rrecord = array(0 => 'The operator has no site. No records found');
+        }
+
+        $excel_obj->setHeadersAndValues($rptheader, $completeexcelvalues);
+        $excel_obj->GenerateExcelFile();
+        unset($completeexcelvalues);
+    }    
+    // CCT ADDED 02/23/2018 END
     elseif(isset($_GET['excel2']) == "e-walletsitetrans")
     {
         $fn = $_GET['fn'] . ".xls";
@@ -2705,6 +3151,7 @@ if($connected)
                                     1 => number_format($arr_grosshold[$i]['SubTotal'], 2, ".", ","));
                 array_push($completeexcelvalues, $rrecord); 
             }
+            
             $rrecordtotal = array(  0 => 'Total', 
                                     1 => number_format($total, 2, ".", ","));
             array_push($completeexcelvalues, $rrecordtotal); 
@@ -2719,6 +3166,220 @@ if($connected)
         $excel_obj->GenerateExcelFile();
         unset($completeexcelvalues);
      }
+     // CCT ADDED 02/23/2018 BEGIN
+     else if(isset($_GET['pdf4']) == "grossholdpdfperprovider") 
+     {
+        $datefrom = $_GET['date'];
+        $dateto = date ( 'Y-m-d' , strtotime ('+1 day' , strtotime($datefrom)));
+
+        $pdf = CTCPDF::c_getInstance(); //call method of tcpdf
+        $pdf->c_commonReportFormat();
+        $pdf->c_setHeader('Gross Hold per Provider'); //filename
+        $pdf->html.='<div style="text-align:center;">From '.$datefrom.' to '.$dateto.' </div>';
+        $pdf->SetFontSize(10);
+        $pdf->c_tableHeader2(array(
+                                array('value'=>'Site / PEGS Code'),
+                                array('value'=>'RTG'),
+                                array('value'=>'Habanero'),
+                                array('value'=>'e-Bingo'),
+                                array('value'=>'Total Gross Hold'),
+                            ));
+        //get site operator's sites
+        $aid = $_SESSION['accID'];
+        $siteIDs = $orptoptr->getSiteByAID($aid);
+
+        //get service ids with transaction for said date
+        $serviceGrpIDs = array(1, 6, 7);
+        $serviceIDs = $orptoptr->getServiceIDwithTransactions($serviceGrpIDs, $siteIDs, $datefrom, $dateto);
+
+        // Prepare array structure
+        $siteIDarray = array();
+        if (count($siteIDs) > 0) 
+        {
+            foreach ($siteIDs as $siteID) 
+            {
+                $siteIDarray [$siteID['SiteID']] =
+                    array('SiteID' => $siteID['SiteID'], 'SiteCode' => trim(str_replace("ICSA-", "", $siteID['SiteCode'])),);
+
+                if (count($serviceIDs) > 0)
+                {
+                    $serviceIDarray ['ServiceInfo'] = array();                        
+                    foreach ($serviceIDs as $serviceID)
+                    { 
+                        $tempserviceIDarray [$serviceID['ServiceID']] = array();
+                        $tempserviceIDarray = 
+                            array(
+                                'ServiceID'     => $serviceID['ServiceID'],
+                                'ServiceName'   => $serviceID['ServiceName'],
+                                'UserMode'      => $serviceID['UserMode'],
+                                'TB_DR'         => 0,
+                                'TB_W'          => 0,
+                                'TB_MR'         => 0,
+                                'TB_GH'         => 0,
+                                'UB_GH'         => 0,
+                                'SubTotal_GH'   => 0
+                            );
+                        $resultarr = array_push($serviceIDarray ['ServiceInfo'], $tempserviceIDarray);
+                    }
+                    $siteIDarray[$siteID['SiteID']] = array_merge($siteIDarray[$siteID['SiteID']], $serviceIDarray);                            
+                }
+            }
+        }
+
+        // Create additional total line entry
+        $siteIDarray ['Total'] = array('SiteID' => 'Total', 'SiteCode' => 'Total',);
+
+        if (count($serviceIDs) > 0)
+        {
+            $serviceIDarray ['ServiceInfo'] = array();                        
+            foreach ($serviceIDs as $serviceID)
+            { 
+                $tempserviceIDarray [$serviceID['ServiceID']] = array();
+                $tempserviceIDarray = 
+
+                    array(
+                        'ServiceID'     => $serviceID['ServiceID'],
+                        'ServiceName'   => $serviceID['ServiceName'],
+                        'UserMode'      => $serviceID['UserMode'],
+                        'TB_DR'         => 0,
+                        'TB_W'          => 0,
+                        'TB_MR'         => 0,
+                        'TB_GH'         => 0,
+                        'UB_GH'         => 0,
+                        'SubTotal_GH'   => 0
+                    );
+                $resultarr = array_push($serviceIDarray ['ServiceInfo'], $tempserviceIDarray);
+            }
+            $siteIDarray ['Total'] = array_merge($siteIDarray ['Total'], $serviceIDarray);                            
+        }                
+
+        // Populate array with contents                
+        if (count($siteIDs) > 0) 
+        {
+            foreach ($siteIDs as $siteID) 
+            {
+                if (count($serviceIDs) > 0)
+                {    
+                    foreach ($serviceIDs as $serviceID)
+                    {    
+                        //get D, R, W and MR of respective serviceID
+
+                        // Check User Mode if TB or UB 
+                        $arrSiteIDKeyResult = multidimensional_search($siteIDarray, array('SiteID' => $siteID['SiteID']));
+                        $arrServiceIDKeyResult = multidimensional_search($siteIDarray [$arrSiteIDKeyResult] ['ServiceInfo'], array('ServiceID' => $serviceID['ServiceID']));
+                        $arrUserModeResult = $siteIDarray [$arrSiteIDKeyResult] ['ServiceInfo'] [$arrServiceIDKeyResult] ['UserMode'];
+
+                        $ub_info = 0;
+                        $ub_grosshold = 0;
+                        $tb_deposit_reload = 0;
+                        $tb_withdraw = 0;
+                        $tb_mr = 0;
+                        $tb_grosshold = 0;
+
+                        if ($arrUserModeResult == 1) // UB
+                        {
+                            // for account based (Abbott)
+                            $ub_info        = $orptoptr->getGrossHoldeSAFE($siteID['SiteID'], $datefrom, $dateto);
+                            $ub_grosshold   = $ub_info['StartBalance'] + $ub_info['WalletReloads'] - $ub_info['EndBalance'] - $ub_info['GenesisWithdrawal'];
+                            $siteIDarray [$arrSiteIDKeyResult] ['ServiceInfo'] [$arrServiceIDKeyResult] ['UB_GH'] = $ub_grosshold;
+                        }
+                        else // TB
+                        {    
+                            // for terminal based (Sapphire/Topaz, Habanero, e-Bingo)
+                            $tb_deposit_reload  = $orptoptr->getGrossHoldTBPerProvider($siteID['SiteID'], $serviceID['ServiceID'], "DR", $datefrom, $dateto);
+                            $tb_withdraw        = $orptoptr->getGrossHoldTBPerProvider($siteID['SiteID'], $serviceID['ServiceID'], "W", $datefrom, $dateto);
+                            $tb_mr              = $orptoptr->getManualRedemptionTBPerProvider($siteID['SiteID'], $serviceID['ServiceID'], $datefrom, $dateto);
+                            $tb_grosshold       = $tb_deposit_reload['Amount'] - ($tb_withdraw['Amount'] + $tb_mr['Amount']);
+                            $siteIDarray [$arrSiteIDKeyResult] ['ServiceInfo'] [$arrServiceIDKeyResult] ['TB_DR'] = $tb_deposit_reload;
+                            $siteIDarray [$arrSiteIDKeyResult] ['ServiceInfo'] [$arrServiceIDKeyResult] ['TB_W'] = $tb_withdraw;
+                            $siteIDarray [$arrSiteIDKeyResult] ['ServiceInfo'] [$arrServiceIDKeyResult] ['TB_MR'] = $tb_mr;
+                            $siteIDarray [$arrSiteIDKeyResult] ['ServiceInfo'] [$arrServiceIDKeyResult] ['TB_GH'] = $tb_grosshold;
+                        }
+                        $siteIDarray [$arrSiteIDKeyResult] ['ServiceInfo'] [$arrServiceIDKeyResult] ['SubTotal_GH'] = 
+                                $siteIDarray [$arrSiteIDKeyResult] ['ServiceInfo'] [$arrServiceIDKeyResult] ['UB_GH'] + 
+                                $siteIDarray [$arrSiteIDKeyResult] ['ServiceInfo'] [$arrServiceIDKeyResult] ['TB_GH'];
+
+                        // for totals
+                        $siteIDarray ['Total'] ['ServiceInfo'] [$arrServiceIDKeyResult] ['UB_GH']+= 
+                                ($ub_info['StartBalance'] + $ub_info['WalletReloads'] - $ub_info['EndBalance'] - $ub_info['GenesisWithdrawal']);
+                        $siteIDarray ['Total'] ['ServiceInfo'] [$arrServiceIDKeyResult] ['TB_DR'] += $tb_deposit_reload['Amount'];
+                        $siteIDarray ['Total'] ['ServiceInfo'] [$arrServiceIDKeyResult] ['TB_W'] += $tb_withdraw['Amount'];
+                        $siteIDarray ['Total'] ['ServiceInfo'] [$arrServiceIDKeyResult] ['TB_MR'] += $tb_mr['Amount'];
+                        $siteIDarray ['Total'] ['ServiceInfo'] [$arrServiceIDKeyResult] ['TB_GH'] += 
+                                ($tb_deposit_reload['Amount'] - $tb_withdraw['Amount'] - $tb_mr['Amount']);
+                        $siteIDarray ['Total'] ['ServiceInfo'] [$arrServiceIDKeyResult] ['SubTotal_GH'] += 
+                                ($ub_info['StartBalance'] + $ub_info['WalletReloads'] - $ub_info['EndBalance'] - $ub_info['GenesisWithdrawal'] +
+                                $tb_deposit_reload['Amount'] - $tb_withdraw['Amount'] - $tb_mr['Amount']);                                  
+                    }
+                }
+            }
+
+            // Prepare array for pdf file contents
+            $gh1 = 0;
+            $gh2 = 0;
+            $gh3 = 0;
+            $i = 0;
+            
+            foreach($siteIDarray as $sites)
+            {
+                foreach($sites['ServiceInfo'] as $serviceprov)
+                {
+                    if ($serviceprov['ServiceID'] == 22) // RTG
+                    {
+                        $gh1 = $serviceprov['SubTotal_GH'];
+                    }
+                    elseif ($serviceprov['ServiceID'] == 25) // Habanero
+                    {
+                        $gh2 = $serviceprov['SubTotal_GH'];
+                    }
+                    elseif ($serviceprov['ServiceID'] == 26) // e-Bingo
+                    {
+                        $gh3 = $serviceprov['SubTotal_GH'];
+                    }
+                }
+
+                $arr_grosshold[] = array(
+                                        'SiteCode'      => $sites['SiteCode'], 
+                                        'RTG'           => number_format($gh1, 2), 
+                                        'Habanero'      => number_format($gh2, 2), 
+                                        'e-Bingo'       => number_format($gh3, 2),                     
+                                        'TotalGrossHold' => number_format($gh1 + $gh2 + $gh3, 2),
+                                        );
+            }
+
+            for ($i = 0; $i < count($arr_grosshold); $i++) 
+            {
+                if ($arr_grosshold[$i]['SiteCode'] == "Total")
+                {    
+                    $pdf->c_tableRow2(
+                                        array(
+                                                array('value' => '<b>'.$arr_grosshold[$i]['SiteCode'].'</b>'),
+                                                array('value' => '<b>'.$arr_grosshold[$i]['RTG'].'</b>','align'=>'right'),
+                                                array('value' => '<b>'.$arr_grosshold[$i]['Habanero'].'</b>','align'=>'right'),
+                                                array('value' => '<b>'.$arr_grosshold[$i]['e-Bingo'].'</b>','align'=>'right'),
+                                                array('value' => '<b>'.$arr_grosshold[$i]['TotalGrossHold'].'</b>','align'=>'right'),
+                                        )
+                                    );
+                }
+                else 
+                {
+                    $pdf->c_tableRow2(
+                                        array(
+                                                array('value' => $arr_grosshold[$i]['SiteCode']),
+                                                array('value' => $arr_grosshold[$i]['RTG'],'align'=>'right'),
+                                                array('value' => $arr_grosshold[$i]['Habanero'],'align'=>'right'),
+                                                array('value' => $arr_grosshold[$i]['e-Bingo'],'align'=>'right'),
+                                                array('value' => $arr_grosshold[$i]['TotalGrossHold'],'align'=>'right'),
+                                        )
+                                    );
+                }
+            } 
+
+            $pdf->c_tableEnd();
+            $pdf->c_generatePDF("Gross_Hold_Per_Provider_".date('Y_m_d').".pdf");
+        }
+     }    
+     // CCT ADDED 02/23/2018 END
      else if(isset($_GET['pdf3']) == "grossholdpdf") 
      {
         $datefrom = $_GET['date'];

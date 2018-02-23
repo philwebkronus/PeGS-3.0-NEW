@@ -9,6 +9,96 @@ ini_set('log_errors',true);
 
 class RptOperator extends DBHandler
 {
+    // CCT ADDED 02/21/2018 BEGIN
+    public function getServiceIDwithTransactions($serviceGrpIDs, $siteIDs, $datefrom, $dateto) 
+    {
+        $siteIDArr = implode(',', array_map(function($el){ return $el['SiteID']; }, $siteIDs));
+       
+        $sql = "SELECT DISTINCT td.ServiceID As ServiceID, rs.ServiceName, rs.UserMode 
+                FROM transactiondetails td INNER JOIN ref_services rs ON rs.ServiceID = td.ServiceID
+                WHERE td.SiteID IN (".$siteIDArr.")
+                    AND rs.ServiceGroupID IN (".implode(",", $serviceGrpIDs).")
+                    AND td.TransactionType IN ('D', 'R', 'W')
+                    AND td.Status IN (1, 4)
+                    AND td.DateCreated >= ? AND td.DateCreated < ?
+                UNION
+                SELECT DISTINCT mr.ServiceID As ServiceID, rs.ServiceName, rs.UserMode  
+                FROM manualredemptions mr INNER JOIN ref_services rs ON rs.ServiceID = mr.ServiceID
+                WHERE mr.SiteID IN  (".$siteIDArr.")
+                    AND rs.ServiceGroupID IN (".implode(",", $serviceGrpIDs).")
+                    AND mr.Status = 1
+                    AND mr.TransactionDate >= ? AND mr.TransactionDate < ? 
+                ORDER By ServiceID ";
+        
+        $this->prepare($sql);
+        $this->bindparameter(1, $datefrom);
+        $this->bindparameter(2, $dateto);
+        $this->bindparameter(3, $datefrom);
+        $this->bindparameter(4, $dateto);
+        $this->execute();
+        $result = $this->fetchAllData();
+        return $result;
+    }
+    
+    public function getGrossHoldTBPerProvider($siteID, $serviceID, $transtype, $datefrom, $dateto) 
+    {
+        if ($transtype == "DR") 
+        {
+            $sql = "SELECT IFNULL(SUM(td.Amount), 0) as Amount 
+                    FROM transactiondetails td 
+                    WHERE td.SiteID = ? 
+                        AND td.ServiceID = ? 
+                        AND td.TransactionType IN ('D', 'R') 
+                        AND td.Status IN (1, 4) 
+                        AND td.DateCreated >= ? AND td.DateCreated < ?"; 
+        }
+        else if ($transtype == "W")
+        {
+            $sql = "SELECT IFNULL(SUM(td.Amount), 0) as Amount 
+                    FROM transactiondetails td 
+                    WHERE td.SiteID = ? 
+                        AND td.ServiceID = ? 
+                        AND td.TransactionType IN ('W') 
+                        AND td.Status IN (1, 4) 
+                        AND td.DateCreated >= ? AND td.DateCreated < ?"; 
+        }
+
+        $datefrom = $datefrom." 06:00:00";
+        $dateto = $dateto." 06:00:00";
+        
+        $this->prepare($sql);
+        $this->bindparameter(1, $siteID);
+        $this->bindparameter(2, $serviceID);
+        $this->bindparameter(3, $datefrom);
+        $this->bindparameter(4, $dateto);
+        
+        $this->execute();
+        $result = $this->fetchData();
+        return $result;
+    }    
+    
+    public function getManualRedemptionTBPerProvider($siteID, $serviceID, $datefrom, $dateto) 
+    {
+        $sql = "SELECT IFNULL(SUM(ActualAmount), 0) as Amount 
+                FROM manualredemptions mr 
+                WHERE mr.ServiceID = ?
+                    AND mr.Status = 1 
+                    AND mr.SiteID = ?  
+                    AND mr.TransactionDate >= ? AND mr.TransactionDate < ? ";
+        
+        $datefrom = $datefrom." 06:00:00";
+        $dateto = $dateto." 06:00:00";
+        $this->prepare($sql);
+        $this->bindparameter(1, $serviceID);
+        $this->bindparameter(2, $siteID);
+        $this->bindparameter(3, $datefrom);
+        $this->bindparameter(4, $dateto);
+        $this->execute();
+        $result = $this->fetchData();
+        return $result;
+    }    
+    // CCT ADDED 02/21/2018 END
+    
     public function __construct($connectionString) 
     {
         parent::__construct($connectionString);
