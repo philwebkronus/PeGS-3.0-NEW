@@ -901,6 +901,17 @@ class CasinoApi {
     }
 
     /**
+     * Get Habanero Pending games
+     * @param str terminal_name
+     * @return obj
+     */
+    public function GetPendingGamesHabanero($terminal_id, $serverid, $terminal_name, $Password) {
+        $casinoAPIHandler = $this->configureHabanero($terminal_id, $serverid, 0);
+        $pendingGames = $casinoAPIHandler->GetPendingGamesHabanero($terminal_name, $Password);
+        return $pendingGames;
+    }
+
+    /**
      * Reverts PT Pending games
      * @param int $terminal_id
      * @param int $service_id

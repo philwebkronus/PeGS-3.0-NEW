@@ -85,7 +85,7 @@ class HabaneroAPIWrapper {
     public function Withdraw($Username, $Password, $Amount, $RequestId) {
         //Set Amount to Negative
         $Amount = $Amount = $Amount * -1;
-        
+
         $isAccountExists = $this->GetBalance($Username, $Password);
 
         if ($isAccountExists['TransactionInfo']['Found'] == true) {
@@ -118,6 +118,27 @@ class HabaneroAPIWrapper {
                         return array('IsSucceed' => true, 'ErrorCode' => 0, 'ErrorMessage' => null, 'TransactionInfo' => $logoutResponse['logoutplayermethodResult']);
                     } else {
                         return array('IsSucceed' => false, 'ErrorCode' => 50, 'ErrorMessage' => $logoutResponse['logoutplayermethodResult']['Message']);
+                    }
+                } else {
+                    return array('IsSucceed' => false, 'ErrorCode' => 50, 'ErrorMessage' => 'Request Malformed');
+                }
+            } else {
+                return array('IsSucceed' => false, 'ErrorCode' => 51, 'ErrorMessage' => 'API Error: ' . $this->_API->GetError());
+            }
+        }
+    }
+
+    public function GetPendingGamesHabanero($Username, $Password) {
+        $isAccountExists = $this->GetBalance($Username, $Password);
+
+        if ($isAccountExists['TransactionInfo']['Found'] == true) {
+            $getPendingGamesResponse = $this->_API->GetPendingGamesHabanero($Username);
+            if (!$this->_API->GetError()) {
+                if (is_array($getPendingGamesResponse)) {
+                    if ($getPendingGamesResponse['getgamesmethodResult'] != null) {
+                        return array('IsSucceed' => true, 'ErrorCode' => 0, 'ErrorMessage' => null, 'TransactionInfo' => $getPendingGamesResponse['getgamesmethodResult']);
+                    } else {
+                        return array('IsSucceed' => false, 'ErrorCode' => 50, 'ErrorMessage' => $getPendingGamesResponse['getgamesmethodResult']);
                     }
                 } else {
                     return array('IsSucceed' => false, 'ErrorCode' => 50, 'ErrorMessage' => 'Request Malformed');

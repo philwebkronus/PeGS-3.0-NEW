@@ -117,6 +117,12 @@ class CommonRedeem {
          * 
          */
 
+
+
+        $terminal_pwd_res = $terminalsModel->getTerminalPassword($terminal_id, $service_id);
+        $terminal_pwd = $terminal_pwd_res['ServicePassword'];
+
+
         //check if there was a pending game bet for RTG
         if (strpos($service_name, 'RTG') !== false) {
             $PID = $casinoApiHandler->GetPIDLogin($terminal_name);
@@ -126,8 +132,18 @@ class CommonRedeem {
         }
 
 
-        $terminal_pwd_res = $terminalsModel->getTerminalPassword($terminal_id, $service_id);
-        $terminal_pwd = $terminal_pwd_res['ServicePassword'];
+        //check if there was a pending game bet for habanero
+        if (strpos($service_name, 'HAB') !== false) {
+            $pendingGames = $casinoApi->GetPendingGamesHabanero($terminal_id, $service_id, $terminal_name, $terminal_pwd);
+            
+            if ($pendingGames['TransactionInfo'][0]['GameName'] != null || $pendingGames['TransactionInfo'][0]['GameName'] != '') {
+                $pendingGames['IsSucceed'] = true;
+                $pendingGames['PendingGames']['GetPendingGamesByPIDResult']['Gamename'] = $pendingGames['TransactionInfo'][0]['GameName'];
+            }
+        } else {
+            $pendingGames['IsSucceed'] = '';
+        }
+
 
 
         //Display message

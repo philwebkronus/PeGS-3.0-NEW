@@ -163,6 +163,21 @@ class HabaneroPlayerAPI {
         return $this->_APIresponse;
     }
 
+    public function GetPendingGamesHabanero ($Username) {
+        $jsonRequestBodyObject = array("BrandId" => $this->_brandID, "APIKey" => $this->_apiKey, "Username" => $Username);
+        $data_string = json_encode($jsonRequestBodyObject);
+
+        $result = $this->submitCurlRequest($this->_url . '/GetPlayerResumeGames', $data_string);
+
+        if ($result[0] == 200) {
+            $this->_APIresponse = $this->XML2Array($result[1]);
+            $this->_APIresponse = array('getgamesmethodResult' => $this->_APIresponse);
+        } else {
+            $this->_error = "HTTP " . $result[0];
+        }
+        return $this->_APIresponse;
+    }
+
     private function submitCurlRequest($url, $data) {
 
         $ch = curl_init($url);

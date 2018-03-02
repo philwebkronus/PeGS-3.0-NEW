@@ -533,6 +533,21 @@ class CasinoCAPIHandler {
             return $this->_API->LogoutPlayer($Username, $Password);
     }
 
+    /*
+     * John Aaron Vida
+     * 02/23/2018
+     * Added ::Habanero
+     * 
+     * Get Pending Games
+     * @param type Username
+     * @return object 
+     */
+
+    public function GetPendingGamesHabanero($terminal_name, $Password) {
+        if ($this->_gamingProvider == self::Habanero)
+            return $this->_API->GetPendingGamesHabanero($terminal_name, $Password);
+    }
+
     /**
      * Get Pending Game Bet
      * @param type $PID
