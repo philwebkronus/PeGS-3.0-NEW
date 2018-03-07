@@ -123,6 +123,9 @@ class AmpapiController extends Controller {
         'GetBalance' => APILogsModel::API_GET_BALANCE,
         'Logout' => APILogsModel::API_LOGOUT,
         'RedeemCompPoints' => APILogsModel::API_REDEEM_COMPPOINTS,
+		'GetCivilStatus' => APILogsModel::API_GET_CIVILSTATUS,
+        'GetRegisterFor' => APILogsModel::API_GET_REGISTERFOR,
+        'AutoRegisterMember' => APILogsModel::API_AUTOREGISTER_MEMBER,
     );
 
     //@purpose AuthenticateSession
@@ -587,8 +590,8 @@ class AmpapiController extends Controller {
         $request1['CivilStatus'] = trim($request['CivilStatus']);
         $request1['RegisterFor'] = trim($request['RegisterFor']);
         $request1['UBCard'] = trim($request['UBCard']);
-	$request1['AID'] = trim($request['AID']);
-	$request1['SiteID'] = trim($request['SiteID']);
+		$request1['AID'] = trim($request['AID']);
+		$request1['SiteID'] = trim($request['SiteID']);
 
         $paramval = CJSON::encode($request1);
         $message = "[" . $module . "] " . $rand . " Input: " . $paramval;
@@ -677,17 +680,17 @@ class AmpapiController extends Controller {
             $appLogger->log($appLogger->logdate, "[response]", $message);
 
             if (isset($result[0]) && $result[0] == 200) {
-		$this->_sendResponse(200, $result[1]);
+			$this->_sendResponse(200, $result[1]);
                 $AID = $this->currentAID;
 
                 $ValidateResponse = $this->validateResponse($result[1], $module);
                 if ($ValidateResponse == true) {
-                    $this->_auditTrail(AuditTrailModel::REGISTER_MEMBER, 0, $AID, $TPSessionID, $module, $LastName . ', ' . $FirstName);
-                    $this->_apiLogs(APILogsModel::API_REGISTER_MEMBER, '', 0, '', 1, $module, $LastName . ', ' . $FirstName);
+                    $this->_auditTrail(AuditTrailModel::AUTOREGISTER_MEMBER, 0, $AID, $TPSessionID, $module, $LastName . ', ' . $FirstName);
+                    $this->_apiLogs(APILogsModel::API_AUTOREGISTER_MEMBER, '', 0, '', 1, $module, $LastName . ', ' . $FirstName);
                 }
             } else {
                 $this->_displayCustomMessages(73, $module, 'No response from Membership portal API.', $randchars);
-                $this->_apiLogs(APILogsModel::API_REGISTER_MEMBER, '', 73, '', 2, $module, $LastName . ', ' . $FirstName);
+                $this->_apiLogs(APILogsModel::API_AUTOREGISTER_MEMBER, '', 73, '', 2, $module, $LastName . ', ' . $FirstName);
             }
         }
     }

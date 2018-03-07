@@ -223,8 +223,6 @@ class AmpapiInvokerController extends Controller {
 
         $moduleName = 'autoregistermember';
 
-
-var_dump($_POST);exit;
         if (isset($_POST['TPSessionID']) || isset($_POST['FirstName']) || isset($_POST['LastName']) || isset($_POST['Password']) || isset($_POST['PermanentAdd']) || isset($_POST['MobileNo']) || isset($_POST['EmailAddress']) && isset($_POST['IDPresented']) && isset($_POST['IDNumber']) && isset($_POST['Birthdate'])) {
             $TPSessionID = $_POST['TPSessionID'];
             $FirstName = $_POST['FirstName'];

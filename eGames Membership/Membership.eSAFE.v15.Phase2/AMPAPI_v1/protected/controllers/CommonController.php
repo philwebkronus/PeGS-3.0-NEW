@@ -265,6 +265,14 @@ class CommonController {
             return array('AutoRegisterMember' => array('ErrorCode' => $errorCode,
                     'ReturnMessage' => $transMsg));
         }
+		 else if($module == 'GetCivilStatus') {
+            return array($module => array('ErrorCode' => $errorCode,
+                         'ReturnMessage' => $transMsg));
+        }
+		else if($module == 'GetRegisterFor') {
+            return array($module => array('ErrorCode' => $errorCode,
+                         'ReturnMessage' => $transMsg));
+        }
         
         
     }
@@ -333,6 +341,21 @@ class CommonController {
     public static function retMsgGetBalance($module, $withdrawableBalance, $playableBalance, $bonusBalance, $playthroughBalance, $errorCode, $transMsg) {
         $module = 'GetBalance';
         return array($module => array('WithdrawableBalance' => $withdrawableBalance, 'PlayableBalance' => $playableBalance, 'BonusBalance' => $bonusBalance, 'PlaythroughBalance' => $playthroughBalance, 'ErrorCode' => $errorCode, 'ReturnMessage' => $transMsg));
+    }
+	
+	public static function retMsgAutoRegisterMember($module, $errorCode, $transMsg) {
+        $module = 'AutoRegisterMember';
+        return array($module => array('ErrorCode' => $errorCode, 'ReturnMessage' => $transMsg));
+    }
+	
+     public static function retMsgGetCivilStatus($module, $errorCode, $transMsg) {
+        $module = 'GetCivilStatus';
+        return array($module => array('ErrorCode' => $errorCode, 'ReturnMessage' => $transMsg));
+    }
+	
+	 public static function retMsgGetRegisterFor($module, $errorCode, $transMsg) {
+        $module = 'GetRegisterFor';
+        return array($module => array('ErrorCode' => $errorCode, 'ReturnMessage' => $transMsg));
     }
     
 }
