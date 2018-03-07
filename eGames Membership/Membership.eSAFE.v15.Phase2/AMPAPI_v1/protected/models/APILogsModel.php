@@ -26,9 +26,15 @@ class APILogsModel {
     CONST API_GET_CITY = 19;
     CONST API_CHANGE_PASSWORD = 22;
     CONST API_GET_BALANCE = 23;
+    CONST API_REDEEM_COMPPOINTS = 24;
+    CONST API_GET_CIVILSTATUS = 25;
+    CONST API_GET_REGISTERFOR = 26;
+    CONST API_AUTOREGISTER_MEMBER = 27;
+
 
     public static $_instance = null;
     public $_connection;
+
 
     public function __construct() {
         $this->_connection = Yii::app()->db5;
@@ -39,7 +45,8 @@ class APILogsModel {
             self::$_instance = new APILogsModel();
         return self::$_instance;
     }
-
+    
+    
     public function insertAPIlogs($apiMethodID, $refID, $transDetails, $trackingID, $status) {
         $startTrans = $this->_connection->beginTransaction();
         

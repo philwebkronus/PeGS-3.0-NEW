@@ -21,7 +21,9 @@ class AuditTrailModel
     CONST LOGOUT = 16;
     CONST CHANGE_PASSWORD = 22;
     CONST GET_BALANCE = 23;
-    
+    CONST REDEEM_COMPPOINTS = 24;
+    CONST AUTOREGISTER_MEMBER = 27
+
     public static $_instance = null;
     public $_connection;
 
@@ -41,7 +43,7 @@ class AuditTrailModel
         $startTrans = $this->_connection->beginTransaction();
         $aid = 0;
         $sessionID = ' ';
-        
+
         $remoteip = gethostbyaddr($_SERVER['REMOTE_ADDR']);
         if (is_array($info) && count($info) > 0)
         {

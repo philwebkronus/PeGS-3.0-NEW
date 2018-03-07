@@ -255,6 +255,17 @@ class CommonController {
             return array('Logout' => array('ErrorCode' => $errorCode,
                          'ReturnMessage' => $transMsg));
         }
+        else if($module == 'RedeemCompPoints') {
+            
+                return array('RedeemCompPoints' => array(
+                'ErrorCode' => $errorCode,
+                'ReturnMessage' => $transMsg));
+          
+        } else if ($module == 'AutoRegisterMember') {
+            return array('AutoRegisterMember' => array('ErrorCode' => $errorCode,
+                    'ReturnMessage' => $transMsg));
+        }
+        
         
     }
     //return message function for Login module
