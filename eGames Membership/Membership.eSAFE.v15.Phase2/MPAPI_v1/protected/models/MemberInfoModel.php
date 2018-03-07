@@ -584,6 +584,33 @@ class MemberInfoModel {
             return 0;
         }
     }
+
+  public function updateProfileOthers($cityID, $regionID, $registration, $registerForID, $MID) {
+        $startTrans = $this->_connection->beginTransaction();
+
+        try {
+            $sql = 'UPDATE membership.memberinfo
+                    SET CityID = ' . $cityID . ', RegionID = ' . $regionID . ' , RegistrationOrigin = ' . $registration . ', RegisterForID = ' . $registerForID . '
+                    WHERE MID = ' . $MID;
+
+            $command = $this->_connection->createCommand($sql);
+            $command->execute();
+
+            try {
+                $startTrans->commit();
+                return 1;
+            } catch (PDOException $e) {
+                $startTrans->rollback();
+                Utilities::log($e->getMessage());
+                return 0;
+            }
+        } catch (Exception $e) {
+            $startTrans->rollback();
+            Utilities::log($e->getMessage());
+            return 0;
+        }
+   }
+
 }
 
 ?>

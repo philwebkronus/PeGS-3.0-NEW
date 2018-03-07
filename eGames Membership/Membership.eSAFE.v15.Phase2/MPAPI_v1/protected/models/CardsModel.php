@@ -62,8 +62,36 @@ class CardsModel {
         $result = $command->queryRow(true, $param);
         
         return $result;
+
     }
-    
+
+    public function updateCardStatus($tempcardid, $TempCardStatus, $AID) {
+
+        $startTrans = $this->_connection->beginTransaction();
+
+        try {
+            $sql = 'UPDATE cards
+                    SET Status = :Status, UpdatedByAID = :UpdatedByAID , DateUpdated = NOW(6)
+                    WHERE CardID = :CardID';
+            $param = array(':Status' => $TempCardStatus, ':UpdatedByAID' => $AID, 'CardID' => $tempcardid);
+            $command = $this->_connection->createCommand($sql);
+            $command->bindValues($param);
+            $command->execute();
+
+            try {
+                $startTrans->commit();
+                return 1;
+            } catch (PDOException $e) {
+                $startTrans->rollback();
+                Utilities::log($e->getMessage());
+                return 0;
+            }
+        } catch (Exception $e) {
+            $startTrans->rollback();
+            Utilities::log($e->getMessage());
+            return 0;
+        }
+    }    
             
 }
 

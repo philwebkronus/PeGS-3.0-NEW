@@ -305,4 +305,30 @@ class MembersModel {
         
         return $result;
     }
+
+    public function updateMemberProfile($MID, $firstname , $middlename, $lastname, $birthdate, $emailAddress, $idPresented, $idPresented,$AID, $dateupdated, $gender) {
+        $startTrans = $this->_connection->beginTransaction();
+
+        try {
+	  $query = "CALL membership.sp_update_data(1,1,'MID'," . $MID . ",'FirstName, MiddleName, LastName, BirthDate, Email, IdentificationID, IdentificationNumber, DateUpdated','" . trim($firstname) . "; " . trim($middlename) . "; " . trim($lastname) . "; " . trim($birthdate) . "; " . trim($emailAddress) . "; " . trim($idPresented ). "; " . trim($AID) . "; " . trim($dateupdated) . "',@ResultCode,@Result);";
+
+            $command = $this->_connection->createCommand($query);
+           
+            $command->execute();
+
+            try {
+                $startTrans->commit();
+                return 1;
+            } catch (PDOException $e) {
+                $startTrans->rollback();
+                Utilities::log($e->getMessage());
+                return 0;
+            }
+        } catch (Exception $e) {
+            $startTrans->rollback();
+            Utilities::log($e->getMessage());
+            return 0;
+        }
+    }
+
 }

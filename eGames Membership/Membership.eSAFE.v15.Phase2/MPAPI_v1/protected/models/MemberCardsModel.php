@@ -167,4 +167,77 @@ class MemberCardsModel {
         $result = $command->queryRow(true, $param);
         return $result;
     }
+
+  /*
+     * Added JAVIDA
+     */
+    public function AutoProcessMembercards($mid, $cardid, $siteid, $UBCard, $lifetimePoints, $currentpoints, $redeemedpoints, $AID, $status) {
+        $startTrans = $this->_connection->beginTransaction();
+
+        try {
+            $sql = 'INSERT INTO membercards (MID, CardID, CardNumber, SiteID, LifetimePoints, CurrentPoints, RedeemedPoints, DateCreated, CreatedByAID, Status)
+                    VALUES(:MID, :CardID, :CardNumber, :SiteID, :LifetimePoints, :CurrentPoints, :RedeemedPoints, NOW(6), :CreatedByAID, :Status)';
+            $param = array(':MID' => $mid, ':CardID' => $cardid, ':CardNumber' => $UBCard, ':SiteID' => $siteid, ':LifetimePoints' => $lifetimePoints, ':CurrentPoints' => $currentpoints
+                , ':RedeemedPoints' => $redeemedpoints, ':CreatedByAID' => $AID, ':Status' => $status
+            );
+
+            $command = $this->_connection->createCommand($sql);
+            $command->bindValues($param);
+            $command->execute();
+
+            try {
+                if ($this->_connection->getLastInsertID() > 0) {
+                    $startTrans->commit();
+                    return 1;
+                }
+            } catch (PDOException $e) {
+                $startTrans->rollback();
+                Utilities::log($e->getMessage());
+                return 0;
+            }
+        } catch (Exception $ex) {
+            $startTrans->rollback();
+            Utilities::log($e->getMessage());
+            return 0;
+        }
+    }
+
+    public function updateCardStatus($tempcardid, $TempCardStatus, $AID) {
+
+        $startTrans = $this->_connection->beginTransaction();
+
+        try {
+            $sql = 'UPDATE membercards
+                    SET Status = :Status, UpdatedByAID = :UpdatedByAID
+                    WHERE CardID = :CardID';
+            $param = array(':Status' => $TempCardStatus, ':UpdatedByAID' => $AID, 'CardID' => $tempcardid);
+            $command = $this->_connection->createCommand($sql);
+            $command->bindValues($param);
+            $command->execute();
+
+            try {
+                $startTrans->commit();
+                return 1;
+            } catch (PDOException $e) {
+                $startTrans->rollback();
+                Utilities::log($e->getMessage());
+                return 0;
+            }
+        } catch (Exception $e) {
+            $startTrans->rollback();
+            Utilities::log($e->getMessage());
+            return 0;
+        }
+    }
+
+    public function checkIfExists($CardNumber) {
+        $sql = "SELECT MID
+                FROM membercards
+                WHERE CardNumber = :CardNumber";
+        $param = array(':CardNumber' => $CardNumber);
+        $command = $this->_connection->createCommand($sql);
+        $result = $command->queryRow(true, $param);
+        return $result;
+    }
+
 }

@@ -324,67 +324,64 @@ class MembershipTempModel {
 
                 try {
                     /* CCT 05232017 BEGIN
-                    $instanceURL = Yii::app()->params['instanceURL'];
-                    $apiVersion = Yii::app()->params['apiVersion'];
-                    $cKey = Yii::app()->params['cKey'];
-                    $cSecret = Yii::app()->params['cSecret'];
-                    $sfLogin = Yii::app()->params['sfLogin'];
-                    $sfPassword = Yii::app()->params['sfPassword'];
-                    $secToken = Yii::app()->params['secToken'];
-                    //$redirectURI = Yii::app()->params['redirectURI'];
+                      $instanceURL = Yii::app()->params['instanceURL'];
+                      $apiVersion = Yii::app()->params['apiVersion'];
+                      $cKey = Yii::app()->params['cKey'];
+                      $cSecret = Yii::app()->params['cSecret'];
+                      $sfLogin = Yii::app()->params['sfLogin'];
+                      $sfPassword = Yii::app()->params['sfPassword'];
+                      $secToken = Yii::app()->params['secToken'];
+                      //$redirectURI = Yii::app()->params['redirectURI'];
 
-                    $sfapi = new SalesforceAPI($instanceURL, $apiVersion, $cKey, $cSecret);
+                      $sfapi = new SalesforceAPI($instanceURL, $apiVersion, $cKey, $cSecret);
 
-                    $sfSuccessful = $sfapi->login($sfLogin, $sfPassword, $secToken);
+                      $sfSuccessful = $sfapi->login($sfLogin, $sfPassword, $secToken);
 
-                    if ($sfSuccessful) {
-                        $newBaseUrl = $sfSuccessful->instance_url;
-                        $accessToken = $sfSuccessful->access_token;
+                      if ($sfSuccessful) {
+                      $newBaseUrl = $sfSuccessful->instance_url;
+                      $accessToken = $sfSuccessful->access_token;
 
-                        if ($gender == 1) {
-                            $salutation = 'Mr.';
-                        } else {
-                            $salutation = 'Ms.';
-                        }
+                      if ($gender == 1) {
+                      $salutation = 'Mr.';
+                      } else {
+                      $salutation = 'Ms.';
+                      }
 
-                        $playertype = 'Regular';
-                        $sfID = $sfapi->create_account($lastname, $firstname, $birthdate, $salutation, $playertype, $tempCode, $newBaseUrl, $accessToken);
-                        if ($sfID) {
-                            $sql = 'UPDATE memberinfo
-                                    SET SFID = :SFID
-                                    WHERE MID = :MID';
-                            $param = array(':SFID' => $sfID, ':MID' => $mid);
+                      $playertype = 'Regular';
+                      $sfID = $sfapi->create_account($lastname, $firstname, $birthdate, $salutation, $playertype, $tempCode, $newBaseUrl, $accessToken);
+                      if ($sfID) {
+                      $sql = 'UPDATE memberinfo
+                      SET SFID = :SFID
+                      WHERE MID = :MID';
+                      $param = array(':SFID' => $sfID, ':MID' => $mid);
 
-                            $command = $this->_connection->createCommand($sql);
-                            $command->bindValues($param);
-                            $result = $command->execute();
+                      $command = $this->_connection->createCommand($sql);
+                      $command->bindValues($param);
+                      $result = $command->execute();
 
-                            if ($result > 0) {
-                                $startTrans->commit();
-                                $recipient = $firstname . ' ' . $lastname;
-                                $helpers = new Helpers();
-                                $helpers->sendEmailVerification($email, $recipient, $tempCode);
-                                $MID = $mid;
+                      if ($result > 0) {
+                      $startTrans->commit();
+                      $recipient = $firstname . ' ' . $lastname;
+                      $helpers = new Helpers();
+                      $helpers->sendEmailVerification($email, $recipient, $tempCode);
+                      $MID = $mid;
 
-                                return array('MID' => $MID, 'SFID' => $sfID);
-                            } else {
-                                $startTrans->rollback();
-                            }
-                        } else {
-                            $startTrans->rollback();
-                        }
-                    } else {
-                        $startTrans->rollback();
-                    }
-                    CCT 05232017 END
-                    */
+                      return array('MID' => $MID, 'SFID' => $sfID);
+                      } else {
+                      $startTrans->rollback();
+                      }
+                      } else {
+                      $startTrans->rollback();
+                      }
+                      } else {
+                      $startTrans->rollback();
+                      }
+                      CCT 05232017 END
+                     */
                     // CCT 05232017 BEGIN ADDED
-                    if ($gender == 1) 
-                    {
+                    if ($gender == 1) {
                         $salutation = 'Mr.';
-                    } 
-                    else 
-                    {
+                    } else {
                         $salutation = 'Ms.';
                     }
 
@@ -444,65 +441,62 @@ class MembershipTempModel {
                 //start add - SF push 07272015 mcs
                 try {
                     /* CCT 05232017 BEGIN
-                    $instanceURL = Yii::app()->params['instanceURL'];
-                    $apiVersion = Yii::app()->params['apiVersion'];
-                    $cKey = Yii::app()->params['cKey'];
-                    $cSecret = Yii::app()->params['cSecret'];
-                    $sfLogin = Yii::app()->params['sfLogin'];
-                    $sfPassword = Yii::app()->params['sfPassword'];
-                    $secToken = Yii::app()->params['secToken'];
-                    $sRecordType = Yii::app()->params['sRecordType'];
+                      $instanceURL = Yii::app()->params['instanceURL'];
+                      $apiVersion = Yii::app()->params['apiVersion'];
+                      $cKey = Yii::app()->params['cKey'];
+                      $cSecret = Yii::app()->params['cSecret'];
+                      $sfLogin = Yii::app()->params['sfLogin'];
+                      $sfPassword = Yii::app()->params['sfPassword'];
+                      $secToken = Yii::app()->params['secToken'];
+                      $sRecordType = Yii::app()->params['sRecordType'];
 
-                    $sfapi = new SalesforceAPI($instanceURL, $apiVersion, $cKey, $cSecret, $sRecordType);
-                    $sfSuccessful = $sfapi->login($sfLogin, $sfPassword, $secToken);
+                      $sfapi = new SalesforceAPI($instanceURL, $apiVersion, $cKey, $cSecret, $sRecordType);
+                      $sfSuccessful = $sfapi->login($sfLogin, $sfPassword, $secToken);
 
-                    if ($sfSuccessful) {
-                        $newBaseUrl = $sfSuccessful->instance_url;
-                        $accessToken = $sfSuccessful->access_token;
+                      if ($sfSuccessful) {
+                      $newBaseUrl = $sfSuccessful->instance_url;
+                      $accessToken = $sfSuccessful->access_token;
 
-                        if ($gender == 1) {
-                            $salutation = 'Mr.';
-                        } else {
-                            $salutation = 'Ms.';
-                        }
+                      if ($gender == 1) {
+                      $salutation = 'Mr.';
+                      } else {
+                      $salutation = 'Ms.';
+                      }
 
-                        $playertype = 'Regular';
-                        $MID = $result['@OUT_MID'];
-                        $sfID = $sfapi->create_account($lastname, $firstname, $birthdate, $salutation, $playertype, $tempCode, $newBaseUrl, $accessToken);
-                        if ($sfID) {
-                            $sql = 'UPDATE memberinfo
-                                    SET SFID = :SFID
-                                    WHERE MID = :MID';
-                            $param = array(':SFID' => $sfID, ':MID' => $MID);
+                      $playertype = 'Regular';
+                      $MID = $result['@OUT_MID'];
+                      $sfID = $sfapi->create_account($lastname, $firstname, $birthdate, $salutation, $playertype, $tempCode, $newBaseUrl, $accessToken);
+                      if ($sfID) {
+                      $sql = 'UPDATE memberinfo
+                      SET SFID = :SFID
+                      WHERE MID = :MID';
+                      $param = array(':SFID' => $sfID, ':MID' => $MID);
 
-                            $command = $this->_connection->createCommand($sql);
-                            $command->bindValues($param);
-                            $result = $command->execute();
+                      $command = $this->_connection->createCommand($sql);
+                      $command->bindValues($param);
+                      $result = $command->execute();
 
-                            if ($result > 0) {
-                                $startTrans->commit();
-                                $recipient = $firstname . ' ' . $lastname;
-                                $helpers = new Helpers();
-                                $helpers->sendEmailVerification($email, $recipient, $tempCode);
-                                return $MID;
-                            } else {
-                                $startTrans->rollback();
-                            }
-                        } else {
-                            $startTrans->rollback();
-                        }
-                    } else {
-                        $startTrans->rollback();
-                    }
-                     CCT 05232017 END
+                      if ($result > 0) {
+                      $startTrans->commit();
+                      $recipient = $firstname . ' ' . $lastname;
+                      $helpers = new Helpers();
+                      $helpers->sendEmailVerification($email, $recipient, $tempCode);
+                      return $MID;
+                      } else {
+                      $startTrans->rollback();
+                      }
+                      } else {
+                      $startTrans->rollback();
+                      }
+                      } else {
+                      $startTrans->rollback();
+                      }
+                      CCT 05232017 END
                      */
                     // CCT 05232017 BEGIN ADDED
-                    if ($gender == 1) 
-                    {
+                    if ($gender == 1) {
                         $salutation = 'Mr.';
-                    } 
-                    else 
-                    {
+                    } else {
                         $salutation = 'Ms.';
                     }
 
@@ -622,71 +616,68 @@ class MembershipTempModel {
 
                 try {
                     /* CCT 05232017 BEGIN
-                    $instanceURL = Yii::app()->params['instanceURL'];
-                    $apiVersion = Yii::app()->params['apiVersion'];
-                    $cKey = Yii::app()->params['cKey'];
-                    $cSecret = Yii::app()->params['cSecret'];
-                    $sfLogin = Yii::app()->params['sfLogin'];
-                    $sfPassword = Yii::app()->params['sfPassword'];
-                    $secToken = Yii::app()->params['secToken'];
-                    //$redirectURI = Yii::app()->params['redirectURI'];
+                      $instanceURL = Yii::app()->params['instanceURL'];
+                      $apiVersion = Yii::app()->params['apiVersion'];
+                      $cKey = Yii::app()->params['cKey'];
+                      $cSecret = Yii::app()->params['cSecret'];
+                      $sfLogin = Yii::app()->params['sfLogin'];
+                      $sfPassword = Yii::app()->params['sfPassword'];
+                      $secToken = Yii::app()->params['secToken'];
+                      //$redirectURI = Yii::app()->params['redirectURI'];
 
-                    $sfapi = new SalesforceAPI($instanceURL, $apiVersion, $cKey, $cSecret);
+                      $sfapi = new SalesforceAPI($instanceURL, $apiVersion, $cKey, $cSecret);
 
-                    $sfSuccessful = $sfapi->login($sfLogin, $sfPassword, $secToken);
+                      $sfSuccessful = $sfapi->login($sfLogin, $sfPassword, $secToken);
 
-                    if ($sfSuccessful) {
-                        $newBaseUrl = $sfSuccessful->instance_url;
-                        $accessToken = $sfSuccessful->access_token;
+                      if ($sfSuccessful) {
+                      $newBaseUrl = $sfSuccessful->instance_url;
+                      $accessToken = $sfSuccessful->access_token;
 
-                        if ($gender == 1) {
-                            $salutation = 'Mr.';
-                        } else {
-                            $salutation = 'Ms.';
-                        }
+                      if ($gender == 1) {
+                      $salutation = 'Mr.';
+                      } else {
+                      $salutation = 'Ms.';
+                      }
 
-                        $playertype = 'Regular';
-                        $sfID = $sfapi->create_account($lastname, $firstname, $birthdate, $salutation, $playertype, $tempCode, $newBaseUrl, $accessToken);
-                        if ($sfID) {
-                            $sql = 'UPDATE memberinfo
-                                    SET SFID = :SFID
-                                    WHERE MID = :MID';
-                            $param = array(':SFID' => $sfID, ':MID' => $mid);
+                      $playertype = 'Regular';
+                      $sfID = $sfapi->create_account($lastname, $firstname, $birthdate, $salutation, $playertype, $tempCode, $newBaseUrl, $accessToken);
+                      if ($sfID) {
+                      $sql = 'UPDATE memberinfo
+                      SET SFID = :SFID
+                      WHERE MID = :MID';
+                      $param = array(':SFID' => $sfID, ':MID' => $mid);
 
-                            $command = $this->_connection->createCommand($sql);
-                            $command->bindValues($param);
-                            $result = $command->execute();
+                      $command = $this->_connection->createCommand($sql);
+                      $command->bindValues($param);
+                      $result = $command->execute();
 
-                            if ($result > 0) {
-                                $startTrans->commit();
-                                $recipient = $firstname . ' ' . $lastname;
-                                $helpers = new Helpers();
-                                $helpers->sendEmailVerification($email, $recipient, $tempCode);
-                                $MID = $mid;
+                      if ($result > 0) {
+                      $startTrans->commit();
+                      $recipient = $firstname . ' ' . $lastname;
+                      $helpers = new Helpers();
+                      $helpers->sendEmailVerification($email, $recipient, $tempCode);
+                      $MID = $mid;
 
-                                return array('MID' => $MID, 'SFID' => $sfID);
-                            } else {
-                                $startTrans->rollback();
-                            }
-                        } else {
-                            $startTrans->rollback();
-                        }
-                    } else {
-                        $startTrans->rollback();
-                    }
-                    CCT 05232017 END
-                    */
+                      return array('MID' => $MID, 'SFID' => $sfID);
+                      } else {
+                      $startTrans->rollback();
+                      }
+                      } else {
+                      $startTrans->rollback();
+                      }
+                      } else {
+                      $startTrans->rollback();
+                      }
+                      CCT 05232017 END
+                     */
                     // CCT 05232017 BEGIN ADDED
-                    if ($gender == 1) 
-                    {
+                    if ($gender == 1) {
                         $salutation = 'Mr.';
-                    } 
-                    else 
-                    {
+                    } else {
                         $salutation = 'Ms.';
                     }
 
-                    $sfID = 0; 
+                    $sfID = 0;
                     $startTrans->commit();
                     $recipient = $firstname . ' ' . $lastname;
                     $helpers = new Helpers();
@@ -777,75 +768,72 @@ class MembershipTempModel {
             try {
                 //start add - SF push 07272015 mcs
                 /* CCT 05242017 BEGIN
-                try {
-                    $instanceURL = Yii::app()->params['instanceURL'];
-                    $apiVersion = Yii::app()->params['apiVersion'];
-                    $cKey = Yii::app()->params['cKey'];
-                    $cSecret = Yii::app()->params['cSecret'];
-                    $sfLogin = Yii::app()->params['sfLogin'];
-                    $sfPassword = Yii::app()->params['sfPassword'];
-                    $secToken = Yii::app()->params['secToken'];
-                    $sRecordType = Yii::app()->params['sRecordType'];
+                  try {
+                  $instanceURL = Yii::app()->params['instanceURL'];
+                  $apiVersion = Yii::app()->params['apiVersion'];
+                  $cKey = Yii::app()->params['cKey'];
+                  $cSecret = Yii::app()->params['cSecret'];
+                  $sfLogin = Yii::app()->params['sfLogin'];
+                  $sfPassword = Yii::app()->params['sfPassword'];
+                  $secToken = Yii::app()->params['secToken'];
+                  $sRecordType = Yii::app()->params['sRecordType'];
 
-                    $sfapi = new SalesforceAPI($instanceURL, $apiVersion, $cKey, $cSecret, $sRecordType);
+                  $sfapi = new SalesforceAPI($instanceURL, $apiVersion, $cKey, $cSecret, $sRecordType);
 
-                    $sfSuccessful = $sfapi->login($sfLogin, $sfPassword, $secToken);
+                  $sfSuccessful = $sfapi->login($sfLogin, $sfPassword, $secToken);
 
-                    if ($sfSuccessful) {
-                        $newBaseUrl = $sfSuccessful->instance_url;
-                        $accessToken = $sfSuccessful->access_token;
+                  if ($sfSuccessful) {
+                  $newBaseUrl = $sfSuccessful->instance_url;
+                  $accessToken = $sfSuccessful->access_token;
 
-                        if ($gender == 1) {
-                            $salutation = 'Mr.';
-                        } else {
-                            $salutation = 'Ms.';
-                        }
+                  if ($gender == 1) {
+                  $salutation = 'Mr.';
+                  } else {
+                  $salutation = 'Ms.';
+                  }
 
-                        $playertype = 'Regular';
-                        $MID = $result['@OUT_MID'];
-                        $sfID = $sfapi->create_account($lastname, $firstname, $birthdate, $salutation, $playertype, $tempCode, $newBaseUrl, $accessToken);
-                        if ($sfID) {
-                            $sql = 'UPDATE memberinfo
-                                    SET SFID = :SFID
-                                    WHERE MID = :MID';
-                            $param = array(':SFID' => $sfID, ':MID' => $MID);
+                  $playertype = 'Regular';
+                  $MID = $result['@OUT_MID'];
+                  $sfID = $sfapi->create_account($lastname, $firstname, $birthdate, $salutation, $playertype, $tempCode, $newBaseUrl, $accessToken);
+                  if ($sfID) {
+                  $sql = 'UPDATE memberinfo
+                  SET SFID = :SFID
+                  WHERE MID = :MID';
+                  $param = array(':SFID' => $sfID, ':MID' => $MID);
 
-                            $command = $this->_connection->createCommand($sql);
-                            $command->bindValues($param);
-                            $result = $command->execute();
+                  $command = $this->_connection->createCommand($sql);
+                  $command->bindValues($param);
+                  $result = $command->execute();
 
-                            if ($result > 0) {
-                                $startTrans->commit();
-                                $recipient = $firstname . ' ' . $lastname;
-                                $helpers = new Helpers();
-                                $helpers->sendEmailVerification($email, $recipient, $tempCode);
-                                return $MID;
-                            } else {
-                                $startTrans->rollback();
-                            }
-                        } else {
-                            $startTrans->rollback();
-                        }
-                    } else {
-                        $startTrans->rollback();
-                    }
-                } catch (PDOException $e) {
-                    $startTrans->rollback();
-                    Utilities::log($e->getMessage());
-                    return $e->getMessage();
-                }
-                 CCT 05242017 END
+                  if ($result > 0) {
+                  $startTrans->commit();
+                  $recipient = $firstname . ' ' . $lastname;
+                  $helpers = new Helpers();
+                  $helpers->sendEmailVerification($email, $recipient, $tempCode);
+                  return $MID;
+                  } else {
+                  $startTrans->rollback();
+                  }
+                  } else {
+                  $startTrans->rollback();
+                  }
+                  } else {
+                  $startTrans->rollback();
+                  }
+                  } catch (PDOException $e) {
+                  $startTrans->rollback();
+                  Utilities::log($e->getMessage());
+                  return $e->getMessage();
+                  }
+                  CCT 05242017 END
                  */
                 // CCT 05242017 BEGIN ADDED 
-                if ($gender == 1) 
-                {
+                if ($gender == 1) {
                     $salutation = 'Mr.';
-                } 
-                else 
-                {
+                } else {
                     $salutation = 'Ms.';
                 }
-                
+
                 $MID = $result['@OUT_MID'];
                 $startTrans->commit();
                 $recipient = $firstname . ' ' . $lastname;
@@ -926,65 +914,65 @@ class MembershipTempModel {
             try {
                 //start add - SF push 07272015 mcs
                 /* CCT 05242017 BEGIN
-                try {
-                    $instanceURL = Yii::app()->params['instanceURL'];
-                    $apiVersion = Yii::app()->params['apiVersion'];
-                    $cKey = Yii::app()->params['cKey'];
-                    $cSecret = Yii::app()->params['cSecret'];
-                    $sfLogin = Yii::app()->params['sfLogin'];
-                    $sfPassword = Yii::app()->params['sfPassword'];
-                    $secToken = Yii::app()->params['secToken'];
-                    $sRecordType = Yii::app()->params['sRecordType'];
+                  try {
+                  $instanceURL = Yii::app()->params['instanceURL'];
+                  $apiVersion = Yii::app()->params['apiVersion'];
+                  $cKey = Yii::app()->params['cKey'];
+                  $cSecret = Yii::app()->params['cSecret'];
+                  $sfLogin = Yii::app()->params['sfLogin'];
+                  $sfPassword = Yii::app()->params['sfPassword'];
+                  $secToken = Yii::app()->params['secToken'];
+                  $sRecordType = Yii::app()->params['sRecordType'];
 
-                    $sfapi = new SalesforceAPI($instanceURL, $apiVersion, $cKey, $cSecret, $sRecordType);
-                    $sfSuccessful = $sfapi->login($sfLogin, $sfPassword, $secToken);
-                    if ($sfSuccessful) {
-                        $newBaseUrl = $sfSuccessful->instance_url;
-                        $accessToken = $sfSuccessful->access_token;
+                  $sfapi = new SalesforceAPI($instanceURL, $apiVersion, $cKey, $cSecret, $sRecordType);
+                  $sfSuccessful = $sfapi->login($sfLogin, $sfPassword, $secToken);
+                  if ($sfSuccessful) {
+                  $newBaseUrl = $sfSuccessful->instance_url;
+                  $accessToken = $sfSuccessful->access_token;
 
-                        if ($gender == 1) {
-                            $salutation = 'Mr.';
-                        } else {
-                            $salutation = 'Ms.';
-                        }
+                  if ($gender == 1) {
+                  $salutation = 'Mr.';
+                  } else {
+                  $salutation = 'Ms.';
+                  }
 
-                        $playertype = 'Regular';
-                        $MID = $result['@OUT_MID'];
-                        $sfID = $sfapi->create_account($lastname, $firstname, $birthdate, $salutation, $playertype, $tempCode, $newBaseUrl, $accessToken);
-                        if ($sfID) {
-                            $sql = 'UPDATE memberinfo
-                                    SET SFID = :SFID
-                                    WHERE MID = :MID';
-                            $param = array(':SFID' => $sfID, ':MID' => $MID);
+                  $playertype = 'Regular';
+                  $MID = $result['@OUT_MID'];
+                  $sfID = $sfapi->create_account($lastname, $firstname, $birthdate, $salutation, $playertype, $tempCode, $newBaseUrl, $accessToken);
+                  if ($sfID) {
+                  $sql = 'UPDATE memberinfo
+                  SET SFID = :SFID
+                  WHERE MID = :MID';
+                  $param = array(':SFID' => $sfID, ':MID' => $MID);
 
-                            $command = $this->_connection->createCommand($sql);
-                            $command->bindValues($param);
-                            $result = $command->execute();
+                  $command = $this->_connection->createCommand($sql);
+                  $command->bindValues($param);
+                  $result = $command->execute();
 
-                            if ($result > 0) {
-                                $startTrans->commit();
-                                return $MID;
-                            } else {
-                                $startTrans->rollback();
-                            }
-                        } else {
-                            $startTrans->rollback();
-                        }
-                    } else {
-                        $startTrans->rollback();
-                    }
-                } catch (PDOException $e) {
-                    $startTrans->rollback();
-                    Utilities::log($e->getMessage());
-                    return $e->getMessage();
-                }
-                CCT 05242017 END
+                  if ($result > 0) {
+                  $startTrans->commit();
+                  return $MID;
+                  } else {
+                  $startTrans->rollback();
+                  }
+                  } else {
+                  $startTrans->rollback();
+                  }
+                  } else {
+                  $startTrans->rollback();
+                  }
+                  } catch (PDOException $e) {
+                  $startTrans->rollback();
+                  Utilities::log($e->getMessage());
+                  return $e->getMessage();
+                  }
+                  CCT 05242017 END
                  */
                 // CCT 05242017 BEGIN ADDED
                 $MID = $result['@OUT_MID'];
                 $startTrans->commit();
                 return $MID;
-               // CCT 05242017 END ADDED
+                // CCT 05242017 END ADDED
                 //end add - SF push 07272015 mcs
             } catch (PDOException $e) {
                 $startTrans->rollback();
@@ -1096,6 +1084,152 @@ class MembershipTempModel {
         return $result;
     }
 
+    public function registerWithSPauto($email, $firstname, $middlename, $lastname, $nickname, $password, $permanentAddress, $mobileNumber, $alternateMobileNumber, $alternateEmail, $idNumber, $idPresented, $gender, $referrerCode, $birthdate, $occupation, $nationality, $isSmoker, $referrerID, $emailSubscription, $smsSubscription, $CivilStatus, $RegisterFor) {
+        $MID = '';
+        if ($gender == '')
+            $gender = 1;
+        if ($nationality == '')
+            $nationality = 1;
+        if ($occupation == '')
+            $occupation = 1;
+        if ($referrerID == '')
+            $referrerID = 1;
+        if ($emailSubscription == '')
+            $emailSubscription = 0;
+        if ($smsSubscription == '')
+            $smsSubscription = 0;
+        if ($isSmoker == '')
+            $isSmoker = 2;
+        if ($CivilStatus == '')
+            $CivilStatus = 0;
+        if ($RegisterFor == '')
+            $RegisterFor = 0;
+
+        $startTrans = $this->_connection->beginTransaction();
+
+        try {
+            $tempCode = 'eGames' . strtoupper(Utilities::generateAlphaNumeric(5));
+
+            $sql = "CALL membership.sp_insert_data(1,'$email','$firstname','$middlename','$lastname','$nickname','$email','$alternateEmail','$mobileNumber','$alternateMobileNumber','$permanentAddress',Null,'$idNumber','$password',1,'$tempCode',1,'$birthdate',$gender,$nationality,$occupation,$idPresented,$isSmoker,'$referrerCode',$emailSubscription,$smsSubscription,$referrerID,0,Null,2,$CivilStatus, $RegisterFor,@OUT_ResultCode,@OUT_Result2,@OUT_MID)";
+            //$param = array(':Email' => $email, ':Password' => $password, ':TempCode' => $tempCode);
+            $command = $this->_connection->createCommand($sql);
+            $result = $command->queryRow(true);
+
+            try {
+                //start add - SF push 07272015 mcs
+                try {
+                    /* CCT 05232017 BEGIN
+                      $instanceURL = Yii::app()->params['instanceURL'];
+                      $apiVersion = Yii::app()->params['apiVersion'];
+                      $cKey = Yii::app()->params['cKey'];
+                      $cSecret = Yii::app()->params['cSecret'];
+                      $sfLogin = Yii::app()->params['sfLogin'];
+                      $sfPassword = Yii::app()->params['sfPassword'];
+                      $secToken = Yii::app()->params['secToken'];
+                      $sRecordType = Yii::app()->params['sRecordType'];
+
+                      $sfapi = new SalesforceAPI($instanceURL, $apiVersion, $cKey, $cSecret, $sRecordType);
+                      $sfSuccessful = $sfapi->login($sfLogin, $sfPassword, $secToken);
+
+                      if ($sfSuccessful) {
+                      $newBaseUrl = $sfSuccessful->instance_url;
+                      $accessToken = $sfSuccessful->access_token;
+
+                      if ($gender == 1) {
+                      $salutation = 'Mr.';
+                      } else {
+                      $salutation = 'Ms.';
+                      }
+
+                      $playertype = 'Regular';
+                      $MID = $result['@OUT_MID'];
+                      $sfID = $sfapi->create_account($lastname, $firstname, $birthdate, $salutation, $playertype, $tempCode, $newBaseUrl, $accessToken);
+                      if ($sfID) {
+                      $sql = 'UPDATE memberinfo
+                      SET SFID = :SFID
+                      WHERE MID = :MID';
+                      $param = array(':SFID' => $sfID, ':MID' => $MID);
+
+                      $command = $this->_connection->createCommand($sql);
+                      $command->bindValues($param);
+                      $result = $command->execute();
+
+                      if ($result > 0) {
+                      $startTrans->commit();
+                      $recipient = $firstname . ' ' . $lastname;
+                      $helpers = new Helpers();
+                      $helpers->sendEmailVerification($email, $recipient, $tempCode);
+                      return $MID;
+                      } else {
+                      $startTrans->rollback();
+                      }
+                      } else {
+                      $startTrans->rollback();
+                      }
+                      } else {
+                      $startTrans->rollback();
+                      }
+                      CCT 05232017 END
+                     */
+                    // CCT 05232017 BEGIN ADDED
+                    if ($gender == 1) {
+                        $salutation = 'Mr.';
+                    } else {
+                        $salutation = 'Ms.';
+                    }
+
+                    $MID = $result['@OUT_MID'];
+                    $startTrans->commit();
+                    $recipient = $firstname . ' ' . $lastname;
+                    $helpers = new Helpers();
+                    $helpers->sendEmailVerification($email, $recipient, $tempCode);
+                    return $MID;
+                    // CCT 05232017 END ADDED
+                } catch (PDOException $e) {
+                    $startTrans->rollback();
+                    Utilities::log($e->getMessage());
+                    return $e->getMessage();
+                }//end add - SF push 07272015 mcs
+            } catch (PDOException $e) {
+                $startTrans->rollback();
+                Utilities::log($e->getMessage());
+                return $e->getMessage();
+            }
+        } catch (Exception $e) {
+            $startTrans->rollback();
+            Utilities::log($e->getMessage());
+            return 0;
+        }
+    }
+
+ public function updateVerifiedTempCard($TemporaryAccountCode) {
+        $startTrans = $this->_connection->beginTransaction();
+
+        try {
+            $sql = 'UPDATE members
+                    SET DateVerified= NOW(6), IsVerified = 1
+                    WHERE TemporaryAccountCode = :TemporaryAccountCode';
+            $param = array(':TemporaryAccountCode' => $TemporaryAccountCode);
+
+
+            $command = $this->_connection->createCommand($sql);
+            $command->bindValues($param);
+            $command->execute();
+
+            try {
+                $startTrans->commit();
+                return 1;
+            } catch (PDOException $e) {
+                $startTrans->rollback();
+                Utilities::log($e->getMessage());
+                return 0;
+            }
+        } catch (Exception $e) {
+            $startTrans->rollback();
+            Utilities::log($e->getMessage());
+            return 0;
+        }
+    }
 }
 
 ?>

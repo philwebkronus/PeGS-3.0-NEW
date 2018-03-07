@@ -77,7 +77,7 @@ class CommonController {
         if($module == 'ForgotPassword') {
             return array('ForgotPassword' => array('ErrorCode' => $errorCode, 'ReturnMessage' => $transMsg));
         }
-//        else if($module == 'RegisterMember') {
+//        else if($module == '\RegisterMember') {
 //            return array('RegisterMember' => array('ErrorCode' => $errorCode,
 //                         'ReturnMessage' => $transMsg));
 //        }
@@ -160,6 +160,11 @@ class CommonController {
         $module = 'RegisterMember';
         return array($module => array('ErrorCode' => $errorCode, 'ReturnMessage' => $transMsg));
     }
+
+    public static function retMsgAutoRegisterMember($module, $errorCode, $transMsg) {
+        $module = 'AutoRegisterMember';
+        return array($module => array('ErrorCode' => $errorCode, 'ReturnMessage' => $transMsg));
+    }
     
     public static function retMsgGetProfile($module, $profile, $errorCode, $transMsg) {
         $module = 'GetProfile';
@@ -211,6 +216,24 @@ class CommonController {
         $module = 'RegisterMemberBTNoEmail';
         return array($module => array('CouponNumber' => $couponNumber, 'ExpiryDate' => $expiryDate, 'ErrorCode' => $errorCode, 'ReturnMessage' => $transMsg));
     }
-  
+     /*
+     * Added 04-17-2016
+     * John Aaron Vida 
+     * @javida
+     */     
+    public static function retMsgCompPointsRedemption($module, $errorCode, $transMsg) {
+        $module = 'RedeemCompPoints';
+        return array($module => array('ErrorCode' => $errorCode, 'ReturnMessage' => $transMsg));
+    }
+
+    public static function retMsgGetCivilStatus($module, $civilStatus) {
+        $module = 'GetCivilStatus';
+        return array($module => array('CivilStatus' => $civilStatus));
+    }
+
+    public static function retMsgGetRegisterFor($module, $registerFor) {
+        $module = 'GetRegisterFor';
+        return array($module => array('RegisterFor' => $registerFor));
+    }
 }
 ?>
