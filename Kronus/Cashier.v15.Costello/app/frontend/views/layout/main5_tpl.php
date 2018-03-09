@@ -58,6 +58,7 @@
                             'Redemption'=>array('link'=>$this->createUrl('redeem'),'act'=>'overview','con'=>'Redeem','attr'=>'desc="End a player\'s session and process cash redemption"'),
                             'Reports'=>array('link'=>$this->createUrl('reports'),'act'=>'overview','con'=>'Reports','attr'=>'desc="List of all player session transactions"'),
                             'View Transaction History'=>array('link'=>$this->createUrl('viewtrans/history'),'act'=>'history','con'=>'ViewTransaction','attr'=>'desc="View Transactions History"'),
+                            'Register New Member'=>array('link'=>$this->createUrl('registermember/overview'),'act'=>'overview','con'=>'RegisterMember','attr'=>'desc="Register New Memeber"'),
                             'Refresh'=>array('link'=>'','attr'=>'desc="Refresh the page" id="refresh_getbal"','visible'=>$this->show_refresh)
                         )); 
                     ?>

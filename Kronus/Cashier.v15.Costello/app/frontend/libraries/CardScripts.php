@@ -754,4 +754,69 @@
         $('#btnLoad').removeAttr('disabled');
         $('#btnWithdraw2').removeAttr('disabled');
     }
+
+
+ function identifyCardRegisterMember()
+    {
+        var url = '<?php echo Mirage::app()->createUrl('loyalty/cardinquiry') ?>';
+        var siteid = <?php echo $_SESSION['AccountSiteID'] ?>;
+        var card_number = $('#loyaltycard').val();
+        var data = 'card_number=' + card_number + '&isreg=0' + '&siteid=' + siteid;
+        var response = '';
+
+
+        $.ajax(
+                {
+                    type: 'post',
+                    async: false,
+                    url: url,
+                    data: data,
+                    success: function(data)
+                    {
+                        try
+                        {
+                            var json = $.parseJSON(data);
+
+                            //get status value
+                            var StatusValue = getStatusValue(json.CardInfo.StatusCode);
+
+
+
+
+                            if (StatusValue == "Inactive") {
+                                isEwalletSessionMode = true;
+                                isValidated = true;
+                      $('#registration').css("display", "block");
+			          response = "false";
+
+                            }
+                            else
+                            {
+                                updateLightbox('<center><label  style="font-size: 24px; color: red; font-weight: bold;">[ERROR]Only Inactive Cards Can Be Use.</label>' +
+                                        '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
+                                        ''
+                                        );
+
+                                isValidated = false;  
+                                response = "true";
+
+                            }
+
+                        }
+                        catch (e)
+                        {
+                            alert(e);
+                            //alert('Oops! Something went wrong');
+                        }
+                    },
+                    error: function(e)
+                    {
+                        displayError(e);
+                    }
+                });
+        return response;
+    }
+
 </script>
+
+
