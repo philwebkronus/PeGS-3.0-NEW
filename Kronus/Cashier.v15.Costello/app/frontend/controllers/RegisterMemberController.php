@@ -67,7 +67,6 @@ class RegisterMemberController extends FrontendController {
 
 	      $result = preg_replace('/\s(?=([^"]*"[^"]*")*[^"]*$)/', '', $registerMember[1]);
   	      $message = json_decode($result, true);
-
                     if ($message['AutoRegisterMember']['ErrorCode'] == 0) {
                         echo "<center><label  style='font-size: 24px; color: red; font-weight: bold; width: 800px;'>" . $message['AutoRegisterMember']['ReturnMessage'] . "</label>
                                 <br /><br><input type='button' style='float: right; width: 50px; height: 25px;'  onClick='window.location.reload()' value='Ok' class='btnClose' />";

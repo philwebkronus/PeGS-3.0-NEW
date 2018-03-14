@@ -611,6 +611,7 @@ class AmpapiController extends Controller {
         $TPSessionID = trim($request['TPSessionID']);
         $validateTPSessionID = $this->_validateTPSession($TPSessionID, 'GetActiveSession', $module, $randchars);
         if ($validateTPSessionID === true) {
+			
             $TPSessionID = trim($request['TPSessionID']);
             $FirstName = trim($request['FirstName']);
             $MiddleName = trim($request['MiddleName']);
@@ -638,6 +639,12 @@ class AmpapiController extends Controller {
             $UBCard = trim($request['UBCard']);
             $AID = trim($request['AID']);
             $SiteID = trim($request['SiteID']);
+			
+			$myArray = explode(',', $PermanentAdd);
+			
+			$CityID = trim($myArray[1]);
+			$RegionID = trim($myArray[2]);
+			
 
             $moduleName = strtolower($module);
             $url = $this->genMPAPIURL($moduleName);
@@ -669,6 +676,8 @@ class AmpapiController extends Controller {
                         'UBCard' => $UBCard,
                         'AID' => $AID,
                         'SiteID' => $SiteID,
+						'CityID' => $CityID,
+                        'RegionID' => $RegionID,
             ));
 
             $result = $this->SubmitData($url, $postData);
