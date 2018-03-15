@@ -22,7 +22,7 @@ class AuditTrailModel
     CONST CHANGE_PASSWORD = 22;
     CONST GET_BALANCE = 23;
     CONST REDEEM_COMPPOINTS = 24;
-    CONST AUTOREGISTER_MEMBER = 27
+    CONST AUTOREGISTER_MEMBER = 27;
 
     public static $_instance = null;
     public $_connection;
