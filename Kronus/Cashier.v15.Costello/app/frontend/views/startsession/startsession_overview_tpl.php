@@ -53,8 +53,9 @@
             {
                 var usermode = $('#mode').val();
                 var voucher = $("#StartSessionFormModel_voucher_code").val();
-                if (usermode != 2 && usermode != 4)
+                if (usermode != 2)
                 {
+
                     if (!startSessionStandAloneChecking())
                     {
                         return false;
@@ -63,10 +64,6 @@
                     {
                         var issuccess = identifyCard();
                     }
-                } else if (usermode == 4)
-                {
-                    var issuccess = "false";
-                    isEwalletSessionMode = true;
                 }
                 else
                 {
@@ -244,7 +241,18 @@
                                         //{
                                         //    $('.hideControlsVIP').hide();
                                         //}
-                                        // CCT - END added VIP                                  
+                                        // CCT - END added VIP          
+                                        var ebingo_denom = <?php echo $eBingoDenomination ?>;
+
+                                        $.each(ebingo_denom, function(k, v)
+                                        {
+                                            opt += '<option value="' + k + '" >' + v + '</option>';
+                                        });
+                                        $('#StartSessionFormModel_sel_amount').append(opt);
+                                        $.each(json.casino, function(k, v)
+                                        {
+                                            casopt += '<option value="' + k + '" >' + v + '</option>';
+                                        });
                                     }
                                     else if (json.casinousermode == 2)
                                     {
@@ -260,7 +268,17 @@
                                         //{
                                         //    $('.hideControlsVIP').hide();
                                         //}
-                                        // CCT - END added VIP                                  
+                                        // CCT - END added VIP       
+
+                                        $.each(json.denomination, function(k, v)
+                                        {
+                                            opt += '<option value="' + k + '" >' + v + '</option>';
+                                        });
+                                        $('#StartSessionFormModel_sel_amount').append(opt);
+                                        $.each(json.casino, function(k, v)
+                                        {
+                                            casopt += '<option value="' + k + '" >' + v + '</option>';
+                                        });
                                     }
                                     else
                                     {
@@ -277,17 +295,19 @@
                                         //{
                                         //    $('.hideControlsVIP').hide();
                                         //}
-                                        // CCT - END added VIP                                   
+                                        // CCT - END added VIP 
+
+                                        $.each(json.denomination, function(k, v)
+                                        {
+                                            opt += '<option value="' + k + '" >' + v + '</option>';
+                                        });
+                                        $('#StartSessionFormModel_sel_amount').append(opt);
+                                        $.each(json.casino, function(k, v)
+                                        {
+                                            casopt += '<option value="' + k + '" >' + v + '</option>';
+                                        });
                                     }
-                                    $.each(json.denomination, function(k, v)
-                                    {
-                                        opt += '<option value="' + k + '" >' + v + '</option>';
-                                    });
-                                    $('#StartSessionFormModel_sel_amount').append(opt);
-                                    $.each(json.casino, function(k, v)
-                                    {
-                                        casopt += '<option value="' + k + '" >' + v + '</option>';
-                                    });
+
                                     $('#StartSessionFormModel_casino').html(casopt);
                                     // console.log(json.max_denomination);
                                     $('#StartSessionFormModel_max_deposit').val(json.max_denomination);
@@ -600,10 +620,13 @@
     <input type="hidden" name="sitecode" id="sitecode" value="<?php echo $_SESSION['site_code'] ?>" />
     <input type="hidden" name="siteclassification" id="siteclassification" value="<?php echo $siteClassification; ?>" />
     <input type="hidden" name="siteamountinfo" id="siteamountinfo" value="<?php echo $siteAmountInfo; ?>" />
+    <input type="hidden" name="eBingoDivisibleBy" id="eBingoDivisibleBy" value="<?php echo $eBingoDivisibleBy; ?>"/>
+    <input type="hidden" name="eBingoMaxDeposit" id="eBingoMaxDeposit" value="<?php echo $eBingoMaxDeposit; ?>"/>
+    <input type="hidden" name="eBingoMinDeposit" id="eBingoMinDeposit"  value="<?php echo $eBingoMinDeposit; ?>"/>
     <?php echo MI_HTML::inputHidden($startSessionFormModel, 'max_deposit') ?>
     <?php echo MI_HTML::inputHidden($startSessionFormModel, 'min_deposit') ?>
     <!-- CCT BEGIN added VIP -->
-    <!-- <?php //echo MI_HTML::inputHidden($startSessionFormModel, 'lvip_type')                     ?> -->
+    <!-- <?php //echo MI_HTML::inputHidden($startSessionFormModel, 'lvip_type')                              ?> -->
     <!-- CCT END added VIP -->    
     <table class="standalonetbl">
         <tr>
@@ -630,7 +653,7 @@
         <!-- CCT BEGIN ADDED VIP -->
         <!--
         <tr class='hideControlsVIP'>
-            <th><?php //echo MI_HTML::label($startSessionFormModel, 'vip_type', 'VIP Type')                     ?></th>
+            <th><?php //echo MI_HTML::label($startSessionFormModel, 'vip_type', 'VIP Type')                              ?></th>
             <td>
                 <div>
                     <input type="radio" id="viptypeVIP" name="vip_type" value="1"/> VIP <input type="radio" id="viptypeSVIP" name="vip_type" value="2"/> SVIP   

@@ -18,8 +18,6 @@
 
         $('#btnreloadsa').click(function()
         {
-
-
             if ($('#siteamountinfo').val() == 0)
             {
                 showLightbox(function()
@@ -33,28 +31,23 @@
             }
             else
             {
+                var usermode = $('#mode').val();
                 var voucher = $("#StartSessionFormModel_voucher_code").val();
 
-                if (($('#current_casino').text() == "e-Bingo1") || ($('#current_casino').text() == "e-Bingo2")) {
-                    showLightbox(function()
-                    {
-                    updateLightbox('<center><label  style="font-size: 30px;font-weight: bold; width: 600px; color:red;">Reload is not applicable on e-Bingo Terminals.</center>' +
-                            '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
-                            ''
-                            );
-                        ;
-                    });
-
-                    return false;
-                } else {
-
+                if (usermode != 2)
+                {
                     if (!reloadSessionStandAloneChecking())
                     {
                         return false;
                     }
                 }
-
-
+                else
+                {
+                    if (!startSessionAloneeBingoChecking())
+                    {
+                        return false;
+                    }
+                }
 //              if($('#StartSessionFormModel_sel_amount').is(':disabled')) 
 //              {
 //                  var amount = $('#StartSessionFormModel_amount').val();
@@ -177,14 +170,35 @@
                                 {
                                     var json = $.parseJSON(data);
                                     var opt = '';
+
+
+                                    if (json.casinousermode == 4)
+                                    {
+                                        $('#mode').val(json.casinousermode);
+                                        var ebingo_denom = <?php echo $eBingoDenomination ?>;
+
+                                        $.each(ebingo_denom, function(k, v)
+                                        {
+                                            opt += '<option value="' + k + '" >' + v + '</option>';
+                                        });
+                                        $('#StartSessionFormModel_sel_amount').append(opt);
+                                    }
+                                    else {
+
+                                        $('#mode').val(json.casinousermode);
+                                        $.each(json.denomination, function(k, v)
+                                        {
+                                            opt += '<option value="' + k + '" >' + v + '</option>';
+                                        });
+                                        $('#StartSessionFormModel_sel_amount').append(opt);
+                                    }
+
+
+
                                     $('#cur_playing_bal').html(json.terminal_balance);
                                     $('#StartSessionFormModel_max_deposit').val(json.max_denomination);
                                     $('#StartSessionFormModel_min_deposit').val(json.min_denomination);
-                                    $.each(json.denomination, function(k, v)
-                                    {
-                                        opt += '<option value="' + k + '" >' + v + '</option>';
-                                    });
-                                    $('#StartSessionFormModel_sel_amount').append(opt);
+
 
                                     $('#reloadtimein').html(json.terminal_session_data.DateStarted);
                                     $('#current_casino').html(json.casino[json.terminal_session_data.ServiceID]);
@@ -448,6 +462,10 @@
 <div class="clear"></div>
 <div id="tm-reload-form">
     <div style="width: 600px;">
+        <input type="hidden" name="mode" id="mode" />
+        <input type="hidden" name="eBingoDivisibleBy" id="eBingoDivisibleBy" value="<?php echo $eBingoDivisibleBy; ?>"/>
+        <input type="hidden" name="eBingoMaxDeposit" id="eBingoMaxDeposit" value="<?php echo $eBingoMaxDeposit; ?>"/>
+        <input type="hidden" name="eBingoMinDeposit" id="eBingoMinDeposit"  value="<?php echo $eBingoMinDeposit; ?>"/>
         <form id="frmreloadsa">
             <?php if ($startSessionFormModel->error_count): ?>
                 <?php echo $startSessionFormModel->getErrorMessages(); ?>

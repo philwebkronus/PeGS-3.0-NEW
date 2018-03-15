@@ -57,10 +57,12 @@
                 {
                     if (usermode === 4)
                     {
-                        $('.hideControls').hide();
+                        $('.hideControls').show();
+                        $('#StartSessionFormModel_sel_amount').focus();
                         $('.btnSubmit').focus();
                     }
                     else {
+                        $('.hideControls').show();
                         $('#StartSessionFormModel_sel_amount').focus();
                         $('.btnSubmit').focus();
                     }
@@ -126,8 +128,11 @@
     <input type="hidden" name="siteamountinfo" id="siteamountinfo" value="<?php echo $siteAmountInfo; ?>" />
     <input type="hidden" name="tcode" id="tcode" value="<?php echo $tcode; ?>" />
     <input type="hidden" name="mode" id="mode" value="<?php echo $usermode; ?>"/>
+    <input type="hidden" name="eBingoDivisibleBy" id="eBingoDivisibleBy" value="<?php echo $eBingoDivisibleBy; ?>"/>
+    <input type="hidden" name="eBingoMaxDeposit" id="eBingoMaxDeposit" value="<?php echo $eBingoMaxDeposit; ?>"/>
+    <input type="hidden" name="eBingoMinDeposit" id="eBingoMinDeposit"  value="<?php echo $eBingoMinDeposit; ?>"/>
     <!-- CCT BEGIN added VIP -->
-    <!-- <?php //echo MI_HTML::inputHidden($startSession, 'lvip_type')    ?> -->
+    <!-- <?php //echo MI_HTML::inputHidden($startSession, 'lvip_type')              ?> -->
     <!-- CCT END added VIP -->
     <?php //if($startSession->error_count): ?>
     <?php //echo $startSession->getErrorMessages(); ?>
@@ -152,7 +157,7 @@
             <!-- CCT BEGIN ADDED VIP -->
             <!--
             <tr class='hideControlsVIP'>
-                <th><?php //echo MI_HTML::label($startSession, 'vip_type', 'VIP TYPE')    ?></th>
+                <th><?php //echo MI_HTML::label($startSession, 'vip_type', 'VIP TYPE')              ?></th>
                 <td>
                     <div>
                         <input type="radio" id="viptypeVIP" name="vip_type" value="1"/> VIP <input type="radio" id="viptypeSVIP" name="vip_type" value="2"/> SVIP  
@@ -165,7 +170,16 @@
                 <th><?php echo MI_HTML::label($startSession, 'sel_amount', 'AMOUNT') ?></th>
                 <td>
                     <div>
-                        <?php echo MI_HTML::dropDown($startSession, 'sel_amount', $denomination, array('' => 'Select Amount'), array('--' => 'Other denomination', 'voucher' => 'Voucher', 'bancnet' => 'Bancnet'), array('class' => 'width204')); ?>
+                        <?php
+                        if($usermode == 4){
+                        echo MI_HTML::dropDown($startSession, 'sel_amount', $eBingoDenomination, array('' => 'Select Amount'), array('--' => 'Other denomination', 'voucher' => 'Voucher', 'bancnet' => 'Bancnet'), array('class' => 'width204'));
+
+                        } else {
+                            echo MI_HTML::dropDown($startSession, 'sel_amount', $denomination, array('' => 'Select Amount'), array('--' => 'Other denomination', 'voucher' => 'Voucher', 'bancnet' => 'Bancnet'), array('class' => 'width204'));
+                        }
+                        ?>
+
+
                     </div>
                     <?php echo MI_HTML::inputText($startSession, 'amount', array('readonly' => 'readonly', 'class' => 'auto width200', 'maxlength' => 8)); ?>
                     <?php echo MI_HTML::inputText($startSession, 'voucher_code', array('maxlength' => 20, 'class' => 'width200')); ?>

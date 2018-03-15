@@ -298,8 +298,8 @@ class CommonRedeem {
                     //Habanero
                     else if (isset($transSearchInfo['TransactionInfo']['querytransmethodResult']) && ($transrefid == null || empty($transrefid))) {
                         //$amount = abs($transSearchInfo['TransactionInfo']['Balance']); //returns 0 value
-                        $transrefid = $resultwithdraw['TransactionInfo']['TransactionId'];
-                        $apiresult = $resultwithdraw['TransactionInfo']['Success'];
+                        $transrefid = $transSearchInfo['TransactionInfo']['TransactionId'];
+                        $apiresult = $transSearchInfo['TransactionInfo']['Success'];
                     }
                 }
             } else {
@@ -350,17 +350,19 @@ class CommonRedeem {
                 }
             }
 
-            if ($apiresult == 'TRANSACTIONSTATUS_APPROVED' || $apiresult == 'true' || $apiresult == 'approved' || $apiresult = "Withdrawal Success") {
+            if ($apiresult == 'TRANSACTIONSTATUS_APPROVED' || $apiresult == 'true' || $apiresult == 'approved' || $apiresult == "Withdrawal Success") {
                 $transstatus = '1';
             } else {
                 $transstatus = '2';
             }
+			
 
             //if Withdraw / TransactionSearchInfo API status is approved
             if ($apiresult == "true" || $apiresult == 'TRANSACTIONSTATUS_APPROVED' || $apiresult == 'approved' || $apiresult == "Withdrawal Success") {
 
                 $isredeemed = $commonTransactionsModel->redeemTransaction($amount, $trans_summary_id, $udate, $site_id, $terminal_id, 'W', $paymentType, $service_id, $acct_id, $transstatus, $loyalty_card, $mid);
 
+				
                 $transReqLogsModel->update($trans_req_log_last_id, $apiresult, $transstatus, $transrefid, $terminal_id);
 
                 if ($terminalType == 1) {

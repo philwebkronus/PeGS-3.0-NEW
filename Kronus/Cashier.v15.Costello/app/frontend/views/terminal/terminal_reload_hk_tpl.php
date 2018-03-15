@@ -1,77 +1,81 @@
 <?php Mirage::loadLibraries('LoyaltyScripts'); ?>
 <script type="text/javascript" src="jscripts/autoNumeric-1.6.2.js"></script>
 <script type="text/javascript">
-$(document).ready(function(){
-    $('input.auto').autoNumeric();
-    $('#StartSessionFormModel_voucher_code').hide();
-    $('.bankContainer').hide();
-})
+    $(document).ready(function() {
+        $('input.auto').autoNumeric();
+        $('#StartSessionFormModel_voucher_code').hide();
+        $('.bankContainer').hide();
+    })
 </script>
 <div id="tm-reload-form">
     <div>
-        <?php if($startSessionFormModel->error_count): ?>
-        <?php echo $startSessionFormModel->getErrorMessages(); ?>
+        <?php if ($startSessionFormModel->error_count): ?>
+            <?php echo $startSessionFormModel->getErrorMessages(); ?>
         <?php endif; ?>     
-        <?php if($terminal_balance !== null): ?>
-        <p id="curr_playing_bal">Current Playing Balance: PhP <?php echo toMoney($terminal_balance); ?></p>
+        <?php if ($terminal_balance !== null): ?>
+            <p id="curr_playing_bal">Current Playing Balance: PhP <?php echo toMoney($terminal_balance); ?></p>
         <?php endif; ?>
         <form id="frmhotkey">
             <?php echo MI_HTML::inputHidden($startSessionFormModel, 'min_deposit') ?>
             <?php echo MI_HTML::inputHidden($startSessionFormModel, 'max_deposit') ?>
-            <input type="hidden" id="tcode" value="<?php //echo $tcode ?>" name="tcode" />
-            <input type="hidden" id="tid" value="<?php //echo $tid ?>" name="tid" />
+            <input type="hidden" id="tcode" value="<?php //echo $tcode   ?>" name="tcode" />
+            <input type="hidden" id="tid" value="<?php //echo $tid   ?>" name="tid" />
             <input type="hidden" value="<?php echo $is_vip; ?>" name="is_vip" />
-            <input type="hidden" value="<?php //echo $cid ?>" name="cid" />
+            <input type="hidden" value="<?php //echo $cid   ?>" name="cid" />
+            <input type="hidden" name="mode" id="mode"/>
             <input type="hidden" name="siteamountinfo" id="siteamountinfo" value="<?php echo $siteAmountInfo; ?>" />
-        <table>
-            <tr>
-                <th class="left"><?php echo MI_HTML::label($startSessionFormModel, 'terminal_id', 'TERMINAL:'); ?></th>
-                <td><?php echo MI_HTML::dropDownArray($startSessionFormModel, 'terminal_id', $terminals, 'id', 'code', array(''=>'Select Terminal'), array(), array('class'=>'width154')) ?></td>
-            </tr>
-            <tr>
-                <th style="width: 120px;" class="left">CURRENT CASINO:</th>
-                <td id="current_casino"></td>
-            </tr>
-            <tr>
-                <th class="left"><?php echo MI_HTML::label($startSessionFormModel, 'amount', 'AMOUNT:') ?></th>
-                <td>
-                    <?php 
+            <input type="hidden" name="eBingoDivisibleBy" id="eBingoDivisibleBy" value="<?php echo $eBingoDivisibleBy; ?>"/>
+            <input type="hidden" name="eBingoMaxDeposit" id="eBingoMaxDeposit" value="<?php echo $eBingoMaxDeposit; ?>"/>
+            <input type="hidden" name="eBingoMinDeposit" id="eBingoMinDeposit"  value="<?php echo $eBingoMinDeposit; ?>"/>
+            <table>
+                <tr>
+                    <th class="left"><?php echo MI_HTML::label($startSessionFormModel, 'terminal_id', 'TERMINAL:'); ?></th>
+                    <td><?php echo MI_HTML::dropDownArray($startSessionFormModel, 'terminal_id', $terminals, 'id', 'code', array('' => 'Select Terminal'), array(), array('class' => 'width154')) ?></td>
+                </tr>
+                <tr>
+                    <th style="width: 120px;" class="left">CURRENT CASINO:</th>
+                    <td id="current_casino"></td>
+                </tr>
+                <tr>
+                    <th class="left"><?php echo MI_HTML::label($startSessionFormModel, 'amount', 'AMOUNT:') ?></th>
+                    <td>
+                        <?php
                         //if($startSessionFormModel->terminal_id != '') {
                         //    echo MI_HTML::dropDown($startSessionFormModel, 'sel_amount', $denomination,array(''=>'Select Amount'),array('--'=>'Other denomination'));
                         //} else {
-                            echo MI_HTML::dropDown($startSessionFormModel, 'sel_amount', array(),array(''=>'Select Amount'), array(), array('class'=>'width154'));
+                        echo MI_HTML::dropDown($startSessionFormModel, 'sel_amount', array(), array('' => 'Select Amount'), array(), array('class' => 'width154'));
                         //}
-                    ?>
-                    <?php echo MI_HTML::inputText($startSessionFormModel, 'amount',array('readonly'=>'readonly','class'=>'auto width150','maxlength'=>8)); ?>
-                    <?php echo MI_HTML::inputText($startSessionFormModel, 'voucher_code',array('maxlength'=>20, 'class'=>'width150')); ?>
-                </td>
-            </tr>
-            <tr class="bankContainer">
-                <th><?php echo MI_HTML::label($startSessionFormModel, 'lbl_traceNumber', 'TRACE NUMBER:') ?></th>
-                <td><?php echo MI_HTML::inputText($startSessionFormModel, 'trace_number',array('class'=>'width150','maxlength'=>20)); ?> <td>
-            </tr>
-            
-            <tr class="bankContainer">
-                <th><?php echo MI_HTML::label($startSessionFormModel, 'lbl_refNumber', 'REFERENCE NUMBER:') ?></th>
-                <td><?php echo MI_HTML::inputText($startSessionFormModel, 'reference_number',array('class'=>'width150','maxlength'=>20)); ?><td>
-                    
-            </tr>
-            <tr>
-                <th><input id="btnReloadhk" type="submit" value="Submit" /></th>
-                <td><input class="btnClose" type="button" value="Cancel" /></td>
-            </tr>            
-        </table>
+                        ?>
+                        <?php echo MI_HTML::inputText($startSessionFormModel, 'amount', array('readonly' => 'readonly', 'class' => 'auto width150', 'maxlength' => 8)); ?>
+                        <?php echo MI_HTML::inputText($startSessionFormModel, 'voucher_code', array('maxlength' => 20, 'class' => 'width150')); ?>
+                    </td>
+                </tr>
+                <tr class="bankContainer">
+                    <th><?php echo MI_HTML::label($startSessionFormModel, 'lbl_traceNumber', 'TRACE NUMBER:') ?></th>
+                    <td><?php echo MI_HTML::inputText($startSessionFormModel, 'trace_number', array('class' => 'width150', 'maxlength' => 20)); ?> <td>
+                </tr>
+
+                <tr class="bankContainer">
+                    <th><?php echo MI_HTML::label($startSessionFormModel, 'lbl_refNumber', 'REFERENCE NUMBER:') ?></th>
+                    <td><?php echo MI_HTML::inputText($startSessionFormModel, 'reference_number', array('class' => 'width150', 'maxlength' => 20)); ?><td>
+
+                </tr>
+                <tr>
+                    <th><input id="btnReloadhk" type="submit" value="Submit" /></th>
+                    <td><input class="btnClose" type="button" value="Cancel" /></td>
+                </tr>            
+            </table>
         </form>    
     </div>
     <div class="details">
         <table border="1" style="width: 100%">
             <tr>
-                <td colspan="5">LOGIN: <b id="reloadlogin"><?php //echo (($login)?$login:'') ?></b></td>
+                <td colspan="5">LOGIN: <b id="reloadlogin"><?php //echo (($login)?$login:'')   ?></b></td>
             </tr>
             <tr>
                 <td colspan="5">TIME IN: <b id="reloadtimein"></b></td>
             </tr>
-            
+
             <?php
 //            $initial_deposit = 0;
 //            $total_reload = 0;
@@ -93,12 +97,12 @@ $(document).ready(function(){
 //                } 
 //            }
             ?>
-            
+
             <tr>
-                <td colspan="5">INITIAL DEPOSIT: <b id="reloadinitialdeposit"><?php //echo (($trans_details)?$initial_deposit:''); ?></b></td>
+                <td colspan="5">INITIAL DEPOSIT: <b id="reloadinitialdeposit"><?php //echo (($trans_details)?$initial_deposit:'');   ?></b></td>
             </tr>
             <tr>
-                <td colspan="5">TOTAL RELOAD: <b id="reloadtotalreload"><?php //echo (($trans_details)?toMoney($total_reload):''); ?></b></td>
+                <td colspan="5">TOTAL RELOAD: <b id="reloadtotalreload"><?php //echo (($trans_details)?toMoney($total_reload):'');   ?></b></td>
             </tr>
             <tr>
                 <th colspan="5" style="background-color: #62AF35">

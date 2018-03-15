@@ -367,35 +367,24 @@
                                     $('#btnInitailDepositHk').attr("mode", json.usermode);
                                     $('#mode').val(json.usermode);
                                     $('.hideControls').hide();
-                                    // CCT - BEGIN added VIP
-                                    //if($('#viptypeVIP').is(':checked') || $('#viptypeSVIP').is(':checked'))
-                                    //{
-                                    //    $('.hideControlsVIP').show();
-                                    //}    
-                                    //else
-                                    //{
-                                    //    $('.hideControlsVIP').hide();
-                                    //}
-                                    // CCT - END added VIP                                  
-                                }
-                                else if (json.usermode == 2)
-                                {
-                                    $('#loyalty_card_tr').css('display', 'none');
-                                    $('#btnInitailDepositHk').attr("mode", json.usermode);
-                                    $('#mode').val(json.usermode);
-                                    $('.hideControls').show();
-                                    // CCT - BEGIN added VIP
-                                    /*
-                                     if($('#viptypeVIP').is(':checked') || $('#viptypeSVIP').is(':checked'))
-                                     {
-                                     $('.hideControlsVIP').show();
-                                     }    
-                                     else
-                                     {
-                                     $('.hideControlsVIP').hide();
-                                     }
-                                     */
-                                    // CCT - END added VIP
+
+                                    var opt = '';
+
+                                    var ebingo_denom = <?php echo json_encode(Mirage::app()->param['eBingoDepositDenom']); ?>;
+
+                                    if (ActionType.Deposit == false)
+                                    {
+                                        ebingo_denom = <?php echo json_encode(Mirage::app()->param['eBingoReloadDenom']); ?>;
+                                    }
+
+                                    $.each(ebingo_denom, function(k, v)
+                                    {
+                                        opt += '<option value="' + k + '" >' + v + '</option>';
+                                    });
+                                    opt += '<option value="--">Other denomination</option>';
+                                    opt += '<option value="voucher">Voucher</option>';
+                                    opt += '<option value="bancnet">Bancnet</option>';
+                                    $('#StartSessionFormModel_sel_amount').append(opt);
                                 }
                                 else
                                 {
@@ -403,32 +392,22 @@
                                     $('#btnInitailDepositHk').attr("mode", json.usermode);
                                     // CCT - BEGIN uncomment
                                     $('.hideControls').hide();
-                                    // CCT - END uncomment
-                                    // CCT - BEGIN added VIP
-                                    /*
-                                     if($('#viptypeVIP').is(':checked') || $('#viptypeSVIP').is(':checked'))
-                                     {
-                                     $('.hideControlsVIP').show();
-                                     }    
-                                     else
-                                     {
-                                     $('.hideControlsVIP').hide();
-                                     }
-                                     */
-                                    // CCT - END added VIP                        
+
+
+                                    var opt = '';
+                                    $.each(json.denomination, function(k, v)
+                                    {
+                                        opt += '<option value="' + k + '" >' + v + '</option>';
+                                    });
+                                    opt += '<option value="--">Other denomination</option>';
+                                    opt += '<option value="voucher">Voucher</option>';
+                                    opt += '<option value="bancnet">Bancnet</option>';
+                                    $('#StartSessionFormModel_sel_amount').append(opt);
                                 }
 
                                 $('#StartSessionFormModel_max_deposit').val(json.max_denomination);
                                 $('#StartSessionFormModel_min_deposit').val(json.min_denomination);
-                                var opt = '';
-                                $.each(json.denomination, function(k, v)
-                                {
-                                    opt += '<option value="' + k + '" >' + v + '</option>';
-                                });
-                                opt += '<option value="--">Other denomination</option>';
-                                opt += '<option value="voucher">Voucher</option>';
-                                opt += '<option value="bancnet">Bancnet</option>';
-                                $('#StartSessionFormModel_sel_amount').append(opt);
+
 
                                 var casopt = '';
                                 $.each(json.casino, function(k, v)
@@ -968,23 +947,22 @@
                 return false;
             }
 
-            if (($('#current_casino').text() == "e-Bingo1") || ($('#current_casino').text() == "e-Bingo2")) {
-                showLightbox(function()
-                {
-                    updateLightbox('<center><label  style="font-size: 30px;font-weight: bold; width: 600px; color:red;">Reload is not applicable on e-Bingo Terminals.</center>' +
-                            '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
-                            ''
-                            );
-                    ;
-                });
-                
-                return false;
-            } else {
+            /*
+             if ($('#current_casino').text() == "e-Bingo1" || $('#current_casino').text() == "e-Bingo2") {
+             showLightbox(function()
+             {
+             updateLightbox('<center><label  style="font-size: 24px;font-weight: bold; width: 600px;">Reload is not applicable on e-Bingo Terminals.</center>' +
+             '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
+             ''
+             );
+             ;
+             });
+             }
+             */
 
-                if (!reloadSessionChecking())
-                {
-                    return false;
-                }
+            if (!reloadSessionChecking())
+            {
+                return false;
             }
 
             if ($("#StartSessionFormModel_sel_amount").val() != 'voucher')
@@ -1057,8 +1035,14 @@
                 }
             } else if (mode == 4)
             {
-                var issuccess = "false";
-                isEwalletSessionMode = true;
+                if (!startSessionChecking())
+                {
+                    return false;
+                }
+                else
+                {
+                    var issuccess = identifyCard();
+                }
             } else {
                 if (!startSessioneBingoChecking()) {
                     return false;

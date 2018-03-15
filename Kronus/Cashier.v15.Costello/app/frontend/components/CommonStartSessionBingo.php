@@ -37,6 +37,7 @@ class CommonStartSessionBingo {
         $terminalSessionsModel = new TerminalSessionsModel();
         $transReqLogsModel = new TransactionRequestLogsModel();
 
+        $amount = $initial_deposit;
         $initial_deposit = 0;
 
         if ($terminalsModel->isPartnerAlreadyStarted($terminal_id)) {
@@ -71,6 +72,7 @@ class CommonStartSessionBingo {
             CasinoApi::throwError($message);
         }
 
+        $terminal_name = $terminalsModel->getTerminalName($terminal_id);
 
         $udate = CasinoApi::udate('YmdHisu');
 
@@ -121,13 +123,7 @@ class CommonStartSessionBingo {
             CasinoApi::throwError($message);
         }
 
-        $tracking1 = $trans_req_log_last_id;
-        $tracking2 = 'D';
-        $tracking3 = $terminal_id;
-        $tracking4 = $site_id;
-        $event_id = Mirage::app()->param['mgcapi_event_id'][0]; //Event ID for Deposit
         $transstatus = 1;
-
         $trans_summary_id = $commonTransactionsModel->startTransaction($site_id, $terminal_id, $initial_deposit, $acctid, $udate, 'D', $paymentType, $service_id, $transstatus, $loyalty_card, $mid);
 
         $apiresult = "Success eBingo";
@@ -146,11 +142,12 @@ class CommonStartSessionBingo {
             CasinoApi::throwError($message);
         }
 
-        $message = 'New player session started.The player initial playing balance is PhP ' . toMoney($initial_deposit);
+        $message = 'New player session started.The player initial playing balance is PhP 0.00';
 
-        return array('message' => $message, 'newbcf' => toMoney($newbal), 'initial_deposit' => toMoney($initial_deposit),
+        return array('message' => $message, 'newbcf' => toMoney($newbal), 'initial_deposit' => toMoney(0),
             'udate' => $udate, 'terminal_name' => $terminal_name, 'trans_ref_id' => $transrefid, 'trans_summary_id' => $trans_summary_id["trans_summary_max_id"],
             'trans_details_id' => $trans_summary_id["transdetails_max_id"]);
     }
 
 }
+

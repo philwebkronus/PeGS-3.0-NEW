@@ -77,13 +77,18 @@
     <?php echo MI_HTML::inputHidden($startSessionFormModel, 'max_deposit'); ?>
     <?php echo MI_HTML::inputHidden($startSessionFormModel, 'min_deposit'); ?>
     <!-- CCT BEGIN added VIP -->
-    <!-- <?php //echo MI_HTML::inputHidden($startSessionFormModel, 'lvip_type')  ?> -->
+    <!-- <?php //echo MI_HTML::inputHidden($startSessionFormModel, 'lvip_type')     ?> -->
     <!-- CCT END added VIP-->
     <input type="hidden" name="acc_id" id="acc_id" value="<?php echo $_SESSION['accID'] ?>" />
     <input type="hidden" name="sitecode" id="sitecode" value="<?php echo $_SESSION['site_code'] ?>" />
     <input type="hidden" name="siteclassification" id="siteclassification" value="<?php echo $siteClassification; ?>" />
     <input type="hidden" name="siteamountinfo" id="siteamountinfo" value="<?php echo $siteAmountInfo; ?>" />
     <input type="hidden" name="mode" id="mode"/>
+    <input type="hidden" name="eBingoDivisibleBy" id="eBingoDivisibleBy" value="<?php echo $eBingoDivisibleBy; ?>"/>
+    <input type="hidden" name="eBingoMaxDeposit" id="eBingoMaxDeposit" value="<?php echo $eBingoMaxDeposit; ?>"/>
+    <input type="hidden" name="eBingoMinDeposit" id="eBingoMinDeposit"  value="<?php echo $eBingoMinDeposit; ?>"/>
+    <input type="hidden" name="eBingoDenomination" id="eBingoDenomination"  value="<?php echo $eBingoDenomination; ?>"/>
+    
     <table id="tblstartsession">
         <tbody>
             <tr>
@@ -106,7 +111,7 @@
             <!-- CCT BEGIN ADDED VIP -->
             <!--
             <tr class='hideControlsVIP'>
-                <th><?php // echo MI_HTML::label($startSessionFormModel, 'vip_type', 'VIP TYPE')  ?></th>
+                <th><?php // echo MI_HTML::label($startSessionFormModel, 'vip_type', 'VIP TYPE')     ?></th>
                 <td>
                     <div>
                         <input type="radio" id="viptypeVIP" name="vip_type" value="1"/> VIP <input type="radio" id="viptypeSVIP" name="vip_type" value="2"/> SVIP 
@@ -127,8 +132,8 @@
                         }
                         ?>
                     </div>
-                        <?php echo MI_HTML::inputText($startSessionFormModel, 'amount', array('readonly' => 'readonly', 'class' => 'auto width200', 'maxlength' => 8)); ?>
-                        <?php echo MI_HTML::inputText($startSessionFormModel, 'voucher_code', array('maxlength' => 20, 'class' => 'width200')); ?>
+                    <?php echo MI_HTML::inputText($startSessionFormModel, 'amount', array('readonly' => 'readonly', 'class' => 'auto width200', 'maxlength' => 8)); ?>
+                    <?php echo MI_HTML::inputText($startSessionFormModel, 'voucher_code', array('maxlength' => 20, 'class' => 'width200')); ?>
                 </td>
             </tr>
             <tr class="hideControls">
@@ -142,13 +147,13 @@
             <tr class='hideControls'>
                 <th><?php echo MI_HTML::label($startSessionFormModel, 'casino', 'CASINO'); ?></th>
                 <td>
-<?php
-if ($startSessionFormModel->terminal_id != '') {
-    echo MI_HTML::dropDown($startSessionFormModel, 'casino', $casinos);
-} else {
-    echo MI_HTML::dropDown($startSessionFormModel, 'casino', array('' => 'Select Casino'), array(), array(), array('class' => 'width204'));
-}
-?>
+                    <?php
+                    if ($startSessionFormModel->terminal_id != '') {
+                        echo MI_HTML::dropDown($startSessionFormModel, 'casino', $casinos);
+                    } else {
+                        echo MI_HTML::dropDown($startSessionFormModel, 'casino', array('' => 'Select Casino'), array(), array(), array('class' => 'width204'));
+                    }
+                    ?>
                 </td>
             </tr>
             <tr>

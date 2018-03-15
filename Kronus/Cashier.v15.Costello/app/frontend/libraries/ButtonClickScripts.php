@@ -61,8 +61,17 @@
                 }
             } else if (mode == 4)
             {
-                var issuccess = "false";
-                isEwalletSessionMode = true;
+
+                if (!startSessionChecking())
+                {
+                    return false;
+                }
+                else
+                {
+                    var issuccess = identifyCard();
+                }
+//                var issuccess = "false";
+//                isEwalletSessionMode = true;
             } else {
                 if (!startSessioneBingoChecking()) {
                     return false;
@@ -141,6 +150,17 @@
         });
 
         $('#btnReload').live('click', function() {
+           if ($('#current_casino').text() == "e-Bingo1" || $('#current_casino').text() == "e-Bingo2") {
+                showLightbox(function()
+                {
+                    updateLightbox('<center><label  style="font-size: 24px;font-weight: bold; width: 600px;">Reload is not applicable on e-Bingo Terminals.</center>' +
+                            '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
+                            ''
+                            );
+                    ;
+                });
+            }
+
             if (!reloadSessionChecking()) {
                 return false;
             }

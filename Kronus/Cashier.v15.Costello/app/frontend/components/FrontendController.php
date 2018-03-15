@@ -211,10 +211,10 @@ class FrontendController extends MI_Controller {
 
     protected function _reload($startSessionFormModel, $cid) {
         Mirage::loadComponents(array('CommonReload', 'LoyaltyAPIWrapper.class', 'VoucherManagement',
-            'CasinoApi', 'CommonUBReload', 'PCWSAPI.class'));
+            'CasinoApi', 'CommonUBReload', 'PCWSAPI.class', 'CommonReloadBingo'));
 
         Mirage::loadModels(array('SitesModel', 'RefServicesModel', 'TerminalSessionsModel',
-            'LoyaltyRequestLogsModel', 'VMSRequestLogsModel', 'CompPointsLogsModel'));
+            'LoyaltyRequestLogsModel', 'VMSRequestLogsModel', 'CompPointsLogsModel', 'TerminalsModel'));
 
         $commonReload = new CommonReload();
         $commonUBReload = new CommonUBReload();
@@ -227,6 +227,7 @@ class FrontendController extends MI_Controller {
         $loyaltyrequestlogs = new LoyaltyRequestLogsModel();
         $vmsrequestlogs = new VMSRequestLogsModel();
         $terminalsmodel = new TerminalsModel();
+        $commonReloadbingo = new CommonReloadBingo();
 
         $terminal_id = $startSessionFormModel->terminal_id;
         $siteid = $this->site_id;
@@ -255,14 +256,15 @@ class FrontendController extends MI_Controller {
             $casinoUserMode = $val['UserMode'];
             $casinoServiceID = $val['ServiceID'];
         }
-
-        
-        $eBingoServiceIDs = Mirage::app()->param['eBingoServiceID'];
-        if (in_array($casinoServiceID, $eBingoServiceIDs)) {
-            $message = "Reload is not applicable on e-Bingo Terminals.";
-            logger($message);
-            $this->throwError($message);
-        }
+        /*
+          $eBingoServiceIDs = Mirage::app()->param['eBingoServiceID'];
+          if (in_array($casinoServiceID, $eBingoServiceIDs)) {
+          $message = "Reload is not applicable on e-Bingo Terminals.";
+          logger($message);
+          $this->throwError($message);
+          }
+         * 
+         */
 
         $ref_service = $refServicesModel->getServiceById($casinoServiceID);
         if ($casinoUserMode != 2) {
@@ -352,7 +354,7 @@ class FrontendController extends MI_Controller {
                                     $locatorname = '';
                                     $result = $commonReload->reload(toInt($this->getSiteBalance()), $amount, $paymentType, $terminal_id, $siteid, $cid, $accid, $loyaltyCardNo, $vouchercode, $trackingId, $mid, $ref_service['UserMode'], $traceNumber, $referenceNumber, $locatorname, $CPV);
                                     // e-BINGO v15
-                                } else if (($casinoUserMode == 0 || $casinoUserMode == 2) && $CPV == 'v15') {
+                                } else if (($casinoUserMode == 0 || $casinoUserMode == 2 || $casinoUserMode == 4) && $CPV == 'v15') {
                                     if ($ref_service['UserMode'] == 2) {
                                         $mid = $startSessionFormModel->terminal_id;
                                         $loyaltyCardNo = $startSessionFormModel->terminal_id;
@@ -376,7 +378,11 @@ class FrontendController extends MI_Controller {
                                             $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID];
                                         }
                                     }
-                                    $result = $commonReload->reload(toInt($this->getSiteBalance()), $amount, $paymentType, $terminal_id, $siteid, $cid, $accid, $loyaltyCardNo, $vouchercode, $trackingId, $mid, $ref_service['UserMode'], $traceNumber, $referenceNumber, $locatorname, $CPV);
+                                    if ($casinoUserMode != 4) {
+                                        $result = $commonReload->reload(toInt($this->getSiteBalance()), $amount, $paymentType, $terminal_id, $siteid, $cid, $accid, $loyaltyCardNo, $vouchercode, $trackingId, $mid, $ref_service['UserMode'], $traceNumber, $referenceNumber, $locatorname, $CPV);
+                                    } else {
+                                        $result = $commonReloadbingo->reload(toInt($this->getSiteBalance()), $amount, $paymentType, $terminal_id, $siteid, $cid, $accid, $loyaltyCardNo, $vouchercode, $trackingId, $mid, $ref_service['UserMode'], $traceNumber, $referenceNumber, $locatorname, $CPV);
+                                    }
                                     //checking if casino is user based
                                 } else if ($casinoUserMode == 1 && $CPV == 'v15') {
                                     //Set locator name based on Site Classification 
@@ -429,7 +435,7 @@ class FrontendController extends MI_Controller {
                                     $isSuccessful = $loyalty->processPoints($loyaltyCardNo, $transdate, $paymentType, 'R', toInt($amount), $siteid, $result["trans_details_id"], $result['terminal_name'], 1, $vouchercode, $cid, $isCreditable);
 
                                     //check if the loyaltydeposit is successful, if success insert to loyaltyrequestlogs and status = 1 else 2
-                                    if ($isSuccessful) {
+                                    if ($isSuccessful == 1) {
                                         $loyaltyrequestlogs->updateLoyaltyRequestLogs($loyaltyrequestlogsID, 1);
                                     } else {
                                         $loyaltyrequestlogs->updateLoyaltyRequestLogs($loyaltyrequestlogsID, 2);
@@ -554,7 +560,7 @@ class FrontendController extends MI_Controller {
                         $locatorname = '';
                         $result = $commonReload->reload(toInt($this->getSiteBalance()), $amount, $paymentType, $terminal_id, $siteid, $cid, $accid, $loyaltyCardNo, $vouchercode, $trackingId, $mid, $ref_service['UserMode'], $traceNumber, $referenceNumber, $locatorname, $CPV);
                         // e-BINGO v15
-                    } else if (($casinoUserMode == 0 || $casinoUserMode == 2) && $CPV == 'v15') {
+                    } else if (($casinoUserMode == 0 || $casinoUserMode == 2 || $casinoUserMode == 4) && $CPV == 'v15') {
                         if ($ref_service['UserMode'] == 2) {
                             $mid = $startSessionFormModel->terminal_id;
                             $loyaltyCardNo = $startSessionFormModel->terminal_id;
@@ -578,7 +584,11 @@ class FrontendController extends MI_Controller {
                                 $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID];
                             }
                         }
-                        $result = $commonReload->reload(toInt($this->getSiteBalance()), $amount, $paymentType, $terminal_id, $siteid, $cid, $accid, $loyaltyCardNo, $vouchercode, $trackingId, $mid, $ref_service['UserMode'], $traceNumber, $referenceNumber, $locatorname, $CPV);
+                        if ($casinoUserMode != 4) {
+                            $result = $commonReload->reload(toInt($this->getSiteBalance()), $amount, $paymentType, $terminal_id, $siteid, $cid, $accid, $loyaltyCardNo, $vouchercode, $trackingId, $mid, $ref_service['UserMode'], $traceNumber, $referenceNumber, $locatorname, $CPV);
+                        } else {
+                            $result = $commonReloadbingo->reload(toInt($this->getSiteBalance()), "0.00", $paymentType, $terminal_id, $siteid, $cid, $accid, $loyaltyCardNo, $vouchercode, $trackingId, $mid, $ref_service['UserMode'], $traceNumber, $referenceNumber, $locatorname, $CPV);
+                        }
                         //checking if casino is user based
                     } else if ($casinoUserMode == 1 && $CPV == 'v15') {
                         //Set locator name based on Site Classification 
@@ -627,10 +637,10 @@ class FrontendController extends MI_Controller {
                     //Insert to loyaltyrequestlogs
                     $loyaltyrequestlogsID = $loyaltyrequestlogs->insert($mid, 'R', $terminal_id, toInt($amount), $result["trans_details_id"], $paymentType, 1);
                     $transdate = CasinoApi::udate('Y-m-d H:i:s.u');
-                    $isSuccessful = $loyalty->processPoints($loyaltyCardNo, $transdate, $paymentType, 'D', toInt($amount), $siteid, $result["trans_details_id"], $result['terminal_name'], 1, $vouchercode, $cid, $isCreditable);
+                    $isSuccessful = $loyalty->processPoints($loyaltyCardNo, $transdate, $paymentType, 'R', toInt($amount), $siteid, $result["trans_details_id"], $result['terminal_name'], 1, $vouchercode, $cid, $isCreditable);
 
                     //check if the loyaltydeposit is successful, if success insert to loyaltyrequestlogs and status = 1 else 2
-                    if ($isSuccessful) {
+                    if ($isSuccessful == 1) {
                         $loyaltyrequestlogs->updateLoyaltyRequestLogs($loyaltyrequestlogsID, 1);
                     } else {
                         $loyaltyrequestlogs->updateLoyaltyRequestLogs($loyaltyrequestlogsID, 2);
@@ -1786,7 +1796,7 @@ class FrontendController extends MI_Controller {
                                         $isSuccessful = $loyalty->processPoints($loyaltyCardNo, $transdate, $paymentType, 'D', toInt($amount), $siteid, $result["trans_details_id"], $result['terminal_name'], 1, $startSessionFormModel->voucher_code, $startSessionFormModel->casino, 1);
 
                                         //check if the loyaltydeposit is successful, if success insert to loyaltyrequestlogs and status = 1 else 2
-                                        if ($isSuccessful) {
+                                        if ($isSuccessful == 1) {
                                             $loyaltyrequestlogs->updateLoyaltyRequestLogs($loyaltyrequestlogsID, 1);
                                         } else {
                                             $loyaltyrequestlogs->updateLoyaltyRequestLogs($loyaltyrequestlogsID, 2);
@@ -1952,7 +1962,6 @@ class FrontendController extends MI_Controller {
                             if ($ref_service['UserMode'] == 0 || $ref_service['UserMode'] == 2) {
                                 $result = $commonStartSession->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino, toInt($this->getSiteBalance()), toInt($amount), $accid, $loyaltyCardNo, $startSessionFormModel->voucher_code, $trackingId, $casinoUsername, $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'], $traceNumber, $referenceNumber, $locatorname, $CPV);
                             } else {
-                                $amount = 0;
                                 $result = $commonStartSessionBingo->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino, toInt($this->getSiteBalance()), toInt($amount), $accid, $loyaltyCardNo, $startSessionFormModel->voucher_code, $trackingId, $casinoUsername, $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'], $locatorname, $CPV);
                             }
                             //$casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'],$traceNumber,$referenceNumber,$locatorname,$CPV,$viptype); // CCT added viptype;
@@ -2058,7 +2067,7 @@ class FrontendController extends MI_Controller {
                         $isSuccessful = $loyalty->processPoints($loyaltyCardNo, $transdate, $paymentType, 'D', toInt($amount), $siteid, $result["trans_details_id"], $result['terminal_name'], 1, $vouchercode, $startSessionFormModel->casino, 1);
 
                         //check if the loyaltydeposit is successful, if success insert to loyaltyrequestlogs and status = 1 else 2
-                        if ($isSuccessful) {
+                        if ($isSuccessful == 1) {
                             $loyaltyrequestlogs->updateLoyaltyRequestLogs($loyaltyrequestlogsID, 1);
                         } else {
                             $loyaltyrequestlogs->updateLoyaltyRequestLogs($loyaltyrequestlogsID, 2);
@@ -2827,3 +2836,4 @@ class JsonTerminal {
     public $server_date = null;
 
 }
+
