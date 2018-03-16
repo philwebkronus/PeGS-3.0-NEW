@@ -2659,6 +2659,7 @@ class MPapiController extends Controller {
                 $smsSubscription = trim($request['SMSSubscription']);
                 if ($smsSubscription == '')
                     $smsSubscription == '';
+                $cityID = trim($request['CityID']);
                 if ($cityID == '')
                     $cityID = 0;
                 $regionID = trim($request['RegionID']);
@@ -2813,8 +2814,9 @@ class MPapiController extends Controller {
                             if ($isVerfied == 1) {
 
                                 $TempMigration = $LoyaltyAPIWrapper->getCardInfo($TempCard, 0);
-
-                                $obj_result = json_decode($TempMigration[1]);
+				
+				$cleanJSON = substr($TempMigration[1] , strpos($TempMigration[1] , "{")); 
+                                $obj_result = json_decode($cleanJSON);
 
 //                                if ($obj_result['CardInfo']['MID'] != null) {
                                 if ($obj_result->CardInfo->MID != null) {
@@ -2857,7 +2859,8 @@ class MPapiController extends Controller {
 
                                                     if ($updateTempCardsStatus == 1) {
                                                         // Update Member Profile
-                                                        $UpdateMemberProfile = $membersModel->updateMemberProfile($MID, $firstname, $middlename, $lastname, $birthdate, $emailAddress, $idPresented, $idPresented, $AID, $dateupdated, $gender);
+                                                        $dateupdated = "NOW(6)";
+							$UpdateMemberProfile = $membersModel->updateMemberProfile($MID, $firstname, $middlename, $lastname, $birthdate, $emailAddress, $idPresented, $idPresented, $AID, $dateupdated, $gender);
 
                                                         $memberInfoModel->updateProfileOthers($cityID, $regionID, $registrationOrigin, $RegisterFor, $mid);
 

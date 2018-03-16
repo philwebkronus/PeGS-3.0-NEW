@@ -1180,9 +1180,6 @@ class MembershipTempModel {
 
                     $MID = $result['@OUT_MID'];
                     $startTrans->commit();
-                    $recipient = $firstname . ' ' . $lastname;
-                    $helpers = new Helpers();
-                    $helpers->sendEmailVerification($email, $recipient, $tempCode);
                     return $MID;
                     // CCT 05232017 END ADDED
                 } catch (PDOException $e) {

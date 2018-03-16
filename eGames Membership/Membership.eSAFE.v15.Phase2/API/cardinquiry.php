@@ -139,7 +139,11 @@ if((ctype_alnum( $cardNumber )) && (ctype_digit( $isReg ) ))
                     $diff = abs(strtotime($datetime1->CurrentDate) - strtotime($datetime2->CurrentDate));
 
                     $hours = $diff / 60 / 60; //Get the total hours elapsed; $diff / 60 seconds / 60 minutes
-
+                    
+					if($hours == 0){
+                        $hours = 1;
+                    }
+					
                     $cardInfo = $_Cards->getCardInfo( $cardNumber );
 
                     if(count ($cardInfo) > 0)

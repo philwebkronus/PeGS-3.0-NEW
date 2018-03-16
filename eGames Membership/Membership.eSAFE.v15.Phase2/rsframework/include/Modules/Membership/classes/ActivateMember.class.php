@@ -183,7 +183,7 @@ class ActivateMember extends BaseEntity {
                         if (!App::HasError()) {
                             $this->CommitTransaction();
 
-                            $this->StartTransaction();
+//                            $this->StartTransaction();
 
                             App::LoadModuleClass("CasinoProvider", "PlayTechAPI");
                             App::LoadModuleClass("CasinoProvider", "CasinoProviders");
@@ -232,7 +232,7 @@ class ActivateMember extends BaseEntity {
 
                                 $this->TableName = "membership.memberservices";
 
-                                if (strpos($serviceName, 'RTG2') !== false) {
+                               /* if (strpos($serviceName, 'RTG2') !== false) {
 
                                     //Generation of casino username to be passed in the casino API
                                     $casinoAccounts = $_CasinoServices->generateCasinoAccounts($MID, $serviceID, $serviceName);
@@ -251,7 +251,6 @@ class ActivateMember extends BaseEntity {
 
                                         //START: Call Casino Create Account API Method
                                         $apiResult = $casinoAPI->createAccount($serviceName, $serviceID, $userName, $password, $firstName, $lastName, $birthDate, $gender, $email, $phone, $address, $city, $countryCode, $vipLevel);
-
                                         if (!$apiResult) {
                                             $apierror = "There was an error encountered in mapping the RTG casino.";
                                             $_Log->logAPI(AuditFunctions::MIGRATE_TEMP, $this->CardNumber . ':Failed', $apiResult['ErrorMessage']); //logging of API Error
@@ -313,7 +312,7 @@ class ActivateMember extends BaseEntity {
                                         $apierror = "No available plain and hashed password for RTG2 casino.";
                                         $_Log->logAPI(AuditFunctions::MIGRATE_TEMP, $this->CardNumber . ':Failed', $apierror);
                                     }
-                                }
+                                }*/
 
                                 if (strpos($serviceName, 'MG')) {
                                     $casinoAccounts = $_CasinoServices->generateCasinoAccounts($MID, $serviceID, $serviceName);
@@ -453,15 +452,17 @@ class ActivateMember extends BaseEntity {
 
                             header("Content-Type:text/html");
 
-                            if (count($arraycasinoservices) > 0) {
+//                            if (count($arraycasinoservices) > 0) {
 
-                                foreach ($arraycasinoservices as $casinoservices) {
-                                    $this->InsertMultiple($casinoservices);
-                                }
+			      if(!empty($accountpassword)){
+
+//                                foreach ($arraycasinoservices as $casinoservices) {
+//                                    $this->InsertMultiple($casinoservices);
+//                                }
 
                                 $_GeneratedPasswordBatch->updatePasswordBatch($this->MID, $genpassbatchid);
 
-                                $this->CommitTransaction();
+//                                $this->CommitTransaction();
                                 return array("MID" => $this->MID, "status" => 'OK', "apierror" => $apierror, "password" => $accountpassword);
                             } else {
                                 return array("MID" => $this->MID, "status" => 'error', "apierror" => $apierror, "password" => $accountpassword);
