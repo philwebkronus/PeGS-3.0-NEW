@@ -38,7 +38,7 @@ class StartSessionController extends FrontendController {
             Mirage::app()->end();
         }
 
-        $eBingoDenomination = Mirage::app()->param['eBingoDepositDenom'];
+        $eBingoDenomination = json_encode(Mirage::app()->param['eBingoDepositDenom']);
         $eBingoDivisibleBy = Mirage::app()->param['eBingoDivisibleBy'];
         $eBingoMinDeposit = Mirage::app()->param['eBingoMinDeposit'];
         $eBingoMaxDeposit = Mirage::app()->param['eBingoMaxDeposit'];

@@ -30,7 +30,7 @@ class ReloadSessionController extends FrontendController {
             $this->_reload($startSessionFormModel, $service_id);
         }
 
-        $eBingoDenomination = Mirage::app()->param['eBingoDepositDenom'];
+        $eBingoDenomination = json_encode(Mirage::app()->param['eBingoDepositDenom']);
         $eBingoDivisibleBy = Mirage::app()->param['eBingoDivisibleBy'];
         $eBingoMinDeposit = Mirage::app()->param['eBingoMinDeposit'];
         $eBingoMaxDeposit = Mirage::app()->param['eBingoMaxDeposit'];
