@@ -293,4 +293,14 @@ class TerminalSessionsModel extends MI_Model
         $result =  $this->find();
         return $result['TerminalID'];
     }
+	
+	
+    public function getLastBalanceBingo($terminal_id) {
+        $sql = "SELECT LastBalance FROM terminalsessions WHERE TerminalID = :terminalid";
+        $param = array(":terminalid" => $terminal_id);
+        $this->exec($sql, $param);
+        $result = $this->find();
+        return $result['LastBalance'];
+    }
+
 }
