@@ -48,6 +48,7 @@ if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
                                 $limit = $_POST['rows'];
 
                                 $rewardoffers = $_RewardItems->getAllRewardOffersBasedOnPlayerClassification($_SESSION['CardRed']['IsVIP'],"Points");
+
                                 if(count($rewardoffers) > 0){
 
                                     $total_pages = ceil(count($rewardoffers)/$limit);
@@ -190,8 +191,8 @@ if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
                                                 $response["CardNumber"] = $CardNumber;
                                                 $response["CardType"] = $cardInfo[0]['CardType'];
                                                 //$response["CurrentPoints"] = number_format($cardInfo[0]['CurrentPoints'], 0, '', ',');
-                                                $response["CurrentPoints"] = number_format($CurrentPoints, 0, '', ',');
-                                                $response["LifetimePoints"] = number_format($cardInfo[0]['LifetimePoints'], 0, '', ',');
+                                                $response["CurrentPoints"] = number_format($CurrentPoints, 2, '.', ',');
+                                                $response["LifetimePoints"] = number_format($cardInfo[0]['LifetimePoints'], 2, '.', ',');
                                                 //$response["BonusPoints"] = number_format($cardInfo[0]['BonusPoints'], 0, '', ',');
                                                 $response["BonusPoints"] = number_format(0, 0, '', ',');
                                                 $response["RedeemedPoints"] = number_format($cardInfo[0]['RedeemedPoints'], 0, '', ',');
@@ -306,8 +307,8 @@ if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
                                                 $response["CardType"] = $CardType;
 
                                                 //$response["CurrentPoints"] = number_format($membercards[0]['CurrentPoints'], 0, '', ',');
-                                                $response["CurrentPoints"] = number_format($CurrentPoints, 0, '', ',');
-                                                $response["LifetimePoints"] = number_format($membercards[0]['LifetimePoints'], 0, '', ',');
+                                                $response["CurrentPoints"] = number_format($CurrentPoints, 2, '.', ',');
+                                                $response["LifetimePoints"] = number_format($membercards[0]['LifetimePoints'], 2, '.', ',');
                                                 //$response["BonusPoints"] = number_format($membercards[0]['BonusPoints'], 0, '', ',');
                                                 $response["BonusPoints"] = number_format(0, 0, '', ',');
                                                 $response["RedeemedPoints"] = number_format($membercards[0]['RedeemedPoints'], 0, '', ',');
