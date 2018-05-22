@@ -124,8 +124,20 @@ class WsvoucherController extends Controller {
                         //todo
                         break;
                     case self::SOURCE_CASHIER:
-                        $result = $commonController->verifyCoupon($AID, $voucherCode, $source, $trackingid, self::COUPON);
-                        $transMsg = $result['TransMsg'];
+
+                        $checkIfVV = trim(substr($voucherCode, 0, 3));
+                        if ($checkIfVV == 'VVC') {
+                            if ($request['serviceid'] == 25) {
+                                $result = $commonController->verifyCoupon($AID, $voucherCode, $source, $trackingid, self::COUPON);
+                                $transMsg = $result['TransMsg'];
+                            } else {
+                                $result['TransMsg'] = 'This voucher type can only use to Habanero Terminals.';
+                                $result['ErrorCode'] = 12;
+                            }
+                        } else {
+                            $result = $commonController->verifyCoupon($AID, $voucherCode, $source, $trackingid, self::COUPON);
+                            $transMsg = $result['TransMsg'];
+                        }
                         break;
                     case self::SOURCE_KAPI;
                         //todo
@@ -315,13 +327,13 @@ class WsvoucherController extends Controller {
 
                                             $egmSessionsModel = new EGMSessionsModel();
                                             $isTerminalMidMatched = $egmSessionsModel->isTerminalAndMIDMatched($terminalID, $MID);
-                                            if($isTerminalMidMatched == 0) {
-                                                $terminalID = $_terminalsModel->getTerminalIDfromterminals($terminalCode.'vip');
+                                            if ($isTerminalMidMatched == 0) {
+                                                $terminalID = $_terminalsModel->getTerminalIDfromterminals($terminalCode . 'vip');
                                                 $isTerminalMidMatched = $egmSessionsModel->isTerminalAndMIDMatched($terminalID, $MID);
                                             }
-                                            
+
                                             if ($isTerminalMidMatched > 0) {
-                                                
+
                                                 $siteID = $_terminalsModel->getSiteIDfromterminals($terminalID);
 
                                                 $ticketData = $_ticketModel->getTicketDataByCode($voucherCode);
@@ -528,7 +540,7 @@ class WsvoucherController extends Controller {
         $transMsg = "";
         $errCode = "";
         $sequenceNo = "";
-        
+
         if (isset($request['Source']) && is_numeric($request['Source'])) {
 
             $source = trim($request['Source']);
@@ -567,11 +579,11 @@ class WsvoucherController extends Controller {
                                 if (!empty($MID)) {
                                     $terminalCode = Yii::app()->params['sitePrefix'] . $terminalName;
                                     $terminals = $_terminalsModel->getTerminalIDByCodeEGMType($terminalCode);
-                                    
+
                                     if (!empty($terminals)) {
                                         $terminalID = $terminals[0]['TerminalID'];
                                         $terminalIDVIP = $terminals[1]['TerminalID'];
-                                        
+
                                         if ((isset($request['AID']) && is_numeric($request['AID']) && strlen($request['AID']) > 0)) {
                                             $aid = trim($request['AID']);
                                         } else {
@@ -591,8 +603,7 @@ class WsvoucherController extends Controller {
                                         if ($source == self::SOURCE_EGM) {
                                             //Check if terminalID is exist, if not, try VIP
                                             $countTerminalEGMSession = $_egmSessionsModel->isEGMSessionExistsByTerminalID($terminalID);
-                                            if ($countTerminalEGMSession == 0) //if not
-                                            {
+                                            if ($countTerminalEGMSession == 0) { //if not
                                                 $terminalID = $terminalIDVIP;
                                             }
                                             $countTerminalEGMSessionLast = $_egmSessionsModel->isEGMSessionExistsByTerminalID($terminalID); //Last checking
@@ -613,10 +624,10 @@ class WsvoucherController extends Controller {
                                                             $dateUpdated = $date;
                                                             //Add milliseconds
                                                             $t = microtime(true);
-                                                            $micro = sprintf("%06d",($t - floor($t)) * 1000000);
-                                                            $d = new DateTime( date('Y-m-d H:i:s.'.$micro,$t) );
+                                                            $micro = sprintf("%06d", ($t - floor($t)) * 1000000);
+                                                            $d = new DateTime(date('Y-m-d H:i:s.' . $micro, $t));
 
-                                                            $validFromDate =  $d->format("Y-m-d H:i:s.u");
+                                                            $validFromDate = $d->format("Y-m-d H:i:s.u");
                                                             $validToDate = date(date_format($date_now2, 'Y-m-d' . ' ' . Yii::app()->params['time_stamp']));
                                                             $updatedByAID = $aid;
 //                                                                $ticketCodeResult = Helpers::insert_ticket_pad($voucherCode, $terminalName);
@@ -678,13 +689,11 @@ class WsvoucherController extends Controller {
                                         } else {
                                             //Check if terminalID is exist, if not, try VIP
                                             $countTerminalEGMSession = $_egmSessionsModel->isEGMSessionExistsByTerminalID($terminalID);
-                                            if ($countTerminalEGMSession == 0) //if not
-                                            {
+                                            if ($countTerminalEGMSession == 0) { //if not
                                                 $terminalID = $terminalIDVIP;
                                             }
                                             $countTerminalEGMSessionLast = $_egmSessionsModel->isEGMSessionExistsByTerminalID($terminalID); //Last checking
-                                            if ($countTerminalEGMSessionLast > 0) 
-                                            {
+                                            if ($countTerminalEGMSessionLast > 0) {
                                                 $_StackerSummaryModel = new StackerSummaryModel();
                                                 $countStackerBatchID = $_StackerSummaryModel->isStackerSummaryIDExists($stackerBatchID);
                                                 if ($countStackerBatchID > 0) {
@@ -699,16 +708,16 @@ class WsvoucherController extends Controller {
                                                             $dateInterval = Yii::app()->params['dateInterval'];
                                                             $date_now2 = date_add($date_now1, date_interval_create_from_date_string($dateInterval));
                                                             $dateUpdated = $date;
-                                                            
+
                                                             //Add milliseconds
                                                             $t = microtime(true);
-                                                            $micro = sprintf("%06d",($t - floor($t)) * 1000000);
-                                                            $d = new DateTime( date('Y-m-d H:i:s.'.$micro,$t) );
+                                                            $micro = sprintf("%06d", ($t - floor($t)) * 1000000);
+                                                            $d = new DateTime(date('Y-m-d H:i:s.' . $micro, $t));
 
-                                                            $validFromDate =  $d->format("Y-m-d H:i:s.u");
+                                                            $validFromDate = $d->format("Y-m-d H:i:s.u");
                                                             $validToDate = date(date_format($date_now2, 'Y-m-d' . ' ' . Yii::app()->params['time_stamp']));
                                                             $updatedByAID = $aid;
-    //                                                    $ticketCodeResult = Helpers::insert_ticket_pad($voucherCode, $terminalName);
+                                                            //                                                    $ticketCodeResult = Helpers::insert_ticket_pad($voucherCode, $terminalName);
 
                                                             if ($purpose == self::PURPOSE_PAYOUT_TICKET) {
                                                                 $status = self::STATUS_TICKET_ACTIVE;
@@ -1171,3 +1180,4 @@ class WsvoucherController extends Controller {
 }
 
 ?>
+
