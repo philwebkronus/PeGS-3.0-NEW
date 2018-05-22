@@ -187,6 +187,10 @@ class MI_Model {
         return $this->dbh->lastInsertId();
     }
 
+    public function getLoyaltyLastInsertId() {
+        return $this->dbh4->lastInsertId();
+    }
+
     /*     * *************************************************************************
      * Original Author: Bryan Salazar
      * Date Creation: May 31, 2011

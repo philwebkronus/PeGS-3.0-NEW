@@ -29,7 +29,7 @@ class CommonRedeem {
 
         Mirage::loadComponents(array('CasinoApi', 'PCWSAPI.class'));
         Mirage::loadModels(array('TerminalsModel', 'EgmSessionsModel', 'CommonTransactionsModel', 'StackerSummaryModel',
-            'PendingTerminalTransactionCountModel', 'AutoEmailLogsModel', 'RefServicesModel', 'SiteAccountsModel', 'TerminalServicesModel'));
+            'PendingTerminalTransactionCountModel', 'AutoEmailLogsModel', 'RefServicesModel', 'SiteAccountsModel', 'TerminalServicesModel', 'MemberCardsModel', 'HabaneroCompPointsLogModel'));
 
         $casinoApi = new CasinoApi();
         $terminalsModel = new TerminalsModel();
@@ -42,6 +42,8 @@ class CommonRedeem {
         $siteAccountsModel = new SiteAccountsModel();
         $pcwsAPI = new PCWSAPI();
         $terminalServicesModel = new TerminalServicesModel();
+        $MemberCardsModel = new MemberCardsModel();
+        $HabaneroCompPointsLogModel = new HabaneroCompPointsLogModel();
 
         $terminalname = $terminalsModel->getTerminalName($terminal_id);
 
@@ -135,7 +137,7 @@ class CommonRedeem {
         //check if there was a pending game bet for habanero
         if (strpos($service_name, 'HAB') !== false) {
             $pendingGames = $casinoApi->GetPendingGamesHabanero($terminal_id, $service_id, $terminal_name, $terminal_pwd);
-            
+
             if ($pendingGames['TransactionInfo'][0]['GameName'] != null || $pendingGames['TransactionInfo'][0]['GameName'] != '') {
                 $pendingGames['IsSucceed'] = true;
                 $pendingGames['PendingGames']['GetPendingGamesByPIDResult']['Gamename'] = $pendingGames['TransactionInfo'][0]['GameName'];
@@ -355,14 +357,14 @@ class CommonRedeem {
             } else {
                 $transstatus = '2';
             }
-			
+
 
             //if Withdraw / TransactionSearchInfo API status is approved
             if ($apiresult == "true" || $apiresult == 'TRANSACTIONSTATUS_APPROVED' || $apiresult == 'approved' || $apiresult == "Withdrawal Success") {
 
                 $isredeemed = $commonTransactionsModel->redeemTransaction($amount, $trans_summary_id, $udate, $site_id, $terminal_id, 'W', $paymentType, $service_id, $acct_id, $transstatus, $loyalty_card, $mid);
 
-				
+
                 $transReqLogsModel->update($trans_req_log_last_id, $apiresult, $transstatus, $transrefid, $terminal_id);
 
                 if ($terminalType == 1) {
@@ -414,6 +416,51 @@ class CommonRedeem {
 
                  * 
                  */
+
+                /*                 * ************************** START COMPPOINTS REDEMPTION HABANERO ** [ 05 18 2018 @JAVIDA ] **************************** */
+                $isHabaneroCompPointsON = 0;
+                $isHabaneroCompPointsON = Mirage::app()->param['isHabaneroCompPointsON'];
+                if ($isHabaneroCompPointsON == 1) {
+                    if ($userMode != 2 && $service_id == 25) {
+
+                        $HabaneroCompPointsLogID = $HabaneroCompPointsLogModel->insert($mid, $loyalty_card, $terminal_id, $site_id, 'W', $tracking1, 0);
+
+                        if (!empty($HabaneroCompPointsLogID)) {
+                            $WithdrawPlayerPointsHabanero = $casinoApiHandler->WithdrawPlayerPointsHabanero($tracking1, $terminal_name, $terminal_pwd);
+
+                            $PointsWithdrawn = 0;
+                            $updatePlayerHabaneroPoints = false;
+
+                            if (!empty($WithdrawPlayerPointsHabanero['TransactionInfo']['Success']) && $WithdrawPlayerPointsHabanero['TransactionInfo']['Success'] != false && $WithdrawPlayerPointsHabanero['TransactionInfo']['Success'] != null) {
+                                $PointsWithdrawn = abs($WithdrawPlayerPointsHabanero['TransactionInfo']['PointsWithdrawn']);
+
+                                $updatePlayerHabaneroPoints = $MemberCardsModel->updatePlayerHabaneroPoints($PointsWithdrawn, $mid);
+
+                                if ($updatePlayerHabaneroPoints) {
+                                    $remarks = 'Success Points Redemption';
+                                    $HabaneroCompPointsLogModel->updateHabaneroCompPointsLog($HabaneroCompPointsLogID, $remarks, $PointsWithdrawn, 1);
+                                } else {
+                                    $remarks = 'Failed to Update Points';
+                                    $HabaneroCompPointsLogModel->updateHabaneroCompPointsLog($HabaneroCompPointsLogID, $remarks, $PointsWithdrawn, 2);
+                                }
+
+                            } else {
+
+                                if (empty($WithdrawPlayerPointsHabanero['TransactionInfo']['Message'])) {
+                                    $remarks = 'No API Response';
+                                } else {
+                                    $remarks = $WithdrawPlayerPointsHabanero['TransactionInfo']['Message'];
+                                }
+
+                                $HabaneroCompPointsLogModel->updateHabaneroCompPointsLog($HabaneroCompPointsLogID, $remarks, $PointsWithdrawn, 2);
+                            }
+                        }
+                    }
+                }
+                /*                 * ************************** END COMPPOINTS REDEMPTION HABANERO **************************** */
+
+
+
                 return array('message' => 'You have successfully redeemed the amount of PhP ' . toMoney($amount),
                     'trans_summary_id' => $trans_summary_id, 'udate' => $udate, 'amount' => $amount, 'terminal_login' => $terminal_name,
                     'trans_ref_id' => $transrefid, 'terminal_name' => $terminal_name, 'trans_details_id' => $isredeemed);
@@ -465,6 +512,48 @@ class CommonRedeem {
               $pcwsAPI->ChangePassword($systemusername, $terminal_name, $service_id, $userMode, $source);
              * 
              */
+
+            /*             * ************************** START COMPPOINTS REDEMPTION HABANERO ** [ 05 18 2018 @JAVIDA ] **************************** */
+            $isHabaneroCompPointsON = 0;
+            $isHabaneroCompPointsON = Mirage::app()->param['isHabaneroCompPointsON'];
+            if ($isHabaneroCompPointsON == 1) {
+                if ($userMode != 2 && $service_id == 25) {
+
+                    $HabaneroCompPointsLogID = $HabaneroCompPointsLogModel->insert($mid, $loyalty_card, $terminal_id, $site_id, 'W', $tracking1, 0);
+
+                    if (!empty($HabaneroCompPointsLogID)) {
+                        $WithdrawPlayerPointsHabanero = $casinoApiHandler->WithdrawPlayerPointsHabanero($tracking1, $terminal_name, $terminal_pwd);
+
+                        $PointsWithdrawn = 0;
+                        $updatePlayerHabaneroPoints = false;
+
+                        if (!empty($WithdrawPlayerPointsHabanero['TransactionInfo']['Success']) && $WithdrawPlayerPointsHabanero['TransactionInfo']['Success'] != false && $WithdrawPlayerPointsHabanero['TransactionInfo']['Success'] != null) {
+                            $PointsWithdrawn = abs($WithdrawPlayerPointsHabanero['TransactionInfo']['PointsWithdrawn']);
+
+                            $updatePlayerHabaneroPoints = $MemberCardsModel->updatePlayerHabaneroPoints($PointsWithdrawn, $mid);
+
+                            if ($updatePlayerHabaneroPoints) {
+                                $remarks = 'Success Points Redemption';
+                                $HabaneroCompPointsLogModel->updateHabaneroCompPointsLog($HabaneroCompPointsLogID, $remarks, $PointsWithdrawn, 1);
+                            } else {
+                                $remarks = 'Failed to Update Points';
+                                $HabaneroCompPointsLogModel->updateHabaneroCompPointsLog($HabaneroCompPointsLogID, $remarks, $PointsWithdrawn, 2);
+                            }
+
+                        } else {
+
+                            if (empty($WithdrawPlayerPointsHabanero['TransactionInfo']['Message'])) {
+                                $remarks = 'No API Response';
+                            } else {
+                                $remarks = $WithdrawPlayerPointsHabanero['TransactionInfo']['Message'];
+                            }
+
+                            $HabaneroCompPointsLogModel->updateHabaneroCompPointsLog($HabaneroCompPointsLogID, $remarks, $PointsWithdrawn, 2);
+                        }
+                    }
+                }
+            }
+            /*             * ************************** END COMPPOINTS REDEMPTION HABANERO **************************** */
 
             return array('message' => 'Info: Session has been ended.',
                 'trans_summary_id' => $trans_summary_id, 'udate' => $udate, 'amount' => $amount, 'terminal_login' => $terminal_name,

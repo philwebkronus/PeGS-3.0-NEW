@@ -257,14 +257,14 @@ class CommonReload {
             }
         }
 
-        if ($apiresult == 'TRANSACTIONSTATUS_APPROVED' || $apiresult == 'true' || $apiresult == 'approved' || $apiresult = "Deposit Success") {
+        if ($apiresult == 'TRANSACTIONSTATUS_APPROVED' || $apiresult == 'true' || $apiresult == 'approved' || $apiresult == "Deposit Success") {
             $transstatus = '1';
         } else {
             $transstatus = '2';
         }
 
         //if Deposit / TransactionSearchInfo API status is approved
-        if ($apiresult == 'true' || $apiresult == 'TRANSACTIONSTATUS_APPROVED' || $apiresult == 'approved' || $apiresult = "Deposit Success") {
+        if ($apiresult == 'true' || $apiresult == 'TRANSACTIONSTATUS_APPROVED' || $apiresult == 'approved' || $apiresult == "Deposit Success") {
 
             $trans_summary = $transSummaryModel->getTransactionSummaryDetail($site_id, $terminal_id);
 

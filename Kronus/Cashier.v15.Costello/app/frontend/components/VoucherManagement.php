@@ -77,32 +77,33 @@ class VoucherManagement {
      * @param str $trackingId optional
      * @return str | array
      */
-    public function verifyVoucher($vouchercode, $aid, $source, $trackingId = ''){
+        public function verifyVoucher($vouchercode, $aid, $source, $serviceID,  $trackingId = ''){
         $this->_URI = Mirage::app()->param['verify_voucher'];
-        
+
         if (!(bool)$this->IsAPIServerOK()) {
             $message = 'Can\'t connect to VMS System';
             logger($message . ' CouponCode=' . $vouchercode . ' AID='.$aid);
             self::throwError($message);
         }
-        
+
 //        $this->InitQueryString();
 //        $this->_queryString = $this->_queryString.'vouchercode='.$vouchercode;
 //        $this->_queryString = $this->_queryString.'&aid='.$aid;
 //        $this->_queryString = $this->_queryString.'&trackingid='.$trackingId;
 //        $this->_queryString = $this->_queryString.'&source='.$source;
-//        
+//
 //        $this->_fullUri = $this->_URI;
 //        $this->_fullUri = $this->_fullUri.'/'.$this->_queryString;
 //        $response = $this->SubmitData($this->_fullUri);
-        
+
         $postData = json_encode(array('vouchercode'=>$vouchercode,
                                       'aid'=>$aid,
                                       'trackingid'=>$trackingId,
-                                      'source'=>$source));
-        
+                                      'source'=>$source,
+                                      'serviceid'=>$serviceID));
+
         $response = $this->SubmitData($this->_URI, $postData);
-        
+
         if($response[0] == 200){
             $this->_APIresponse = $this->json2Array($response[1]);
         } else {

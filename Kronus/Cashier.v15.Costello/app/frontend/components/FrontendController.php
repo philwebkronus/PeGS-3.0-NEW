@@ -283,7 +283,7 @@ class FrontendController extends MI_Controller {
             $paymentType = 2; //payment type is coupon method
             $vouchercode = $startSessionFormModel->voucher_code;
             $source = Mirage::app()->param['voucher_source'];
-            $verifyVoucherResult = $voucherManagement->verifyVoucher($vouchercode, $accid, $source);
+            $verifyVoucherResult = $voucherManagement->verifyVoucher($vouchercode, $accid, $source, $ref_service);
 
             //verify if vms API has no error/reachable
             if (is_string($verifyVoucherResult)) {
@@ -465,7 +465,7 @@ class FrontendController extends MI_Controller {
                             $vmsrequestlogs->updateVMSRequestLogs($vmsrequestlogsID, 2);
 
                             //verify tracking id, if tracking id is not found and voucher is unclaimed proceed to use voucher
-                            $verifyVoucherResult = $voucherManagement->verifyVoucher('', $accid, $source, $trackingId);
+                            $verifyVoucherResult = $voucherManagement->verifyVoucher('', $accid, $source, $ref_service, $trackingId);
 
                             //check if tracking result is not found that means transaction was not successful on the first try
                             if (!isset($verifyVoucherResult['VerifyVoucher']['ErrorCode']) && $verifyVoucherResult['VerifyVoucher']['ErrorCode'] != 0) {
@@ -738,7 +738,7 @@ class FrontendController extends MI_Controller {
             $paymentType = 2; //payment type is coupon method
             $vouchercode = $startSessionFormModel->voucher_code;
             $source = Mirage::app()->param['voucher_source'];
-            $verifyVoucherResult = $voucherManagement->verifyVoucher($vouchercode, $accid, $source);
+            $verifyVoucherResult = $voucherManagement->verifyVoucher($vouchercode, $accid, $source, $casinoServiceID);
 
             //verify if vms API has no error/reachable
             if (is_string($verifyVoucherResult)) {
@@ -803,7 +803,7 @@ class FrontendController extends MI_Controller {
                                 if (isset($useVoucherResult['UseVoucher']['ErrorCode']) && $useVoucherResult['UseVoucher']['ErrorCode'] != 0) {
                                     $vmsrequestlogs->updateVMSRequestLogs($vmsrequestlogsID, 2);
                                     //verify tracking id, if tracking id is not found and voucher is unclaimed proceed to use voucher
-                                    $verifyVoucherResult = $voucherManagement->verifyVoucher('', $accid, $source, $trackingId);
+                                    $verifyVoucherResult = $voucherManagement->verifyVoucher('', $accid, $source, $casinoServiceID, $trackingId);
 
                                     //check if tracking result is not found that means transaction was not successful on the first try
                                     if (!isset($verifyVoucherResult['VerifyVoucher']['ErrorCode']) && $verifyVoucherResult['VerifyVoucher']['ErrorCode'] != 0) {
@@ -1577,7 +1577,7 @@ class FrontendController extends MI_Controller {
                 $vouchercode = $startSessionFormModel->voucher_code;
                 $source = Mirage::app()->param['voucher_source'];
                 $trackingId = '';
-                $verifyVoucherResult = $voucherManagement->verifyVoucher($vouchercode, $accid, $source, $trackingId);
+                $verifyVoucherResult = $voucherManagement->verifyVoucher($vouchercode, $accid, $source, $ref_service['ServiceID'], $trackingId);
 
                 //verify if vms API has no error/reachable
                 if (is_string($verifyVoucherResult)) {
@@ -1825,7 +1825,7 @@ class FrontendController extends MI_Controller {
                                 $vmsrequestlogs->updateVMSRequestLogs($vmsrequestlogsID, 2);
 
                                 //verify tracking id, if tracking id is not found and voucher is unclaimed proceed to use voucher
-                                $verifyVoucherResult = $voucherManagement->verifyVoucher('', $accid, $source, $trackingId);
+                                $verifyVoucherResult = $voucherManagement->verifyVoucher('', $accid, $source, $casinoServiceID, $trackingId);
 
                                 //check if tracking result is not found that means transaction was not successful on the first try
                                 if (isset($verifyVoucherResult['VerifyVoucher']['ErrorCode']) && $verifyVoucherResult['VerifyVoucher']['ErrorCode'] != 0) {
@@ -2836,4 +2836,3 @@ class JsonTerminal {
     public $server_date = null;
 
 }
-

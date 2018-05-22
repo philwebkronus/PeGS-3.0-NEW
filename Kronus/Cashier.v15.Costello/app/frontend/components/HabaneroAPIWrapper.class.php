@@ -149,6 +149,28 @@ class HabaneroAPIWrapper {
         }
     }
 
+    public function WithdrawPlayerPointsHabanero($Username, $Password, $RequestId) {
+        $isAccountExists = $this->GetBalance($Username, $Password);
+
+        if ($isAccountExists['TransactionInfo']['Found'] == true) {
+            $WithdrawAll = true;
+            $WithdrawPlayerPointsCustom = $this->_API->WithdrawPlayerPointsCustom($Username, $Password, $WithdrawAll, $RequestId);
+            if (!$this->_API->GetError()) {
+                if (is_array($WithdrawPlayerPointsCustom)) {
+                    if ($WithdrawPlayerPointsCustom['withdrawplayerpointscustommethodResult'] != null) {
+                        return array('IsSucceed' => true, 'ErrorCode' => 0, 'ErrorMessage' => null, 'TransactionInfo' => $WithdrawPlayerPointsCustom['withdrawplayerpointscustommethodResult']);
+                    } else {
+                        return array('IsSucceed' => false, 'ErrorCode' => 50, 'ErrorMessage' => $WithdrawPlayerPointsCustom['withdrawplayerpointscustommethodResult']);
+                    }
+                } else {
+                    return array('IsSucceed' => false, 'ErrorCode' => 50, 'ErrorMessage' => 'Request Malformed');
+                }
+            } else {
+                return array('IsSucceed' => false, 'ErrorCode' => 51, 'ErrorMessage' => 'API Error: ' . $this->_API->GetError());
+            }
+        }
+    }
+
 }
 
 ?>

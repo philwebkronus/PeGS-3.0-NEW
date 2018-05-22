@@ -592,6 +592,15 @@ class CasinoCAPIHandler {
     //        return $this->_API->GetPlayerClassification($pid);
     //}
     // CCT END added VIP
+
+    /*
+     * Withdraw Player Points Habanero
+     */
+    public function WithdrawPlayerPointsHabanero($RequestId, $Username, $Password) {
+        if ($this->_gamingProvider == self::Habanero)
+            return $this->_API->WithdrawPlayerPointsHabanero($Username, $Password, $RequestId);
+    }
+
 }
 
 ?>
