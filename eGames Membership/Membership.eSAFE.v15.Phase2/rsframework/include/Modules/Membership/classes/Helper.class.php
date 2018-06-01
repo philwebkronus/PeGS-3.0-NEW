@@ -84,6 +84,7 @@ class Helper extends BaseEntity
         $mailer = new PHPMailer();
                         
         $mailer->AddAddress($email, $playername);
+		$mail->AddBCC('egamesmarketing@philweb.com.ph', 'Marketing Team'); //Added JAVIDA 05242018
         $mailer->IsHTML(true);
         
         $mailer->Body = '<div id="couponmessagebody" class="couponmessagebody" style="background-color: #FFFFFF;" align="center">
