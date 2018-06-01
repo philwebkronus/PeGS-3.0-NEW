@@ -54,8 +54,6 @@ class ProcessPointsAPI extends BaseEntity {
 
                 $Points = ( $amount / $PointValue) * $EquivalentPoint;
             }
-
-            $Points = number_format($Points, 2);
 		
             $arrEntries['Points'] = $Points;
 
