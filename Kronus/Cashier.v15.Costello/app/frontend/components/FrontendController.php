@@ -283,7 +283,7 @@ class FrontendController extends MI_Controller {
             $paymentType = 2; //payment type is coupon method
             $vouchercode = $startSessionFormModel->voucher_code;
             $source = Mirage::app()->param['voucher_source'];
-            $verifyVoucherResult = $voucherManagement->verifyVoucher($vouchercode, $accid, $source, $ref_service);
+            $verifyVoucherResult = $voucherManagement->verifyVoucher($vouchercode, $accid, $source, $casinoServiceID);
 
             //verify if vms API has no error/reachable
             if (is_string($verifyVoucherResult)) {
