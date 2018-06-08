@@ -1,4 +1,0 @@
-2015/09/30 15:09:13 [error] [application] ReturnMessage: Sorry, taalcantaraasd@philweb.com.ph already belongs to an existing account. Please enter another email address. ErrorCode: 21
-in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
-in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (2528)
-in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
