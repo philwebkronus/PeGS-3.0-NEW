@@ -1,2 +1,0 @@
-[25-Nov-2013 17:35:00] Error "Card Not Found[003]: asdsa" File: /var/www/membership/membership.rewards/API/cardinquiry.php LINE: 196
-[25-Nov-2013 17:35:00] Error "Card Not Found[004]: asdsa" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 602

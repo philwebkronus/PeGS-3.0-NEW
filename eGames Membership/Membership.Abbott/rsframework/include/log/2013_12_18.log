@@ -1,2 +1,0 @@
-[18-Dec-2013 14:07:32] Error "Inactive Card: UB65261825484556" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 78
-[18-Dec-2013 14:27:55] Error "Invalid card number: var_dump($useVoucherResult);" File: /var/www/membership/membership.rewards/API/cardinquiry.php LINE: 240
