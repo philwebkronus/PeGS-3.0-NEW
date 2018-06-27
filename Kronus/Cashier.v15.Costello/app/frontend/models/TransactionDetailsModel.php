@@ -74,5 +74,68 @@ class TransactionDetailsModel extends MI_Model{
         $this->exec($sql,$param);
         return $this->findAll();
     }
+
+ /*
+     * Added : 06 22 2018
+     * JAVIDA
+     */
+
+    public function getTransactionDetailsPerCutOff($start_date, $end_date, $siteID) {
+        $cutoff_time = Mirage::app()->param['cut_off'];
+
+        $sql = 'SELECT td.DateCreated, td.TransactionType, td.Amount, ad.Name as CreatedBy, REPLACE(t.TerminalCode, "ICSA-", "") as TerminalCode 
+                FROM transactiondetails td FORCE INDEX(IX_transactiondetails_DateCreated)
+                INNER JOIN terminals t ON td.TerminalID = t.TerminalID 
+		INNER JOIN accountdetails ad ON td.CreatedByAID = ad.AID
+                INNER JOIN ref_services s ON td.ServiceID = s.ServiceID
+                WHERE td.DateCreated >= :start_date AND td.DateCreated < :end_date AND  td.Status IN (1,4) 
+                AND td.SiteID = :site_id
+                ORDER BY td.DateCreated ASC';
+
+        $param = array(
+            ':start_date' => $start_date . ' ' . $cutoff_time,
+            ':end_date' => $end_date . ' ' . '05:59:59',
+            ':site_id' => $siteID,
+        );
+        $this->exec($sql, $param);
+        return $this->findAll();
+    }
+
+    /*
+     * Added : 06 22 2018
+     * JAVIDA
+     */
+
+    public function getManualRedemptionsPerCutOff($start_date, $end_date, $siteID) {
+        $cutoff_time = Mirage::app()->param['cut_off'];
+
+        $sql = 'SELECT  mr.TransactionDate as DateCreated,mr.ActualAmount as Amount, ad.Name
+                FROM manualredemptions mr FORCE INDEX(IX_manualredemptions_TransactionDate)
+                INNER JOIN accountdetails ad ON mr.ProcessedByAID = ad.AID
+		INNER JOIN ref_services s ON mr.ServiceID = s.ServiceID
+                WHERE mr.TransactionDate >= :start_date AND mr.TransactionDate < :end_date AND mr.Status = 1 
+                AND mr.SiteID = :site_id
+                ORDER BY mr.TransactionDate ASC';
+
+        $param = array(
+            ':start_date' => $start_date . ' ' . $cutoff_time,
+            ':end_date' => $end_date . ' ' . '05:59:59',
+            ':site_id' => $siteID,
+        );
+        $this->exec($sql, $param);
+
+        $arr = array();
+        foreach ($this->findAll() as $rows) {
+            $arr['DateCreated'] = $rows['DateCreated'];
+            $arr['TransactionType'] = 'MR';
+            $arr['Amount'] = $rows['Amount'];
+            $arr['CreatedBy'] = $rows['Name'];
+
+            $arrTotal[] = $arr;
+        }
+        return $arrTotal;
+    }
+
+
 }
 

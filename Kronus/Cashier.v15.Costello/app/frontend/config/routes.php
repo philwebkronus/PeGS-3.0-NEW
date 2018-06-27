@@ -86,6 +86,7 @@ return array(
     // routes for view transaction
     'viewtrans/overview'=>'ViewTransaction/overview',
     'viewtrans/overview2'=>'ViewTransaction/overview2',
+    'viewtrans/overview3'=>'ViewTransaction/overview3',
     'viewtrans'=>'ViewTransaction/viewTransaction',
     'viewtranspervc'=>'ViewTransaction/viewTransactionPerVirtualCashier',
     'viewtrans/history'=>'ViewTransaction/history',
@@ -133,6 +134,8 @@ return array(
     
     //'spyder'=>'Spyder/run',
     'spyder/run'=>'sapi/Spyder/run',
-    
+
+   // routes for RegisterMember
+   'registermember/overview' => 'RegisterMember/overview'    
     
 );
