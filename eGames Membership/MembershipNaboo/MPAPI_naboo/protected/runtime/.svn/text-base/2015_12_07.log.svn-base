@@ -1,4 +1,0 @@
-2015/12/07 08:51:26 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
-in C:\xampp\htdocs\membership.mobile.naboo\MPAPI_naboo\protected\components\Utilities.php (11)
-in C:\xampp\htdocs\membership.mobile.naboo\MPAPI_naboo\protected\controllers\MPapiController.php (50)
-in C:\xampp\htdocs\membership.mobile.naboo\MPAPI_naboo\index.php (13)

@@ -1,2 +1,0 @@
-[02-Dec-2013 16:18:41] Error "Card Not Found[002]: UB19522047340642V" File: /var/www/membership/membership.rewards/API/cardinquiry.php LINE: 190
-[02-Dec-2013 16:18:41] Error "Card Not Found[004]: UB19522047340642V" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 602

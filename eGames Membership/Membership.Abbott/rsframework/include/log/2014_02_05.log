@@ -1,9 +1,0 @@
-[05-Feb-2014 10:19:05] Error "Card Not Found[003]: 3104" File: /var/www/membership/membership.rewards/API/cardinquiry.php LINE: 205
-[05-Feb-2014 10:19:05] Error "Card Not Found[004]: 3104" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 602
-[05-Feb-2014 10:19:10] Error "Card Not Found[002]: UBC9F300" File: /var/www/membership/membership.rewards/API/cardinquiry.php LINE: 199
-[05-Feb-2014 10:19:10] Error "Card Not Found[004]: UBC9F300" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 602
-[05-Feb-2014 10:19:14] Error "Card Not Found[002]: UBC9F300" File: /var/www/membership/membership.rewards/API/cardinquiry.php LINE: 199
-[05-Feb-2014 10:19:14] Error "Card Not Found[004]: UBC9F300" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 602
-[05-Feb-2014 10:19:26] Error "Card Not Found[002]: UB110132295876485" File: /var/www/membership/membership.rewards/API/cardinquiry.php LINE: 199
-[05-Feb-2014 10:19:26] Error "Card Not Found[004]: UB110132295876485" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 602
-[05-Feb-2014 10:20:08] Error "Inactive Card: UBXQNPT3" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 78
