@@ -102,8 +102,20 @@ class BlackLists extends BaseEntity
                                       'BlackListedID' => $exp[1]);
             }
             return $arr_result;
-        }
-        
+        } 
+	 else if ($process == 4) { //Checking in Migration
+            $firstname = strtoupper($firstname);
+            $lastname = strtoupper($lastname);
+
+            $query = "CALL sp_select_data(1, 4, 12, '$lastname,$firstname,$birthdate,1', 'Status', @OUTRetCode,@OUTRetMessage, @OUTfldListRet)";
+            $result = parent::RunQuery($query);
+            foreach ($result as $row) {
+                $arr_result = $row['OUTfldListRet'];
+            }
+            return $arr_result;
+        }        
+
+
         return $result;
     }
     /**
