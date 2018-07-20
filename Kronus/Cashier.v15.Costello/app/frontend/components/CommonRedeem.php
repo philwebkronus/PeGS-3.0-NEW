@@ -42,6 +42,7 @@ class CommonRedeem {
         $siteAccountsModel = new SiteAccountsModel();
         $pcwsAPI = new PCWSAPI();
         $terminalServicesModel = new TerminalServicesModel();
+
         $MemberCardsModel = new MemberCardsModel();
         $HabaneroCompPointsLogModel = new HabaneroCompPointsLogModel();
 
@@ -124,15 +125,12 @@ class CommonRedeem {
         $terminal_pwd_res = $terminalsModel->getTerminalPassword($terminal_id, $service_id);
         $terminal_pwd = $terminal_pwd_res['ServicePassword'];
 
-
+        $pendingGames = '';
         //check if there was a pending game bet for RTG
         if (strpos($service_name, 'RTG') !== false) {
             $PID = $casinoApiHandler->GetPIDLogin($terminal_name);
             $pendingGames = $casinoApi->GetPendingGames($terminal_id, $service_id, $PID);
-        } else {
-            $pendingGames = '';
         }
-
 
         //check if there was a pending game bet for habanero
         if (strpos($service_name, 'HAB') !== false) {
@@ -142,14 +140,11 @@ class CommonRedeem {
                 $pendingGames['IsSucceed'] = true;
                 $pendingGames['PendingGames']['GetPendingGamesByPIDResult']['Gamename'] = $pendingGames['TransactionInfo'][0]['GameName'];
             }
-        } else {
-            $pendingGames['IsSucceed'] = '';
         }
 
 
-
         //Display message
-        if (is_array($pendingGames) && $pendingGames['IsSucceed'] == true) {
+        if (!empty($pendingGames) && is_array($pendingGames) && $pendingGames['IsSucceed'] == true) {
             $message = "Redemption canceled-Pending bet encountered. Please Ask the player to complete the game.";
             logger($message . $pendingGames['PendingGames']['GetPendingGamesByPIDResult']['Gamename'] . '.' . ' TerminalID=' . $terminal_id . ' ServiceID=' . $service_id);
             $message = "Info: There was a pending game bet. ";
@@ -205,6 +200,7 @@ class CommonRedeem {
 
         $udate = CasinoApi::udate('YmdHisu');
 
+	$transaction_id = null;
         //insert into transaction request log
         $trans_req_log_last_id = $transReqLogsModel->insert($udate, $amount, 'W', $paymentType, $terminal_id, $site_id, $service_id, $loyalty_card, $mid, $userMode, $transaction_id);
 
@@ -357,14 +353,14 @@ class CommonRedeem {
             } else {
                 $transstatus = '2';
             }
-
+			
 
             //if Withdraw / TransactionSearchInfo API status is approved
             if ($apiresult == "true" || $apiresult == 'TRANSACTIONSTATUS_APPROVED' || $apiresult == 'approved' || $apiresult == "Withdrawal Success") {
 
                 $isredeemed = $commonTransactionsModel->redeemTransaction($amount, $trans_summary_id, $udate, $site_id, $terminal_id, 'W', $paymentType, $service_id, $acct_id, $transstatus, $loyalty_card, $mid);
 
-
+				
                 $transReqLogsModel->update($trans_req_log_last_id, $apiresult, $transstatus, $transrefid, $terminal_id);
 
                 if ($terminalType == 1) {
@@ -417,6 +413,7 @@ class CommonRedeem {
                  * 
                  */
 
+
                 /*                 * ************************** START COMPPOINTS REDEMPTION HABANERO ** [ 05 18 2018 @JAVIDA ] **************************** */
                 $isHabaneroCompPointsON = 0;
                 $isHabaneroCompPointsON = Mirage::app()->param['isHabaneroCompPointsON'];
@@ -443,6 +440,8 @@ class CommonRedeem {
                                     $remarks = 'Failed to Update Points';
                                     $HabaneroCompPointsLogModel->updateHabaneroCompPointsLog($HabaneroCompPointsLogID, $remarks, $PointsWithdrawn, 2);
                                 }
+
+
 
                             } else {
 
@@ -513,7 +512,8 @@ class CommonRedeem {
              * 
              */
 
-            /*             * ************************** START COMPPOINTS REDEMPTION HABANERO ** [ 05 18 2018 @JAVIDA ] **************************** */
+
+ /*             * ************************** START COMPPOINTS REDEMPTION HABANERO ** [ 05 18 2018 @JAVIDA ] **************************** */
             $isHabaneroCompPointsON = 0;
             $isHabaneroCompPointsON = Mirage::app()->param['isHabaneroCompPointsON'];
             if ($isHabaneroCompPointsON == 1) {
@@ -554,6 +554,8 @@ class CommonRedeem {
                 }
             }
             /*             * ************************** END COMPPOINTS REDEMPTION HABANERO **************************** */
+
+
 
             return array('message' => 'Info: Session has been ended.',
                 'trans_summary_id' => $trans_summary_id, 'udate' => $udate, 'amount' => $amount, 'terminal_login' => $terminal_name,
