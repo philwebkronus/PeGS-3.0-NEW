@@ -88,10 +88,6 @@ $(document).ready(function()
                     }
 
                     if (usermode == 4) {
-                        // ebingo check if amount is divisible by --
-//                        if (parseFloat(amount) == 0) {
-//                            return true;
-//                        }
                         if (parseFloat(amount) % parseInt(ebingo_divisible_by) != 0)
                         {
                             alert('Amount should be divisible by ' + toMoney(ebingo_divisible_by));
@@ -184,24 +180,6 @@ $(document).ready(function()
         var ebingo_min_deposit = $('#eBingoMinDeposit').val();
         var usermode = $('#mode').val();
 
-        // CCT BEGIN added VIP
-        //var vip_type = 0;
-        //if($('#viptypeVIP').is(':checked'))
-        //{
-        //   vip_type = 1;
-        //}    
-        //else
-        //{
-        //   if($('#viptypeSVIP').is(':checked'))
-        //   {
-        //       vip_type = 2;
-        //   }
-        //}
-        ////$vip_type = vip_type;
-        //$('#StartSessionFormModel_vip_type').val(vip_type);
-        //$('#StartSessionFormModel_lvip_type').val(vip_type);        
-        // CCT END added VIP
-
         if (site_amount_info == 0)
         {
             showLightbox(function()
@@ -249,10 +227,6 @@ $(document).ready(function()
                     }
 
                     if (usermode == 4) {
-                        // ebingo check if amount is divisible by --
-//                        if (parseFloat(initial_deposit) == 0) {
-//                            return true;
-//                        }
                         if (parseFloat(initial_deposit) % parseInt(ebingo_divisible_by) != 0)
                         {
                             alert('Amount should be divisible by ' + toMoney(ebingo_divisible_by));
@@ -320,10 +294,6 @@ $(document).ready(function()
                     }
 
                     if (usermode == 4) {
-                        // ebingo check if amount is divisible by --
-//                        if (parseFloat(initial_deposit) == 0) {
-//                            return true;
-//                        }
                         if (parseFloat(initial_deposit) % parseInt(ebingo_divisible_by) != 0)
                         {
                             alert('Amount should be divisible by ' + toMoney(ebingo_divisible_by));
@@ -994,23 +964,6 @@ $(document).ready(function()
         var voucher_code = $('#StartSessionFormModel_voucher_code').val();
         var amount = '';
         var site_amount_info = $('#siteamountinfo').val();
-        // CCT BEGIN added VIP
-        //var vip_type = 0;
-        //if($('#viptypeVIP').is(':checked'))
-        //{
-        //   vip_type = 1;
-        //}    
-        //else
-        //{
-        //   if($('#viptypeSVIP').is(':checked'))
-        //   {
-        //       vip_type = 2;
-        //   }
-        //}
-        ////$vip_type = vip_type;
-        //$('#StartSessionFormModel_vip_type').val(vip_type);
-        //$('#StartSessionFormModel_lvip_type').val(vip_type);        
-        // CCT END added VIP
 
         if (site_amount_info == 0)
         {
@@ -1107,23 +1060,6 @@ $(document).ready(function()
         var trace_number = $('#StartSessionFormModel_trace_number').val();
         var reference_number = $('#StartSessionFormModel_reference_number').val();
         var site_amount_info = $('#siteamountinfo').val();
-        // CCT BEGIN added VIP
-        //var vip_type = 0;
-        //if($('#viptypeVIP').is(':checked'))
-        //{
-        //   vip_type = 1;
-        //}    
-        //else
-        //{
-        //   if($('#viptypeSVIP').is(':checked'))
-        //   {
-        //       vip_type = 2;
-        //   }
-        //}
-        ////$vip_type = vip_type;
-        //$('#StartSessionFormModel_vip_type').val(vip_type);
-        //$('#StartSessionFormModel_lvip_type').val(vip_type);        
-        // CCT END added VIP
 
         if (site_amount_info == 0)
         {
