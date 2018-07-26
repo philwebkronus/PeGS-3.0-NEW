@@ -502,7 +502,7 @@ $(document).ready(function()
                     // initial deposit should be less than or equal to maximum deposit
                     if (parseFloat(initial_deposit) > ebingo_max_deposit)
                     {
-                        alert('Amount should be less than or equal to PhP ' + ebingo_max_deposit);
+                        alert('Amount should be less than or equal to PhP ' + toMoney(ebingo_max_deposit));
                         return false;
                     }
                 } else {
@@ -699,7 +699,7 @@ $(document).ready(function()
 
 
                 if (usermode == 4) {
-                    if (parseFloat(initial_deposit) == 0) {
+                    if (parseFloat(amount) == 0) {
                         alert('Amount should be divisible by ' + toMoney(ebingo_divisible_by));
                         return false;
                     }
@@ -740,7 +740,7 @@ $(document).ready(function()
                     // initial deposit should be less than or equal to maximum deposit
                     if (parseFloat(amount) > ebingo_max_deposit)
                     {
-                        alert('Amount should be less than or equal to PhP ' + ebingo_max_deposit);
+                        alert('Amount should be less than or equal to PhP ' + toMoney(ebingo_max_deposit));
                         return false;
                     }
                 } else {
