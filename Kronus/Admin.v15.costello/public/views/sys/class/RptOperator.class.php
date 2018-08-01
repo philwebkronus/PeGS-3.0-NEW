@@ -329,15 +329,16 @@ class RptOperator extends DBHandler
       * @return array
       * get UserLogin for getBalance using terminalid
       */
-//    public function getLoyaltycardNumberLogin($terminal){
-//        $stmt = "SELECT UBServiceLogin FROM terminalsessions WHERE TerminalID = ?";
-//        $this->prepare($stmt);
-//        $this->bindparameter(1, $terminal);
-//        $this->execute();
-//        $card = $this->fetchData();
-//        $card = $card['UBServiceLogin'];
-//        return $card;
-//    }
+    public function getLoyaltycardNumberLogin($terminal)
+    {
+        $stmt = "SELECT UBServiceLogin FROM terminalsessions WHERE TerminalID = ?";
+        $this->prepare($stmt);
+        $this->bindparameter(1, $terminal);
+        $this->execute();
+        $card = $this->fetchData();
+        $card = $card['UBServiceLogin'];
+        return $card;
+    }
 
     /**
      *This method returns an array composed of:
@@ -358,12 +359,8 @@ class RptOperator extends DBHandler
      * @return Mixed 
      */
     public final function getActiveSessionPlayingBalance 
-            // CCT EDITED 12/13/2017 BEGIN
-            //($cardinfo, $siteID, $_ServiceAPI,$_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, $_ptcasinoname,
-            //$_PlayerAPI,$_ptsecretkey) 
             ($cardinfo, $siteID, $_ServiceAPI,$_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, $_ptcasinoname,
             $_PlayerAPI,$_ptsecretkey, $_HABbrandID = "", $_HABapiKey = "") 
-            // CCT EDITED 12/13/2017 END
     {
         include_once __DIR__.'/../../sys/class/CasinoCAPIHandler.class.php';
         include_once __DIR__.'/../../sys/class/LoyaltyUBWrapper.class.php';
@@ -403,7 +400,10 @@ class RptOperator extends DBHandler
                                     $r["ServiceID"]);
                 $_CasinoAPIHandler = new CasinoCAPIHandler( CasinoCAPIHandler::RTG, $configuration );
                 
-                if($r["UserMode"] == 1)
+                // EDITED CCT 07/11/2018 BEGIN
+                //if($r["UserMode"] == 1)
+                if(($r["UserMode"] == 1) || ($r["UserMode"] == 3))
+                // EDITED CCT 07/11/2018 END
                 {
                     $data = $_CasinoAPIHandler->GetBalance($r["UBServiceLogin"]);
                 } 
@@ -422,62 +422,25 @@ class RptOperator extends DBHandler
                 }
                 
             }
-            // Comment Out CCT 02/06/2018 BEGIN
-            //else if (preg_match("/MG/", $r["ServiceName"])) 
-            //{
-            //    $configuration = self::getConfigurationForMGCAPI($r["ServiceID"], 
-            //                    $_ServiceAPI, $_CAPIUsername, $_CAPIPassword, 
-            //                    $_CAPIPlayerName, $_MicrogamingCurrency);
-            //    $_CasinoAPIHandler = new CasinoCAPIHandler( CasinoCAPIHandler::MG, $configuration );
-            //    $data = $_CasinoAPIHandler->GetBalance($r["TerminalCode"]);
-            //
-            //    if(array_key_exists("BalanceInfo", $data))
-            //    {
-            //        $r["PlayingBalance"] = $data["BalanceInfo"]["Balance"];
-            //    } 
-            //    else
-            //    {
-            //        $r["PlayingBalance"] = 0;
-            //    }
-            //}
-            //else if (preg_match("/PT/", $r["ServiceName"])) 
-            //{
-            //    $url = $_PlayerAPI[(int)$r["ServiceID"]-1];
-            //    $configuration = self::getConfigurationForPTCAPI( $url,$_ptcasinoname,$_ptsecretkey);
-            //    $_CasinoAPIHandler = new CasinoCAPIHandler( CasinoCAPIHandler::PT, $configuration );
-            //    
-            //    //if user mode is terminal based, get each balances of each terminal
-            //    if($r["UserMode"] == 0 || $r["UserMode"] == 2)
-            //    {
-            //        $data = $_CasinoAPIHandler->GetBalance($r["TerminalCode"]);
-            //    }
-            //    //if user mode is user based, get each balances of each casino mapped to a card
-            //    else
-            //    {
-            //        $serviceusername = $this->getLoyaltycardNumberLogin($r["TerminalID"]);   
-            //        $data = $_CasinoAPIHandler->GetBalance($serviceusername);
-            //    }    
-            //    
-            //    if(array_key_exists("BalanceInfo", $data))
-            //    {
-            //        $r["PlayingBalance"] = $data["BalanceInfo"]["Balance"];
-            //    }
-            //    else
-            //    {
-            //        $r["PlayingBalance"] = 0;
-            //    }
-            //}
-            // Comment Out CCT 02/06/2018 END
-            // CCT ADDED 12/12/2017 BEGIN
             else if (preg_match("/Habanero/", $r["ServiceName"])) 
             {
                 $url = $_ServiceAPI[(int)$r["ServiceID"]-1];
                 $configuration = self::getConfigurationForHabaneroCAPI( $url,$_HABbrandID,$_HABapiKey);
                 $_CasinoAPIHandler = new CasinoCAPIHandler( CasinoCAPIHandler::HAB, $configuration );
-                        
+
                 //getterminalcredentials
-                $stmt = "SELECT ServicePassword FROM terminalservices 
+                // EDITED CCT 07/11/2018 BEGIN
+                if($r["UserMode"] == 0 || $r["UserMode"] == 2)
+                {
+                    $stmt = "SELECT ServicePassword FROM terminalservices 
                         WHERE ServiceID = ? AND TerminalID = ? AND Status = 1 AND isCreated = 1";
+                }
+                else  //getusercredentials
+                { 
+                    $stmt = "SELECT UBServicePassword FROM terminalsessions "
+                            . "WHERE ServiceID = ? AND TerminalID = ?";
+                }
+                // EDITED CCT 07/11/2018 END
                 $this->prepare($stmt);
                 $this->bindparameter(1, $r["ServiceID"]);
                 $this->bindparameter(2, $r["TerminalID"]);
@@ -489,13 +452,15 @@ class RptOperator extends DBHandler
                 {
                     $data = $_CasinoAPIHandler->GetBalance($r["TerminalCode"], $servicePwdResult['ServicePassword']);
                 }
+                // ADDED CCT 07/11/2018 BEGIN
                 //if user mode is user based, get each balances of each casino mapped to a card
                 else
                 {
                     $serviceusername = $this->getLoyaltycardNumberLogin($r["TerminalID"]);   
-                    $data = $_CasinoAPIHandler->GetBalance($serviceusername);
+                    $data = $_CasinoAPIHandler->GetBalance($serviceusername, $servicePwdResult['UBServicePassword']);
                 }    
-
+                // ADDED CCT 07/11/2018 END
+                
                 if(array_key_exists("BalanceInfo", $data))
                 {
                     $r["PlayingBalance"] = $data["BalanceInfo"]["Balance"];
@@ -505,23 +470,22 @@ class RptOperator extends DBHandler
                     $r["PlayingBalance"] = 0;
                 }
             }            
-            // CCT ADDED 12/12/2017 END
-            // CCT ADDED 01/19/2018 BEGIN
             else if (preg_match("/e-Bingo/", $r["ServiceName"])) 
             {
                 // e-Bingo Balance is always zero
                 $r["PlayingBalance"] = 0;
             }            
-            // CCT ADDED 01/19/2018 END            
             
             $loyalty_result = json_decode($loyalty->getCardInfo2($r['LoyaltyCardNumber'], $cardinfo, 1));
             $loyalty_result->CardInfo->IsEwallet == 1 ? $isEwallet = "Yes" : $isEwallet = "No";
             
-            $r['UserMode'] == 1 ? $r['UserMode'] = "User Based" : $r['UserMode'] = "Terminal Based";
+            // EDITED CCT 07/11/2018 BEGIN
+            //$r['UserMode'] == 1 ? $r['UserMode'] = "User Based" : $r['UserMode'] = "Terminal Based";
+            (($r['UserMode'] == 1) || ($r['UserMode'] == 3)) ? $r['UserMode'] = "User Based" : $r['UserMode'] = "Terminal Based";
+            // EDITED CCT 07/11/2018 END
             
             if($r["PlayingBalance"] == 0)
             {
-                //$r["PlayingBalance"] = "N/A";
                 $r["PlayingBalance"] = 0;
             }
             else
@@ -562,12 +526,8 @@ class RptOperator extends DBHandler
      * @return Mixed 
      */
     public final function getPagcorActiveSessionPlayingBalance 
-            // CCT EDITED 12/13/2017 BEGIN
-            //    ($cardinfo, $siteID, $_ServiceAPI,$_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, 
-            //    $_ptcasinoname,$_PlayerAPI,$_ptsecretkey) 
                 ($cardinfo, $siteID, $_ServiceAPI,$_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, 
                 $_ptcasinoname,$_PlayerAPI,$_ptsecretkey, $_HABbrandID = "", $_HABapiKey = "") 
-            // CCT EDITED 12/13/2017 END
     {
         include_once __DIR__.'/../../sys/class/CasinoCAPIHandler.class.php';
         include_once __DIR__.'/../../sys/class/LoyaltyUBWrapper.class.php';
@@ -613,8 +573,10 @@ class RptOperator extends DBHandler
                                     $r["ServiceID"]);
                 
                 $_CasinoAPIHandler = new CasinoCAPIHandler( CasinoCAPIHandler::RTG, $configuration );
-                
-                if($r["UserMode"] == 1)
+                // EDITED CCT 07/11/2018 BEGIN
+                //if($r["UserMode"] == 1)
+                if (($r["UserMode"] == 1) || ($r["UserMode"] == 3))
+                // EDITED CCT 07/11/2018 END
                 {
                     $data = $_CasinoAPIHandler->GetBalance($r["UBServiceLogin"]);
                 } 
@@ -631,56 +593,6 @@ class RptOperator extends DBHandler
                     $r["PlayingBalance"] = 0;
                 }
             }
-            // Comment Out CCT 02/06/2018 BEGIN
-            //else if (preg_match("/MG/", $r["ServiceName"])) 
-            //{
-            //    $configuration = self::getConfigurationForMGCAPI($r["ServiceID"], 
-            //                    $_ServiceAPI, $_CAPIUsername, $_CAPIPassword, 
-            //                    $_CAPIPlayerName, $_MicrogamingCurrency);
-            //    
-            //    $_CasinoAPIHandler = new CasinoCAPIHandler( CasinoCAPIHandler::MG, $configuration );
-            //    
-            //    $data = $_CasinoAPIHandler->GetBalance($r["TerminalCode"]);
-            //    
-            //    if(array_key_exists("BalanceInfo", $data))
-            //    {
-            //        $r["PlayingBalance"] = $data["BalanceInfo"]["Balance"];
-            //    } 
-            //    else
-            //    {
-            //        $r["PlayingBalance"] = 0;
-            //    }
-            //}
-            //else if (preg_match("/PT/", $r["ServiceName"])) 
-            //{
-            //    $url = $_PlayerAPI[(int)$r["ServiceID"]-1];
-            //    $configuration = self::getConfigurationForPTCAPI( $url,$_ptcasinoname,$_ptsecretkey);
-            //    
-            //    $_CasinoAPIHandler = new CasinoCAPIHandler( CasinoCAPIHandler::PT, $configuration );
-            //    
-            //    //if user mode is terminal based, get each balances of each terminal
-            //    if($r["UserMode"] == 0 || $r["UserMode"] == 2)
-            //    {
-            //        $data = $_CasinoAPIHandler->GetBalance($r["TerminalCode"]);
-            //    }
-            //    //if user mode is user based, get each balances of each casino mapped to a card
-            //    else
-            //    {
-            //        $serviceusername = $this->getLoyaltycardNumberLogin($r["TerminalID"]);   
-            //        $data = $_CasinoAPIHandler->GetBalance($serviceusername);
-            //    }    
-            //    
-            //    if(array_key_exists("BalanceInfo", $data))
-            //    {
-            //        $r["PlayingBalance"] = $data["BalanceInfo"]["Balance"];
-            //    }
-            //    else
-            //    {
-            //        $r["PlayingBalance"] = 0;
-            //    }
-            //}
-            // Comment Out CCT 02/06/2018 END
-            // CCT ADDED 12/12/2017 BEGIN
             else if (preg_match("/Habanero/", $r["ServiceName"])) 
             {
                 $url = $_ServiceAPI[(int)$r["ServiceID"]-1];
@@ -688,8 +600,18 @@ class RptOperator extends DBHandler
                 $_CasinoAPIHandler = new CasinoCAPIHandler( CasinoCAPIHandler::HAB, $configuration );
                         
                 //getterminalcredentials
-                $stmt = "SELECT ServicePassword FROM terminalservices 
+                // EDITED CCT 07/11/2018 BEGIN
+                if($r["UserMode"] == 0 || $r["UserMode"] == 2)
+                {
+                    $stmt = "SELECT ServicePassword FROM terminalservices 
                         WHERE ServiceID = ? AND TerminalID = ? AND Status = 1 AND isCreated = 1";
+                }
+                else  //getusercredentials
+                { 
+                    $stmt = "SELECT UBServicePassword FROM terminalsessions "
+                            . "WHERE ServiceID = ? AND TerminalID = ?";
+                }
+                // EDITED CCT 07/11/2018 END
                 $this->prepare($stmt);
                 $this->bindparameter(1, $r["ServiceID"]);
                 $this->bindparameter(2, $r["TerminalID"]);
@@ -705,7 +627,7 @@ class RptOperator extends DBHandler
                 else
                 {
                     $serviceusername = $this->getLoyaltycardNumberLogin($r["TerminalID"]);   
-                    $data = $_CasinoAPIHandler->GetBalance($serviceusername);
+                    $data = $_CasinoAPIHandler->GetBalance($serviceusername, $servicePwdResult['UBServicePassword']);
                 }    
 
                 if(array_key_exists("BalanceInfo", $data))
@@ -717,19 +639,19 @@ class RptOperator extends DBHandler
                     $r["PlayingBalance"] = 0;
                 }
             }            
-            // CCT ADDED 12/12/2017 END
-            // CCT ADDED 01/19/2018 BEGIN
             else if (preg_match("/e-Bingo/", $r["ServiceName"])) 
             {
                 // Playing Balance is always zero for e-Bingo
                 $r["PlayingBalance"] = 0;
             }            
-            // CCT ADDED 01/19/2018 END            
             
             $loyalty_result = json_decode($loyalty->getCardInfo2($r['LoyaltyCardNumber'], $cardinfo, 1));
             $loyalty_result->CardInfo->IsEwallet == 1 ? $isEwallet = "Yes" : $isEwallet = "No";
             
-            $r['UserMode'] == 1 ? $r['UserMode'] = "User Based" : $r['UserMode'] = "Terminal Based";
+            // EDITED CCT 07/11/2018 BEGIN
+            //$r['UserMode'] == 1 ? $r['UserMode'] = "User Based" : $r['UserMode'] = "Terminal Based";
+            (($r['UserMode'] == 1) || ($r['UserMode'] == 3)) ? $r['UserMode'] = "User Based" : $r['UserMode'] = "Terminal Based";
+            // EDITED CCT 07/11/2018 END
          
             if($r["PlayingBalance"] == 0)
             {
@@ -772,11 +694,8 @@ class RptOperator extends DBHandler
      * @param String $_MicrogamingCurrency
      * @return Mixed 
      */
-    // CCT EDITED 12/18/2017 BEGIN
-    //public final function getActiveSessionPlayingBalanceub ($cardinfo, $cardnumber, $serviceusername, $_ServiceAPI,$_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, $_ptcasinoname,$_PlayerAPI,$_ptsecretkey) 
     public final function getActiveSessionPlayingBalanceub ($cardinfo, $cardnumber, $serviceusername, $_ServiceAPI, $_CAPIUsername, 
             $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, $_ptcasinoname, $_PlayerAPI, $_ptsecretkey, $_HABbrandID = '',$_HABapiKey = '') 
-    // CCT EDITED 12/18/2017 END
     {
         include_once __DIR__.'/../../sys/class/CasinoCAPIHandler.class.php';
         include_once __DIR__.'/../../sys/class/LoyaltyUBWrapper.class.php';
@@ -820,7 +739,10 @@ class RptOperator extends DBHandler
                 
                 $_CasinoAPIHandler = new CasinoCAPIHandler( CasinoCAPIHandler::RTG, $configuration );
 
-                if($r["UserMode"] == 1)
+                // EDITED CCT 07/11/2018 BEGIN
+                //if($r["UserMode"] == 1)
+                if(($r["UserMode"] == 1) || ($r["UserMode"] == 3))
+                // EDITED CCT 07/11/2018 END
                 {
                     $data = $_CasinoAPIHandler->GetBalance($r["UBServiceLogin"]);
                 } 
@@ -838,53 +760,6 @@ class RptOperator extends DBHandler
                     $r["PlayingBalance"] = 0;
                 }
             }
-            // Comment Out CCT 02/06/2018 BEGIN
-            //else if (preg_match("/MG/", $r["ServiceName"])) 
-            //{
-            //    $configuration = self::getConfigurationForMGCAPI($r["ServiceID"], 
-            //                    $_ServiceAPI, $_CAPIUsername, $_CAPIPassword, 
-            //                    $_CAPIPlayerName, $_MicrogamingCurrency);
-            //    
-            //    $_CasinoAPIHandler = new CasinoCAPIHandler( CasinoCAPIHandler::MG, $configuration );
-            //    
-            //    $data = $_CasinoAPIHandler->GetBalance($r["TerminalCode"]);
-            //    
-            //    if(array_key_exists("BalanceInfo", $data))
-            //    {
-            //        $r["PlayingBalance"] = $data["BalanceInfo"]["Balance"];
-            //    } 
-            //    else
-            //    {
-            //        $r["PlayingBalance"] = 0;
-            //    }
-            //}
-            //else if (preg_match("/PT/", $r["ServiceName"])) 
-            //{
-            //    $url = $_PlayerAPI[(int)$r["ServiceID"]-1];
-            //    $configuration = self::getConfigurationForPTCAPI( $url,$_ptcasinoname,$_ptsecretkey);
-            //    
-            //    $_CasinoAPIHandler = new CasinoCAPIHandler( CasinoCAPIHandler::PT, $configuration );
-            //    
-            //    if($r["UserMode"] == 0 || $r["UserMode"] == 2)
-            //    {
-            //        $data = $_CasinoAPIHandler->GetBalance($r["TerminalCode"]);
-            //    }
-            //    else
-            //    {
-            //        $data = $_CasinoAPIHandler->GetBalance($serviceusername);
-            //    }    
-            //    
-            //    if(array_key_exists("BalanceInfo", $data))
-            //    {
-            //        $r["PlayingBalance"] = $data["BalanceInfo"]["Balance"];
-            //    }
-            //    else
-            //    {
-            //        $r["PlayingBalance"] = 0;
-            //    }        
-            //}
-            // Comment Out CCT 02/06/2018 END
-            // CCT ADDED 12/18/2017 BEGIN
             else if (preg_match("/Habanero/", $r["ServiceName"])) 
             {
                 $url = $_ServiceAPI[(int)$r["ServiceID"]-1];
@@ -892,8 +767,18 @@ class RptOperator extends DBHandler
                 $_CasinoAPIHandler = new CasinoCAPIHandler( CasinoCAPIHandler::HAB, $configuration );
                         
                 //getterminalcredentials
-                $stmt = "SELECT ServicePassword FROM terminalservices 
+                // EDITED CCT 07/11/2018 BEGIN
+                if($r["UserMode"] == 0 || $r["UserMode"] == 2)
+                {
+                    $stmt = "SELECT ServicePassword FROM terminalservices 
                         WHERE ServiceID = ? AND TerminalID = ? AND Status = 1 AND isCreated = 1";
+                }
+                else  //getusercredentials
+                { 
+                    $stmt = "SELECT UBServicePassword FROM terminalsessions "
+                            . "WHERE ServiceID = ? AND TerminalID = ?";
+                }
+                // EDITED CCT 07/11/2018 END                
                 $this->prepare($stmt);
                 $this->bindparameter(1, $r["ServiceID"]);
                 $this->bindparameter(2, $r["TerminalID"]);
@@ -905,6 +790,14 @@ class RptOperator extends DBHandler
                 {
                     $data = $_CasinoAPIHandler->GetBalance($r["TerminalCode"], $servicePwdResult['ServicePassword']);
                 }
+                //ADDED CCT 07/11/2018 BEGIN
+                //if user mode is user based, get each balances of each casino mapped to a card
+                else
+                {
+                    $serviceusername = $this->getLoyaltycardNumberLogin($r["TerminalID"]);   
+                    $data = $_CasinoAPIHandler->GetBalance($serviceusername, $servicePwdResult['UBServicePassword']);
+                }  //
+                //ADDED CCT 07/11/2018 END
 
                 if(array_key_exists("BalanceInfo", $data))
                 {
@@ -915,23 +808,22 @@ class RptOperator extends DBHandler
                     $r["PlayingBalance"] = 0;
                 }
             }            
-            // CCT ADDED 12/18/2017 END    
-            // CCT ADDED 01/22/2018 BEGIN
             else if (preg_match("/e-Bingo/", $r["ServiceName"])) 
             {
                 // e-Bingo balance is always zero
                 $r["PlayingBalance"] = 0;
             }            
-            // CCT ADDED 01/22/2018 END               
             
             $loyalty_result = json_decode($loyalty->getCardInfo2($cardnumber, $cardinfo, 1));
             $loyalty_result->CardInfo->IsEwallet == 1 ? $isEwallet = "Yes" : $isEwallet = "No";
             
-            $r['UserMode'] == 1 ? $r['UserMode'] = "User Based" : $r['UserMode'] = "Terminal Based";
+            // EDITED CCT 07/11/2018 BEGIN
+            //$r['UserMode'] == 1 ? $r['UserMode'] = "User Based" : $r['UserMode'] = "Terminal Based";
+            (($r['UserMode'] == 1) || ($r['UserMode'] == 3)) ? $r['UserMode'] = "User Based" : $r['UserMode'] = "Terminal Based";
+            // EDITED CCT 07/11/2018 END
                 
             if($r["PlayingBalance"] ==  0)
             {
-                //$r["PlayingBalance"] == "N/A";
                 $r["PlayingBalance"] = 0;
             }
             else
@@ -971,11 +863,8 @@ class RptOperator extends DBHandler
      * @param String $_MicrogamingCurrency
      * @return Mixed 
      */
-    // CCT EDITED 12/18/2017 BEGIN
-    //public final function getPagcorActiveSessionPlayingBalanceub ($cardinfo, $cardnumber, $serviceusername, $_ServiceAPI,$_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, $_ptcasinoname,$_PlayerAPI,$_ptsecretkey) 
     public final function getPagcorActiveSessionPlayingBalanceub ($cardinfo, $cardnumber, $serviceusername, $_ServiceAPI, $_CAPIUsername, 
             $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, $_ptcasinoname, $_PlayerAPI, $_ptsecretkey, $_HABbrandID = '',$_HABapiKey = '') 
-    // CCT EDITED 12/18/2017 END
     {
         include_once __DIR__.'/../../sys/class/CasinoCAPIHandler.class.php';
         include_once __DIR__.'/../../sys/class/LoyaltyUBWrapper.class.php';
@@ -1020,7 +909,10 @@ class RptOperator extends DBHandler
                 
                 $_CasinoAPIHandler = new CasinoCAPIHandler( CasinoCAPIHandler::RTG, $configuration );
                 
-                if($r["UserMode"] == 1)
+                // EDITED CCT 07/11/2018 BEGIN
+                //if($r["UserMode"] == 1)
+                if(($r["UserMode"] == 1) || ($r["UserMode"] == 3))
+                // EDITED CCT 07/11/2018 END
                 {
                     $data = $_CasinoAPIHandler->GetBalance($r["UBServiceLogin"]);
                 } 
@@ -1039,53 +931,6 @@ class RptOperator extends DBHandler
                 }
                 
             }
-            // Comment Out CCT 02/06/2018 BEGIN            
-            //else if (preg_match("/MG/", $r["ServiceName"])) 
-            //{
-            //    $configuration = self::getConfigurationForMGCAPI($r["ServiceID"], 
-            //                    $_ServiceAPI, $_CAPIUsername, $_CAPIPassword, 
-            //                    $_CAPIPlayerName, $_MicrogamingCurrency);
-            //    
-            //    $_CasinoAPIHandler = new CasinoCAPIHandler( CasinoCAPIHandler::MG, $configuration );
-            //    
-            //    $data = $_CasinoAPIHandler->GetBalance($r["TerminalCode"]);
-            //
-            //    if(array_key_exists("BalanceInfo", $data))
-            //    {
-            //        $r["PlayingBalance"] = $data["BalanceInfo"]["Balance"];
-            //    } 
-            //    else
-            //    {
-            //        $r["PlayingBalance"] = 0;
-            //    }
-            //}
-            //else if (preg_match("/PT/", $r["ServiceName"])) 
-            //{
-            //    $url = $_PlayerAPI[(int)$r["ServiceID"]-1];
-            //    $configuration = self::getConfigurationForPTCAPI( $url,$_ptcasinoname,$_ptsecretkey);
-            //    
-            //    $_CasinoAPIHandler = new CasinoCAPIHandler( CasinoCAPIHandler::PT, $configuration );
-            //    
-            //    if($r["UserMode"] == 0 || $r["UserMode"] == 2)
-            //    {
-            //        $data = $_CasinoAPIHandler->GetBalance($r["TerminalCode"]);
-            //    }
-            //    else
-            //    {
-            //        $data = $_CasinoAPIHandler->GetBalance($serviceusername);
-            //    }    
-            //    
-            //    if(array_key_exists("BalanceInfo", $data))
-            //    {
-            //        $r["PlayingBalance"] = $data["BalanceInfo"]["Balance"];
-            //    }
-            //    else
-            //    {
-            //        $r["PlayingBalance"] = 0;
-            //    }
-            //}
-            // Comment Out CCT 02/06/2018 END
-            // CCT ADDED 12/18/2017 BEGIN
             else if (preg_match("/Habanero/", $r["ServiceName"])) 
             {
                 $url = $_ServiceAPI[(int)$r["ServiceID"]-1];
@@ -1093,8 +938,18 @@ class RptOperator extends DBHandler
                 $_CasinoAPIHandler = new CasinoCAPIHandler( CasinoCAPIHandler::HAB, $configuration );
                         
                 //getterminalcredentials
-                $stmt = "SELECT ServicePassword FROM terminalservices 
+                // EDITED CCT 07/11/2018 BEGIN
+                if($r["UserMode"] == 0 || $r["UserMode"] == 2)
+                {
+                    $stmt = "SELECT ServicePassword FROM terminalservices 
                         WHERE ServiceID = ? AND TerminalID = ? AND Status = 1 AND isCreated = 1";
+                }
+                else  //getusercredentials
+                { 
+                    $stmt = "SELECT UBServicePassword FROM terminalsessions "
+                            . "WHERE ServiceID = ? AND TerminalID = ?";
+                }
+                // EDITED CCT 07/11/2018 END                    
                 $this->prepare($stmt);
                 $this->bindparameter(1, $r["ServiceID"]);
                 $this->bindparameter(2, $r["TerminalID"]);
@@ -1106,7 +961,15 @@ class RptOperator extends DBHandler
                 {
                     $data = $_CasinoAPIHandler->GetBalance($r["TerminalCode"], $servicePwdResult['ServicePassword']);
                 }
-
+                //ADDED CCT 07/11/2018 BEGIN
+                //if user mode is user based, get each balances of each casino mapped to a card
+                else
+                {
+                    $serviceusername = $this->getLoyaltycardNumberLogin($r["TerminalID"]);   
+                    $data = $_CasinoAPIHandler->GetBalance($serviceusername, $servicePwdResult['UBServicePassword']);
+                }  //
+                //ADDED CCT 07/11/2018 END
+                
                 if(array_key_exists("BalanceInfo", $data))
                 {
                     $r["PlayingBalance"] = $data["BalanceInfo"]["Balance"];
@@ -1116,25 +979,24 @@ class RptOperator extends DBHandler
                     $r["PlayingBalance"] = 0;
                 }
             }            
-            // CCT ADDED 12/18/2017 END      
-            // CCT ADDED 01/19/2018 BEGIN
             else if (preg_match("/e-Bingo/", $r["ServiceName"])) 
             {
                 // e-Bingo Balance is always zero
                 $r["PlayingBalance"] = 0;
             }            
-            // CCT ADDED 01/19/2018  END                
             
             $loyalty_result = json_decode($loyalty->getCardInfo2($cardnumber, $cardinfo, 1));
 
             //check if user mode is terminal or user based
             $loyalty_result->CardInfo->IsEwallet == 1 ? $isEwallet = "Yes" : $isEwallet = "No";
             
-            $r['UserMode'] == 1 ? $r['UserMode'] = "User Based" : $r['UserMode'] = "Terminal Based";
-
+            // EDITED CCT 07/11/2018 BEGIN
+            //$r['UserMode'] == 1 ? $r['UserMode'] = "User Based" : $r['UserMode'] = "Terminal Based";
+            (($r['UserMode'] == 1) || ($r['UserMode'] == 3)) ? $r['UserMode'] = "User Based" : $r['UserMode'] = "Terminal Based";
+            // EDITED CCT 07/11/2018 END
+            
             if($r["PlayingBalance"] ==  0)
             {
-                //$r["PlayingBalance"] =="N/A";
                 $r["PlayingBalance"] = 0;
             }
             else
@@ -1166,8 +1028,8 @@ class RptOperator extends DBHandler
      */
     private static final function getConfigurationForRTGCAPI ($_isECFTEST, $serverURI, $serverID) 
     {
-        $gdeposit = 503; // 502
-        $gwithdraw = 502; //503
+        $gdeposit = 503; 
+        $gwithdraw = 502; 
 
         $configuration = array( 'URI' => $serverURI,
                                 'isCaching' => FALSE,
@@ -1179,48 +1041,6 @@ class RptOperator extends DBHandler
         return $configuration;
     }
     
-    /**
-     *This returns the configuration for MG
-     * 
-     * @param Int $serverID
-     * @param Mixed $_ServiceAPI
-     * @param String $_CAPIUsername
-     * @param String $_CAPIPassword
-     * @param String $_CAPIPlayerName
-     * @param String $_MicrogamingCurrency
-     * @return Mixed 
-     */
-    // Comment Out CCT 02/06/2018 BEGIN
-    //private static final function getConfigurationForMGCAPI ($serverID, $_ServiceAPI,$_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency) 
-    //{
-    //    $_MGCredentials = $_ServiceAPI[$serverID -1]; 
-    //    list($mgurl, $mgserverID) =  $_MGCredentials;
-    //    
-    //    $configuration = array( 'URI' => $mgurl,
-    //                        'isCaching' => FALSE,
-    //                        'isDebug' => TRUE,
-    //                        'authLogin'=>$_CAPIUsername,
-    //                        'authPassword'=>$_CAPIPassword,
-    //                        'playerName'=>$_CAPIPlayerName,
-    //                        'serverID'=>$mgserverID,
-    //                        'currency' => $_MicrogamingCurrency );
-    //    return $configuration;
-    //}
-    // Comment Out CCT 02/06/2018 END
-    
-    // Comment Out CCT 02/06/2018 BEGIN
-    //private static final function getConfigurationForPTCAPI ($_ptURI, $_CAPIUsername,$_CAPISecretKey) 
-    //{
-    //    $configuration = array( 'URI' => $_ptURI,
-    //                        'isCaching' => FALSE,
-    //                        'isDebug' => TRUE,
-    //                        'authLogin'=>$_CAPIUsername,
-    //                        'secretKey'=>$_CAPISecretKey );
-    //    return $configuration;
-    //}
-    // Comment Out CCT 02/06/2018 END
-     
-    // CCT ADDED 12/12/2017 BEGIN
     private static final function getConfigurationForHabaneroCAPI ($_HabaneroURI, $_HABbrandID, $_HABapiKey) 
     {
         $configuration = array( 'URI' => $_HabaneroURI,
@@ -1230,7 +1050,6 @@ class RptOperator extends DBHandler
                             'apiKey'=>$_HABapiKey );
         return $configuration;
     }    
-    // CCT ADDED 12/12/2017 END
     
     //fget service name
     function getServiceName($serviceID)

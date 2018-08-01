@@ -1,14 +1,10 @@
 <?php
-
 /*
-
 Change Log History
-
 1.0 2011-11-09 - Login method, get password plain text and convert to SHA1 instead of hashedPassword
-
 */
 
-require_once( ROOT_DIR . 'sys/class/CasinoAPI/RealtimeGamingCashierAPI2.class.php' );
+require_once(ROOT_DIR . 'sys/class/CasinoAPI/RealtimeGamingCashierAPI2.class.php' );
 require_once(ROOT_DIR . 'sys/class/CasinoAPI/RealtimeGamingPlayerAPI.class.php');
 
 class RealtimeGamingAPIWrapper
@@ -18,8 +14,8 @@ class RealtimeGamingAPIWrapper
     
     private $_API;
     private $_debug = FALSE;
-    private $_depositMethodId = 502; // 503
-    private $_withdrawMethodId = 503; // 502
+    private $_depositMethodId = 503; 
+    private $_withdrawMethodId = 502; 
     
     public function __construct( $URI, $API, $certFilePath, $keyFilePath )
     {
@@ -94,7 +90,6 @@ class RealtimeGamingAPIWrapper
         }
     }
 
-    
     public function GetBalance( $login )
     {
         $GetPIDFromLoginResult = $this->_GetPIDFromLogin( $login );
@@ -231,13 +226,19 @@ class RealtimeGamingAPIWrapper
             $city, $state, $zip, $ip, $mac, $userID, $downloadID, $birthdate, $clientID, 
             $putInAffPID, $calledFromCasino, $hashedPassword, $agentID, $currentPosition, $thirdPartyPID, $playerClass, $usermode)
     {
-        if($usermode == '0') {
+        // EDITED CCT 06/29/2018 BEGIN
+        //if($usermode == '0') 
+        if (($usermode == '0') || ($usermode == '3'))
+        // EDITED CCT 06/29/2018 END
+        {
             $createTerminalResult = $this->_API->createTerminalAccount($login, $password, 
                     $aid, $country, $casinoID, $fname, $lname, $email, $dayphone, $evephone, 
                     $addr1, $addr2, $city, $state, $zip, $ip, $mac, $userID, $downloadID, 
                     $birthdate, $clientID, $putInAffPID, $calledFromCasino, $hashedPassword, 
                     $agentID, $currentPosition, $thirdPartyPID);
-        } else {
+        } 
+        else 
+        {
             $createTerminalResult = $this->_API->createTerminalAccountUB($login, $password, 
                     $aid, $country, $casinoID, $fname, $lname, $email, $dayphone, $evephone, 
                     $addr1, $addr2, $city, $state, $zip, $ip, $mac, $userID, $downloadID, 
@@ -261,27 +262,32 @@ class RealtimeGamingAPIWrapper
                           case 0:
                               $errorid = 0;
                               $msg = "RTG: Failed or internal server error";
-                          break;
+                              break;
+                          
                           case 2:
                               $errorid = 2;
                               $msg = "RTG: Login too long or too short";
-                          break;
+                              break;
+                          
                           case 3:
                               $errorid = 3;
                               $msg = "RTG: Password too long or too short";
-                          break;
+                              break;
+                          
                           case 4:
                               $errorid = 4;
                               $msg = "RTG: Banned";
-                          break;
+                              break;
+                          
                           case 5:
                               $errorid = 5;
                               $msg = "RTG: Account already exists";
-                          break;
+                              break;
+                          
                           default:
                               $errorid = 0;
                               $msg = "Terminal Service Assignment : Error in creating service terminal account";
-                          break;
+                              break;
                     }
                     return array('IsSucceed'=>false, 'ErrorMessage'=>$msg, 'ErrorCode'=> $errorid);
                 }
@@ -295,11 +301,15 @@ class RealtimeGamingAPIWrapper
 
     public function ChangePassword($casinoID, $login, $oldpassword, $newpassword, $usermode='')
     {
-        if($usermode == '0') {
+        if($usermode == '0') 
+        {
             $changePwdResult = $this->_API->changePlayerPassword($casinoID, $login, $oldpassword, $newpassword);
-        } else {
+        } 
+        else 
+        {
             $changePwdResult = $this->_API->changePlayerPasswordUB($casinoID, $login, $oldpassword, $newpassword);
         }
+        
         if(!is_null($changePwdResult))
         {
             if(isset($changePwdResult['changePlayerPWResult'][0]))
@@ -333,19 +343,23 @@ class RealtimeGamingAPIWrapper
         {
             case 0:
                 $msg = "Failed/unspecified(internal) error";
-            break;
+                break;
+            
             case 1 :
                 $msg = "Success";
-            break;
+                break;
+            
             case 3:
                 $msg = "New password too short or too long";
-            break;
+                break;
+            
             case 6:
                 $msg = "Old login/password do not match";
-            break;
+                break;
+            
             default :
                 $msg = "RTG: Invalid Status";
-            break;
+                break;
         }
         return $msg;
     }
@@ -409,8 +423,7 @@ class RealtimeGamingAPIWrapper
                     if ( $response[ 'IsSucceed' ] == true )
                     {
                         $accountInfo = $response[ 'AccountInfo' ];
-
-						$hashedPassword = sha1( $accountInfo[ 'GetAccountInfoByPIDResult' ][ 'password' ] );
+			$hashedPassword = sha1( $accountInfo[ 'GetAccountInfoByPIDResult' ][ 'password' ] );
 
                         $response = $this->_API->Login( 1, $PID, $hashedPassword, 1, $_SERVER[ 'HTTP_HOST' ] );
 
@@ -430,7 +443,8 @@ class RealtimeGamingAPIWrapper
         return NULL;
     }   
     
-        public function GetAccountInfoByLogin($login){
+    public function GetAccountInfoByLogin($login)
+    {
         $response = $this->_GetPIDFromLogin( $login );
         
         if ( !is_null( $response ) )
@@ -467,5 +481,4 @@ class RealtimeGamingAPIWrapper
         $this->_debug = $boolean;
     }
 }
-
 ?>

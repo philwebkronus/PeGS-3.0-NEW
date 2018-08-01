@@ -186,72 +186,30 @@ if($connected && $connected2)
                     $sRTG = preg_match('/RTG/', $provider);
                     if($sRTG == 0)
                     {
-                        // Comment Out CCT 02/06/2018 BEGIN
-                        //$sMG = preg_match('/MG/', $provider);
-                        //if($sMG == 0)
-                        //{
-                            //$sPT = preg_match('/PT/', $provider);
-                            //if($sPT == 0)
-                            //{
-                        // Comment Out CCT 02/06/2018 END    
-                                // COMMENT OUT CCT 11/27/2017 BEGIN
-                                //echo 'Invalid Casino.';
-                                // COMMENT OUT CCt 11/27/2017 END
-                                // ADDED CCT 11/27/2017 BEGIN
-                                $sHAB = preg_match('/Habanero/', $provider);
-                                if($sHAB == 0)
-                                {
-                                    // COMMENT OUT CCT 01/22/2018 BEGIN
-                                    //echo 'Invalid Casino.';
-                                    // COMMENT OUT CCT 01/22/2018 END
-                                    // ADDED CCT 01/22/2018 BEGIN
-                                    $sEB = preg_match('/e-Bingo/', $provider);
-                                    if($sEB == 0)
-                                    {
-                                        echo 'Invalid Casino.';
-                                    } 
-                                    else 
-                                    {
-                                        echo 'No manual redemption for e-Bingo.';
-                                        exit;
-                                    }
-                                    // ADDED CCT 01/22/2018 END
-                                } 
-                                else 
-                                {
-                                    $_SESSION['site'] = $siteID;
-                                    $_SESSION['terminal'] = $vterminalID;
-                                    $_SESSION['serverid'] = $serverId;
-                                    $_SESSION['chkbalance'] = $vbalance;
-                                    $_SESSION['txtamount'] = $vamount;
-                                    $_SESSION['login'] = $login;
-                                    $redirect = "ProcessHabanero_CAPI.php";
-                                }
-                                // ADDED CCT 11/27/2017 END
-                        // Comment Out CCT 02/06/2018 BEGIN
-                            //} 
-                            //else 
-                            //{
-                            //$_SESSION['site'] = $siteID;
-                            //$_SESSION['terminal'] = $vterminalID;
-                            //$_SESSION['serverid'] = $serverId;
-                            //$_SESSION['chkbalance'] = $vbalance;
-                            //$_SESSION['txtamount'] = $vamount;
-                            //$_SESSION['login'] = $login;
-                            //$redirect = "ProcessPT_CAPI.php";
-                            //}
-                        //}
-                        //else
-                        //{
-                        //    $_SESSION['site'] = $siteID;
-                        //    $_SESSION['terminal'] = $vterminalID;
-                        //    $_SESSION['serverid'] = $serverId;
-                        //    $_SESSION['chkbalance'] = $vbalance;
-                        //    $_SESSION['txtamount'] = $vamount;
-                        //    $_SESSION['login'] = $login;
-                        //    $redirect = "ProcessMG_CAPI.php";
-                        //}
-                        // Comment Out CCT 02/06/2018 END
+                        $sHAB = preg_match('/Habanero/', $provider);
+                        if($sHAB == 0)
+                        {
+                            $sEB = preg_match('/e-Bingo/', $provider);
+                            if($sEB == 0)
+                            {
+                                echo 'Invalid Casino.';
+                            } 
+                            else 
+                            {
+                                echo 'No manual redemption for e-Bingo.';
+                                exit;
+                            }
+                        } 
+                        else 
+                        {
+                            $_SESSION['site'] = $siteID;
+                            $_SESSION['terminal'] = $vterminalID;
+                            $_SESSION['serverid'] = $serverId;
+                            $_SESSION['chkbalance'] = $vbalance;
+                            $_SESSION['txtamount'] = $vamount;
+                            $_SESSION['login'] = $login;
+                            $redirect = "ProcessHabanero_CAPI.php";
+                        }
                     }
                     //pass session variables to ProcessRTG.php
                     else
@@ -423,17 +381,18 @@ if($connected && $connected2)
                                     {
                                         switch (true)
                                         {
-//                                            case strstr($servicegrpname, "HAB"): //if provider is Habanero, then   ADDED CCT 11/24/2017
-//                                                $url = $_ServiceAPI[$rserviceid-1];
-//                                                $capiusername = $_HABbrandID;
-//                                                $capipassword = $_HABapiKey;
-//                                                $capiplayername = '';
-//                                                $capiserverID = '';
-//                                                $usermode = '';
-//                                                $password = '';
-//                                                $balance = $CasinoGamingCAPI->getBalance($servicegrpname, $rserviceid, $url, $rserviceuname, 
-//                                                $capiusername, $capipassword, $capiplayername, $capiserverID, $usermode, $password); 
-//                                                break;                                         
+                                            //ADDED CCT 07/20/2018 BEGIN
+                                            case strstr($servicegrpname, "HAB"): //if provider is Habanero, then   
+                                                $url = $_ServiceAPI[$rserviceid-1];
+                                                $capiusername = $_HABbrandID;
+                                                $capipassword = $_HABapiKey;
+                                                $capiplayername = '';
+                                                $capiserverID = '';
+                                                $usermode = '';
+                                                $balance = $CasinoGamingCAPI->getBalance($servicegrpname, $rserviceid, $url, $rserviceuname, 
+                                                        $capiusername, $capipassword, $capiplayername, $capiserverID, $usermode, $rservicepassword); 
+                                                break;                                         
+                                            //ADDED CCT 07/20/2018 END
                                             case strstr($servicegrpname, "RTG2"): //if provider is RTG2, then
                                                 $url = $_ServiceAPI[$rserviceid-1];
                                                 $capiusername = $_CAPIUsername;
@@ -450,26 +409,6 @@ if($connected && $connected2)
                                                 $capiserverID = '';
                                                 $balance = $CasinoGamingCAPI->getBalance($servicegrpname, $rserviceid, $url, $rserviceuname, $capiusername, $capipassword, $capiplayername, $capiserverID); 
                                                 break;
-                                            // Comment Out CCT 02/06/2018 BEGIN
-                                            //case strstr($servicegrpname, "MG"): //if provider is MG, then
-                                            //    $_MGCredentials = $_ServiceAPI[$rserviceid-1];
-                                            //    list($mgurl, $mgserverID) =  $_MGCredentials;
-                                            //    $url = $mgurl;
-                                            //    $capiusername = $_CAPIUsername;
-                                            //    $capipassword = $_CAPIPassword;
-                                            //    $capiplayername = $_CAPIPlayerName;
-                                            //    $capiserverID = $mgserverID;
-                                            //    $balance = $CasinoGamingCAPI->getBalance($servicegrpname, $rserviceid, $url, $rserviceuname, $capiusername, $capipassword, $capiplayername, $capiserverID); 
-                                            //    break;
-                                            //case strstr($servicegrpname, "PT"): //if provider is PT, then
-                                            //    $url = $_ServiceAPI[$rserviceid-1];
-                                            //    $capiusername = $_ptcasinoname;
-                                            //    $capipassword = $_ptsecretkey;
-                                            //    $capiplayername = $_CAPIPlayerName;
-                                            //    $capiserverID = '';
-                                            //    $balance = $CasinoGamingCAPI->getBalance($servicegrpname, $rserviceid, $url, $rserviceuname, $capiusername, $capipassword, $capiplayername, $capiserverID); 
-                                            //    break;
-                                            // Comment Out CCT 02/06/2018 END
                                             default :
                                                 echo "Error: Invalid Casino Provider";
                                                 break;

@@ -89,7 +89,10 @@ class HabaneroAPIWrapper
             }
             else
             {
-                $retMsg = str_replace("'", "", $GetAccountExistsResult[ 'queryplayermethodResult' ][ 'Message' ]);
+                // EDITED CCT 07/31/2018 BEGIN
+                //$retMsg = str_replace("'", "", $GetAccountExistsResult[ 'queryplayermethodResult' ][ 'Message' ]);
+                $retMsg = 'Account does not exist.';
+                // EDITED CCT 07/31/2018 END
                 $msg = $retMsg;
                 return array( 'IsSucceed' => false, 'ErrorCode' => 2, 'ErrorMessage' => $msg, 'Count' => 0 );
             }
@@ -129,8 +132,10 @@ class HabaneroAPIWrapper
                         }
                         else 
                         {
-                            $retMsg = str_replace("'", "", $QueryPlayerResult[ 'queryplayermethodResult' ][ 'Message' ]);
-                            $msg = $QueryPlayerResult[ 'queryplayermethodResult' ][ 'Message' ] ;
+                            // EDITED CCT 07/31/2018 BEGIN
+                            //$msg = $QueryPlayerResult[ 'queryplayermethodResult' ][ 'Message' ] ;
+                            $msg = 'Account does not exist.';
+                            // EDITED CCT 07/31/2018 END
                             return array('IsSucceed'=>false, 'ErrorMessage'=>$msg, 'ErrorCode'=> 3);
                         }
                     }
@@ -170,189 +175,6 @@ class HabaneroAPIWrapper
         {
             return array('IsSucceed'=>false, 'ErrorMessage'=>'createNewPlayerFull error');
         }
-    }
-    
-    protected function refUpdatePasswordStatus($zstatus)
-    {
-//        switch($zstatus)
-//        {
-//            case 0:
-//                $msg = "Failed/unspecified(internal) error";
-//            break;
-//            case 1 :
-//                $msg = "Success";
-//            break;
-//            case 3:
-//                $msg = "New password too short or too long";
-//            break;
-//            case 6:
-//                $msg = "Old login/password do not match";
-//            break;
-//            default :
-//                $msg = "RTG: Invalid Status";
-//            break;
-//        }
-//        return $msg;
-    }
-    
-    private function _GetAccountInfoByPID( $PID )
-    {
-//        $response = $this->_API->GetAccountInfoByPID( 1, $PID );
-//
-//        if ( !$this->_API->GetError() )
-//        {
-//            if ( $response[ 'GetAccountInfoByPIDResult' ] )
-//            {
-//                return array( 'IsSucceed' => true, 'ErrorCode' => 0, 'ErrorMessage' => null, 'AccountInfo' => $response );
-//            }
-//            else
-//            {
-//                return array( 'IsSucceed' => false, 'ErrorCode' => 20, 'ErrorMessage' => 'Response malformed' );
-//            }
-//        }
-//        else
-//        {
-//            return array( 'IsSucceed' => false, 'ErrorCode' => 21, 'ErrorMessage' => 'API Error: ' . $this->_API->GetError() );
-//        }
-    }
-
-    private function _GetPIDFromLogin( $login )
-    {        
-//        $response = $this->_API->GetPIDFromLogin( $login );
-//
-//        if ( !$this->_API->GetError() )
-//        {           
-//            if ( $response[ 'GetPIDFromLoginResult' ] )
-//            {
-//                return array( 'IsSucceed' => true, 'ErrorCode' => 0, 'ErrorMessage' => null, 'PID' => $response[ 'GetPIDFromLoginResult' ] );
-//            }
-//            else
-//            {
-//                return array( 'IsSucceed' => false, 'ErrorCode' => 30, 'ErrorMessage' => 'Response malformed' );
-//            }
-//        }
-//        else
-//        {            
-//            return array( 'IsSucceed' => false, 'ErrorCode' => 31, 'ErrorMessage' => 'API Error: ' . $this->_API->GetError() );
-//        }
-    }
-       
-    private function Login( $login )
-    {
-//        $response = $this->_GetPIDFromLogin( $login );
-//        
-//        if ( !is_null( $response ) )
-//        {
-//            if ( $response[ 'IsSucceed' ] == true )
-//            {
-//                $PID = $response[ 'PID' ];
-//
-//                $response = $this->_GetAccountInfoByPID( $PID );
-//
-//                if ( !is_null( $response ) )
-//                {
-//                    if ( $response[ 'IsSucceed' ] == true )
-//                    {
-//                        $accountInfo = $response[ 'AccountInfo' ];
-//        		$hashedPassword = sha1( $accountInfo[ 'GetAccountInfoByPIDResult' ][ 'password' ] );
-//
-//                        $response = $this->_API->Login( 1, $PID, $hashedPassword, 1, $_SERVER[ 'HTTP_HOST' ] );
-//
-//                        if ( !$this->_API->GetError() )
-//                        {
-//                            if ( is_array( $response ) )
-//                            {
-//                                if ( $response[ 'LoginResult' ] )
-//                                    return $response[ 'LoginResult' ];
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }        
-//        
-//        return NULL;
-    }   
-    
-    public function GetAccountInfoByLogin($login)
-    {
-//        $response = $this->_GetPIDFromLogin( $login );
-//        
-//        if ( !is_null( $response ) )
-//        {
-//            if ( $response[ 'IsSucceed' ] == true )
-//            {
-//                $PID = $response[ 'PID' ];
-//
-//                $response = $this->_GetAccountInfoByPID( $PID );
-//                
-//                if ( !$this->_API->GetError() )
-//                {           
-//                    if ( $response[ 'AccountInfo' ] )
-//                    {
-//                        return array( 'IsSucceed' => true, 'ErrorCode' => 0, 'ErrorMessage' => null, 'AccountInfo' => $response[ 'AccountInfo' ]['GetAccountInfoByPIDResult'] );
-//                    }
-//                    else
-//                    {
-//                        return array( 'IsSucceed' => false, 'ErrorCode' => 30, 'ErrorMessage' => 'Response malformed' );
-//                    }
-//                }
-//                else
-//                {            
-//                    return array( 'IsSucceed' => false, 'ErrorCode' => 31, 'ErrorMessage' => 'API Error: ' . $this->_API->GetError() );
-//                }
-//            }
-//        }
-//        
-//        return null;
-    }
-    
-    public function Deposit($login, $amount, $tracking1 = '', $tracking2 = '', $tracking3 = '', $tracking4 = '')
-    {
-//        //$GetPIDFromLoginResult = $this->_GetPIDFromLogin( $login );
-//
-//        //if ( !is_null( $GetPIDFromLoginResult ) )
-//        //{
-//            if ( $GetPIDFromLoginResult[ 'IsSucceed'] == true )
-//            {
-//                $PID = $GetPIDFromLoginResult[ 'PID' ];
-//
-//                $sessionId = $this->Login( $login );
-//
-//                if ( !is_null( $sessionId ) )
-//                {
-//                    $response = $this->_API->DepositGeneric( 1, $PID, $this->_depositMethodId, $amount, $tracking1, $tracking2, $tracking3, $tracking4, $sessionId );
-//
-//                    if ( !$this->_API->GetError() )
-//                    {
-//                        if ( is_array( $response ) )
-//                        {
-//                            return array( 'IsSucceed' => true, 'ErrorCode' => 0, 'ErrorMessage' => null, 'TransactionInfo' => $response );
-//                        }
-//                        else
-//                        {
-//                            return array( 'IsSucceed' => false, 'ErrorCode' => 50, 'ErrorMessage' => 'Response malformed' );
-//                        }
-//                    }
-//                    else
-//                    {
-//                        return array( 'IsSucceed' => false, 'ErrorCode' => 51, 'ErrorMessage' => 'API Error: ' . $this->_API->GetError() );
-//                    }
-//                }
-//                else
-//                {
-//                    return array( 'IsSucceed' => false, 'ErrorCode' => 52, 'ErrorMessage' => 'Session ID error' );
-//                }
-//            }
-//            else
-//            {
-//                return array( 'IsSucceed' => false, 'ErrorCode' => 53, 'ErrorMessage' => 'PID error' );
-//            }
-//        //}
-//        //else
-//        //{
-//        //    return array( 'IsSucceed' => false, 'ErrorCode' => 54, 'ErrorMessage' => 'GetPIDFromLogin error' );
-//        //}
     }
     
     public function TransactionSearchInfo($tracking1)

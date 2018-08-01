@@ -14,6 +14,18 @@ class ApplicationSupport extends DBHandler
           parent::__construct($sconectionstring);
       }
       
+      // ADDED CCT 07/30/2018 BEGIN
+      //get CasinoInfo using MID
+      function getCasinoInfoUsingMID($zMID)
+      {
+           $this->prepare("SELECT ms.ServiceID, ms.ServiceUsername, ms.ServicePassword 
+                            FROM membership.memberservices ms 
+                            WHERE ms.MID = ?");
+           $this->bindparameter(1, $zMID);
+           $this->execute();
+           return $this->fetchAllData();
+      }
+      // ADDED CCT 07/30/2018 END
       
       /**
       * @author Gerardo V. Jagolino Jr.
@@ -2456,7 +2468,7 @@ class ApplicationSupport extends DBHandler
     {
         $stmt = "SELECT TerminalID, UserMode, MID, UBServiceLogin, ServiceID    
                  FROM terminalsessions 
-                 WHERE LoyaltyCardNumber = ? AND UserMode = 1";
+                WHERE LoyaltyCardNumber = ? AND UserMode = 1";
         $this->prepare($stmt);
         $this->bindparameter(1, $cardnumber);
         $this->execute();

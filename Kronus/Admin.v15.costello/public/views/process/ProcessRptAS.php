@@ -121,9 +121,10 @@ if($connected)
                          case 0: $usermode = 'Terminal Based'; break;
                          case 1: $usermode = 'User Based'; break;
                          case 2: $usermode = 'Terminal Based'; break;
-                         // CCT ADDED 01/24/2018 BEGIN
+                         // CCT ADDED 07/25/2018 BEGIN
+                         case 3: $usermode = 'User Based'; break;
+                         // CCT ADDED 07/25/2018 END
                          case 4: $usermode = 'Terminal Based'; break;
-                         // CCT ADDED 01/24/2018 END
                          default:
                              break;
                      }
@@ -199,9 +200,10 @@ if($connected)
                          case 0: $usermode = 'Terminal Based'; break;
                          case 1: $usermode = 'User Based'; break;
                          case 2: $usermode = 'Terminal Based'; break;
-                         // CCT ADDED 01/24/2018 BEGIN
+                         // CCT ADDED 07/25/2018 BEGIN
+                         case 3: $usermode = 'User Based'; break;
+                         // CCT ADDED 07/25/2018 END
                          case 4: $usermode = 'Terminal Based'; break;
-                         // CCT ADDED 01/24/2018 END
                          default:
                              break;
                      }
@@ -287,9 +289,10 @@ if($connected)
                           case 0: $usermode = 'Terminal Based'; break;
                           case 1: $usermode = 'User Based'; break;
                           case 2: $usermode = 'Terminal Based'; break;
-                          // CCT ADDED 01/24/2018 BEGIN
+                          // CCT ADDED 07/25/2018 BEGIN
+                          case 3: $usermode = 'User Based'; break;
+                          // CCT ADDED 07/25/2018 END
                           case 4: $usermode = 'Terminal Based'; break;
-                          // CCT ADDED 01/24/2018 END
                           default:
                               break;
                       }
@@ -388,9 +391,10 @@ if($connected)
                           case 0: $usermode = 'Terminal Based'; break;
                           case 1: $usermode = 'User Based'; break;
                           case 2: $usermode = 'Terminal Based'; break;
-                          // CCT ADDED 01/24/2018 BEGIN
+                          // CCT ADDED 07/25/2018 BEGIN
+                          case 3: $usermode = 'User Based'; break;
+                          // CCT ADDED 07/25/2018 END
                           case 4: $usermode = 'Terminal Based'; break;
-                          // CCT ADDED 01/24/2018 END
                           default:
                               break;
                       }

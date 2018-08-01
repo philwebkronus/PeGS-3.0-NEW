@@ -1,11 +1,11 @@
 <?php
-
 /**
  * Wrapper of RTG  Player API using PHP SOAP Client Method
  * @date 02-21-14
  * @author elperez
  */
-class RealtimeGamingWCFPlayerAPI {
+class RealtimeGamingWCFPlayerAPI 
+{
     /**
      * Holds the web service end point
      * @var string
@@ -133,6 +133,8 @@ class RealtimeGamingWCFPlayerAPI {
             $putInAffPID, $calledFromCasino, $hashedPassword, $agentID, $currentPosition, 
             $thirdPartyPID, $playerClass)
     {
+// EDITED CCT 06/29/2018 BEGIN
+/*
         $data = array('Player'=>array(
                               'Contact'=>array(
                                      'CountryID'=>$country,
@@ -163,7 +165,31 @@ class RealtimeGamingWCFPlayerAPI {
                         'CurrentPosition'=>$currentPosition,
                         'ThirdpartyPID'=>$thirdPartyPID,
                         'Class'=>$playerClass);
-        
+*/
+	$data = array('Player' => array(
+        	'BirthDate' => $birthdate,
+	        'Class' => $playerClass,
+	        'ClientID' => $clientID,
+        	'Contact' => array(
+	            'Address1' => $addr1,
+	            'City' => $city,
+        	    'CountryID' => $country,
+	            'DayPhone' => $dayphone,
+	            'EMail' => $email,
+	            'EvePhone' => $evephone,
+	            'FirstName' => $fname,
+	            'LastName' => $lname,
+	            'ZipCode' => $zip
+	        ),
+        	'DownloadID' => $downloadID,
+	        'HashedPassword' => $hashedPassword,
+        	'Login' => $login,
+	        'Password' => $password,
+	        'PlayerCurrencyID' => 'PHP'
+	    ),
+	    'UserID' => $userID,
+	);
+// EDITED CCT 06/29/2018 END        
         $method = 'CreatePlayer';
         
         $response = $this->SubmitRequest($this->_url, $data, $method);
@@ -194,7 +220,6 @@ class RealtimeGamingWCFPlayerAPI {
         $method = 'ChangePassword';
         
         $response = $this->submitRequest($this->_url, $data, $method);
-        
         if (is_object($response) )
         {
             $this->_APIresponse = $this->XML2Array( $response );
@@ -269,23 +294,23 @@ class RealtimeGamingWCFPlayerAPI {
     {
         header( 'Content-Type: text/plain' );
 
-        $soapArr = array(
+	$soapArr = array(
                 'trace' => true,
                 'exceptions' => true,
                 'local_cert' => $this->_cert_keyFilePath, //certificate folder
                 'passphrase' => ''
         );
-        
+
         $response = array();
-        try{
+        try
+	{
             $client = new SoapClient( $url, $soapArr );
-            
             $response = $client->$method($data);
-            
-        } catch (Exception $e){
+        } 
+	catch (Exception $e)
+	{
             $this->_error = "Bad request. Check if API configurations are correct";
         }
-        
         return $response;
     }
 

@@ -1,11 +1,8 @@
-
 <?php
-
 /**
  * @Description: Wrapper for RTG - Abbott
  * @DateCreated: 2014-02-03
  */
-
 require_once( ROOT_DIR . 'sys/class/CasinoAPI/RealtimeGamingCashierAPI2.class.php' );
 require_once(ROOT_DIR . 'sys/class/CasinoAPI/RealtimeGamingWCFPlayerAPI.class.php');
 
@@ -16,8 +13,8 @@ class RealtimeGamingUBAPIWrapper
     
     private $_API;
     private $_debug = FALSE;
-    private $_depositMethodId = 502; // 503
-    private $_withdrawMethodId = 503; // 502
+    private $_depositMethodId = 503; 
+    private $_withdrawMethodId = 502; 
     
     public function __construct( $URI, $API, $certFilePath, $keyFilePath )
     {
@@ -54,12 +51,18 @@ class RealtimeGamingUBAPIWrapper
             {
                 $PID = $GetPIDFromLoginResult[ 'PID' ];
                 
-                if(!empty($locatorName)){
+                if(!empty($locatorName))
+                {
                     $skinID = $this->_GetSkinID($locatorName);
-                    if (isset($skinID['SkinID'])) {
+                    if (isset($skinID['SkinID'])) 
+                    {
                         $skinID = $skinID['SkinID'];
                     }
-                } else { $skinID = 1; }
+                } 
+                else 
+                { 
+                    $skinID = 1; 
+                }
 
                 $sessionId = $this->Login( $login );
 
@@ -99,10 +102,8 @@ class RealtimeGamingUBAPIWrapper
         }
     }
 
-    
     public function GetBalance( $login )
     {
-        
         $GetPIDFromLoginResult = $this->_GetPIDFromLogin( $login );
         
         if ( !is_null( $GetPIDFromLoginResult ) )
@@ -191,15 +192,20 @@ class RealtimeGamingUBAPIWrapper
         {
             if ( $GetPIDFromLoginResult[ 'IsSucceed'] == true )
             {
-
                 $PID = $GetPIDFromLoginResult[ 'PID' ];
                 
-                if(!empty($locatorName)){
+                if(!empty($locatorName))
+                {
                     $skinID = $this->_GetSkinID($locatorName);
-                    if (isset($skinID['SkinID'])) {
+                    if (isset($skinID['SkinID'])) 
+                    {
                         $skinID = $skinID['SkinID'];
                     }
-                } else { $skinID = 1; }
+                } 
+                else 
+                { 
+                    $skinID = 1; 
+                }
                 
                 $sessionId = $this->Login( $login, '', $skinID );
                 
@@ -262,14 +268,12 @@ class RealtimeGamingUBAPIWrapper
     
     private function _GetSkinID( $locatorname )
     {
-        
         $response = $this->_API->GetSkinID( $locatorname );
 
         if ( !$this->_API->GetError() )
         {           
             if ( $response[ 'GetSkinIDResult' ] )
             {
-                
                 return array( 'IsSucceed' => true, 'ErrorCode' => 0, 'ErrorMessage' => null, 'SkinID' => $response[ 'GetSkinIDResult' ] );
             }
             else
@@ -313,7 +317,6 @@ class RealtimeGamingUBAPIWrapper
             if ( $response[ 'IsSucceed' ] == true )
             {
                 $PID = $response[ 'PID' ];
-
                 $response = $this->_GetAccountInfoByPID( $PID );
                 
                 if ( !is_null( $response ) )
@@ -321,7 +324,6 @@ class RealtimeGamingUBAPIWrapper
                     if ( $response[ 'IsSucceed' ] == true )
                     {
                         $accountInfo = $response[ 'AccountInfo' ];
-
                         $hashedPassword = sha1( $accountInfo[ 'GetAccountInfoByPIDResult' ][ 'password' ] );
 
                         $response = $this->_API->Login( 1, $PID, $hashedPassword, 1, $_SERVER[ 'HTTP_HOST' ], $skinID );
@@ -355,22 +357,23 @@ class RealtimeGamingUBAPIWrapper
      */
     public function GetPendingGamesByPID($PID)
     {
-                    
         $response = $this->_API->GetPendingGamesByPID( $PID );
 
         if ( !$this->_API->GetError() )
         {           
-            if(!is_null($response['GetPendingGamesByPIDResult'])){
+            if(!is_null($response['GetPendingGamesByPIDResult']))
+            {
                 if (is_array($response) )
                 {
-                    return array( 'IsSucceed' => true, 'ErrorCode' => 0, 'ErrorMessage' => null, 
-                                                                'PendingGames' => $response);
+                    return array( 'IsSucceed' => true, 'ErrorCode' => 0, 'ErrorMessage' => null, 'PendingGames' => $response);
                 }
                 else
                 {
                     return array( 'IsSucceed' => false, 'ErrorCode' => 30, 'ErrorMessage' => 'Response malformed' );
                 }
-            } else {
+            } 
+            else 
+            {
                 return array( 'IsSucceed' => false, 'ErrorCode' => 66, 'ErrorMessage' => 'No Pending Game Bet.' );
             }
         }
@@ -388,13 +391,13 @@ class RealtimeGamingUBAPIWrapper
      * @param string $login
      * @return array
      */
-    public function GetPIDUsingLogin($login){
+    public function GetPIDUsingLogin($login)
+    {
         return $this->_GetPIDFromLogin($login);
     }
     
-    
-    public function GetAccountInfoByLogin($login){
-        
+    public function GetAccountInfoByLogin($login)
+    {
         $response = $this->_GetPIDFromLogin( $login );
        
         if ( !is_null( $response ) )
@@ -402,12 +405,10 @@ class RealtimeGamingUBAPIWrapper
             if ( $response[ 'IsSucceed' ] == true )
             {
                 $PID = $response[ 'PID' ];
-
                 $response = $this->_GetAccountInfoByPID( $PID );
                 
                 if ( !$this->_API->GetError() )
                 {           
-                    
                     if ( $response[ 'AccountInfo' ] )
                     {
                         return array( 'IsSucceed' => true, 'ErrorCode' => 0, 'ErrorMessage' => null, 'AccountInfo' => $response[ 'AccountInfo' ]['GetAccountInfoByPIDResult'] );
@@ -456,27 +457,32 @@ class RealtimeGamingUBAPIWrapper
                           case 0:
                               $errorid = 0;
                               $msg = "RTG: Failed or internal server error";
-                          break;
+                              break;
+                          
                           case 2:
                               $errorid = 2;
                               $msg = "RTG: Login too long or too short";
-                          break;
+                              break;
+                        
                           case 3:
                               $errorid = 3;
                               $msg = "RTG: Password too long or too short";
-                          break;
+                              break;
+                          
                           case 4:
                               $errorid = 4;
                               $msg = "RTG: Banned";
-                          break;
+                              break;
+                        
                           case 5:
                               $errorid = 5;
                               $msg = "RTG: Account already exists";
-                          break;
+                              break;
+                          
                           default:
                               $errorid = 0;
                               $msg = "Terminal Service Assignment : Error in creating service terminal account";
-                          break;
+                              break;
                     }
                     return array('IsSucceed'=>false, 'ErrorMessage'=>$msg, 'ErrorID'=> $errorid, 'PID'=>$pid);
                 }
@@ -524,26 +530,30 @@ class RealtimeGamingUBAPIWrapper
         {
             case 0:
                 $msg = "Failed/unspecified(internal) error";
-            break;
+                break;
+            
             case 1 :
                 $msg = "Success";
-            break;
+                break;
+            
             case 3:
                 $msg = "New password too short or too long";
-            break;
+                break;
+            
             case 6:
                 $msg = "Old login/password do not match";
-            break;
+                break;
+            
             case 11:
                 $msg = "Player Passsword combination does not match";
-            break;
+                break;
+            
             default :
                 $msg = "RTG: Invalid Status";
-            break;
+                break;
         }
         return $msg;
     }
-    
     
     public function ChangePlayerClassification($pid, $playerClassID, $userID)
     {
@@ -560,7 +570,6 @@ class RealtimeGamingUBAPIWrapper
                 else
                 {
                     $errorcoderesult = $changePwdResult['ChangePlayerClassResult']['ErrorCode'];
-                    
                     return array('IsSucceed'=>false, 'ErrorCode'=>$errorcoderesult,'ErrorMessage'=>$errorcoderesult);
                 }
             }
@@ -571,5 +580,4 @@ class RealtimeGamingUBAPIWrapper
         }
     }
 }
-
 ?>

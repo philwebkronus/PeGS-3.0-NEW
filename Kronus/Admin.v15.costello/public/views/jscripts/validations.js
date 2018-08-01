@@ -881,7 +881,8 @@ function chkeditservices()
     }
     else
     {
-         alert('Update Successful');
+        // Commented CCT 07/03/2018
+        //alert('Update Successful');
         return true;
     }
 }

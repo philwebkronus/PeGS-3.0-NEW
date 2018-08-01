@@ -920,14 +920,9 @@ class ProcessTopUpPaginate extends BaseProcess
         $count1 = $topup->getActiveSessionCountMod($siteID, $cardnumber = '', $usermode,$terminalID, $vipTerminal);
         $usermode = 2;
         $count2 = $topup->getActiveSessionCountMod($siteID, $cardnumber = '', $usermode,$terminalID, $vipTerminal);
-        // CCT ADDED 01/24/2018 BEGIN
         $usermode = 4;
         $count3 = $topup->getActiveSessionCountMod($siteID, $cardnumber = '', $usermode,$terminalID, $vipTerminal);
-        // CCT ADDED 01/24/2018 END
-        // CCT EDITED 01/24/2018 BEGIN
-        //$count = $count1 + $count2;
         $count = $count1 + $count2 + $count3;
-        // CCT EDITED 01/24/2018 END
         echo "$count";
         $topup->close();
         unset($count);
@@ -965,7 +960,13 @@ class ProcessTopUpPaginate extends BaseProcess
         }
    
         $usermode = 1;
-        $count = $topup->getActiveSessionCountMod($siteID, $cardnumber = '', $usermode, $terminalID, $vipTerminal);
+        // EDITED CCT 07/12/2018 BEGIN
+        //$count = $topup->getActiveSessionCountMod($siteID, $cardnumber = '', $usermode, $terminalID, $vipTerminal);
+        $count1 = $topup->getActiveSessionCountMod($siteID, $cardnumber = '', $usermode, $terminalID, $vipTerminal);
+        $usermode = 3;
+        $count2 = $topup->getActiveSessionCountMod($siteID, $cardnumber = '', $usermode, $terminalID, $vipTerminal);
+        $count = $count1 + $count2;
+        // EDITED CCT 07/12/2018 END
         echo "$count";
         $topup->close();
         unset($count);
@@ -978,7 +979,13 @@ class ProcessTopUpPaginate extends BaseProcess
         $topup->open();  
         $txtcardnumber = $_POST['txtcardnumber'];
         $usermode = 1;
-        $count = $topup->getActiveSessionCountMod($siteID = '', $txtcardnumber, $usermode);
+        // EDITED CCT 07/12/2018 BEGIN
+        //$count = $topup->getActiveSessionCountMod($siteID = '', $txtcardnumber, $usermode);        
+        $count1 = $topup->getActiveSessionCountMod($siteID = '', $txtcardnumber, $usermode);
+        $usermode = 3;
+        $count2 = $topup->getActiveSessionCountMod($siteID = '', $txtcardnumber, $usermode);
+        $count = $count1 + $count2;
+        // EDITED CCT 07/12/2018 END
         echo "$count";
         $topup->close();
         unset($count);
@@ -1006,14 +1013,9 @@ class ProcessTopUpPaginate extends BaseProcess
         $count1 = $topup->getActiveSessionCountMod($siteID = '', $txtcardnumber, $usermode);
         $usermode = 2;
         $count2 = $topup->getActiveSessionCountMod($siteID = '', $txtcardnumber, $usermode);
-        // CCT ADDED 01/24/2018 BEGIN
         $usermode = 4;
         $count3 = $topup->getActiveSessionCountMod($siteID = '', $txtcardnumber, $usermode);
-        // CCT ADDED 01/24/2018 END
-        // CCT EDITED 01/24/2018 BEGIN
-        //$count = $count1 + $count2;
         $count = $count1 + $count2 + $count3;
-        // CCT EDITED 01/24/2018 END
         echo "$count";
         $topup->close();
         unset($count);
@@ -1283,7 +1285,10 @@ class ProcessTopUpPaginate extends BaseProcess
                 
                 $loyalty_result = json_decode($loyalty->getCardInfo2($row['LoyaltyCardNumber'], $cardinfo, 1));
                 $loyalty_result->CardInfo->IsEwallet == 1 ? $isEwallet = "Yes" : $isEwallet = "No";
-                $row['UserMode'] == 1 ? $row['UserMode'] = "User Based" : $row['UserMode'] = "Terminal Based";
+                // EDITED CCT 07/12/2018 BEGIN
+                //$row['UserMode'] == 1 ? $row['UserMode'] = "User Based" : $row['UserMode'] = "Terminal Based";
+                (($row['UserMode'] == 1) || ($row['UserMode'] == 3)) ? $row['UserMode'] = "User Based" : $row['UserMode'] = "Terminal Based";
+                // EDITED CCT 07/12/2018 END
                 
                 $jqgrid->rows[] = array('id'=>$row['TerminalID'],'cell'=>array(
                     substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
@@ -1375,7 +1380,10 @@ class ProcessTopUpPaginate extends BaseProcess
                 }
             }
             $loyalty_result->CardInfo->IsEwallet == 1 ? $isEwallet = "Yes" : $isEwallet = "No";
-            $row['UserMode'] == 1 ? $row['UserMode'] = "User Based" : $row['UserMode'] = "Terminal Based";
+            // EDITED CCT 07/13/2018 BEGIN
+            //$row['UserMode'] == 1 ? $row['UserMode'] = "User Based" : $row['UserMode'] = "Terminal Based";
+            (($row['UserMode'] == 1) || ($row['UserMode'] == 3)) ? $row['UserMode'] = "User Based" : $row['UserMode'] = "Terminal Based";
+            // EDITED CCT 07/13/2018 END
             
             $jqgrid->rows[] = array('id'=>$row['TerminalID'],'cell'=>array(
                 substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
@@ -1551,7 +1559,6 @@ class ProcessTopUpPaginate extends BaseProcess
         
         switch ($providername)
         {
-            // CCT ADDED BEGIN 11/29/2017
             case "HAB": 
                 $url = self::$service_api[$row['ServiceID'] - 1];
                 $capiusername = self::$habbrandid ;
@@ -1559,8 +1566,6 @@ class ProcessTopUpPaginate extends BaseProcess
                 $capiplayername = '';
                 $capiserverID = '';
                 break;
-            // CCT ADDED END 11/29/2017
-         // CCT ADDED BEGIN 01/22/2018
             case "EB": 
                 $url = '';
                 $capiusername = '';
@@ -1568,7 +1573,6 @@ class ProcessTopUpPaginate extends BaseProcess
                 $capiplayername = '';
                 $capiserverID = '';
                 break;
-            // CCT ADDED END 01/22/2018         
             case "RTG":
                 $url = self::$service_api[$row['ServiceID'] - 1];
                 $capiusername = '';
@@ -1583,47 +1587,36 @@ class ProcessTopUpPaginate extends BaseProcess
                 $capiplayername = '';
                 $capiserverID = '';
                 break;
-            // Comment Out CCT 02/06/2018 BEGIN
-            //case "MG":
-            //    $_MGCredentials = self::$service_api[$row['ServiceID'] - 1];
-            //    list($mgurl, $mgserverID) =  $_MGCredentials;
-            //    $url = $mgurl;
-            //    $capiusername = self::$capi_username;
-            //    $capipassword = self::$capi_password;
-            //    $capiplayername = self::$capi_player;
-            //    $capiserverID = $mgserverID;
-            //    break;
-            //case "PT":
-            //    $url = self::$player_api[$row['ServiceID'] - 1];
-            //    $capiusername = self::$ptcasinoname;
-            //    $capipassword = self::$ptSecretKey;
-            //    $capiplayername = '';
-            //    $capiserverID = '';
-            //    break;
-            // Comment Out CCT 02/06/2018 END
         }
         $serviceusername = $topup->getUBServiceLogin($row['TerminalID']);
         switch ($providername)
         {
-            // CCT ADDED BEGIN 11/29/2017
             case "HAB": 
                 $CasinoGamingCAPI = new CasinoGamingCAPI();
-                // Pass UB username and password
-                //$MIDResult = $topup->getMIDInfo($row['TerminalID'], $row['ServiceID']);            
-                //$serviceUBResult = $topup->getUBInfo($MIDResult['MID'], $row['ServiceID']);                   
-                //$login = $serviceUBResult['ServiceUserName'];
-                //$password = $serviceUBResult['ServicePassword'];
-                // Pass TB username and password
-                $servicePwdResult = $topup->getterminalcredentials($row['TerminalID'], $row['ServiceID']);
-                $login = $row['TerminalCode'];
-                $password =  $servicePwdResult['ServicePassword'];
+                // ADDED CCT 07/12/2018 BEGIN
+                if ($row['UserMode'] == 3) // UB
+                {
+                    //Pass UB username and password
+                    $MIDResult = $topup->getMIDInfo($row['TerminalID'], $row['ServiceID']);            
+                    $serviceUBResult = $topup->getUBInfo($MIDResult['MID'], $row['ServiceID']);                   
+                    $login = $serviceUBResult['ServiceUserName'];
+                    $password = $serviceUBResult['ServicePassword'];
+                }
+                else
+                {
+                // ADDED CCT 07/12/2018 END
+                    // Pass TB username and password
+                    $servicePwdResult = $topup->getterminalcredentials($row['TerminalID'], $row['ServiceID']);
+                    $login = $row['TerminalCode'];
+                    $password =  $servicePwdResult['ServicePassword'];
+                // ADDED CCT 07/12/2018 BEGIN
+                }
+                // ADDED CCT 07/12/2018 END
                 
                 $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
                     $login, $capiusername, $capipassword, $capiplayername, $capiserverID, $row['UserMode'], $password);
                 
                 break;
-            // CCT ADDED END 11/29/2017
-            // CCT ADDED BEGIN 01/22/2018
             case "EB": 
                 $CasinoGamingCAPI = new CasinoGamingCAPI();
                 $login = '';
@@ -1632,7 +1625,6 @@ class ProcessTopUpPaginate extends BaseProcess
                     $login, $capiusername, $capipassword, $capiplayername, $capiserverID, $row['UserMode'], $password);
                 
                 break;
-            // CCT ADDED END 01/22/2018
             case "RTG":
                 $CasinoGamingCAPI = new CasinoGamingCAPI();
                 $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
@@ -1648,18 +1640,6 @@ class ProcessTopUpPaginate extends BaseProcess
                 $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
                     $serviceusername, $capiusername, $capipassword, $capiplayername, $capiserverID);   
                 break;
-            // Comment Out CCT 02/06/2018 BEGIN
-            //case "MG":
-            //    $CasinoGamingCAPI = new CasinoGamingCAPI();
-            //    $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
-            //        $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, $capiserverID);
-            //    break;
-            //case "PT":
-            //    $CasinoGamingCAPI = new CasinoGamingCAPI();
-            //    $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
-            //        $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, $capiserverID); 
-            //    break;
-            // Comment Out CCT 02/06/2018 END
         }
         return array("Balance"=>$balance, "Casino"=>$providername);    
         $topup->close();
@@ -1689,25 +1669,6 @@ class ProcessTopUpPaginate extends BaseProcess
                 $capiplayername = '';
                 $capiserverID = '';
                 break;
-            // Comment Out CCT 02/06/2018 BEGIN
-            //case"MG":
-            //    $_MGCredentials = self::$service_api[$row['ServiceID'] - 1];
-            //    list($mgurl, $mgserverID) =  $_MGCredentials;
-            //    $url = $mgurl;
-            //    $capiusername = self::$capi_username;
-            //    $capipassword = self::$capi_password;
-            //    $capiplayername = self::$capi_player;
-            //    $capiserverID = $mgserverID;
-            //    break;
-            //case "PT":
-            //    $url = self::$player_api[$row['ServiceID'] - 1];
-            //    $capiusername = self::$ptcasinoname;
-            //    $capipassword = self::$ptSecretKey;
-            //    $capiplayername = '';
-            //    $capiserverID = '';
-            //    break;
-            // Comment Out CCT 02/06/2018 END
-            // CCT ADDED BEGIN 12/18/2017
             case "HAB": 
                 $url = self::$service_api[$row['ServiceID'] - 1];
                 $capiusername = self::$habbrandid ;
@@ -1715,8 +1676,6 @@ class ProcessTopUpPaginate extends BaseProcess
                 $capiplayername = '';
                 $capiserverID = '';
                 break;
-            // CCT ADDED END 12/18/2017
-            // CCT ADDED BEGIN 01/22/2018
             case "EB": 
                 $url = '';
                 $capiusername = '';
@@ -1724,32 +1683,35 @@ class ProcessTopUpPaginate extends BaseProcess
                 $capiplayername = '';
                 $capiserverID = '';
                 break;
-            // CCT ADDED END 01/22/2018          
         }
         
         switch ($providername)
         {
-// CCT BEGIN            
-            // CCT ADDED BEGIN 12/18/2017
             case "HAB": 
                 $CasinoGamingCAPI = new CasinoGamingCAPI();
-                // Pass UB username and password
-                //$MIDResult = $topup->getMIDInfo($row['TerminalID'], $row['ServiceID']);            
-                //$serviceUBResult = $topup->getUBInfo($MIDResult['MID'], $row['ServiceID']);                   
-                //$login = $serviceUBResult['ServiceUserName'];
-                //$password = $serviceUBResult['ServicePassword'];
-                // Pass TB username and password
-                $servicePwdResult = $topup->getterminalcredentials($row['TerminalID'], $row['ServiceID']);
-                $login = $row['TerminalCode'];
-                $password =  $servicePwdResult['ServicePassword'];
-                
+                // EDITED 07/13/2018 BEGIN
+                if ($row['UserMode'] == 3)
+                {
+                    // Pass UB username and password
+                    $MIDResult = $topup->getMIDInfo($row['TerminalID'], $row['ServiceID']);            
+                    $serviceUBResult = $topup->getUBInfo($MIDResult['MID'], $row['ServiceID']);                   
+                    $login = $serviceUBResult['ServiceUserName'];
+                    $password = $serviceUBResult['ServicePassword'];
+                }
+                else
+                {
+                // EDITED 07/13/2018 END
+                    // Pass TB username and password
+                    $servicePwdResult = $topup->getterminalcredentials($row['TerminalID'], $row['ServiceID']);
+                    $login = $row['TerminalCode'];
+                    $password =  $servicePwdResult['ServicePassword'];
+                // EDITED 07/13/2018 BEGIN
+                }
+                // EDITED 07/13/2018 END
                 $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
                     $login, $capiusername, $capipassword, $capiplayername, $capiserverID, $row['UserMode'], $password);
                 
                 break;
-            // CCT ADDED END 12/18/2017
-// CCT END                 
-            // CCT ADDED BEGIN 01/22/2018
             case "EB": 
                 $CasinoGamingCAPI = new CasinoGamingCAPI();
                 $login = '';
@@ -1759,7 +1721,6 @@ class ProcessTopUpPaginate extends BaseProcess
                     $login, $capiusername, $capipassword, $capiplayername, $capiserverID, $row['UserMode'], $password);
                 
                 break;
-            // CCT ADDED END 01/22/2018           
             case "RTG":
                 $CasinoGamingCAPI = new CasinoGamingCAPI();
                 $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
@@ -1775,18 +1736,6 @@ class ProcessTopUpPaginate extends BaseProcess
                 $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
                     $_SESSION['ServiceUsername'], $capiusername, $capipassword, $capiplayername, $capiserverID);   
                 break;
-            // Comment Out CCT 02/06/2018 BEGIN
-            //case "MG":
-            //    $CasinoGamingCAPI = new CasinoGamingCAPI();
-            //    $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
-            //            $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, $capiserverID);
-            //    break;
-            //case "PT":
-            //    $CasinoGamingCAPI = new CasinoGamingCAPI();
-            //    $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
-            //        $_SESSION['ServiceUsername'], $capiusername, $capipassword, $capiplayername, $capiserverID);  
-            //    break;
-            // Comment Out CCT 02/06/2018 END
         }
         return array("Balance"=>$balance, "Casino"=>$providername);    
         $topup->close();

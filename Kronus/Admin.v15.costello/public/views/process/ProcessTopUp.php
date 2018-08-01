@@ -390,17 +390,19 @@ if($connected)
                         $isESAFE = $otopup->checkIsEwallet($mid);
                         if ($isESAFE == 1) 
                         {
-                            if ($hasEGM == 0 && $hasTS == 0) 
-                            {
+                            // COMMENT OUT CCT 07/23/2018 BEGIN
+                            //if ($hasEGM == 0 && $hasTS == 0) 
+                            //{
                                 $login = $_SESSION['ServiceUserName'];
                                 $transid = $otopup->getMaxTransreqlogid($loyaltycardnumber, $ubserviceID);
                                 $result = array('TransCode' => 0, 'TransRequestLogID' => $transid);
-                            }
-                            else 
-                            {
-                                $result = array('TransCode' => 1, 
-                                                'TransMsg' => "Error: e-SAFE account with existing session is not allowed for redemption.");
-                            }
+                            //}
+                            //else 
+                            //{
+                            //    $result = array('TransCode' => 1, 
+                            //                    'TransMsg' => "Error: e-SAFE account with existing session is not allowed for redemption.");
+                            //}
+                            // COMMENT OUT CCT 07/23/2018 END
                         }
                         else 
                         {
@@ -412,14 +414,10 @@ if($connected)
                     }
                 }
            break;
-              
+
             //User Based Redemption using Loyalty Card
             case "Withdraw":
-                $login = $_POST['terminalcode'];
-                $provider = $_POST['txtservices'];
-                $vterminalID = $_POST['cmbterminal'];
                 $ubserviceID = $_POST['txtserviceid'];
-                $ubterminalID = $_POST['txtterminalid'];
                 $vserviceBalance = $_POST['txtamount2'];
                 $amountToRedeem = $_POST['hdnamtwithdraw'];
                 $ticketub = $_POST['txtticketub'];
@@ -428,22 +426,26 @@ if($connected)
                 $mid = $_POST['txtmid'];
                 $usermode = $_POST['txtusermode'];
                 $siteID = $_POST['cmbsite'];
-                $serverId = $_POST['cmbservices'];
+                //ADDED CCT 07/13/2018 BEGIN
+                // Withdraw All
+                $amountToRedeem = $vserviceBalance;
+                //ADDED CCT 07/13/2018 END
                 
                 if(isset($siteID) && $siteID != "-1")
                 {
                     $login = $otopup->getServiceUserName($ubserviceID, $mid);
                     $ubterminalID = null;
                     $server = $otopup->getCasinoName($ubserviceID);
+                    
                     foreach ($server as $value2) 
                     {
                         $servername = $value2['ServiceName'];
-                        $stat = $value2['Status'];
                         $usermode = $value2['UserMode'];
                     }
 
                     $servicegrp = $otopup->getServiceGrpName($ubserviceID);
                     $servername = $servicegrp;
+
                     //check if card is ewallet
                     $isEwallet = $otopup->checkIsEwallet($mid);
 
@@ -453,6 +455,7 @@ if($connected)
                         $ramount = ereg_replace(",", "", $vserviceBalance); //format number replace (,)
 
                     $_maxRedeem = ereg_replace(",", "", $_maxRedeem); //format number replace (,)
+                    
                     if($ramount > $_maxRedeem)
                     {  
                         $balance = $ramount - $_maxRedeem;
@@ -463,82 +466,49 @@ if($connected)
                         $balance = 0;
                     }
 
-                    $vsiteID = $siteID;
-                    $vterminalID = $ubterminalID;
                     $vreportedAmt = $ramount;
                     $vactualAmt = 0;
                     $vtransactionDate = $otopup->getDate();
                     $vreqByAID = $aid;
                     $vprocByAID = $aid;
-                    //$vremarks = $rremarks;
                     $vdateEffective = $vdate;
                     $vstatus = 0;
                     $vtransactionID = 0;
-                    $vremarks = $remarksub;
-                    $vticket = $ticketub;
-                    $cmbServerID = $ubserviceID; 
-
                     $vtransStatus = '';
-                    $transsummaryid = $otopup->getLastSummaryID($vterminalID);
-                    $transsummaryid = $transsummaryid['summaryID'];
-
-                    $trans_req_log_last_id = $otopup->getMaxTransreqlogid($loyaltycardnumber, $ubserviceID);
-
-                    $lastmrid = $otopup->insertmanualredemptionub($vsiteID, $vterminalID, $vreportedAmt, $vactualAmt, $vtransactionDate, 
-                            $vreqByAID, $vprocByAID, $vremarks, $vdateEffective, $vstatus, $vtransactionID, $transsummaryid,$vticket, 
-                            $cmbServerID, $vtransStatus, $loyaltycardnumber, $mid, $usermode);
+                    $transsummaryid = null;
+                    $url = $_ServiceAPI[$ubserviceID-1];                    
+                    $capiplayername = '';
+                    $capiserverID = '';
+                    $locatorname = '';                                                    
+                    $lastmrid = $otopup->insertmanualredemptionub($siteID, $ubterminalID, $vreportedAmt, $vactualAmt, $vtransactionDate, 
+                            $vreqByAID, $vprocByAID, $remarksub, $vdateEffective, $vstatus, $vtransactionID, $transsummaryid,$ticketub, 
+                            $ubserviceID, $vtransStatus, $loyaltycardnumber, $mid, $usermode);
 
                     if($lastmrid > 0)
                     {
+                        $tracking1 = "MR" . $lastmrid;                                            
+                        
                         switch (true)
                         {
                             case strstr($servername, "RTG"): //if provider is RTG, then
-                                if (is_null($trans_req_log_last_id)) 
-                                { 
-                                    $trans_req_log_last_id = ""; 
-                                }
-                                if (is_null($vterminalID)) 
-                                { 
-                                    $vterminalID = ""; 
-                                }
-
-                                $url = $_ServiceAPI[$ubserviceID-1];
-                                $capiusername = $_CAPIUsername;
-                                $capipassword = $_CAPIPassword;
-                                $capiplayername = $_CAPIPlayerName;
-                                $capiserverID = '';
-                                $tracking1 = $trans_req_log_last_id;
-                                $tracking2 = "MR"."$lastmrid";
-                                $tracking3 = $vterminalID;
+                                
+                                $capiusername = '';
+                                $capipassword = '';
+                                $tracking2 = $siteID;
+                                $tracking3 = '';
                                 $withdraw = array();
-                                //get siteclassificationID
-                                $siteClass = $otopup->getSiteClassByTerminal($vterminalID);
-                                if ($siteClass == 1) 
-                                    $locatorname = $_SkinNamePlatinum;
-                                else 
-                                    $locatorname = $_SkinNameNonPlatinum;
-                                //if 20 is the UB ServiceID get the locator name
-                                $isEwallet = $otopup->checkIsEwallet($mid);
+                                $tracking4 = '';
+                                $methodname = '';
+                                
                                 if ($isEwallet == 1) 
                                 {
                                     if ($amountToRedeem != "") 
                                     {
                                         if ($amountToRedeem <= $vserviceBalance) 
                                         {
-                                            if ($ubserviceID != 20) 
-                                            {
-                                                $locatorname = null;
-                                                //withdraw rtg casino
-                                                $withdraw = $CasinoGamingCAPI->Withdraw($servername, $ubserviceID, $url, $login, $capiusername, 
-                                                        $capipassword, $capiplayername, $capiserverID, $ramount, $tracking1, $tracking2, $tracking3, 
-                                                        $tracking4 = '', $methodname = '', $usermode, $locatorname);   
-                                            }
-                                            else 
-                                            {
-                                                $withdraw = $CasinoGamingCAPI->Withdraw($servername, $ubserviceID, $url, $login, $capiusername, 
-                                                        $capipassword, $capiplayername, $capiserverID, $ramount, $tracking1, $tracking2, $tracking3, 
-                                                        $tracking4 = '', $methodname = '', $usermode, $locatorname);   
-                                            }
+                                            $withdraw = $CasinoGamingCAPI->Withdraw($servername, $ubserviceID, $url, $login, $capiusername, 
+                                                    $capipassword, $capiplayername, $capiserverID, $ramount, $tracking1, $tracking2, $tracking3, 
+                                                    $tracking4, $methodname, $usermode, $locatorname);   
                                         }     
                                         else 
                                         {
@@ -552,97 +522,11 @@ if($connected)
                                 }
                                 else 
                                 {
-                                    //UBcard should be casino 19 which doesn't requires locator name.
-                                    if ($ubserviceID != 20) 
-                                    {
-                                        $locatorname = null;
-                                        //withdraw rtg casino
-                                        $withdraw = $CasinoGamingCAPI->Withdraw($servername, $ubserviceID, $url, $login, $capiusername, $capipassword, 
-                                        $capiplayername, $capiserverID, $ramount, $tracking1, $tracking2, $tracking3, $tracking4 = '', $methodname = '', $usermode, $locatorname);   
-                                    }
-                                    else 
-                                    {
-                                        //withdraw rtg casino
-                                        $withdraw = $CasinoGamingCAPI->Withdraw($servername, $ubserviceID, $url, $login, $capiusername, $capipassword, 
-                                        $capiplayername, $capiserverID, $ramount, $tracking1, $tracking2, $tracking3, $tracking4 = '', $methodname = '', $usermode, $locatorname);   
-                                    }
+                                    $withdraw = $CasinoGamingCAPI->Withdraw($servername, $ubserviceID, $url, $login, $capiusername, 
+                                            $capipassword, $capiplayername, $capiserverID, $ramount, $tracking1, $tracking2, $tracking3, 
+                                            $tracking4,  $methodname,  $usermode, $locatorname);   
                                 }
-                                break;
-                            // Comment Out CCT 02/06/2018 BEGIN                                   
-                            //case strstr($servername, "MG"): //if provider is MG, then
-                            //    $vterminalID = $otopup->viewTerminalID($login);
-                            //    $servicePwdResult = $otopup->getterminalcredentials($vterminalID['TerminalID'], $ubserviceID);
-                            //    $methodname = $_MicrogamingMethod;
-                            //    $originID = 2; //manual redemption origin ID
-                            //        
-                            //    $manualredemptionID = $otopup->insertserviceTransRef($ubserviceID, $originID);
-                            //    if(!$manualredemptionID)
-                            //    {
-                            //        $msg = "Manual Redemption: Error on inserting servicetransactionref";
-                            //    }
-                            //    else
-                            //    {
-                            //        $transactionID = $manualredemptionID;
-                            //        $eventID = $_CAPIEventID;
-                            //    
-                            //        $_MGCredentials = $_ServiceAPI[$ubserviceID-1];
-                            //        list($mgurl, $mgserverID) =  $_MGCredentials;
-                            //        $url = $mgurl;
-                            //        $capiusername = $_CAPIUsername;
-                            //        $capipassword = $_CAPIPassword;
-                            //        $capiplayername = $_CAPIPlayerName;
-                            //        $capiserverID = $mgserverID;
-                            //        $withdraw = array();  
-                            //        //withdraw mg casino
-                            //        $withdraw = $CasinoGamingCAPI->Withdraw($servername, $ubserviceID, $url, $login, $capiusername, $capipassword, 
-                            //                $capiplayername, $capiserverID, $ramount, $servicePwdResult['ServicePassword'], $transactionID, 
-                            //                $eventID, $transactionID, $methodname, $usermode);
-                            //    }   
-                            //    break;
-                            //case strstr($servername, "PT"): //if provider is PT, then
-                            //    $originID = 2;
-                            //    //insert service transaction reference pass to casino 
-                            //    $manualredemptionID = "MR"."$lastmrid";
-                            //        
-                            //    $tracking2 = $manualredemptionID; 
-                            //    $tracking1 = $trans_req_log_last_id;
-                            //    $tracking3 = $vterminalID;
-                            //    $vterminalID = '';
-                            //    $vsiteID = '';
-                            //    $vterminalID = $ubterminalID;
-                            //    
-                            //    //Get PT Terminal Password
-                            //    if(isset($usermode))
-                            //    {
-                            //        $tracking1 = $_SESSION['ServicePassword'];
-                            //    }
-                            //    else 
-                            //    {
-                            //        $servicePwdResult = $otopup->getterminalcredentials($vterminalID, $ubserviceID);
-                            //        $tracking1 = $servicePwdResult['ServicePassword'];
-                            //    }
-                            //        
-                            //    $url = $_ServiceAPI[$ubserviceID-1];
-                            //    $capiusername = $_ptcasinoname;
-                            //    $capipassword = $_ptsecretkey;
-                            //    $capiplayername = $_CAPIPlayerName;
-                            //    $capiserverID = '';
-                            //    $withdraw = array();
-                            //    //withdraw pt casino
-                            //    $withdraw = $CasinoGamingCAPI->Withdraw($servername, $ubserviceID, $url, $login, $capiusername, $capipassword, 
-                            //            $capiplayername, $capiserverID, $ramount, $tracking1, $tracking2, $tracking3='', $tracking4='', 
-                            //            $methodname='');
-                            //    break;
-                            // Comment Out CCT 02/06/2018 END    
-                            default :
-                                echo "Error: Invalid Casino Provider";
-                                break;
-                        }
-
-                        switch (true)
-                        {
-                            case strstr($servername, "RTG"): //if provider is RTG, then
-                                //check if redemption was successfull, and insert information on manualredemptions and audittrail
+                                //check if redemption was successfull, and update information on manualredemptions and insert in audittrail
                                 if($withdraw['IsSucceed'] == true )
                                 {
                                     //fetch the information when calling the RTG Withdraw Method
@@ -655,29 +539,18 @@ if($connected)
                                         $rtransactionID = $results['WithdrawGenericResult']['transactionID'];
                                     }
                                     $fmteffdate = str_replace("T", " ", $reffdate);
-                                    $vsiteID = $siteID;
-                                    $vterminalID = $ubterminalID;
                                     $vreportedAmt = $ramount;
                                     $vactualAmt = $rwamount;
                                     $vtransactionDate = $otopup->getDate();
-                                    $vreqByAID = $aid;
-                                    $vprocByAID = $aid;
-                                    //$vremarks = $rremarks;
-                                    $vdateEffective = $fmteffdate;
                                     $vstatus = 1;
                                     $vtransactionID = $rtransactionID;
-                                    $vremarks = $remarksub;
-                                    $vticket = $ticketub;
-                                    $cmbServerID = $ubserviceID;
 
                                     //check if there was no error on withdrawal
                                     if($riserror == "OK")
                                     {
                                         $vtransStatus = $rremarks;
-                                        $transsummaryid = $otopup->getLastSummaryID($vterminalID);
-                                        $transsummaryid = $transsummaryid['summaryID'];
-                                        $issucess = $otopup->updateManualRedemptionub($vstatus, $vactualAmt, 
-                                        $vtransactionID, $fmteffdate, $vtransStatus, $lastmrid);
+                                        $issucess = $otopup->updateManualRedemptionub($vstatus, $vactualAmt, $vtransactionID, 
+                                                $fmteffdate, $vtransStatus, $lastmrid);
                                         if($issucess > 0)
                                         {
                                             //get new balance after redemption
@@ -725,148 +598,130 @@ if($connected)
                                     $msg = "Manual Redemption: ".$withdraw['ErrorMessage']; //error message when initially calling the RTG API
                                 }
                                 break;
-                            // Comment Out CCT 02/06/2018 BEGIN
-                            //case strstr($servername, "MG"): //if provider is MG, then
-                            //    //MG withdraw checking
-                            //    //check first if the API responded
-                            //    if($withdraw['IsSucceed'] == true )
-                            //    {
-                            //        //fetch the information when calling the MG Withdraw Method
-                            //        foreach($withdraw as $results)
-                            //        {
-                            //            $riswithdraw = $withdraw['IsSucceed']; 
-                            //            $rwamount = abs($withdraw['TransactionInfo']['TransactionAmount']/100);
-                            //            $rtransactionID = $withdraw['TransactionInfo']['TransactionId'];
-                            //            $rerrorcode = $withdraw['ErrorCode'];
-                            //            if($rerrorcode <> 0)
-                            //            {
-                            //                $rerrormsg = $withdraw['ErrorMessage'];
-                            //            }
-                            //        }
-                            //        
-                            //        $vsiteID = $siteID;
-                            //        $vterminalID = $ubterminalID;
-                            //        $vreportedAmt = $ramount;
-                            //        $vactualAmt = $rwamount;
-                            //        $vtransactionDate = $vdate;
-                            //        $vreqByAID = $aid;
-                            //        $vprocByAID = $aid;
-                            //        $vremarks = $remarksub;
-                            //        $vticket = $ticketub;
-                            //        $vdateEffective = $vdate;
-                            //        $vstatus = 1;
-                            //        $vtransactionID = $rtransactionID;
-                            //        $cmbServerID = $ubserviceID; #Added on July 2, 2012
-                            //        
-                            //        //check if withdrawal result was successfull and if there was no error
-                            //        if($riswithdraw == true && $rerrorcode == 0)
-                            //        {
-                            //            $vtransStatus = "Transaction Approved";
-                            //            $transsummaryid = $otopup->getLastSummaryID($vterminalID);
-                            //            $transsummaryid = $transsummaryid['summaryID'];
-                            //            $issucess = $otopup->updateManualRedemptionub($vstatus, $vactualAmt, 
-                            //            $vtransactionID, $vtransactionDate, $riswithdraw, $lastmrid);
-                            //    
-                            //            //check if successfully inserted on DB
-                            //            if($issucess > 0)
-                            //            {
-                            //                //insert into audit trail
-                            //                $vtransdetails = "transaction id ".$vtransactionID.",amount ".$vreportedAmt;
-                            //                $vauditfuncID = 7;
-                            //                $otopup->logtoaudit($new_sessionid, $aid, $vtransdetails, $vtransactionDate, $vipaddress, $vauditfuncID);
-                            //                $msg = "Redeemed: ".$ramount."; Remaining Balance: ".$balance;
-                            //            }
-                            //            else
-                            //            {
-                            //                $msg = "Manual Redemption: Error on inserting manual redemption";
-                            //            }
-                            //        }
-                            //        else
-                            //        {
-                            //            $status = 2;
-                            //            $otopup->updateManualRedemptionFailedub($status, $lastmrid);
-                            //            $msg = $rerrormsg; //error message when calling the withdrawal result
-                            //        }
-                            //    }
-                            //    else
-                            //    {
-                            //        $status = 2;
-                            //        $otopup->updateManualRedemptionFailedub($status, $lastmrid);
-                            //        $msg = "Manual Redemption: ".$withdraw['ErrorMessage']; //error message when initially calling the MG API
-                            //    }
-                            //    break;
-                            //case strstr($servername, "PT"): //if provider is PT, then
-                            //    //check if redemption was successfull and insert information on manualredemptions and audittrail
-                            //    if($withdraw['IsSucceed'] == true)
-                            //    {
-                            //        foreach ($withdraw as $results)
-                            //        {
-                            //            $riswithdraw= $withdraw['IsSucceed'];
-                            //            $rwamount = abs($withdraw['TransactionInfo']['PT']['balance']);
-                            //            $rtransactionID = $withdraw['TransactionInfo']['PT']['tranid'];
-                            //            $rerrorcode = $withdraw['ErrorCode'];
-                            //            if($rerrorcode <> 0)
-                            //            {
-                            //                $rerrormsg = $withdraw['ErrorMessage'];
-                            //            }
-                            //        }
-                            //        
-                            //        $vsiteID = $siteID;
-                            //        $vreportedAmt = $ramount;
-                            //        $vactualAmt = $rwamount;
-                            //        $vtransactionDate = $vdate;
-                            //        $vreqByAID = $aid;
-                            //        $vprocByAID = $aid;
-                            //        $vremarks = $remarksub;
-                            //        $vticket = $ticketub;
-                            //        $vdateEffective = $vdate;
-                            //        $vstatus = 1;
-                            //        $vtransactionID = $rtransactionID;
-                            //        $cmbServerID = $ubserviceID; #Added on July 2, 2012
-                            //            
-                            //        //check if withdrawal result was successfull and if there was no error
-                            //        if($riswithdraw == true && $rerrorcode == 0)
-                            //        {   
-                            //            $vtransStatus = "approved";
-                            //            $transsummaryid = $otopup->getLastSummaryID($vterminalID);
-                            //            $transsummaryid = $transsummaryid['summaryID'];
-                            //        
-                            //            $issucess = $otopup->updateManualRedemptionub($vstatus, $vactualAmt, 
-                            //            $vtransactionID, $vtransactionDate, $vtransStatus, $lastmrid);
-                            //    
-                            //            //check if successfully inserted on DB
-                            //            if ($issucess > 0) 
-                            //            {
-                            //                //insert into audit trail
-                            //                $vtransdetails = "transaction id " . $vtransactionID . ",amount " . $vreportedAmt;
-                            //                $vauditfuncID = 7;
-                            //                $otopup->logtoaudit($new_sessionid, $aid, $vtransdetails, $vtransactionDate, $vipaddress, $vauditfuncID);
-                            //                $msg = "Redeemed: " . $ramount . "; Remaining Balance: " . $balance;
-                            //            } 
-                            //            else 
-                            //            {
-                            //                $msg = "Manual Redemption: Error on inserting manual redemption";
-                            //            }
-                            //        } 
-                            //        else 
-                            //        {
-                            //            $status = 2;
-                            //            $otopup->updateManualRedemptionFailedub($status, $lastmrid);
-                            //            $msg = $rerrormsg; //error message when calling the withdrawal result.
-                            //        }
-                            //    } 
-                            //    else 
-                            //    {
-                            //        $status = 2;
-                            //        $otopup->updateManualRedemptionFailedub($status, $lastmrid);
-                            //        $msg = "Manual Redemption: ".$withdraw['ErrorMessage']; //error message when calling the withdrawal result
-                            //    }
-                            //    break;
-                            // Comment Out CCT 02/06/2018 END
+                                
+                            case strstr($servername, "HAB"): //if provider is Habanero, then
+                                
+                                $capiusername = $_HABbrandID;
+                                $capipassword = $_HABapiKey;
+                                $tracking2 = '';
+                                $tracking3 = '';
+                                $withdraw = array();
+
+                                $serviceUBResult = $otopup->getUBInfo($mid, $ubserviceID);
+                                
+                                if ($isEwallet == 1) 
+                                {
+                                    if ($amountToRedeem != "") 
+                                    {
+                                        if ($amountToRedeem <= $vserviceBalance) 
+                                        {
+                                            $withdraw = $CasinoGamingCAPI->Withdraw($servername, $ubserviceID, $url, $login, $capiusername, 
+                                                    $capipassword, $capiplayername, $capiserverID, $ramount, $tracking1, $tracking2, $tracking3, 
+                                                    $tracking4 = '', $methodname = '', $usermode, $locatorname, $serviceUBResult['ServicePassword']);   
+                                        }     
+                                        else 
+                                        {
+                                            $msg = "Amount to redeem should be less than or equal to Casino balance.";
+                                        }   
+                                    }
+                                    else 
+                                    {
+                                        $msg = "Invalid amount to withdraw.";
+                                    }   
+                                }
+                                else 
+                                {
+                                    $withdraw = $CasinoGamingCAPI->Withdraw($servername, $ubserviceID, $url, $login, $capiusername, 
+                                            $capipassword, $capiplayername, $capiserverID, $ramount, $tracking1, $tracking2, $tracking3, 
+                                            $tracking4 = '', $methodname = '', $usermode, $locatorname, $serviceUBResult['ServicePassword']);   
+                                }
+
+                                //check if redemption was successfull
+                                if($withdraw['IsSucceed'] == true )
+                                {
+                                   $riserror = $withdraw['TransactionInfo']['withdrawmethodResult']['Message'];
+                                   $rwamount = $withdraw['TransactionInfo']['withdrawmethodResult']['Amount'];
+                                   $rtransactionID = $withdraw['TransactionInfo']['withdrawmethodResult']['TransactionId'];
+                
+                                   //check if there was no error on withdrawal
+                                   if($riserror == "Withdrawal Success")
+                                   {
+                                       // Check if Amount < 0, Withdrawal still returns Withdrawal Success even if Previous Balance before Withdrawal is already zero
+                                       if ($rwamount < 0)
+                                       {
+                                           $vstatus = 1;
+                                           $vdateEffective = $otopup->getDate();   
+                                           $vtransactionDate = $vdateEffective;
+                                           $rremarks = $riserror;
+                                            
+                                           // UPDATE MANUAL REDEMPTIONS TABLE BASED ON RETURN OF API CALL
+                                           $issucess = $otopup->updateManualRedemptionub($vstatus, $rwamount * -1, $rtransactionID, $vdateEffective, $rremarks, $lastmrid);
+                                           if($issucess > 0)
+                                           {
+                                                // get new balance after redemption
+                                                $rbalance = array();
+                                                $rbalance = $CasinoGamingCAPI->getBalance($servername, $ubserviceID, $url, $login, 
+                                                        $capiusername, $capipassword, $capiplayername, $capiserverID, $usermode="",
+                                                        $serviceUBResult['ServicePassword']);
+                                                
+                                                if($rbalance['IsSucceed'] == true)
+                                                {
+                                                    if(isset($rbalance['BalanceInfo']['Balance']))
+                                                    {
+                                                        $habbalance = $rbalance['BalanceInfo']['Balance'];
+                                                        $balance = $habbalance;
+                                                    } 
+                                                }
+                                                //update member services
+                                                if($otopupmembership->open())
+                                                {
+                                                    $otopupmembership->updateMemberServices($balance, $mid, $ubserviceID, $issucess);
+                                                }
+                                                $otopupmembership->close();
+     
+                                                //insert into audit trail
+                                                $rwamountnonneg = $rwamount * -1;
+                                                $rwamountnonneg = number_format($rwamountnonneg,2, '.', ','); 
+                                                $vtransdetails = "Transaction ID: ".$rtransactionID.", Amount: ". $rwamountnonneg;
+                                                $vauditfuncID = 7;
+                                                $otopup->logtoaudit($new_sessionid, $aid, $vtransdetails, $vtransactionDate, $vipaddress, $vauditfuncID);
+                                                $msg = "Redeemed: ".$rwamountnonneg."; Remaining Balance: ".$balance;
+                                            }
+                                            else
+                                            {
+                                                // UPDATE MANUAL REDEMPTIONS TABLE BASED ON RETURN OF UPDATE STATEMENT
+                                                $status = 2;
+                                                $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                $msg = "Manual Redemption: Error on updating  manual redemption record.";
+                                            }
+                                        }
+                                        else 
+                                        {
+                                            // UPDATE MANUAL REDEMPTIONS TABLE BASED ON RETURN OF API CALL
+                                            $status = 2;
+                                            $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                            $msg = "Manual Redemption: Player Balance is already zero.";
+                                        }
+                                   }
+                                   else
+                                   {
+                                       $status = 2;
+                                       $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                       $msg = $riserror; //error message when calling the withdrawal result                                       
+                                   }    
+                                }
+                                else
+                                {
+                                    $status = 2;
+                                    $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                    $msg = "Manual Redemption: ".$withdraw['ErrorMessage']; //error message when initially calling the Habanero API
+                                }                            
+                                break;
+                                
                             default :
                                 echo "Error: Invalid Casino Provider";
                                 break;
-                        }  
+                        }
                     }    
                     else
                     {
@@ -880,7 +735,7 @@ if($connected)
                 echo json_encode($msg);
                 $otopup->close();
                 break;
-                
+
           //Get Casino Services provided by membership card    
            case "GetCasino":
                 $casino = $_SESSION['CasinoArray'];
@@ -930,56 +785,30 @@ if($connected)
 
                                     switch (true)
                                     {
-                                    // ADDED CCT 11/29/2017 BEGIN
-                                    case strstr($serviceName, "Habanero"): //if provider is Habanero, then
-                                      //call get balance method of Habanero
-                                      $url = $_ServiceAPI[$rserviceid-1];
-                                      $capiusername = $_HABbrandID;
-                                      $capipassword = $_HABapiKey;
-                                      $capiplayername = '';
-                                      $capiserverID = '';
-                                      $balance = $CasinoGamingCAPI->getBalance($servicegrp, $rserviceid, $url, $rserviceuname, $capiusername, 
-                                              $capipassword, $capiplayername, $capiserverID, $rusermode, $rservicepassword); 
-                                      break;                                        
-                                    // ADDED CCT 11/29/2017 END
-                                    case strstr($serviceName, "RTG"): //if provider is RTG, then
-                                     //call get balance method of RTG
-                                      $url = $_ServiceAPI[$rserviceid-1];
-                                      $capiusername = $_CAPIUsername;
-                                      $capipassword = $_CAPIPassword;
-                                      $capiplayername = $_CAPIPlayerName;
-                                      $capiserverID = '';
-                                      $balance = $CasinoGamingCAPI->getBalance($servicegrp, $rserviceid, $url, 
-                                                          $rserviceuname, $capiusername, $capipassword, 
-                                                          $capiplayername, $capiserverID, $rusermode); 
-                                      break;
-                                    // Comment Out CCT 02/06/2018 BEGIN
-                                    //case strstr($serviceName, "MG"): //if provider is MG, then
-                                    //   //call getbalance method of MG
-                                    //  $_MGCredentials = $_ServiceAPI[$rserviceid-1];
-                                    //  list($mgurl, $mgserverID) =  $_MGCredentials;
-                                    //  $url = $mgurl;
-                                    //  $capiusername = $_CAPIUsername;
-                                    //  $capipassword = $_CAPIPassword;
-                                    //  $capiplayername = $_CAPIPlayerName;
-                                    //  $capiserverID = $mgserverID;
-                                    //  $balance = $CasinoGamingCAPI->getBalance($servicegrp, $rserviceid,
-                                    //                $url, $rserviceuname, $capiusername, $capipassword, $capiplayername, $capiserverID); 
-                                    //  break;
-                                    //case strstr($serviceName, "PT"): //if provider is PT, then
-                                    //  //call getbalance method of PT
-                                    //  $url = $_ServiceAPI[$rserviceid-1];
-                                    //  $capiusername = $_ptcasinoname;
-                                    //  $capipassword = $_ptsecretkey;
-                                    //  $capiplayername = $_CAPIPlayerName;
-                                    //  $capiserverID = '';
-                                    //  $balance = $CasinoGamingCAPI->getBalance($servicegrp, $rserviceid, $url, $rserviceuname, $capiusername, 
-                                    //            $capipassword, $capiplayername, $capiserverID); 
-                                    //  break;
-                                    // Comment Out CCT 02/06/2018 END
-                                    default :
-                                      echo "Error: Invalid Casino Provider";
-                                      break;
+                                        case strstr($serviceName, "Habanero"): //if provider is Habanero, then
+                                          //call get balance method of Habanero
+                                          $url = $_ServiceAPI[$rserviceid-1];
+                                          $capiusername = $_HABbrandID;
+                                          $capipassword = $_HABapiKey;
+                                          $capiplayername = '';
+                                          $capiserverID = '';
+                                          $balance = $CasinoGamingCAPI->getBalance($servicegrp, $rserviceid, $url, $rserviceuname, $capiusername, 
+                                                  $capipassword, $capiplayername, $capiserverID, $rusermode, $rservicepassword); 
+                                          break;                                        
+                                        case strstr($serviceName, "RTG"): //if provider is RTG, then
+                                         //call get balance method of RTG
+                                          $url = $_ServiceAPI[$rserviceid-1];
+                                          $capiusername = $_CAPIUsername;
+                                          $capipassword = $_CAPIPassword;
+                                          $capiplayername = $_CAPIPlayerName;
+                                          $capiserverID = '';
+                                          $balance = $CasinoGamingCAPI->getBalance($servicegrp, $rserviceid, $url, 
+                                                              $rserviceuname, $capiusername, $capipassword, 
+                                                              $capiplayername, $capiserverID, $rusermode); 
+                                          break;
+                                        default :
+                                          echo "Error: Invalid Casino Provider";
+                                          break;
                                     }
 
                                     $terminalid = $otopup->viewTerminalID($rserviceuname);
@@ -1752,96 +1581,36 @@ if($connected)
               $sRTG = preg_match('/RTG/', $provider);
               if($sRTG == 0)
               {
-                // Comment Out CCT 02/06/2018 BEGIN
-                // $sMG = preg_match('/MG/', $provider);
-                // if($sMG == 0)
-                // {
-                    //$sPT = preg_match('/PT/', $provider);
-                    //if($sPT == 0)
-                    //{
-                // Comment Out CCT 02/06/2018 END
-                        // COMMENT OUT CCT 11/27/2017 BEGIN
-                        //echo 'Invalid Casino.';
-                        // COMMENT OUT CCT 11/27/2017 END
-                        // ADDED CCT 11/27/2017 BEGIN
-                        $sHAB = preg_match('/Habanero/', $provider);
-                        if($sHAB == 0)
-                        {
-                            // COMMENT OUT CCT 01/22/2018 BEGIN
-                            //echo 'Invalid Casino.';
-                            // COMMENT OUT CCT 01/22/2018 END
-                            // ADDED CCT 01/22/2018 BEGIN
-                            $sEB = preg_match('/e-Bingo/', $provider);
-                            if($sEB == 0)
-                            {
-                                echo 'Invalid Casino.';
-                            }
-                            else 
-                            {
-                                echo "No manual redemption for e-Bingo.";
-                                $otopup->close();
-                                exit;
-                            }
-                            // ADDED CCT 01/22/2018 END
-                        } 
-                        else 
-                        {
-                            $_SESSION['site'] = $siteID;
-                            $_SESSION['terminal'] = $vterminalID;
-                            $_SESSION['login'] = $login;
-                            $_SESSION['serverid'] = $serverId;
-                            $_SESSION['chkbalance'] = $vbalance;
-                            $_SESSION['Withdraw'] = $vwithdraw;
-                            $_SESSION['Redeem'] = $isredeem;
-                            $_SESSION['txtamount'] = $vamount;
-                            $_SESSION['txtremarks'] = $vremarks;
-                            $_SESSION['txtticket'] = $vticket;
-                            $_SESSION['txtcardnumber'] = '';
-                            $redirect = "ProcessHabanero_CAPI.php";
-                        }
-                        // ADDED CCT 11/27/2017 END
-                // Comment Out CCT 02/06/2018 BEGIN
-                    // } 
-                    // else 
-                    // {
-                    //    $_SESSION['site'] = $siteID;
-                    //    $_SESSION['terminal'] = $vterminalID;
-                    //    $_SESSION['login'] = $login;
-                    //    $_SESSION['serverid'] = $serverId;
-                    //    $_SESSION['chkbalance'] = $vbalance;
-                    //    $_SESSION['Withdraw'] = $vwithdraw;
-                    //    $_SESSION['Redeem'] = $isredeem;
-                    //    $_SESSION['txtamount'] = $vamount;
-                    //    $_SESSION['txtremarks'] = $vremarks;
-                    //    $_SESSION['txtticket'] = $vticket;
-                    //    $_SESSION['txtcardnumber'] = '';
-                    //    $redirect = "ProcessPT_CAPI.php";
-                    // }
-                 //}
-                 //else
-                 //{
-                     //this part gets MG username
-//                     $rloginresult = $otopup->getmglogin($vterminalID);
-//                     foreach ($rloginresult as $results)
-//                     {
-//                        $login = $results['ServiceTerminalAccount'];
-//                        $ragentID = $results['ServiceAgentID'];
-//                     }
-                //     $_SESSION['site'] = $siteID;
-                //     $_SESSION['terminal'] = $vterminalID;
-                //     $_SESSION['serverid'] = $serverId;
-                //     $_SESSION['chkbalance'] = $vbalance;
-                //     $_SESSION['Withdraw'] = $vwithdraw;
-                //     $_SESSION['Redeem'] = $isredeem;
-                //     $_SESSION['login'] = $login;
-                //     $_SESSION['txtamount'] = $vamount;
-                //     $_SESSION['txtremarks'] = $vremarks;
-                //     $_SESSION['txtticket'] = $vticket;
-                //     $_SESSION['txtcardnumber'] = '';
-                //     //$_SESSION['agentid'] = $ragentID;
-                //     $redirect = "ProcessMG_CAPI.php";
-                // }
-              // Comment Out CCT 02/06/2018 END                                         
+                $sHAB = preg_match('/Habanero/', $provider);
+                if($sHAB == 0)
+                {
+                    $sEB = preg_match('/e-Bingo/', $provider);
+                    if($sEB == 0)
+                    {
+                        echo 'Invalid Casino.';
+                    }
+                    else 
+                    {
+                        echo "No manual redemption for e-Bingo.";
+                        $otopup->close();
+                        exit;
+                    }
+                } 
+                else 
+                {
+                    $_SESSION['site'] = $siteID;
+                    $_SESSION['terminal'] = $vterminalID;
+                    $_SESSION['login'] = $login;
+                    $_SESSION['serverid'] = $serverId;
+                    $_SESSION['chkbalance'] = $vbalance;
+                    $_SESSION['Withdraw'] = $vwithdraw;
+                    $_SESSION['Redeem'] = $isredeem;
+                    $_SESSION['txtamount'] = $vamount;
+                    $_SESSION['txtremarks'] = $vremarks;
+                    $_SESSION['txtticket'] = $vticket;
+                    $_SESSION['txtcardnumber'] = '';
+                    $redirect = "ProcessHabanero_CAPI.php";
+                }
               }
               //pass session variables to ProcessRTG.php
               else
@@ -1913,63 +1682,11 @@ if($connected)
             }
 
             //to check if the sname of provider matches on the posted data, and redirect to its
-              //respective process
+            //respective process
             $sRTG = preg_match('/RTG/', $provider);
             if($sRTG == 0)
             {
-                // Comment Out CCT 02/06/2018 BEGIN
-               //$sMG = preg_match('/MG/', $provider);
-               //if($sMG == 0)
-               //{
-                   //$sPT = preg_match('/PT/', $provider);
-                   //if($sPT == 0)
-                   //{
-               // Comment Out CCT 02/06/2018 END
-                       echo 'Invalid Casino.';
-               // Comment Out CCT 02/06/2018 BEGIN
-                   //} 
-                   //else 
-                   //{
-                   //       $_SESSION['site'] = $siteID;
-                   //       $_SESSION['terminal'] = $vterminalID;
-                   //       $_SESSION['login'] = $login;
-                   //       $_SESSION['serverid'] = $serverId;
-                   //       $_SESSION['chkbalance'] = $vbalance;
-                   //       $_SESSION['Withdraw'] = $vwithdraw;
-                   //       $_SESSION['Redeem'] = $isredeem;
-                   //       $_SESSION['txtamount'] = $vamount;
-                   //       $_SESSION['txtremarks'] = $vremarks;
-                   //       $_SESSION['txtticket'] = $vticket;
-                   //       $_SESSION['txtcardnumber'] = $loyaltycardnumber;
-                   //       $_SESSION['txtmid'] = $mid;
-                   //       $redirect = "ProcessPT_CAPI.php";
-                   //}
-               //}
-               //else
-               //{
-               //    //this part gets MG username
-//                     $rloginresult = $otopup->getmglogin($vterminalID);
-//                     foreach ($rloginresult as $results)
-//                     {
-//                        $login = $results['ServiceTerminalAccount'];
-//                        $ragentID = $results['ServiceAgentID'];
-//                     }
-               //    $_SESSION['site'] = $siteID;
-               //    $_SESSION['terminal'] = $vterminalID;
-               //    $_SESSION['serverid'] = $serverId;
-               //    $_SESSION['chkbalance'] = $vbalance;
-               //    $_SESSION['Withdraw'] = $vwithdraw;
-               //    $_SESSION['Redeem'] = $isredeem;
-               //    $_SESSION['login'] = $login;
-               //    $_SESSION['txtamount'] = $vamount;
-               //    $_SESSION['txtremarks'] = $vremarks;
-               //    $_SESSION['txtticket'] = $vticket;
-               //    $_SESSION['txtcardnumber'] = $loyaltycardnumber;
-               //    $_SESSION['txtmid'] = $mid;
-               //    //$_SESSION['agentid'] = $ragentID;
-               //    $redirect = "ProcessMG_CAPI.php";
-               //}
-               // Comment Out CCT 02/06/2018 END
+                echo 'Invalid Casino.';
             }
             //pass session variables to ProcessRTG.php
             else

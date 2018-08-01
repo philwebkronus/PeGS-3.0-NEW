@@ -133,7 +133,10 @@ if($connected)
                 $siteIDs = $orptoptr->getSiteByAID($aid);
                 
                 //get service ids with transaction for said date
-                $serviceGrpIDs = array(1, 6, 7);
+                //EDITED CCT 07/11/2018 BEGIN
+                //$serviceGrpIDs = array(1, 6, 7);
+                $serviceGrpIDs = array(1, 4, 6, 7);
+                //EDITED CCT 07/11/2018 END
                 $serviceIDs = $orptoptr->getServiceIDwithTransactions($serviceGrpIDs, $siteIDs, $datefrom, $dateto);
                 
                 // Prepare array structure
@@ -297,6 +300,10 @@ if($connected)
                         $gh1 = 0;
                         $gh2 = 0;
                         $gh3 = 0;
+                        //ADDED CCT 07/11/2018 BEGIN
+                        $gh4 = 0;
+                        $gh5 = 0;
+                        //ADDED CCT 07/11/2018 END
                         $j = 0;                        
                         foreach($trans_details2 as $vview2)
                         {
@@ -315,18 +322,37 @@ if($connected)
                                 {
                                     $gh3 = $servview2['SubTotal_GH'];
                                 }
+                                //ADDED CCT 07/11/2018 BEGIN
+                                elseif ($servview2['ServiceID'] == 28) // RTG UB
+                                {
+                                    $gh4 = $servview2['SubTotal_GH'];
+                                }
+                                elseif ($servview2['ServiceID'] == 29) // Habanero UB
+                                {
+                                    $gh5 = $servview2['SubTotal_GH'];
+                                }
+                                //ADDED CCT 07/11/2018 END
                             }
                             
                             if ($vview2['SiteCode'] == 'Total')
                             {
-                                $response->rows[$j]['cell']=array('<b>'.$vview2['SiteCode'].'</b>', '<b>'.number_format($gh1, 2).'</b>', 
-                                                '<b>'.number_format($gh2, 2).'</b>', '<b>'.number_format($gh3, 2).'</b>', 
-                                                '<b>'.number_format($gh1 + $gh2 + $gh3, 2).'</b>');
+                                // EDITED CCT 07/11/2018 BEGIN
+                                //$response->rows[$j]['cell']=array('<b>'.$vview2['SiteCode'].'</b>', '<b>'.number_format($gh1, 2).'</b>', 
+                                //                '<b>'.number_format($gh2, 2).'</b>', '<b>'.number_format($gh3, 2).'</b>', 
+                                //                '<b>'.number_format($gh1 + $gh2 + $gh3, 2).'</b>');
+                                $response->rows[$j]['cell']=array('<b>'.$vview2['SiteCode'].'</b>', '<b>'.number_format($gh1 + $gh4, 2).'</b>', 
+                                                '<b>'.number_format($gh2 + $gh5, 2).'</b>', '<b>'.number_format($gh3, 2).'</b>', 
+                                                '<b>'.number_format($gh1 + $gh2 + $gh3 + $gh4 + $gh5, 2).'</b>');
+                                // EDITED CCT 07/11/2018 END
                             }
                             else
                             {
-                                $response->rows[$j]['cell']=array($vview2['SiteCode'], number_format($gh1, 2), number_format($gh2, 2), 
-                                                number_format($gh3, 2), number_format($gh1 + $gh2 + $gh3, 2));
+                                // EDITED CCT 07/11/2018 BEGIN
+                                //$response->rows[$j]['cell']=array($vview2['SiteCode'], number_format($gh1, 2), number_format($gh2, 2), 
+                                //                number_format($gh3, 2), number_format($gh1 + $gh2 + $gh3, 2));
+                                $response->rows[$j]['cell']=array($vview2['SiteCode'], number_format($gh1 + $gh4, 2), number_format($gh2 + $gh5, 2), 
+                                                number_format($gh3, 2), number_format($gh1 + $gh2 + $gh3 + $gh4 + $gh5, 2));
+                                // EDITED CCT 07/11/2018 END
                             }
                             $j++;
                         }
@@ -521,8 +547,6 @@ if($connected)
                 unset($arrdeposit);
                 unset($arrreload);
                 unset($arrwithdraw);
-                //              unset($arrewloadsamt);
-                //              unset($arrewwithdrawalsamt);
                 $orptoptr->close();
                 exit;
                 break;
@@ -635,7 +659,6 @@ if($connected)
                         $vewloads = $vview2['EWLoads'];
                         $vewwithdrawals = $vview2['EWWithdrawals'];
                         $response->rows[$j]['id']=$vview2['EwalletTransID'];
-                        //$response2->rows[$j]['cell']=array($vview2['SiteID'], $_POST['sitecode'], $rterminalCode, 
                         $response->rows[$j]['cell']=array($vview2['SiteCode'], $vview2['LoyaltyCardNumber'],
                         number_format($vewloads, 2), number_format($vewwithdrawals, 2),
                         $vview2['StartDate'], $vview2['EndDate']);
@@ -678,8 +701,6 @@ if($connected)
                     $redemption = array_sum($arrwithdraw)+array_sum($arrewwithdrawalsamt);
                     $ticketencashment = $orptoptr->getTotalTicketEncashment($dateFrom, $dateTo, $arrsiteID);
                     $cashonhand = $sales-$redemption-$ticketencashment;
-                    //                 $totalreload = array_sum($arrreloadamt); 
-                    //                 $totalwithdraw = array_sum($arrwithdrawamt);
 
                     unset($arrewloadsamt, $arrewwithdrawalsamt, $optrdetails2, $trans_details2);
                     //session variable to store transaction types in an array; to used on ajax call later on this program
@@ -699,13 +720,8 @@ if($connected)
                 }
 
                 echo json_encode($response);
-                //echo json_encode($response2);
-                //echo json_encode($response2);
 
                 unset($arrsiteID);
-                //unset($arrdeposit);
-                //unset($arrreload);
-                //unset($arrwithdraw);
                 unset($arrewloadsamt);
                 unset($arrewwithdrawalsamt);
                 $orptoptr->close();
@@ -858,7 +874,6 @@ if($connected)
                 $result = array();
                 $total = 0;
                 $subtotal = 0;
-                //$MG_total = 0; // Comment Out CCT 02/06/2018
                 $costello_total = 0;
                 $abbott_total = 0;
                 if (count($siteIDs) > 0) 
@@ -867,18 +882,13 @@ if($connected)
                     {
                         //get D, R, W and MR of respective casinos
                         $siteCode = $orptoptr->getsitecode($siteID['SiteID']);
-                        // Comment Out CCT 02/06/2018 BEGIN
-                        //for MG
-                        //$serviceID_MG             = array(2);
-                        //$deposit_reload_MG        = $orptoptr->getGrossHoldTB($siteID['SiteID'], $serviceID_MG, "DR", $datefrom, $dateto);
-                        //$withdraw_MG              = $orptoptr->getGrossHoldTB($siteID['SiteID'], $serviceID_MG, "W", $datefrom, $dateto);
-                        //$mr_MG                    = $orptoptr->getManualRedemptionTrans($siteID['SiteID'], $serviceID_MG, $datefrom, $dateto);
-                        //$grosshold_MG             = $deposit_reload_MG['Amount'] - ($withdraw_MG['Amount'] + $mr_MG['Amount']);
-                        // Comment Out CCT 02/06/2018 END
                         //for Costello
                         // EDITED CCT 02/08/2018 BEGIN
                         //$serviceID_COSTELLO       = array(1);
-                        $serviceID_COSTELLO       = array(1, 6); // Added Habanero
+                        //$serviceID_COSTELLO       = array(1, 6); // Added Habanero
+                        // EDITED 07/11/2018 BEGIN
+                        $serviceID_COSTELLO       = array(1, 4, 6); // Added RTG UB
+                        // EDITED 07/11/2018 END
                         // EDITED CCT 02/08/2018 END
                         $deposit_reload_COSTELLO  = $orptoptr->getGrossHoldTB($siteID['SiteID'], $serviceID_COSTELLO, "DR", $datefrom, $dateto);
                         $withdraw_COSTELLO        = $orptoptr->getGrossHoldTB($siteID['SiteID'], $serviceID_COSTELLO, "W", $datefrom, $dateto);
@@ -898,101 +908,66 @@ if($connected)
                                 'SiteCode' => trim(str_replace("ICSA-", "", $siteCode['SiteCode']))
                             );
                         $total += $subtotal;
-                //                       $results[] = array(
-                //                             'MG' => array(
-                //                                 'DepositReloadValue' => number_format($deposit_reload_MG['Amount'], 2, ".", ","),
-                //                                 'Withdraw' => number_format($withdraw_MG['Amount'], 2, ".", ","), 
-                //                                 'ManualRedemption' => number_format($mr_MG['Amount'], 2, ".", ","), 
-                //                                 'GrossHold' => number_format($grosshold_MG, 2, ".", ",")
-                //                             ), 
-                //                             'COSTELLO' => array(
-                //                                 'DepositReloadValue' => number_format($deposit_reload_COSTELLO['Amount'], 2, ".", ","), 
-                //                                 'Withdraw' => number_format($withdraw_COSTELLO['Amount'], 2, ".", ","),
-                //                                 'ManualRedemption' => number_format($mr_COSTELLO['Amount'], 2, ".", ","),
-                //                                 'GrossHold' => number_format($grosshold_COSTELLO, 2, ".", ",")
-                //                             ), 
-                //                             'ABBOTT' => array(
-                //                                 'StartBalance' => number_format($loads['StartBalance'], 2, ".", ","), 
-                //                                 'WalletReloads' => number_format($loads['WalletReloads'], 2, ".", ","), 
-                //                                 'EndBalance' => number_format($loads['EndBalance'], 2, ".", ",") ,
-                //                                 'GrossHold' => number_format($loads['GrossHold'], 2, ".", ",")
-                //                             ), 
-                //                             'SubTotal' => number_format(($grosshold_MG + $grosshold_COSTELLO + $loads['GrossHold']), 2, ".", ","), 
-                //                             'SiteCode' => trim(str_replace("ICSA-", "", $siteCode['SiteCode']))
-                //                         );
+                        $abbott_total += $loads['GrossHold'];
+                    }
 
-                //                       $MG_total += $grosshold_MG;
-                //                       $costello_total += $grosshold_COSTELLO;
-                //                       $abbott_total += $loads['GrossHold'];
-                }
-                //                   $grand_totals = array('Total' => 
-                //                       array(
-                //                         'Mg' => array('Total' => number_format($MG_total, 2, ".", ",")), 
-                //                         'Costello' => array('Total' => number_format($costello_total, 2, ".", ",")), 
-                //                         'Abbott' => array('Total' => number_format($abbott_total, 2, ".", ",")), 
-                //                         'Grand Total' => array('Total' => number_format(($MG_total + $costello_total + $abbott_total), 2, ".", ","))
-                //                   ));
-
-                //                   $arr_r = array_merge($results, array('GrossHold' => array(
-                //                                                        'Total' => number_format($total, 2, ".", ","))));
-                        $count = 0;
-                        $count = count($results);
-                        if ($count > 0) 
+                    $count = 0;
+                    $count = count($results);
+                    if ($count > 0) 
+                    {
+                        $results[] = array('SiteCode' => '<b>Total</b>', 
+                        'SubTotal' => "<b>".number_format($total, 2, ".", ",")."</b>");
+                        $count=$count+1;
+                        if($count > 0 ) 
                         {
-                            $results[] = array('SiteCode' => '<b>Total</b>', 
-                            'SubTotal' => "<b>".number_format($total, 2, ".", ",")."</b>");
-                            $count=$count+1;
-                            if($count > 0 ) 
-                            {
-                                $total_pages = ceil($count/$limit);
-                            } 
-                            else 
-                            {
-                                $total_pages = 0;
-                            }
-
-                            if ($page > $total_pages)
-                            {
-                                $page = $total_pages;
-                                $start = $limit * $page - $limit;           
-                            }
-
-                            if($page == 0)
-                            {
-                                $start = 0;
-                            }
-                            else
-                            {
-                                $start = $limit * $page - $limit;   
-                            }
-                            $limit = (int)$limit;
-                            //paginate array
-                            $trans_details2 = $orptoptr->paginatetransaction($results, $start, $limit);
-                            $arrewloadsamt = array();
-                            $arrewwithdrawalsamt = array();
-                            $j = 0;
-                            $response = new stdClass();
-                            $response->page = $page;
-                            $response->total = $total_pages;
-                            $response->records = $count; 
-                            //display to jqgrid
-                            foreach($trans_details2 as $vview2)
-                            {
-                                $response->rows[$j]['id']=$vview2['SiteCode'];
-                                //$response2->rows[$j]['cell']=array($vview2['SiteID'], $_POST['sitecode'], $rterminalCode, 
-                                $response->rows[$j]['cell']=array($vview2['SiteCode'], $vview2['SubTotal']);
-                                $j++;
-                            }
-                        }
+                            $total_pages = ceil($count/$limit);
+                        } 
                         else 
                         {
-                            $j = 0;
-                            $response->page = $page;
-                            $response->total = $total_pages;
-                            $response->records = $count;
-                            $msg = "Gross Hold: No returned result";
-                            $response->msg = $msg;
+                            $total_pages = 0;
                         }
+
+                        if ($page > $total_pages)
+                        {
+                            $page = $total_pages;
+                            $start = $limit * $page - $limit;           
+                        }
+
+                        if($page == 0)
+                        {
+                            $start = 0;
+                        }
+                        else
+                        {
+                            $start = $limit * $page - $limit;   
+                        }
+                        $limit = (int)$limit;
+                        //paginate array
+                        $trans_details2 = $orptoptr->paginatetransaction($results, $start, $limit);
+                        $arrewloadsamt = array();
+                        $arrewwithdrawalsamt = array();
+                        $j = 0;
+                        $response = new stdClass();
+                        $response->page = $page;
+                        $response->total = $total_pages;
+                        $response->records = $count; 
+                        //display to jqgrid
+                        foreach($trans_details2 as $vview2)
+                        {
+                            $response->rows[$j]['id']=$vview2['SiteCode'];
+                            $response->rows[$j]['cell']=array($vview2['SiteCode'], $vview2['SubTotal']);
+                            $j++;
+                        }
+                    }
+                    else 
+                    {
+                        $j = 0;
+                        $response->page = $page;
+                        $response->total = $total_pages;
+                        $response->records = $count;
+                        $msg = "Gross Hold: No returned result";
+                        $response->msg = $msg;
+                    }
 
                     echo json_encode($response);
                     $orptoptr->close();
@@ -1046,22 +1021,6 @@ if($connected)
         $arrdeposit = array();
         $arrwithdraw = array();
         $arrreload = array();
-
-        //       if(isset($_SESSION['total2']))
-        //       {
-        //           $arrtotal = $_SESSION['total2'];
-        //       }
-        //       else {
-        //           $arrtotal = 0;
-        //       }
-        //       
-        //       if(isset($_SESSION['total']))
-        //       {
-        //           $arrtotal2 = $_SESSION['total'];
-        //       }
-        //       else {
-        //           $arrtotal2 = 0;
-        //       }
 
         $vdatefrom = $_POST['rptDate'];
         $vdateto = date ( 'Y-m-d' , strtotime ($gaddeddate, strtotime($vdatefrom)));
@@ -1273,18 +1232,13 @@ if($connected)
         if ($dateFrom < $deploymentDate) 
         {
             $grandticketencashment = $orptoptr->getEncashedTicketsV15($arrsiteID, $dateFrom, $dateTo);
-            //$regularCash = $cohdata['TotalCashLoad']+ $cohdata['TotalBancnetLoad'] ;
-            //$esafeCash = $cohdata['TotalCashLoadEwallet']+ $cohdata['TotalEwalletBancnet'];   
             $ewalletWithdraw = $cohdata['TotalGenesisRedemption'] + $cohdata['TotalEwalletRedemption'];
-            //echo "((".$cohdata['TotalCashLoad'] ."+".$cohdata['TotalCouponLoad']." + ". $esafeCash. "+". $cohdata['TotalEwalletCoupon'].")". "-(". $cohdata['TotalCashRedemption']. "+". $ewalletWithdraw.")". "-". $grandticketencashment.")". "-". $cohdata['TotalMR'];exit;
             $grandcashonhand = (($cohdata['TotalCashLoad'] + $cohdata['TotalCouponLoad']+ $esafeCash + $cohdata['TotalEwalletCoupon'])-($cohdata['TotalCashRedemption']+$ewalletWithdraw)-$grandticketencashment)-$cohdata['TotalMR'];
         }
         else 
         {
             $grandticketencashment = $orptoptr->getEncashedTicketsV15($arrsiteID, $dateFrom, $dateTo);
             $ewalletWithdraw = $cohdata['TotalGenesisRedemption'] + $cohdata['TotalEwalletRedemption'];
-            //echo "(".$regularCash." + ".$loadticket. " + ". $loadcoupon. " + ". $esafeCash. "+".$ewalletloadticket."+". $ewalletloadcoupon.")"."-". "(".$totalredemption. " + ". $ewalletwithdrawal.")". "-". $encashedtickets.")". "-".  $manualredemption;exit;
-            //echo "((".$cohdata['TotalCashLoad']. "+". $cohdata['TotalTicketLoadGenesis'] ."+". $cohdata['TotalCouponLoad'] ."+".$cohdata['TotalCashLoadEwallet'] ."+". $cohdata['TotalEsafeTicketLoadGenesis'] ."+". $cohdata['TotalEwalletCoupon'].")-". "(".$cohdata['TotalRedemption']. "+". $ewalletWithdraw.")-" .$grandticketencashment.")-". $cohdata['TotalMR'].")";exit;
             $grandcashonhand = (($cohdata['TotalCashLoad'] + $cohdata['TotalTicketLoadGenesis'] + $cohdata['TotalCouponLoad'] + $cohdata['TotalCashLoadEwallet'] + $cohdata['TotalEsafeTicketLoadGenesis'] + $cohdata['TotalEwalletCoupon'])-($cohdata['TotalRedemption'] + $ewalletWithdraw)-$grandticketencashment)- $cohdata['TotalMR'];
             $grandredemption += $grandticketencashment;
         }
@@ -1295,14 +1249,8 @@ if($connected)
         "GrandTicketEncashment" => $grandticketencashment, "GrandCashOnHand" => $grandcashonhand);
 
         //results will be fetch here:
-        //       if(count($arrgrand) > 0)
-        //       {
         /**** Get Total Per Page  *****/
         $vtotal = new stdClass();
-        //           $vtotal->deposit = number_format($arrtotal["TotalDeposit"], 2, '.', ',');
-        //           $vtotal->reload = number_format($arrtotal["TotalReload"], 2, '.', ',');
-        //           $vtotal->withdraw = number_format($arrtotal["TotalWithdraw"], 2, '.', ',');
-        //$vtotal->sales = number_format($arrtotal["TotalDeposit"] + $arrtotal["TotalReload"], 2, '.', ',');
         /**** GET Total Page Summary ******/
         $vtotal->grandredemption = number_format($arrgrand['GrandRedemption'], 2, '.', ',');
         $vtotal->grandticketencashment = number_format($arrgrand['GrandTicketEncashment'], 2, '.', ',');
@@ -1310,15 +1258,8 @@ if($connected)
         $vtotal->grandsales = number_format($arrgrand["GrandSales"], 2, '.', ',');
         $vtotal->grandMR = number_format($cohdata['TotalMR'], 2, '.', ',');
 
-        //           // count site grosshold
-        //           $vgrossholdamt = $arrgrand["GrandDeposit"] + $arrgrand["GrandReload"] - $arrgrand["GrandWithdraw"];
-        //           $vtotal->grosshold = number_format($vgrossholdamt, 2, '.', ',');
         echo json_encode($vtotal); 
-        //}
-        //       else 
-        //       {
-        //           echo "No Results Found";
-        //       }
+
         unset($arrgrand);
         $orptoptr->close();
         exit;
@@ -1345,19 +1286,22 @@ if($connected)
                 $data1 = $orptoptr->getActiveSessionCountMod($cardnumber = '', $usermode, $siteID);
                 $usermode = 2;
                 $data2 = $orptoptr->getActiveSessionCountMod($cardnumber = '', $usermode, $siteID);
-                // CCT ADDED 01/24/2018 BEGIN
                 $usermode = 4;
                 $data3 = $orptoptr->getActiveSessionCountMod($cardnumber = '', $usermode, $siteID);
-                // CCT ADDED 01/24/2018 END
-                // CCT EDITED 01/24/2018 BEGIN
-                //$data = $data1 + $data2;
                 $data = $data1 + $data2 + $data3;
-                // CCT EDITED 01/24/2018 END
                 break;
 
             case "sessioncountub":
                 $usermode = 1;
-                $data = $orptoptr->getActiveSessionCountMod($cardnumber = '', $usermode, $siteID);
+                // CCT EDITED 07/11/2018 BEGIN
+                //$data = $orptoptr->getActiveSessionCountMod($cardnumber = '', $usermode, $siteID);
+                $data1 = $orptoptr->getActiveSessionCountMod($cardnumber = '', $usermode, $siteID);
+                // CCT ADDED 07/11/2018 BEGIN
+                $usermode = 3;
+                $data2 = $orptoptr->getActiveSessionCountMod($cardnumber = '', $usermode, $siteID);
+                // CCT ADDED 07/11/2018 END
+                $data = $data1 + $data2;
+                // CCT EDITED 07/11/2018 END
                 break;
 
             case "sessioncount1":
@@ -1371,64 +1315,53 @@ if($connected)
                 $data1 = $orptoptr->getActiveSessionCountMod($cardnumber, $usermode, $siteID = '');
                 $usermode = 2;
                 $data2 = $orptoptr->getActiveSessionCountMod($cardnumber, $usermode, $siteID = '');
-                // CCT ADDED 01/24/2018 BEGIN
                 $usermode = 4;
                 $data3 = $orptoptr->getActiveSessionCountMod($cardnumber, $usermode, $siteID = '');
-                // CCT ADDED 01/24/2018 END
-                // CCT EDITED 01/24/2018 BEGIN
-                //$data = $data1 + $data2;
                 $data = $data1 + $data2 + $data3;
-                // CCT EDITED 01/24/2018 END
                 break;
 
             case "sessioncountub1":
                 $cardnumber = $_POST["txtcardnumber"];
                 $usermode = 1;
-                $data = $orptoptr->getActiveSessionCountMod($cardnumber, $usermode, $siteID = '');
+                // EDITED CCT 07/11/2018 BEGIN
+                //$data = $orptoptr->getActiveSessionCountMod($cardnumber, $usermode, $siteID = '');
+                $data1 = $orptoptr->getActiveSessionCountMod($cardnumber, $usermode, $siteID = '');
+                // EDITED CCT 07/11/2018 END
+                // ADDED CCT 07/11/2018 BEGIN
+                $usermode = 3;
+                $data2 = $orptoptr->getActiveSessionCountMod($cardnumber, $usermode, $siteID = '');
+                $data = $data1 + $data2;
+                // ADDED CCT 07/11/2018 END
                 break;
 
             case "sessionrecord": 
                 $data = $orptoptr->getActiveSessionPlayingBalance($cardinfo, $siteID, $_ServiceAPI, 
-                // CCT EDITED 12/13/2017 BEGIN
-                //$_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, $_ptcasinoname,$_PlayerAPI,$_ptsecretkey);
-                $_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, $_ptcasinoname,$_PlayerAPI,$_ptsecretkey,
-                $_HABbrandID, $_HABapiKey);
-                // CCT EDITED 12/13/2017 BEGIN
+                    $_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, $_ptcasinoname,$_PlayerAPI,$_ptsecretkey,
+                    $_HABbrandID, $_HABapiKey);
                 break;
             
             case "pagcorsessionrecord":
                 $orptoptr2->open(); 
                 $data = $orptoptr->getPagcorActiveSessionPlayingBalance($cardinfo, $siteID, $_ServiceAPI, 
-                // CCT EDITED 12/13/2017 BEGIN
-                // $_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, $_ptcasinoname,$_PlayerAPI,$_ptsecretkey);
                     $_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, $_ptcasinoname,$_PlayerAPI,$_ptsecretkey, 
                     $_HABbrandID, $_HABapiKey);
-                // CCT EDITED 12/13/2017 END
                 break;
             
             //for user based report
             case "sessionrecordub":
                 $cardnumber = $_POST["txtcardnumber"];
-                // CCT EDITED 12/18/2017 BEGIN
-                //$data = $orptoptr->getActiveSessionPlayingBalanceub($cardinfo, $cardnumber, $_SESSION['ServiceUserName'], $_ServiceAPI, 
-                //$_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, $_ptcasinoname,$_PlayerAPI,$_ptsecretkey);
                 $data = $orptoptr->getActiveSessionPlayingBalanceub($cardinfo, $cardnumber, $_SESSION['ServiceUserName'], $_ServiceAPI, 
                     $_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, $_ptcasinoname,$_PlayerAPI,$_ptsecretkey, 
                     $_HABbrandID, $_HABapiKey);
-                // CCT EDITED 12/18/2017 END
                 break;
 
             //for user based report
             case "pagcorsessionrecordub":
                 $orptoptr2->open(); 
                 $cardnumber = $_POST["txtcardnumber"];
-                // CCR EDITED 12/18/2017 BEGIN
-                //$data = $orptoptr->getPagcorActiveSessionPlayingBalanceub($cardinfo, $cardnumber, $_SESSION['ServiceUserName'], $_ServiceAPI, 
-                //    $_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, $_ptcasinoname,$_PlayerAPI,$_ptsecretkey);
                 $data = $orptoptr->getPagcorActiveSessionPlayingBalanceub($cardinfo, $cardnumber, $_SESSION['ServiceUserName'], $_ServiceAPI, 
                     $_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, $_ptcasinoname,$_PlayerAPI,$_ptsecretkey, 
                     $_HABbrandID, $_HABapiKey);
-                // CCR EDITED 12/18/2017 END
                 break;
         }
 
@@ -1535,7 +1468,10 @@ if($connected)
         $siteIDs = $orptoptr->getSiteByAID($aid);
 
         //get service ids with transaction for said date
-        $serviceGrpIDs = array(1, 6, 7);
+        //EDITED CCT 07/11/2018 BEGIN
+        //$serviceGrpIDs = array(1, 6, 7);
+        $serviceGrpIDs = array(1, 4, 6, 7);
+        //EDITED CCT 07/11/2018 END
         $serviceIDs = $orptoptr->getServiceIDwithTransactions($serviceGrpIDs, $siteIDs, $datefrom, $dateto);
 
         // Prepare array structure
@@ -1664,6 +1600,10 @@ if($connected)
             $gh1 = 0;
             $gh2 = 0;
             $gh3 = 0;
+            // ADDED CCT 07/11/2018 BEGIN
+            $gh4 = 0;
+            $gh5 = 0;
+            // ADDED CCT 07/11/2018 END
             $rrecord = array();
             
             foreach($siteIDarray as $sites)
@@ -1682,13 +1622,28 @@ if($connected)
                     {
                         $gh3 = $serviceprov['SubTotal_GH'];
                     }
+                    // ADDED CCT 07/11/2018 BEGIN
+                    elseif ($serviceprov['ServiceID'] == 28) // RTG UB
+                    {
+                        $gh4 = $serviceprov['SubTotal_GH'];
+                    }
+                    elseif ($serviceprov['ServiceID'] == 29) // Habanero UB
+                    {
+                        $gh5 = $serviceprov['SubTotal_GH'];
+                    }
+                    // ADDED CCT 07/11/2018 END
                 }
                 
                 $rrecord = array(   0 => $sites['SiteCode'], 
-                                    1 => number_format($gh1, 2),
-                                    2 => number_format($gh2, 2),
+                                    // EDITED CCT 07/11/2018 BEGIN
+                                    //1 => number_format($gh1, 2),
+                                    //2 => number_format($gh2, 2),
+                                    1 => number_format($gh1 + $gh4, 2),
+                                    2 => number_format($gh2 + $gh5, 2),
                                     3 => number_format($gh3, 2),
-                                    4 => number_format($gh1 + $gh2 + $gh3, 2),
+                                    //4 => number_format($gh1 + $gh2 + $gh3, 2),
+                                    4 => number_format($gh1 + $gh2 + $gh3 + $gh4 + $gh5, 2),
+                                    // EDITED CCT 07/11/2018 END
                                 );
 
                 array_push($completeexcelvalues, $rrecord); 
@@ -1730,8 +1685,6 @@ if($connected)
         $excel_obj = new ExportExcel("$fn");
 
         //Headers for non e-SAFE transactions
-        //$rheaders = array('Site Transaction', '', '','','','','','');
-        //        $rheaders = array('Transaction Summary ID', 'Site Code', 'Terminal Code', 'Deposit', 'Reload', 'Redemption', 'Date Started', 'Date Ended');
         $rheaders = array( 'Site / PEGS Code', 'Terminal Code', 'Deposit', 'Reload', 'Redemption', 'Date Started', 'Date Ended');
         $completeexcelvalues = array();
 
@@ -2062,18 +2015,13 @@ if($connected)
             if ($dateFrom < $deploymentDate) 
             {
                 $grandticketencashment = $orptoptr->getEncashedTicketsV15($arrsiteID, $dateFrom, $dateTo);
-                //$regularCash = $cohdata['TotalCashLoad']+ $cohdata['TotalBancnetLoad'] ;
-                //$esafeCash = $cohdata['TotalCashLoadEwallet']+ $cohdata['TotalEwalletBancnet'];   
                 $ewalletWithdraw = $cohdata['TotalGenesisRedemption'] + $cohdata['TotalEwalletRedemption'];
-                //echo "((".$cohdata['TotalCashLoad'] ."+".$cohdata['TotalCouponLoad']." + ". $esafeCash. "+". $cohdata['TotalEwalletCoupon'].")". "-(". $cohdata['TotalCashRedemption']. "+". $ewalletWithdraw.")". "-". $grandticketencashment.")". "-". $cohdata['TotalMR'];exit;
                 $grandcashonhand = (($cohdata['TotalCashLoad'] + $cohdata['TotalCouponLoad']+ $esafeCash + $cohdata['TotalEwalletCoupon'])-($cohdata['TotalCashRedemption']+$ewalletWithdraw)-$grandticketencashment)-$cohdata['TotalMR'];
             }
             else 
             {
                 $grandticketencashment = $orptoptr->getEncashedTicketsV15($arrsiteID, $dateFrom, $dateTo);
                 $ewalletWithdraw = $cohdata['TotalGenesisRedemption'] + $cohdata['TotalEwalletRedemption'];
-                //echo "(".$regularCash." + ".$loadticket. " + ". $loadcoupon. " + ". $esafeCash. "+".$ewalletloadticket."+". $ewalletloadcoupon.")"."-". "(".$totalredemption. " + ". $ewalletwithdrawal.")". "-". $encashedtickets.")". "-".  $manualredemption;exit;
-                //echo "((".$cohdata['TotalCashLoad']. "+". $cohdata['TotalTicketLoadGenesis'] ."+". $cohdata['TotalCouponLoad'] ."+".$cohdata['TotalCashLoadEwallet'] ."+". $cohdata['TotalEsafeTicketLoadGenesis'] ."+". $cohdata['TotalEwalletCoupon'].")-". "(".$cohdata['TotalRedemption']. "+". $ewalletWithdraw.")-" .$grandticketencashment.")-". $cohdata['TotalMR'].")";exit;
                 $grandcashonhand = (($cohdata['TotalCashLoad'] + $cohdata['TotalTicketLoadGenesis'] + $cohdata['TotalCouponLoad'] + $cohdata['TotalCashLoadEwallet'] + $cohdata['TotalEsafeTicketLoadGenesis'] + $cohdata['TotalEwalletCoupon'])-($cohdata['TotalRedemption'] + $ewalletWithdraw)-$grandticketencashment)- $cohdata['TotalMR'];
                 $grandredemption += $grandticketencashment;
             }
@@ -2131,7 +2079,6 @@ if($connected)
         $dateTo = $vdateto." ".$vcutofftime;
 
         $vsiteID = $_SESSION['siteid1'];
-        //$vsiteID = $_GET['cmbsitename'];
 
         //checks if siteID was selected all;
         $arrsiteID = array(); 
@@ -2236,32 +2183,6 @@ if($connected)
                 array_push($arrreload, $vreload);
                 array_push($arrwithdraw, $vwithdraw);
             }
-
-            //            //get the total withdraw, deposit and reload
-            //            $granddeposit = array_sum($arrdeposit);
-            //            $grandreload = array_sum($arrreload);
-            //            $grandwithdraw = array_sum($arrwithdraw);
-            //            
-            //            $vsales = $granddeposit + $grandreload;
-            //            $vgrossholdamt = ($granddeposit + $grandreload) - $grandwithdraw; 
-            //
-            //            //array for displaying total sales on excel file
-            //            $totalsales = array(0 => 'Sales',
-            //                                1 => number_format($vsales, 2, '.',',')
-            //             );
-            //            array_push($completeexcelvalues, $totalsales); //push the total sales for the site transaction
-            //
-            //            //array for displaying total redeemed on excel file
-            //            $totalredeem = array(0 => 'Redemption',
-            //                                1 => number_format($grandwithdraw, 2, '.', ',')
-            //             );
-            //            array_push($completeexcelvalues, $totalredeem); //push the total withdraw for the site transaction
-            //
-            //             //array for displaying total grosshold on excel file
-            //            $grosshold = array(0 => 'Gross Hold',
-            //                               1 => number_format($vgrossholdamt, 2, '.', ',')
-            //            );
-            //            array_push($completeexcelvalues, $grosshold);
         }
 
         $vauditfuncID = 41; //export to excel
@@ -2381,20 +2302,6 @@ if($connected)
                 array_push($arrreload2, $vreload);
                 array_push($arrwithdraw2, $vwithdraw);            
             }
-
-            //get the total withdraw, deposit and reload
-            //          $granddeposit = array_sum($arrdeposit2);
-            //          $grandreload = array_sum($arrreload2);
-            //          $grandwithdraw = array_sum($arrwithdraw2);
-            //
-            //          $vsales = $granddeposit + $grandreload;
-            //          $vgrossholdamt = ($granddeposit + $grandreload) - $grandwithdraw; 
-            //
-            //          $pdf->html.= '<div style="text-align: center;">';
-            //          $pdf->html.= ' Sales '.number_format($vsales, 2, '.', ',');
-            //          $pdf->html.= ' Redemption '.number_format($grandwithdraw, 2, '.', ',');  
-            //          $pdf->html.= ' Gross Hold '.number_format($vgrossholdamt, 2, '.', ',');
-            //          $pdf->html.= '</div>';
         }
         else
         {
@@ -2453,7 +2360,6 @@ if($connected)
         $pdf->c_setHeader('Site Transaction Per Day'); //filename
         $pdf->html.='<div style="text-align:center;">As of ' . $dateFrom . ' To ' . $dateTo . '</div>';
         $pdf->SetFontSize(9);
-        //        $pdf->c_tableHeader(array('Transaction Summary ID', 'Site / PEGS Code', 'Terminal Code', 'Deposit', 'Reload', 'Redemption', 'Date Started', 'Date Ended'));
         $pdf->c_tableHeader2(array(
                 array('value'=>'Site / PEGS Code','width' => '100px'),
                 array('value'=>'Terminal Code','width' => '100px'),
@@ -2543,7 +2449,6 @@ if($connected)
         */
         $result1 = $orptoptr->viewewtransactionperday($dateFrom, $dateTo, $arrsiteID, $start = null, $limit = null, $sort = null, $direction = null);
         $pdf->html.='<div style="text-align:center;"></div>';
-        //        $pdf->c_tableHeader(array('Site / PEGS Code', 'Card Number', 'e-SAFE Loads', 'e-SAFE Withdrawals', 'Date Started', 'Date Ended'));
         $pdf->c_tableHeader2(array(
                 array('value'=>'Site / PEGS Code'),
                 array('value'=>'Card Number'),
@@ -2590,9 +2495,7 @@ if($connected)
 
             foreach ($optrdetails2 as $vview2) 
             {
-        //              $vterminalCode = $vview['TerminalCode'];
         //              //remove the "icsa-[SiteCode]"
-        //              $rterminalCode = substr($vterminalCode, strlen($rsitecode['SiteCode']));
                 $vewloads = $vview2['EWLoads'];
                 $vewwithdrawals = $vview2['EWWithdrawals'];
 
@@ -2779,18 +2682,13 @@ if($connected)
             if ($dateFrom < $deploymentDate) 
             {
                 $grandticketencashment = $orptoptr->getEncashedTicketsV15($arrsiteID, $dateFrom, $dateTo);
-                //$regularCash = $cohdata['TotalCashLoad']+ $cohdata['TotalBancnetLoad'] ;
-                //$esafeCash = $cohdata['TotalCashLoadEwallet']+ $cohdata['TotalEwalletBancnet'];   
                 $ewalletWithdraw = $cohdata['TotalGenesisRedemption'] + $cohdata['TotalEwalletRedemption'];
-                //echo "((".$cohdata['TotalCashLoad'] ."+".$cohdata['TotalCouponLoad']." + ". $esafeCash. "+". $cohdata['TotalEwalletCoupon'].")". "-(". $cohdata['TotalCashRedemption']. "+". $ewalletWithdraw.")". "-". $grandticketencashment.")". "-". $cohdata['TotalMR'];exit;
                 $grandcashonhand = (($cohdata['TotalCashLoad'] + $cohdata['TotalCouponLoad']+ $esafeCash + $cohdata['TotalEwalletCoupon'])-($cohdata['TotalCashRedemption']+$ewalletWithdraw)-$grandticketencashment)-$cohdata['TotalMR'];
             }
             else 
             {
                 $grandticketencashment = $orptoptr->getEncashedTicketsV15($arrsiteID, $dateFrom, $dateTo);
                 $ewalletWithdraw = $cohdata['TotalGenesisRedemption'] + $cohdata['TotalEwalletRedemption'];
-                //echo "(".$regularCash." + ".$loadticket. " + ". $loadcoupon. " + ". $esafeCash. "+".$ewalletloadticket."+". $ewalletloadcoupon.")"."-". "(".$totalredemption. " + ". $ewalletwithdrawal.")". "-". $encashedtickets.")". "-".  $manualredemption;exit;
-                //echo "((".$cohdata['TotalCashLoad']. "+". $cohdata['TotalTicketLoadGenesis'] ."+". $cohdata['TotalCouponLoad'] ."+".$cohdata['TotalCashLoadEwallet'] ."+". $cohdata['TotalEsafeTicketLoadGenesis'] ."+". $cohdata['TotalEwalletCoupon'].")-". "(".$cohdata['TotalRedemption']. "+". $ewalletWithdraw.")-" .$grandticketencashment.")-". $cohdata['TotalMR'].")";exit;
                 $grandcashonhand = (($cohdata['TotalCashLoad'] + $cohdata['TotalTicketLoadGenesis'] + $cohdata['TotalCouponLoad'] + $cohdata['TotalCashLoadEwallet'] + $cohdata['TotalEsafeTicketLoadGenesis'] + $cohdata['TotalEwalletCoupon'])-($cohdata['TotalRedemption'] + $ewalletWithdraw)-$grandticketencashment)- $cohdata['TotalMR'];
                 $grandredemption += $grandticketencashment;
             }
@@ -2798,12 +2696,6 @@ if($connected)
             // store the grand total of transaction types into an array 
             $arrgrand = array("GrandSales" => $grandsales, "GrandRedemption" => $grandredemption,
             "GrandTicketEncashment" => $grandticketencashment, "GrandCashOnHand" => $grandcashonhand);
-        //            $pdf->html.= '<div style="text-align: center; ">';
-        //            $pdf->html.= ' Sales ' . number_format($grandsales, 2, '.', ',') . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-        //            $pdf->html.= ' Redemption ' . number_format($grandredemption, 2, '.', ',') . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-        //            $pdf->html.= ' Ticket Encashment ' . number_format($grandticketencashment, 2, '.', ',') . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-        //            $pdf->html.= ' Cash on Hand ' . number_format($grandcashonhand, 2, '.', ',');
-        //            $pdf->html.= '</div>';
             $pdf->c_tableEnd();
             $pdf->html .= '<div style="text-align: center; ">';
             $pdf->html .= '</div>';
@@ -3114,18 +3006,13 @@ if($connected)
             {
                 //get D, R, W and MR of respective casinos
                 $siteCode = $orptoptr->getsitecode($siteID['SiteID']);
-                // Comment Out CCT 02/06/2018 BEGIN
-                //for MG
-                //$serviceID_MG             = array(2); //service group id
-                //$deposit_reload_MG        = $orptoptr->getGrossHoldTB($siteID['SiteID'], $serviceID_MG, "DR", $datefrom, $dateto);
-                //$withdraw_MG              = $orptoptr->getGrossHoldTB($siteID['SiteID'], $serviceID_MG, "W", $datefrom, $dateto);
-                //$mr_MG                    = $orptoptr->getManualRedemptionTrans($siteID['SiteID'], $serviceID_MG, $datefrom, $dateto);
-                //$grosshold_MG             = $deposit_reload_MG['Amount'] - ($withdraw_MG['Amount'] + $mr_MG['Amount']);
-                // Comment Out CCT 02/06/2018 END
                 //for Costello
                 //EDITED CCT 02/08/2018 BEGIN
                 //$serviceID_COSTELLO       = array(1); //service group id
-                $serviceID_COSTELLO       = array(1, 6); // Added Habanero
+                // EDITED CCT 07/11/2018 BEGIN
+                //$serviceID_COSTELLO       = array(1, 6); // Added Habanero
+                $serviceID_COSTELLO       = array(1, 4, 6); // Added RTG UB
+                // EDITED CCT 07/11/2018 END
                 //EDITED CCT 02/08/2018 END
                 $deposit_reload_COSTELLO  = $orptoptr->getGrossHoldTB($siteID['SiteID'], $serviceID_COSTELLO, "DR", $datefrom, $dateto);
                 $withdraw_COSTELLO        = $orptoptr->getGrossHoldTB($siteID['SiteID'], $serviceID_COSTELLO, "W", $datefrom, $dateto);
@@ -3189,7 +3076,10 @@ if($connected)
         $siteIDs = $orptoptr->getSiteByAID($aid);
 
         //get service ids with transaction for said date
-        $serviceGrpIDs = array(1, 6, 7);
+        //EDITED CCT 07/11/2018 BEGIN
+        //$serviceGrpIDs = array(1, 6, 7);
+        $serviceGrpIDs = array(1, 4, 6, 7);
+        //EDITED CCT 07/11/2018 END
         $serviceIDs = $orptoptr->getServiceIDwithTransactions($serviceGrpIDs, $siteIDs, $datefrom, $dateto);
 
         // Prepare array structure
@@ -3318,6 +3208,10 @@ if($connected)
             $gh1 = 0;
             $gh2 = 0;
             $gh3 = 0;
+            // ADDED CCT 07/11/2018 BEGIN
+            $gh4 = 0;
+            $gh5 = 0;
+            // ADDED CCT 07/11/2018 END
             $i = 0;
             
             foreach($siteIDarray as $sites)
@@ -3336,14 +3230,29 @@ if($connected)
                     {
                         $gh3 = $serviceprov['SubTotal_GH'];
                     }
+                    // ADDED CCT 07/11/2018 BEGIN
+                    elseif ($serviceprov['ServiceID'] == 28) // RTG UB
+                    {
+                        $gh4 = $serviceprov['SubTotal_GH'];
+                    }
+                    elseif ($serviceprov['ServiceID'] == 29) // Habanero UB
+                    {
+                        $gh5 = $serviceprov['SubTotal_GH'];
+                    }
+                    // ADDED CCT 07/11/2018 END
                 }
 
                 $arr_grosshold[] = array(
                                         'SiteCode'      => $sites['SiteCode'], 
-                                        'RTG'           => number_format($gh1, 2), 
-                                        'Habanero'      => number_format($gh2, 2), 
+                                        // EDITED CCT 07/11/2018 BEGIN
+                                        //'RTG'           => number_format($gh1, 2), 
+                                        //'Habanero'      => number_format($gh2, 2), 
+                                        'RTG'           => number_format($gh1 + $gh4, 2), 
+                                        'Habanero'      => number_format($gh2 + $gh5, 2), 
                                         'e-Bingo'       => number_format($gh3, 2),                     
-                                        'TotalGrossHold' => number_format($gh1 + $gh2 + $gh3, 2),
+                                        //'TotalGrossHold' => number_format($gh1 + $gh2 + $gh3, 2),
+                                        'TotalGrossHold' => number_format($gh1 + $gh2 + $gh3 + $gh4 + $gh5, 2),
+                                        // EDITED CCT 07/11/2018 END
                                         );
             }
 
@@ -3410,18 +3319,13 @@ if($connected)
             {
                 //get D, R, W and MR of respective casinos
                 $siteCode = $orptoptr->getsitecode($siteID['SiteID']);
-                // Comment Out CCT 02/06/2018 BEGIN
-                //for MG
-                //$serviceID_MG             = array(2); //service group id
-                //$deposit_reload_MG        = $orptoptr->getGrossHoldTB($siteID['SiteID'], $serviceID_MG, "DR", $datefrom, $dateto);
-                //$withdraw_MG              = $orptoptr->getGrossHoldTB($siteID['SiteID'], $serviceID_MG, "W", $datefrom, $dateto);
-                //$mr_MG                    = $orptoptr->getManualRedemptionTrans($siteID['SiteID'], $serviceID_MG, $datefrom, $dateto);
-                //$grosshold_MG             = $deposit_reload_MG['Amount'] - ($withdraw_MG['Amount'] + $mr_MG['Amount']);
-                // Comment Out CCT 02/06/2018 END
                 //for Costello
                 // EDITED CCT 02/08/2018 BEGIN
                 //$serviceID_COSTELLO       = array(1); //service group id
-                $serviceID_COSTELLO       = array(1, 6); // Added Habanero
+                //$serviceID_COSTELLO       = array(1, 6); // Added Habanero
+                // EDITED 07/11/2018 BEGIN
+                $serviceID_COSTELLO       = array(1, 4 , 6); // Added RTG UB
+                // EDITED 07/11/2018 END
                 // EDITED CCT 02/08/2018 END
                 $deposit_reload_COSTELLO  = $orptoptr->getGrossHoldTB($siteID['SiteID'], $serviceID_COSTELLO, "DR", $datefrom, $dateto);
                 $withdraw_COSTELLO        = $orptoptr->getGrossHoldTB($siteID['SiteID'], $serviceID_COSTELLO, "W", $datefrom, $dateto);

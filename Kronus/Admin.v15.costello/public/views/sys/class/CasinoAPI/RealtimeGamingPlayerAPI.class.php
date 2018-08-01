@@ -105,6 +105,8 @@ class RealtimeGamingPlayerAPI
             $city, $state, $zip, $ip, $mac, $userID, $downloadID, $birthdate, $clientID, 
             $putInAffPID, $calledFromCasino, $hashedPassword, $agentID, $currentPosition, $thirdPartyPID)
     {
+// EDITED CCT 06/29/2018 BEGIN
+/*
         $data = array('login' => $login,
                       'pw' => $password,
                       'aid' => $aid,
@@ -132,18 +134,46 @@ class RealtimeGamingPlayerAPI
                       'agentID' => $agentID,
                       'currentPosition' => $currentPosition,
                       'thirdPartyPID' => $thirdPartyPID);
+*/
+	$playerClass = 0;
+
+	$data = array('Player' => array(
+        	'BirthDate' => $birthdate,
+	        'Class' => $playerClass,
+	        'ClientID' => $clientID,
+	        'Contact' => array(
+	            'Address1' => $addr1,
+	            'City' => $city,
+	            'CountryID' => $country,
+	            'DayPhone' => $dayphone,
+	            'EMail' => $email,
+	            'EvePhone' => $evephone,
+	            'FirstName' => $fname,
+	            'LastName' => $lname,
+	            'ZipCode' => $zip
+	        ),
+	        'DownloadID' => $downloadID,
+	        'HashedPassword' => '', // $hashedPassword,
+	        'Login' => $login,
+	        'Password' => $password,
+	        'PlayerCurrencyID' => 'PHP'
+	    ),
+	    'UserID' => $userID,
+	);
+
+// EDITED CCT 06/29/2018 END
         $response = $this->submitRequest($this->_url . '/createNewPlayerFull', http_build_query($data));
-        
+
         if ( $response[0] == 200 )
         {
             $this->_APIresponse = $this->XML2Array( $response[1] );
-
             $this->_APIresponse = array('createNewPlayerFullResult' => $this->_APIresponse );
         }
         else
         {
             $this->_error = "HTTP ". $response[0];
         }
+
         return $this->_APIresponse;
     }
     
@@ -187,7 +217,6 @@ class RealtimeGamingPlayerAPI
         curl_setopt( $curl, CURLOPT_HTTPHEADER, array( 'Content-Type: text/plain; charset=utf-8' ) );
         curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1 );
         curl_setopt( $curl, CURLOPT_SSLVERSION, 3 ); 
-
         $response = curl_exec( $curl );
 
         $http_status = curl_getinfo( $curl, CURLINFO_HTTP_CODE );
@@ -337,12 +366,13 @@ class RealtimeGamingPlayerAPI
         );
         
         $response = array();
-        try{
+        try
+	{
             $client = new SoapClient( $url, $soapArr );
-            
             $response = $client->$method($data);
             
-        } catch (Exception $e){
+        } catch (Exception $e)
+	{
             $this->_error = "Bad request. Check if API configurations are correct";
         }
         
