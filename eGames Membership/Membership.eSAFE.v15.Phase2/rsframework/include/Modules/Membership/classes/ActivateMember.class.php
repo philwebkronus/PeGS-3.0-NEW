@@ -183,7 +183,7 @@ class ActivateMember extends BaseEntity {
                         if (!App::HasError()) {
                             $this->CommitTransaction();
 
-//                            $this->StartTransaction();
+                            $this->StartTransaction();
 
                             App::LoadModuleClass("CasinoProvider", "PlayTechAPI");
                             App::LoadModuleClass("CasinoProvider", "CasinoProviders");
@@ -195,8 +195,8 @@ class ActivateMember extends BaseEntity {
                             $_GeneratedPasswordBatch = new GeneratedPasswordBatch();
 
                             //Added : John Aaron Vida 
-                            $UBserviceID = App::getParam('UBCasinoServiceID');
-                            $casinoservices = $_CasinoServices->getUserBasedCasinoDetails($UBserviceID);
+                            $UBusermode = App::getParam('UBusermode');
+                            $casinoservices = $_CasinoServices->getUserBasedCasinoDetails($UBusermode);
                             // End
 
                             $apierror = '';
@@ -232,17 +232,16 @@ class ActivateMember extends BaseEntity {
 
                                 $this->TableName = "membership.memberservices";
 
-                               /* if (strpos($serviceName, 'RTG2') !== false) {
+                                if (strpos($serviceName, 'RTG2') !== false) {
 
                                     //Generation of casino username to be passed in the casino API
                                     $casinoAccounts = $_CasinoServices->generateCasinoAccounts($MID, $serviceID, $serviceName);
                                     $userName = $casinoAccounts[0]['ServiceUsername'];
                                     $vipLevel = $casinoAccounts[0]['VIPLevel'];
 
-
                                     //Get hashed and plain password from password pool table
                                     $rpassword = $_GeneratedPasswordBatch->getPasswordByCasino($genpassbatchid, $serviceGrpID);
-				     if (!empty($rpassword)) {
+                                    if (!empty($rpassword)) {
                                         $password = $rpassword[0]['PlainPassword'];
                                         $hashpassword = $rpassword[0]['EncryptedPassword'];
 
@@ -250,7 +249,9 @@ class ActivateMember extends BaseEntity {
                                         $casinoAccounts[0]['HashedServicePassword'] = $hashpassword;
 
                                         //START: Call Casino Create Account API Method
-                                        $apiResult = $casinoAPI->createAccount($serviceName, $serviceID, $userName, $password, $firstName, $lastName, $birthDate, $gender, $email, $phone, $address, $city, $countryCode, $vipLevel);
+                                        $apiResult = $casinoAPI->createAccount($serviceName, $serviceID, $userName, $password, 
+						$firstName, $lastName, $birthDate, $gender, $email, $phone, $address, $city, $countryCode, $vipLevel);
+
                                         if (!$apiResult) {
                                             $apierror = "There was an error encountered in mapping the RTG casino.";
                                             $_Log->logAPI(AuditFunctions::MIGRATE_TEMP, $this->CardNumber . ':Failed', $apiResult['ErrorMessage']); //logging of API Error
@@ -312,84 +313,23 @@ class ActivateMember extends BaseEntity {
                                         $apierror = "No available plain and hashed password for RTG2 casino.";
                                         $_Log->logAPI(AuditFunctions::MIGRATE_TEMP, $this->CardNumber . ':Failed', $apierror);
                                     }
-                                }*/
+                                }
 
-                                if (strpos($serviceName, 'MG')) {
+                                $SameUsername = $userName;
+
+                                if (strpos($serviceName, 'HAB') !== false) {
+
+                                    //Generation of casino username to be passed in the casino API
                                     $casinoAccounts = $_CasinoServices->generateCasinoAccounts($MID, $serviceID, $serviceName);
-                                    $userName = $casinoAccounts[0]['ServiceUsername'];
+                                    //$userName = $casinoAccounts[0]['ServiceUsername'];
+                                    $userName = $SameUsername;
                                     $vipLevel = $casinoAccounts[0]['VIPLevel'];
+
+                                    $casinoAccounts[0]['ServiceUsername'] = $SameUsername;
 
                                     //Get hashed and plain password from password pool table
                                     $rpassword = $_GeneratedPasswordBatch->getPasswordByCasino($genpassbatchid, $serviceGrpID);
                                     if (!empty($rpassword)) {
-                                        $existpassbatch = $_GeneratedPasswordBatch->getExistingPasswordBatch($MID);
-                                        if (empty($existpassbatch)) {
-                                            $genpassbatch = $_GeneratedPasswordBatch->getInactivePasswordBatch();
-
-                                            $password = $genpassbatch[0]['PlainPassword'];
-                                            $hashpassword = $genpassbatch[0]['EncryptedPassword'];
-                                            $genpassbatchid = $genpassbatch[0]['GeneratedPasswordBatchID'];
-                                        } else {
-                                            $password = $existpassbatch[0]['PlainPassword'];
-                                            $hashpassword = $existpassbatch[0]['EncryptedPassword'];
-                                            $genpassbatchid = $existpassbatch[0]['GeneratedPasswordBatchID'];
-                                        }
-
-                                        $casinoAccounts[0]['ServicePassword'] = $password;
-                                        $casinoAccounts[0]['HashedServicePassword'] = $hashpassword;
-
-                                        $casinoAPI = new CasinoAPI();
-                                        $apiResult = $casinoAPI->createAccount($serviceName, $serviceID, $userName, $password, $firstName, $lastName, $birthDate, $gender, $email, $phone, $address, $city, $countryCode, $vipLevel);
-
-                                        if (!$apiResult) {
-                                            $apierror = "There was an error encountered in mapping the MG casino.";
-
-                                            $_Log->logAPI(AuditFunctions::MIGRATE_TEMP, $this->CardNumber . ':Failed', $apiResult['ErrorMessage']);
-                                        } else {
-                                            if ($apiResult['IsSucceed'] == true) {
-                                                array_push($arraycasinoservices, $casinoAccounts);
-                                            } else if ($apiResult['ErrorID'] == 1 || $apiResult['ErrorID'] == 5 || $apiResult['ErrorID'] == 3) {
-                                                $vaccountExist = '';
-
-                                                //Call API to get Account Info
-                                                $vapiResult = $casinoAPI->GetAccountInfo($serviceName, $userName, $password, $serviceID);
-
-                                                //Verify if API Call was successful
-                                                if (isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true) {
-                                                    $vaccountExist = $vapiResult['AccountInfo']['UserExists'];
-
-                                                    //check if account exists for MG Casino
-                                                    if ($vaccountExist) {
-                                                        //Call API Change Password
-                                                        $vapiResult = $casinoAPI->ChangePassword($serviceName, $userName, $password, $password, $serviceID);
-                                                    }
-
-                                                    if (isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true)
-                                                        $apisuccess = 1;
-                                                    else
-                                                        $_Log->logAPI(AuditFunctions::MIGRATE_TEMP, $this->CardNumber . ':Failed', $vapiResult['ErrorMessage']);
-                                                }
-                                            }
-                                            else {
-                                                $apierror = "There was an error encountered in mapping the MG casino.";
-                                                $_Log->logAPI(AuditFunctions::MIGRATE_TEMP, $this->CardNumber . ':Failed', $apierror);
-                                            }
-                                        }
-                                    } else {
-                                        $apierror = "No available plain and hashed password for RTG2 casino.";
-                                        $_Log->logAPI(AuditFunctions::MIGRATE_TEMP, $this->CardNumber . ':Failed', $apierror);
-                                    }
-                                }
-
-                                if (strpos($serviceName, 'PT') !== false) {
-                                    //Generation of casino username to be passed in the casino API
-                                    $casinoAccounts = $_CasinoServices->generateCasinoAccounts($MID, $serviceID, $serviceName);
-                                    $userName = $casinoAccounts[0]['ServiceUsername'];
-                                    $vipLevel = $casinoAccounts[0]['VIPLevel'];
-
-                                    //Get hashed and plain password from password pool table
-                                    $rpassword = $_GeneratedPasswordBatch->getPasswordByCasino($genpassbatchid, $serviceGrpID);
-                                    if (!is_null($rpassword)) {
                                         $password = $rpassword[0]['PlainPassword'];
                                         $hashpassword = $rpassword[0]['EncryptedPassword'];
 
@@ -397,76 +337,40 @@ class ActivateMember extends BaseEntity {
                                         $casinoAccounts[0]['HashedServicePassword'] = $hashpassword;
 
                                         //START: Call Casino Create Account API Method
-                                        $apiResult = $casinoAPI->createAccount($serviceName, $serviceID, $userName, $password, $firstName, $lastName, $birthDate, $gender, $email, $phone, $address, $city, $countryCode, $vipLevel);
+                                        $apiResult = $casinoAPI->habaneroCreateAccount($serviceName, $serviceID, $userName, $password, $vipLevel);
 
                                         if (!$apiResult) {
-                                            $apierror = "There was an error encountered in mapping the PT casino.";
-                                            $_Log->logAPI(AuditFunctions::MIGRATE_TEMP, $this->CardNumber . ':Failed', $apiResult['ErrorMessage']);
-                                        } else {
-                                            //Checking if casino reply is successful, then push array result
-                                            if ($apiResult['IsSucceed'] == true && $apiResult['ErrorCode'] == 0) {
-
-                                                App::LoadModuleClass("CasinoProvider", "PlayTechReportViewAPI");
-
-                                                $reportUri = App::getParam("pt_rpt_uri");
-                                                $casino = App::getParam("pt_rpt_casinoname");
-                                                $admin = App::getParam("pt_rpt_admin");
-                                                $password = App::getParam("pt_rpt_password");
-                                                $reportCode = App::getParam("pt_rpt_code");
-                                                $playerCode = null;
-
-                                                $_PTReportAPI = new PlayTechReportViewAPI($reportUri, $casino, $admin, $password);
-
-                                                $rptResult = $_PTReportAPI->export($reportCode, 'exportxml', array('username' => $userName));
-
-                                                $playerCode = $rptResult['PlayerCode']; //get player code from PT Report API
-
-                                                $casinoAccounts[0]['PlayerCode'] = $playerCode;
-
-                                                array_push($arraycasinoservices, $casinoAccounts);
-                                            } else {
-                                                if ($apiResult['ErrorCode'] == 1 || $apiResult['ErrorCode'] == 5 || $apiResult['ErrorCode'] == 3) {
-                                                    $vaccountExist = '';
-                                                    $voldpw = '';
-
-                                                    //Call Reset Password API if PT
-                                                    $vapiResult = $casinoAPI->ChangePassword($serviceName, $userName, $voldpw, $password, $serviceID);
-
-                                                    if (isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true)
-                                                        $apisuccess = 1;
-                                                    else
-                                                        $_Log->logAPI(AuditFunctions::MIGRATE_TEMP, $this->CardNumber . ':Failed', $vapiResult['ErrorMessage']);
-                                                } else {
-                                                    $apierror = "There was an error encountered in mapping the PT casino.";
-
-                                                    $_Log->logAPI(AuditFunctions::MIGRATE_TEMP, $this->CardNumber . ':Failed', $apierror);
-                                                }
-                                            }
+                                            $apierror = "There was an error encountered in mapping the RTG casino.";
+                                            $_Log->logAPI(AuditFunctions::MIGRATE_TEMP, $this->CardNumber . ':Failed', $apiResult['ErrorMessage']); //logging of API Error
                                         }
+                                        array_push($arraycasinoservices, $casinoAccounts);
                                     } else {
-                                        $apierror = "No available plain and hashed password for PT casino.";
-                                        $_Log->logAPI(AuditFunctions::MIGRATE_TEMP, $newCard . ':Failed', $apierror);
+                                        $apierror = "No available plain and hashed password for Habanero casino.";
+                                        $_Log->logAPI(AuditFunctions::MIGRATE_TEMP, $this->CardNumber . ':Failed', $apierror);
                                     }
                                 }
                             }
 
                             header("Content-Type:text/html");
 
-//                            if (count($arraycasinoservices) > 0) {
+                            if (count($arraycasinoservices) > 0) {
 
-			      if(!empty($accountpassword)){
-
-//                                foreach ($arraycasinoservices as $casinoservices) {
-//                                    $this->InsertMultiple($casinoservices);
-//                                }
+                                foreach ($arraycasinoservices as $casinoservices) {
+                                    $this->InsertMultiple($casinoservices);
+                                }
 
                                 $_GeneratedPasswordBatch->updatePasswordBatch($this->MID, $genpassbatchid);
 
-//                                $this->CommitTransaction();
+                                $this->CommitTransaction();
                                 return array("MID" => $this->MID, "status" => 'OK', "apierror" => $apierror, "password" => $accountpassword);
                             } else {
                                 return array("MID" => $this->MID, "status" => 'error', "apierror" => $apierror, "password" => $accountpassword);
                             }
+
+                            // CCT 12/11/2017 BEGIN - moved this here
+                            $apierror = '';
+                            return array("MID" => $this->MID, "status" => 'OK', "apierror" => $apierror, "password" => $accountpassword);
+                            // CCT 12/11/2017 END - moved this here
                         } else {
                             $this->RollBackTransaction();
                             return array("MID" => $this->MID, "status" => 'error');
@@ -492,4 +396,3 @@ class ActivateMember extends BaseEntity {
 }
 
 ?>
-

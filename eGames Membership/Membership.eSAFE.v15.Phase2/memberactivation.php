@@ -133,10 +133,10 @@ $fproc->AddControl($rdoGroupGender);
 
 $fproc->ProcessForms();
 
-if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
-        && (isset($_GET["newnumber"]) && (htmlentities($_GET["newnumber"])))
-        && (isset($_GET["site"]) && (htmlentities($_GET["site"])))
-        && (isset($_GET["AID"]) && (htmlentities($_GET["AID"])))) {
+if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"]))) 
+	&& (isset($_GET["newnumber"]) && (htmlentities($_GET["newnumber"]))) 
+	&& (isset($_GET["site"]) && (htmlentities($_GET["site"]))) 
+	&& (isset($_GET["AID"]) && (htmlentities($_GET["AID"])))) {
 
     $LoyatyCardNumber = trim($_GET["oldnumber"]);
     $NewMembershipCardNumber = trim($_GET["newnumber"]);
@@ -183,7 +183,7 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
 
     if ($isValid) {
         $rdoGroupGender->SetSelectedValue($oldCardGender);
-        
+
         if ($fproc->IsPostBack) {
 
             if ($ConfirmButton->SubmittedValue == "Confirm") {
@@ -198,16 +198,16 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
                 }
 
                 $tempEmail = 0;
-                if($txtEmail->SubmittedValue != ""){
-                    
+                if ($txtEmail->SubmittedValue != "") {
+
                     //check if email is already verified in temp table
                     $tempEmail = $_TempMembers->chkTmpVerifiedEmailAddressWithSP(trim($txtEmail->SubmittedValue));
                     //$tempEmail=='' ? COUNT(NULL):$tempEmail = COUNT($tempEmail);
                 }
-                
-                if($tempEmail == 0){
+
+                if ($tempEmail == 0) {
                     App::SetErrorMessage("Email already verified. Please choose a different email address.");
-                    $_Log->logAPI(AuditFunctions::MIGRATE_OLD, $tempEmail.':'.$txtEmail->SubmittedValue.':Failed', 0, 0);
+                    $_Log->logAPI(AuditFunctions::MIGRATE_OLD, $tempEmail . ':' . $txtEmail->SubmittedValue . ':Failed', 0, 0);
                     $isSuccess = false;
                     $error = "Email already verified. Please choose a different email address.";
                     $logger->logger($logdate, $logtype, $error);
@@ -219,7 +219,8 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
 
                     $MemberInfo["FirstName"] = $PlayerName;
                     $MemberInfo["Birthdate"] = $dtBirthDate->SubmittedValue;
-                    if(!$noemail) $MemberInfo["Email"] = $Memberstable["UserName"];
+                    if (!$noemail)
+                        $MemberInfo["Email"] = $Memberstable["UserName"];
                     $MemberInfo["NationalityID"] = 1;
                     $MemberInfo["OccupationID"] = 1;
                     $MemberInfo["IdentificationID"] = $ComboID->SubmittedValue;
@@ -228,12 +229,14 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
                     $MemberInfo["MobileNumber"] = $txtMobile->SubmittedValue;
                     $MemberInfo["DateCreated"] = $dateCreated;
                     $MemberInfo["DateVerified"] = $dateCreated;
+                    $MemberInfo["RegisterForID"] = 1;
+                    $MemberInfo["CivilStatusID"] = 1;
 
                     $rdoGroupGender->SubmittedValue == 1 ? $MemberInfo['Gender'] = 1 : $MemberInfo['Gender'] = 2;
 
                     $result = $_Members->Migrate($Memberstable, $MemberInfo, $AID, $siteid, $LoyatyCardNumber, $NewMembershipCardNumber, $oldCardEmail, $isVIP, false);
-  
-                    
+
+
                     $status = $result['status'];
 
                     if ($status == 'OK') {
@@ -246,14 +249,13 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
                         $_GetCardInfoAPI->converttoesafe($LoyatyCardNumber, $_Members->password, $pin, $confirmPIN);
 
                         //  -------------------------------------------------------------------------------------------------------->>>   
-                      
+
                         $isSuccess = true;
                         $_Log->logAPI(AuditFunctions::MIGRATE_OLD, $LoyatyCardNumber . ':' . $NewMembershipCardNumber . ':' . $_Members->password . ':Success', $siteCode, $AID);
-                    } else
-                    {
+                    } else {
                         $isSuccess = false;
                         $error = $result['error'];
-                        $_Log->logAPI(AuditFunctions::MIGRATE_OLD, $LoyatyCardNumber.':'.$NewMembershipCardNumber.':Failed', $siteCode, $AID);
+                        $_Log->logAPI(AuditFunctions::MIGRATE_OLD, $LoyatyCardNumber . ':' . $NewMembershipCardNumber . ':Failed', $siteCode, $AID);
                         $logger->logger($logdate, $logtype, $error);
                     }
 
@@ -267,8 +269,7 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
                 }
             }
         }
-    }
-    else { //Not valid
+    } else { //Not valid
         $InvalidDialogOpen = 'true';
         $IsInvalidCard = true;
         $error = "Invalid Card Status";
@@ -283,98 +284,98 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
 ?>
 
 <?php include 'header.php'; ?>
-<script language="javascript" type="text/javascript"> 
+<script language="javascript" type="text/javascript">
     // number only
     // MKGE |07-04-2013
     function isNumber(evt) {
-      var charCode = (evt.which) ? evt.which : event.keyCode;
-      if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-         return false;
-      }
-      return true;
-    }
-    
-    $(document).ready(
-    function() 
-    {
-        dob1 = $('#dtBirthDate').val();
-        dob = new Date(dob1.substr(0, 4), parseInt(dob1.substr(5, 2)) -1, dob1.substr(8, 2));
-        var today = new Date();
-        var age = Math.floor((today-dob) / (365.25 * 24 * 60 * 60 * 1000));
-        if(isNaN(age))
-        {
-            var age = '';
+        var charCode = (evt.which) ? evt.which : event.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
         }
-        $('#txtAge').val(age);
-        $('#dtBirthDate').change(function()
-        {
-            //alert($('#dtBirthDate').val());
-            dob1 = $('#dtBirthDate').val();
-            dob = new Date(dob1.substr(0, 4), parseInt(dob1.substr(5, 2)) -1, dob1.substr(8, 2));
-            var today = new Date();
-            var age = Math.floor((today-dob) / (365.25 * 24 * 60 * 60 * 1000));
-            $('#txtAge').val(age);
-        });  
-        
-        $( "#InvalidDialog" ).dialog({
-            modal: true,
-            height: 250,
-            width: 350,
-            autoOpen: <?php echo $InvalidDialogOpen; ?>,
-            buttons: {
-                Ok: function() {
-                    $( this ).dialog( "close" );
-                    window.close();
+        return true;
+    }
+
+    $(document).ready(
+            function()
+            {
+                dob1 = $('#dtBirthDate').val();
+                dob = new Date(dob1.substr(0, 4), parseInt(dob1.substr(5, 2)) - 1, dob1.substr(8, 2));
+                var today = new Date();
+                var age = Math.floor((today - dob) / (365.25 * 24 * 60 * 60 * 1000));
+                if (isNaN(age))
+                {
+                    var age = '';
                 }
-            }
-        });
-        
-        $( "#ActivationDialog" ).dialog({
-            modal: true,
-            height: 250,
-            width: 350,
-            autoOpen: <?php echo $ActivationDialogOpen; ?>,
-            buttons: {
-                Ok: function() {
-                    $( this ).dialog( "close" );
-                    window.close();
-                }
-            }
-        });
-    });
+                $('#txtAge').val(age);
+                $('#dtBirthDate').change(function()
+                {
+                    //alert($('#dtBirthDate').val());
+                    dob1 = $('#dtBirthDate').val();
+                    dob = new Date(dob1.substr(0, 4), parseInt(dob1.substr(5, 2)) - 1, dob1.substr(8, 2));
+                    var today = new Date();
+                    var age = Math.floor((today - dob) / (365.25 * 24 * 60 * 60 * 1000));
+                    $('#txtAge').val(age);
+                });
+
+                $("#InvalidDialog").dialog({
+                    modal: true,
+                    height: 250,
+                    width: 350,
+                    autoOpen: <?php echo $InvalidDialogOpen; ?>,
+                    buttons: {
+                        Ok: function() {
+                            $(this).dialog("close");
+                            window.close();
+                        }
+                    }
+                });
+
+                $("#ActivationDialog").dialog({
+                    modal: true,
+                    height: 250,
+                    width: 350,
+                    autoOpen: <?php echo $ActivationDialogOpen; ?>,
+                    buttons: {
+                        Ok: function() {
+                            $(this).dialog("close");
+                            window.close();
+                        }
+                    }
+                });
+            });
 
     var currenttime = '<?php print $curdate->GetCurrentDateFormat("F d, Y H:i:s"); ?>' //PHP method of getting server date
-    var montharray=new Array("01","02","03","04","05","06","07","08","09","10","11","12")
-    var serverdate=new Date(currenttime)
+    var montharray = new Array("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12")
+    var serverdate = new Date(currenttime)
 
     var hours = serverdate.getHours();
-    var dn="AM";
+    var dn = "AM";
 
-    if (hours>=12)
+    if (hours >= 12)
     {
-        dn="PM";
+        dn = "PM";
     }
-    if (hours>12){
-        hours=hours-12
+    if (hours > 12) {
+        hours = hours - 12
     }
-    if (hours==0)
+    if (hours == 0)
     {
-        hours=12;
+        hours = 12;
     }
 
-    function padlength(what){
-        var output=(what.toString().length==1)? "0"+what : what
+    function padlength(what) {
+        var output = (what.toString().length == 1) ? "0" + what : what
         return output
     }
 
-    function displaytime(){
-        serverdate.setSeconds(serverdate.getSeconds()+1);
-        var datestring=montharray[serverdate.getMonth()]+"-"+padlength(serverdate.getDate())+"-"+serverdate.getFullYear();
-        var timestring=padlength(serverdate.getHours())+":"+padlength(serverdate.getMinutes());
-        document.getElementById("servertime").innerHTML=datestring+" "+timestring;
+    function displaytime() {
+        serverdate.setSeconds(serverdate.getSeconds() + 1);
+        var datestring = montharray[serverdate.getMonth()] + "-" + padlength(serverdate.getDate()) + "-" + serverdate.getFullYear();
+        var timestring = padlength(serverdate.getHours()) + ":" + padlength(serverdate.getMinutes());
+        document.getElementById("servertime").innerHTML = datestring + " " + timestring;
     }
 
-    window.onload=function(){
+    window.onload = function() {
         setInterval("displaytime()", 1000)
     }
 
@@ -401,8 +402,8 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
             <td><strong><span id="servertime"></span></strong></td>
         </tr>
     </table>
-        <hr />
-     <table>
+    <hr />
+    <table>
         <tr>
             <td>Name*</td>
             <td><?php echo $txtplayername; ?></td>
@@ -440,40 +441,40 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
 <?php if ($ActivationDialogOpen == 'true') {
     ?>
     <div id="ActivationDialog" title="Member Card Activation">
-    <?php if ($isSuccess) {
-        ?>
+        <?php if ($isSuccess) {
+            ?>
 
             <p>Account migration is successful. <br />                    
                 Temporary password for the membership website is  <b> <?php echo $displayPassword; ?></b>.
             </p>
 
         <?php } else {
-        ?>
+            ?>
             <p>Account migration has failed. <br />
                 <?php echo $error; ?>.<br />
                 Contact customer service for assistance.
             </p>
-            <?php }
+        <?php }
         ?>
     </div>
-    <?php }
+<?php }
 ?>
 
-    <?php if ($InvalidDialogOpen == 'true') {
-        ?>
+<?php if ($InvalidDialogOpen == 'true') {
+    ?>
     <div id="InvalidDialog" title="Member Card Activation">
         <?php if ($IsInvalidCard) {
             ?>
             <p>The card number is invalid.<br />
-               Contact customer service for assistance.
+                Contact customer service for assistance.
             </p>
 
         <?php } elseif ($HasParamError) {
-        ?>
+            ?>
             <p>Incomplete parameters. <br />Contact customer service for assistance..</p>
-            <?php }
+        <?php }
         ?>
     </div>
-    <?php }
+<?php }
 ?>
-    <?php include 'nofooter.php'; ?>
+<?php include 'nofooter.php'; ?>

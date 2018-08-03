@@ -73,23 +73,23 @@ if (isset($_POST['pager'])) {
     if ($sessioncount > 0) {
         switch ($vpage) {
             case "ChangePassword":
-                if(isset($_POST['Card']) && isset($_POST['CasinoService'])){
+                if (isset($_POST['Card']) && isset($_POST['CasinoService'])) {
                     $cardnumber = $_POST['Card'];
                     $serviceID = $_POST['CasinoService'];
-                    $DateCreated =  "NOW(6)";
+                    $DateCreated = "NOW(6)";
 
                     //get card details using cardnumber
                     $cardinfo = $_MemberCards->getMemberCardInfoByCardNumber($cardnumber);
 
                     $servicegroupID = $_CasinoServices->getServiceGroupID($serviceID);
 
-                    if(!empty($cardinfo)){
+                    if (!empty($cardinfo)) {
                         foreach ($cardinfo as $value) {
                             $status = $value['Status'];
                             $MID = $value['MID'];
                         }
                         //Allow temporary and actie membership cards only
-                        if($status == 5 || $status == 1){
+                        if ($status == 5 || $status == 1) {
 
                             $service = $_CasinoServices->getCasinoServiceName($serviceID);
 
@@ -102,177 +102,131 @@ if (isset($_POST['pager'])) {
 //                                $genpassbatchid = $_GeneratedPasswordBatch->getInactivePasswordBatch2();
 //                                $flag = 2;
 //                            }
-                            
+
                             $genpassresult = $_GeneratedPasswordBatch->getInactivePasswordBatchInfo();
+
                             $genpassbatchid = $genpassresult[0]['GeneratedPasswordBatchID'];
-                            $newpassword = $genpassresult[0]['PlainPassword'];
-                            $hashednewpassword = $genpassresult[0]['EncryptedPassword'];
-                               switch( true )
-                                {
-                                    case strstr($serviceName, "RTG"):
+                            $rpassword = $_GeneratedPasswordBatch->getPasswordByCasino($genpassbatchid, $servicegroupID);
 
-                                        $checkMS = $_MemberServices->CheckMemberService($MID, $serviceID);
-                                        if(!empty($checkMS)){
+                            $newpassword = $rpassword[0]['PlainPassword'];
+                            $hashednewpassword = $rpassword[0]['EncryptedPassword'];
 
-                                            $userName = $checkMS[0]['ServiceUsername'];
-                                            $password = $checkMS[0]['ServicePassword'];
-                                            //Call API to get Account Info
-                                            $vapiResult = $casinoAPI->GetAccountInfo($serviceName, $userName, $password, $serviceID);
-                                            //Verify if API Call was successful
-                                            if(isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true)
-                                            {
-                                                //$newpassword = $vapiResult['AccountInfo']['password'];
-                                                //Call API Change Password
-                                                $vapiResult = $casinoAPI->ChangePassword($serviceName, $userName, $password, $newpassword, $serviceID);
-                                                 if(isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true)
-                                                 {
-                                                        $isMemberServicesUpdated = $_MemberServices->updateMemberServicesUBPassword($newpassword, $hashednewpassword, $MID, $serviceID, $genpassbatchid);
-                                                        if($isMemberServicesUpdated)
-                                                            $apisuccess = 1;
-                                                        else
-                                                        {
-                                                            $apisuccess = 0;
-                                                            //Call API Change Password again to revert back to original password
-                                                            $vapiResult = $casinoAPI->ChangePassword($serviceName, $userName, $newpassword, $password, $serviceID);
-                                                        }
-                                                 }
-                                                 else
-                                                 {
+                            switch (true) {
+                                case strstr($serviceName, "RTG"):
+
+                                    $checkMS = $_MemberServices->CheckMemberService($MID, $serviceID);
+                                    if (!empty($checkMS)) {
+
+                                        $userName = $checkMS[0]['ServiceUsername'];
+                                        $password = $checkMS[0]['ServicePassword'];
+                                        //Call API to get Account Info
+                                        $vapiResult = $casinoAPI->GetAccountInfo($serviceName, $userName, $password, $serviceID);
+                                        //Verify if API Call was successful
+                                        if (isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true) {
+                                            //$newpassword = $vapiResult['AccountInfo']['password'];
+                                            //Call API Change Password
+                                            $vapiResult = $casinoAPI->ChangePassword($serviceName, $userName, $password, $newpassword, $serviceID);
+                                            if (isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true) {
+                                                $isMemberServicesUpdated = $_MemberServices->updateMemberServicesUBPassword($newpassword, $hashednewpassword, $MID, $serviceID, $genpassbatchid);
+                                                if ($isMemberServicesUpdated)
+                                                    $apisuccess = 1;
+                                                else {
                                                     $apisuccess = 0;
-                                                 }
-                                            }
-                                            else
-                                            {
+                                                    //Call API Change Password again to revert back to original password
+                                                    $vapiResult = $casinoAPI->ChangePassword($serviceName, $userName, $newpassword, $password, $serviceID);
+                                                }
+                                            } else {
                                                 $apisuccess = 0;
                                             }
-                                        }
-                                        else{
-
+                                        } else {
                                             $apisuccess = 0;
                                         }
+                                    } else {
+
+                                        $apisuccess = 0;
+                                    }
 
                                     break;
 
-                                    case strstr($serviceName, "MG"):
-                                        $checkMS = $_MemberServices->CheckMemberService($MID, $serviceID);
+                                case strstr($serviceName, "HAB"):
 
-                                        if(!empty($checkMS)){
-                                            $userName = $checkMS[0]['ServiceUsername'];
-                                            $password = $checkMS[0]['ServicePassword'];
-                                            //Call API to get Account Info
-                                            $vapiResult = $casinoAPI->GetAccountInfo($serviceName, $userName, $password, $serviceID);
+                                    $checkMS = $_MemberServices->CheckMemberService($MID, $serviceID);
+                                    if (!empty($checkMS)) {
 
-                                            //Verify if API Call was successful
-                                            if(isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true)
-                                            {
-                                                 $vaccountExist = $vapiResult['AccountInfo']['UserExists'];
-
-                                                 //check if account exists for MG Casino
-                                                 if($vaccountExist)
-                                                 {
-                                                     //Call API Change Password
-                                                    $vapiResult = $casinoAPI->ChangePassword($serviceName, $userName, $password, $password, $serviceID);
-                                                 }
-
-                                                 if(isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true)
+                                        $userName = $checkMS[0]['ServiceUsername'];
+                                        $password = $checkMS[0]['ServicePassword'];
+                                        //Call API to get Account Info
+                                        $vapiResult = $casinoAPI->GetAccountInfo($serviceName, $userName, $password, $serviceID);
+                                        //Verify if API Call was successful
+                                        if (isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true) {
+                                            //$newpassword = $vapiResult['AccountInfo']['password'];
+                                            //Call API Change Password
+                                            $vapiResult = $casinoAPI->ChangePassword($serviceName, $userName, $password, $newpassword, $serviceID);
+                                            if (isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true) {
+                                                $isMemberServicesUpdated = $_MemberServices->updateMemberServicesUBPassword($newpassword, $hashednewpassword, $MID, $serviceID, $genpassbatchid);
+                                                if ($isMemberServicesUpdated)
                                                     $apisuccess = 1;
-                                                 else{
+                                                else {
                                                     $apisuccess = 0;
-                                                 }
+                                                    //Call API Change Password again to revert back to original password
+                                                    $vapiResult = $casinoAPI->ChangePassword($serviceName, $userName, $newpassword, $password, $serviceID);
+                                                }
+                                            } else {
+                                                $apisuccess = 0;
                                             }
-
-                                        }
-                                        else{
-
+                                        } else {
                                             $apisuccess = 0;
                                         }
+                                    } else {
+
+                                        $apisuccess = 0;
+                                    }
 
                                     break;
-                                    case strstr($serviceName, "PT"):
 
-                                        $checkMS = $_MemberServices->CheckMemberService($MID, $serviceID);
 
-                                        if(!empty($checkMS)){
-                                            $userName = $checkMS[0]['ServiceUsername'];
-                                            $password = $checkMS[0]['ServicePassword'];
-                                            //Call API to get Account Info
-                                            $vapiResult = $casinoAPI->GetAccountInfo($serviceName, $userName, $password, $serviceID);
-
-                                            //Verify if API Call was successful
-                                            if(isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true)
-                                            {
-                                                 $vaccountExist = $vapiResult['AccountInfo']['UserExists'];
-
-                                                 //check if account exists for v15 casino
-                                                 if($vaccountExist)
-                                                 {
-                                                     //Call API Change Password
-                                                    $vapiResult = $casinoAPI->ChangePassword($serviceName, $userName, $password, $password, $serviceID);
-                                                 }
-
-                                                 if(isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true)
-                                                    $apisuccess = 1;
-                                                 else{
-                                                    $apisuccess = 0;
-                                                 }
-
-                                            }
-
-                                        }
-                                        else{
-                                            $apisuccess = 0;
-                                        }
-
+                                default:
                                     break;
-                                    default:
-                                        break;
-                                }
+                            }
 
-                                if($apisuccess > 0 ){
-                                    $_Log->logAPI(AuditFunctions::CHANGE_PLAYER_PASSWORD,
-                                           'UB Player Password is successfully changed for UB Card'.$cardnumber, $_SESSION['sessionID'],$_SESSION['aID']);
-                                       $profile->Msg = 'UB Player Password is successfully changed';
-                                }
-                                else{
-                                    $_Log->logAPI(AuditFunctions::CHANGE_PLAYER_PASSWORD,
-                                            'Failed to Create UserBased Account for UB Card'.$cardnumber, $_SESSION['sessionID'],$_SESSION['aID']);
-                                    $profile->Msg = 'Failed to Change UB Player Password';
-                                }
-
-
-
-
-                        }
-                        else{
+                            if ($apisuccess > 0) {
+                                $_Log->logAPI(AuditFunctions::CHANGE_PLAYER_PASSWORD, 'UB Player Password is successfully changed for UB Card' . $cardnumber, $_SESSION['sessionID'], $_SESSION['aID']);
+                                $profile->Msg = 'UB Player Password is successfully changed';
+                            } else {
+                                $_Log->logAPI(AuditFunctions::CHANGE_PLAYER_PASSWORD, 'Failed to Create UserBased Account for UB Card' . $cardnumber, $_SESSION['sessionID'], $_SESSION['aID']);
+                                $profile->Msg = 'Failed to Change UB Player Password';
+                            }
+                        } else {
                             //if card status is not temporary or active
-                            switch($status)
-                            {
-                                case 0: $vstatus = 'Card is inactive.';break;
-                                case 1: $vstatus = 'Card is active.';    break;
-                                case 2: $vstatus = 'Card is deactivated.';break;
-                                case 5: $vstatus = 'Card is active temporary.';break;
-                                case 7: $vstatus = 'Membership card was already migrated to another red card.'; break;
-                                case 8: $vstatus = 'Temporary account was already migrated to a red card.';  break;
-                                case 9: $vstatus = 'Card is banned.';  break;
-                                default: $vstatus = 'Card not found.'; break;
+                            switch ($status) {
+                                case 0: $vstatus = 'Card is inactive.';
+                                    break;
+                                case 1: $vstatus = 'Card is active.';
+                                    break;
+                                case 2: $vstatus = 'Card is deactivated.';
+                                    break;
+                                case 5: $vstatus = 'Card is active temporary.';
+                                    break;
+                                case 7: $vstatus = 'Membership card was already migrated to another red card.';
+                                    break;
+                                case 8: $vstatus = 'Temporary account was already migrated to a red card.';
+                                    break;
+                                case 9: $vstatus = 'Card is banned.';
+                                    break;
+                                default: $vstatus = 'Card not found.';
+                                    break;
                             }
 
                             $profile->Msg = $vstatus;
-
                         }
-
-
-                    }
-                    else{
+                    } else {
                         $profile->Msg = 'Card is invalid.';
                     }
                 }
                 echo json_encode($profile);
-            break;
+                break;
         }
-
-    }
-    else {
+    } else {
         $profile->Msg = "Session Expired";
         session_destroy();
         $profile->RedirectToPage = "login.php?mess=" . $profile->Msg;

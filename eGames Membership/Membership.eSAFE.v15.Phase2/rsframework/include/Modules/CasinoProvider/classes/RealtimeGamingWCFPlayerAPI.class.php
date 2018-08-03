@@ -6,12 +6,13 @@
  * @author elperez
  */
 class RealtimeGamingWCFPlayerAPI {
+
     /**
      * Holds the web service end point
      * @var string
      */
     private $_url = '';
-    
+
     /**
      * Set caching of connection
      * @var boolean 
@@ -41,7 +42,7 @@ class RealtimeGamingWCFPlayerAPI {
      * @var string 
      */
     private $_cert_keyFilePath = '';
-    
+
     /**
      * Certificate key file passphrase
      * @var string
@@ -72,29 +73,26 @@ class RealtimeGamingWCFPlayerAPI {
      */
     private $_APIresponse;
 
-    public function __construct()
-    {
+    public function __construct() {
         $argv = func_get_args();
 
-        switch ( func_num_args() )
-        {
+        switch (func_num_args()) {
             default:
-            case 4: self::__construct1( $argv[0], $argv[1], $argv[2] ); break;
+            case 4: self::__construct1($argv[0], $argv[1], $argv[2]);
+                break;
         }
     }
-	
-    public function __construct1( $url, $certFilePath, $passPhrase = '' )
-    {
+
+    public function __construct1($url, $certFilePath, $passPhrase = '') {
         $this->_url = $url;
         $this->_cert_keyFilePath = $certFilePath;
         $this->_passPhrase = $passPhrase;
     }
-    
-    public function getError()
-    {
-    	return $this->_error;
+
+    public function getError() {
+        return $this->_error;
     }
-    
+
     /**
      * Creates an casino account to RTG
      * @param type $login
@@ -128,58 +126,50 @@ class RealtimeGamingWCFPlayerAPI {
      * @return ojtect | array api response
      */
     public function createTerminalAccount($login, $password, $aid, $country, 
-            $casinoID, $fname, $lname, $email, $dayphone, $evephone, $addr1, $addr2, 
-            $city, $state, $zip, $ip, $mac, $userID, $downloadID, $birthdate, $clientID, 
-            $putInAffPID, $calledFromCasino, $hashedPassword, $agentID, $currentPosition, 
-            $thirdPartyPID, $playerClass)
-    {
-        $data = array('Player'=>array(
-                              'Contact'=>array(
-                                     'CountryID'=>$country,
-                                     'EMail'=>$email,
-                                     'FirstName'=>$fname,
-                                     'LastName'=>$lname,
-                                     'DayPhone'=>$dayphone,
-                                     'EvePhone'=>$evephone,
-                                     'Address1'=>$addr1,
-                                     'Address2'=>$addr2,
-                                     'City'=>$city,
-                                     'StateID'=>$state,
-                                     'ZipCode'=>$zip,
-                                ),
-                              'Login'=>$login,
-                              'Password'=>$password),
-                        'ThirdPartyDataSync'=>true,
-                        'UserID'=>0,
-                        'MapToAffID'=>false,
-                        'CalledFromCasino'=>0,
-                        'IP'=>$ip,
-                        'MACAddress'=>$mac,
-                        'DownloadID'=>$downloadID,
-                        'BirthDate'=>$birthdate,
-                        'ClientID'=>$clientID,
-                        'HashedPassword'=>$hashedPassword,
-                        'AgentID'=>$agentID,
-                        'CurrentPosition'=>$currentPosition,
-                        'ThirdpartyPID'=>$thirdPartyPID,
-                        'Class'=>$playerClass);
-        
+	    $casinoID, $fname, $lname, $email, $dayphone, $evephone, $addr1, $addr2, 
+	    $city, $state, $zip, $ip, $mac, $userID, $downloadID, $birthdate, $clientID, 
+	    $putInAffPID, $calledFromCasino, $hashedPassword, $agentID, $currentPosition, 
+	    $thirdPartyPID, $playerClass) {
+
+
+        $data = array('Player' => array(
+                'BirthDate' => $birthdate,
+                'Class' => $playerClass,
+                'ClientID' => $clientID,
+                'Contact' => array(
+                    'Address1' => $addr1,
+                    'City' => $city,
+                    'CountryID' => $country,
+                    'DayPhone' => $dayphone,
+                    'EMail' => $email,
+                    'EvePhone' => $evephone,
+                    'FirstName' => $fname,
+                    'LastName' => $lname,
+                    'ZipCode' => $zip
+                ),
+                'DownloadID' => $downloadID,
+                'HashedPassword' => '', //$hashedPassword,
+                'Login' => $login,
+                'Password' => $password,
+                'PlayerCurrencyID' => 'PHP'
+            ),
+            'UserID' => $userID,
+        );
+
+
         $method = 'CreatePlayer';
-        
+
         $response = $this->SubmitRequest($this->_url, $data, $method);
-        
-        if (is_object($response) )
-        {
-            $this->_APIresponse = $this->XML2Array( $response );
-        }
-        else
-        {
+
+        if (is_object($response)) {
+            $this->_APIresponse = $this->XML2Array($response);
+        } else {
             $this->_error = "Bad request. Check if API configurations are correct.";
         }
-        
+
         return $this->_APIresponse;
     }
-    
+
     /**
      * Change account current password by new password
      * @param str $login
@@ -187,26 +177,22 @@ class RealtimeGamingWCFPlayerAPI {
      * @param str $newpassword
      * @return object | array
      */
-    public function changePlayerPassword($login, $oldpassword, $newpassword)
-    {
-        $data = array('Login'=>$login,'OldPassword'=>$oldpassword,'NewPassword'=>$newpassword);
-        
+    public function changePlayerPassword($login, $oldpassword, $newpassword) {
+        $data = array('Login' => $login, 'OldPassword' => $oldpassword, 'NewPassword' => $newpassword);
+
         $method = 'ChangePassword';
-        
+
         $response = $this->submitRequest($this->_url, $data, $method);
-        
-        if (is_object($response) )
-        {
-            $this->_APIresponse = $this->XML2Array( $response );
-        }
-        else
-        {
+
+        if (is_object($response)) {
+            $this->_APIresponse = $this->XML2Array($response);
+        } else {
             $this->_error = "Bad request. Check if API configurations are correct.";
         }
-        
+
         return $this->_APIresponse;
     }
-    
+
     /**
      * Change player clasification (0-New Player, 1-High Roller)
      * @param str $pid
@@ -214,47 +200,41 @@ class RealtimeGamingWCFPlayerAPI {
      * @param int $userID
      * @return object | array api response
      */
-    public function changePlayerClasification($pid, $playerClassID, $userID){
-        
-        $data = array('PID'=>$pid,'playerClassID'=>$playerClassID,'UserID'=>$userID);
-        
+    public function changePlayerClasification($pid, $playerClassID, $userID) {
+
+        $data = array('PID' => $pid, 'playerClassID' => $playerClassID, 'UserID' => $userID);
+
         $method = 'ChangePlayerClass';
-        
+
         $response = $this->submitRequest($this->_url, $data, $method);
-        
-        if (is_object($response) )
-        {
-            $this->_APIresponse = $this->XML2Array( $response );
-        }
-        else
-        {
+
+        if (is_object($response)) {
+            $this->_APIresponse = $this->XML2Array($response);
+        } else {
             $this->_error = "Bad request. Check if API configurations are correct.";
         }
-        
+
         return $this->_APIresponse;
     }
-    
+
     /**
      * Get assigned player clasification
      * @param str $pid
      * @return object | array api response
      */
-    public function getPlayerClasification($pid){
-        $data = array('PID'=>$pid);
-        
+    public function getPlayerClasification($pid) {
+        $data = array('PID' => $pid);
+
         $method = 'GetPlayerClass';
-        
+
         $response = $this->submitRequest($this->_url, $data, $method);
-        
-        if (is_object($response) )
-        {
-            $this->_APIresponse = $this->XML2Array( $response );
-        }
-        else
-        {
+
+        if (is_object($response)) {
+            $this->_APIresponse = $this->XML2Array($response);
+        } else {
             $this->_error = "Bad request. Check if API configurations are correct.";
         }
-        
+
         return $this->_APIresponse;
     }
 
@@ -265,27 +245,25 @@ class RealtimeGamingWCFPlayerAPI {
      * @param str $method
      * @return object | array api response
      */
-    private function submitRequest( $url, $data, $method )
-    {
-        header( 'Content-Type: text/plain' );
+    private function submitRequest($url, $data, $method) {
+        header('Content-Type: text/plain');
 
         $soapArr = array(
-                'trace' => true,
-                'exceptions' => true,
-                'local_cert' => $this->_cert_keyFilePath, //certificate folder
-                'passphrase' => ''
+            'trace' => true,
+            'exceptions' => true,
+            'local_cert' => $this->_cert_keyFilePath, //certificate folder
+            'passphrase' => ''
         );
-        
+
         $response = array();
-        try{
-            $client = new SoapClient( $url, $soapArr );
-            
+        try {
+            $client = new SoapClient($url, $soapArr);
+
             $response = $client->$method($data);
-            
-        } catch (Exception $e){
+        } catch (Exception $e) {
             $this->_error = "Bad request. Check if API configurations are correct";
         }
-        
+
         return $response;
     }
 
@@ -294,12 +272,12 @@ class RealtimeGamingWCFPlayerAPI {
      * @param type $xmlString
      * @return type
      */
-    private function XML2Array( $xmlString )
-    {
-        $json = json_encode( $xmlString );
+    private function XML2Array($xmlString) {
+        $json = json_encode($xmlString);
 
-        return json_decode( $json, TRUE );
+        return json_decode($json, TRUE);
     }
+
 }
 
 ?>
