@@ -49,7 +49,7 @@
 
         $('#btnInitailDeposit').live('click', function() {
             var mode = $('#btnInitailDeposit').attr('mode');
-            if (mode != 2 && mode != 4)
+            if (mode !== 2)
             {
                 if (!startSessionChecking())
                 {
@@ -59,20 +59,7 @@
                 {
                     var issuccess = identifyCard();
                 }
-            } else if (mode == 4)
-            {
-
-                if (!startSessionChecking())
-                {
-                    return false;
-                }
-                else
-                {
-                    var issuccess = identifyCard();
-                }
-//                var issuccess = "false";
-//                isEwalletSessionMode = true;
-            } else {
+            }else {
                 if (!startSessioneBingoChecking()) {
                     return false;
                 } else {

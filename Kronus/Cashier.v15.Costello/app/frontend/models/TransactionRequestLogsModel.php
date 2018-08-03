@@ -30,18 +30,18 @@ class TransactionRequestLogsModel extends MI_Model{
      * @return boolean
      */
     public function insert($trans_ref_id,$amount,$trans_type, $paymentType,$terminal_id,$site_id, $service_id, 
-                           $loyalty_card, $mid, $user_mode, $trackingid = '',$voucher_code = '', $mg_ticket_id = '') {
+                           $loyalty_card, $mid, $user_mode, $trackingid = '',$voucher_code = '', $mg_ticket_id = '', $login = '') {
         
         try {
             $this->beginTransaction();
             $stmt = $this->dbh->prepare('INSERT INTO transactionrequestlogs (TransactionReferenceID,
                                          Amount, StartDate, TransactionType, TerminalID, Status, 
                                          SiteID, ServiceID, LoyaltyCardNumber, MID, UserMode, PaymentType, 
-                                         PaymentTrackingID, Option1, ServiceTransactionID)
+                                         PaymentTrackingID, Option1, ServiceTransactionID, Option2)
                                          VALUES (:trans_ref_id, :amount, now(6), :trans_type, 
                                          :terminal_id, \'0\', :site_id, :service_id, :loyalty_card, 
                                          :mid, :user_mode, :paymentType ,:trackingID, :voucher_code, 
-                                         :service_trans_id)');
+                                         :service_trans_id,:login)');
             
             $stmt->bindValue(':trans_ref_id', $trans_ref_id);
             $stmt->bindValue(':amount', $amount);
@@ -56,6 +56,7 @@ class TransactionRequestLogsModel extends MI_Model{
             $stmt->bindValue(':user_mode', $user_mode);
             $stmt->bindValue(':paymentType', $paymentType);
             $stmt->bindValue(':service_trans_id', $trackingid);
+            $stmt->bindValue(':login', $login);
             
             $stmt->execute();
             $trans_req_log_last_id = $this->getLastInsertId();

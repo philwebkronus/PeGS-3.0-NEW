@@ -44,12 +44,14 @@ class TerminalController extends FrontendController {
         }
         $deno_casino_min_max = $this->_getDenoCasinoMinMax($denominationtype);
         if (isset($_POST['isreload'])) {
-            Mirage::loadComponents('CasinoApi');
+            Mirage::loadComponents(array('CasinoApi', 'CasinoApiUB'));
             Mirage::loadModels(array('TransactionSummaryModel', 'TransactionDetailsModel', 'TerminalSessionsModel'));
             $transactionSummaryModel = new TransactionSummaryModel();
             $transactionDetailModel = new TransactionDetailsModel();
             $terminalSessionsModel = new TerminalSessionsModel();
             $casinoApi = new CasinoApi();
+
+            $casinoApiUB = new CasinoApiUB();
 
             $terminal_session_data = $terminalSessionsModel->getDataById($_POST['terminal_id']);
 
@@ -72,11 +74,13 @@ class TerminalController extends FrontendController {
             }
 
             $casinoUserMode = (!empty($casinoUserMode) ? $casinoUserMode : "");
-            if ($casinoUserMode == 0 || $casinoUserMode == 2)
+            if ($casinoUserMode == 0 || $casinoUserMode == 2) {
                 list($terminal_balance) = $casinoApi->getBalance($_POST['terminal_id'], $this->site_id, 'R', $terminal_session_data['ServiceID'], $this->acc_id);
+            }
 
-            if ($casinoUserMode == 1)
-                list ($terminal_balance) = $casinoApi->getBalanceUB($_POST['terminal_id'], $this->site_id, 'R', $casinoServiceID, $this->acc_id, $casinoUsername, $casinoPassword);
+            if ($casinoUserMode == 1 || $casinoUserMode == 3) {
+                list ($terminal_balance) = $casinoApiUB->getBalanceUB($_POST['terminal_id'], $this->site_id, 'R', $casinoServiceID, $this->acc_id, $casinoUsername, $casinoPassword);
+            }
 
             //$last_trans_summary_id = $transactionSummaryModel->getLastTransSummaryId($_POST['terminal_id'],$this->site_id);
             $last_trans_summary_id = $terminalSessionsModel->getLastSessSummaryID($_POST['terminal_id']);
@@ -130,7 +134,7 @@ class TerminalController extends FrontendController {
             $_SESSION['current_page'] = $_GET['page'];
             $_SESSION['page'] = $start;
         }
-        Mirage::loadComponents('CasinoApi');
+        Mirage::loadComponents(array('CasinoApi', 'CasinoApiUB'));
         Mirage::loadModels(array('TerminalsModel', 'RefServicesModel', 'TerminalSessionsModel', 'SitesModel'));
 
         $terminalModel = new TerminalsModel();
@@ -138,6 +142,7 @@ class TerminalController extends FrontendController {
         $terminalSessionsModel = new TerminalSessionsModel();
         $sitesModel = new SitesModel();
         $casinoApi = new CasinoApi();
+        $casinoApiUB = new CasinoApiUB();
 
         $total_terminal = $terminalModel->getNumberOfTerminalsPerSite($siteid);
         //$getlastTerminalCode = $terminalModel->getLastTerminalCodeBySiteID($this->site_id, $len);
@@ -157,7 +162,7 @@ class TerminalController extends FrontendController {
 
             foreach ($terminals as $terminal) {
 
-                if ($terminal['lastbalance'] != null) {
+//                if ($terminal['lastbalance'] != null) {
                     $casinoUBDetails = $terminalSessionsModel->getLastSessionDetails($terminal['TerminalID']);
                     $casinoUserMode = '';
                     $casinoUsername = '';
@@ -174,12 +179,14 @@ class TerminalController extends FrontendController {
                         $casinoUserMode = $val['UserMode'];
                         $casinoServiceID = $val['ServiceID'];
                     }
-                    if ($casinoUserMode == 0 || $casinoUserMode == 2)
+                    if ($casinoUserMode == 0 || $casinoUserMode == 2) {
                         $casinoApi->getBalanceContinue($terminal['TerminalID'], $this->site_id, 'R', $terminal['usedServiceID'], $this->acc_id);
+                    }
 
-                    if ($casinoUserMode == 1)
-                        $casinoApi->getUBBalanceContinue($terminal['TerminalID'], $this->site_id, 'R', $casinoServiceID, $this->acc_id, $casinoUsername, $casinoPassword);
-                }
+                    if ($casinoUserMode == 1 || $casinoUserMode == 3) {
+                        $casinoApiUB->getUBBalanceContinue($terminal['TerminalID'], $this->site_id, 'R', $casinoServiceID, $this->acc_id, $casinoUsername, $casinoPassword);
+                    }
+//                }
             }
             //$terminals = $terminalModel->getTerminalPerPage2($siteid, $start, (Mirage::app()->param['terminal_per_page'] * 4), $len);
             $terminals = $terminalModel->getTerminalPerPage2($siteid, $start, $end, $len);
@@ -201,7 +208,7 @@ class TerminalController extends FrontendController {
             $terminals = $terminalModel->getAllActiveTerminalPerPage2($this->site_id, $start, $end, $len);
             foreach ($terminals as $terminal) {
 
-                if ($terminal['lastbalance'] != null) {
+//                if ($terminal['lastbalance'] != null) {
                     $casinoUBDetails = $terminalSessionsModel->getLastSessionDetails($terminal['TerminalID']);
                     $casinoUserMode = '';
                     $casinoUsername = '';
@@ -218,12 +225,14 @@ class TerminalController extends FrontendController {
                         $casinoUserMode = $val['UserMode'];
                         $casinoServiceID = $val['ServiceID'];
                     }
-                    if ($casinoUserMode == 0 || $casinoUserMode == 2)
-                        $casinoApi->getBalanceContinue($terminal['TerminalID'], $this->site_id, 'R', $terminal['usedServiceID'], $this->acc_id);
 
-                    if ($casinoUserMode == 1)
-                        $casinoApi->getUBBalanceContinue($terminal['TerminalID'], $this->site_id, 'R', $casinoServiceID, $this->acc_id, $casinoUsername, $casinoPassword);
-                }
+                    if ($casinoUserMode == 0 || $casinoUserMode == 2) {
+                        $casinoApi->getBalanceContinue($terminal['TerminalID'], $this->site_id, 'R', $terminal['usedServiceID'], $this->acc_id);
+                    }
+                    if ($casinoUserMode == 1 || $casinoUserMode == 3) {
+                        $casinoApiUB->getUBBalanceContinue($terminal['TerminalID'], $this->site_id, 'R', $casinoServiceID, $this->acc_id, $casinoUsername, $casinoPassword);
+                    }
+//                }
             }
             $terminals = $terminalModel->getTerminalPerPage2($siteid, $start, $end, $len);
             $siteAmountInfo = $sitesModel->getSiteAmountInfo($this->site_id);
@@ -241,12 +250,13 @@ class TerminalController extends FrontendController {
         if (!$this->isAjaxRequest() || !$this->isPostRequest())
             Mirage::app()->error404();
 
-        Mirage::loadComponents('CasinoApi');
+        Mirage::loadComponents(array('CasinoApi', 'CasinoApiUB'));
         Mirage::loadModels('TerminalSessionsModel');
         $casinoApi = new CasinoApi();
         $site_id = $this->site_id;
         $terminal_id = $_POST['StartSessionFormModel']['terminal_id'];
         $terminalSessionsModel = new TerminalSessionsModel();
+        $casinoApiUB = new CasinoApiUB();
 
         $service_id = $terminalSessionsModel->getServiceId($terminal_id);
 
@@ -268,11 +278,13 @@ class TerminalController extends FrontendController {
             $casinoServiceID = $val['ServiceID'];
         }
 
-        if ($casinoUserMode == 0 || $casinoUserMode == 2)
+        if ($casinoUserMode == 0 || $casinoUserMode == 2) {
             list($terminal_balance) = $casinoApi->getBalance($terminal_id, $site_id, 'W', $service_id);
+        }
 
-        if ($casinoUserMode == 1)
+        if ($casinoUserMode == 1 || $casinoUserMode == 3) {
             list ($terminal_balance) = $casinoApi->getBalanceUB($terminal_id, $site_id, 'W', $casinoServiceID, $acct_id = '', $casinoUsername, $casinoPassword);
+        }
 
         echo toMoney($terminal_balance);
         Mirage::app()->end();
@@ -325,7 +337,7 @@ class TerminalController extends FrontendController {
             'terminals' => $terminals, 'denomination' => $denomination, 'casinos' => $casinos, 'siteClassification' => $siteClassification, 'siteAmountInfo' => $siteAmountInfo,
             'eBingoDenomination' => $eBingoDenomination, 'eBingoDivisibleBy' => $eBingoDivisibleBy,
             'eBingoMinDeposit' => $eBingoMinDeposit, 'eBingoMaxDeposit' => $eBingoMaxDeposit
-            ));
+        ));
     }
 
     /**
@@ -478,7 +490,7 @@ class TerminalController extends FrontendController {
         if (!$this->isAjaxRequest() && !$this->isPostRequest())
             Mirage::app()->error404();
 
-        Mirage::loadComponents('CasinoApi');
+        Mirage::loadComponents(array('CasinoApi', 'CasinoApiUB'));
         Mirage::loadModels(array('StartSessionFormModel', 'SiteDenominationModel', 'RefServicesModel', 'TerminalSessionsModel', 'SitesModel'));
         $startSessionFormModel = new StartSessionFormModel();
         $siteDenominationModel = new SiteDenominationModel();
@@ -487,6 +499,7 @@ class TerminalController extends FrontendController {
         $sitesModel = new SitesModel();
 
         $casinoApi = new CasinoApi();
+        $casinoApiUB = new CasinoApiUB();
 
         $bcf = $this->getSiteBalance();
 
@@ -520,11 +533,13 @@ class TerminalController extends FrontendController {
 //            $this->throwError($message);
 //        }
         // get balance
-        if ($casinoUserMode == 0 || $casinoUserMode == 2)
+        if ($casinoUserMode == 0 || $casinoUserMode == 2) {
             list($terminal_balance) = $casinoApi->getBalance($tid, $this->site_id, 'R', $cid);
+        }
 
-        if ($casinoUserMode == 1)
-            list ($terminal_balance) = $casinoApi->getBalanceUB($tid, $this->site_id, 'R', $casinoServiceID, $acct_id = '', $casinoUsername, $casinoPassword);
+        if ($casinoUserMode == 1 || $casinoUserMode == 3) {
+            list ($terminal_balance) = $casinoApiUB->getBalanceUB($tid, $this->site_id, 'R', $casinoServiceID, $acct_id = '', $casinoUsername, $casinoPassword);
+        }
 
         // get denomination base on minimum and maximum denomination of sites
         $denomination = $siteDenominationModel->getDenominationPerSiteAndType($this->site_id, DENOMINATION_TYPE::RELOAD, $is_vip);
@@ -808,4 +823,3 @@ class TerminalController extends FrontendController {
     }
 
 }
-

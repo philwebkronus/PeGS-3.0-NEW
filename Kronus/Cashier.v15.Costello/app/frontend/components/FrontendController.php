@@ -211,7 +211,7 @@ class FrontendController extends MI_Controller {
 
     protected function _reload($startSessionFormModel, $cid) {
         Mirage::loadComponents(array('CommonReload', 'LoyaltyAPIWrapper.class', 'VoucherManagement',
-            'CasinoApi', 'CommonUBReload', 'PCWSAPI.class', 'CommonReloadBingo'));
+            'CasinoApi', 'CommonUBReload', 'PCWSAPI.class', 'CommonReloadBingo', 'CommonUBReloadWithdrawAll'));
 
         Mirage::loadModels(array('SitesModel', 'RefServicesModel', 'TerminalSessionsModel',
             'LoyaltyRequestLogsModel', 'VMSRequestLogsModel', 'CompPointsLogsModel', 'TerminalsModel'));
@@ -228,6 +228,7 @@ class FrontendController extends MI_Controller {
         $vmsrequestlogs = new VMSRequestLogsModel();
         $terminalsmodel = new TerminalsModel();
         $commonReloadbingo = new CommonReloadBingo();
+        $commonUBReloadWithdrawAll = new CommonUBReloadWithdrawAll();
 
         $terminal_id = $startSessionFormModel->terminal_id;
         $siteid = $this->site_id;
@@ -384,6 +385,24 @@ class FrontendController extends MI_Controller {
                                         $result = $commonReloadbingo->reload(toInt($this->getSiteBalance()), $amount, $paymentType, $terminal_id, $siteid, $cid, $accid, $loyaltyCardNo, $vouchercode, $trackingId, $mid, $ref_service['UserMode'], $traceNumber, $referenceNumber, $locatorname, $CPV);
                                     }
                                     //checking if casino is user based
+                                } else if ($casinoUserMode == 3 && $CPV == 'v15') {
+                                    $skinCount = Mirage::app()->param['SkinCount'][$casinoServiceID];
+                                    //Set locator name based on Site Classification 
+                                    if ($skinCount > 1) {
+                                        $siteclassification = $sitesModel->getSiteClassification($siteid);
+                                        if ($siteclassification == 1) { //1 - Non Platinum, 2 - Platinum
+                                            $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID][$siteclassification - 1];
+                                        } else {
+                                            $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID][$siteclassification - 1];
+                                        }
+                                    } else {
+                                        if ($skinCount == 0 || $skinCount == '') {
+                                            $locatorname = '';
+                                        } else {
+                                            $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID];
+                                        }
+                                    }
+                                    $result = $commonUBReloadWithdrawAll->reload(toInt($this->getSiteBalance()), $amount, $paymentType, $terminal_id, $siteid, $cid, $accid, $loyaltyCardNo, $vouchercode, $trackingId, $mid, $casinoUserMode, $casinoUsername, $casinoPassword, $casinoServiceID, $traceNumber, $referenceNumber, $locatorname, $CPV);
                                 } else if ($casinoUserMode == 1 && $CPV == 'v15') {
                                     //Set locator name based on Site Classification 
                                     if ($skinCount > 1) {
@@ -590,6 +609,24 @@ class FrontendController extends MI_Controller {
                             $result = $commonReloadbingo->reload(toInt($this->getSiteBalance()), "0.00", $paymentType, $terminal_id, $siteid, $cid, $accid, $loyaltyCardNo, $vouchercode, $trackingId, $mid, $ref_service['UserMode'], $traceNumber, $referenceNumber, $locatorname, $CPV);
                         }
                         //checking if casino is user based
+                    } else if ($casinoUserMode == 3 && $CPV == 'v15') {
+                        $skinCount = Mirage::app()->param['SkinCount'][$casinoServiceID];
+                        //Set locator name based on Site Classification 
+                        if ($skinCount > 1) {
+                            $siteclassification = $sitesModel->getSiteClassification($siteid);
+                            if ($siteclassification == 1) { //1 - Non Platinum, 2 - Platinum
+                                $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID][$siteclassification - 1];
+                            } else {
+                                $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID][$siteclassification - 1];
+                            }
+                        } else {
+                            if ($skinCount == 0 || $skinCount == '') {
+                                $locatorname = '';
+                            } else {
+                                $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID];
+                            }
+                        }
+                        $result = $commonUBReloadWithdrawAll->reload(toInt($this->getSiteBalance()), $amount, $paymentType, $terminal_id, $siteid, $cid, $accid, $loyaltyCardNo, $vouchercode, $trackingId, $mid, $casinoUserMode, $casinoUsername, $casinoPassword, $casinoServiceID, $traceNumber, $referenceNumber, $locatorname, $CPV);
                     } else if ($casinoUserMode == 1 && $CPV == 'v15') {
                         //Set locator name based on Site Classification 
                         if ($skinCount > 1) {
@@ -919,7 +956,7 @@ class FrontendController extends MI_Controller {
      */
     protected function _redeem($startSessionFormModel) {
         Mirage::loadComponents(array('CommonRedeem', 'LoyaltyAPIWrapper.class', 'CommonUBRedeem',
-            'AsynchronousRequest.class', 'CasinoApi'));
+            'AsynchronousRequest.class', 'CasinoApi', 'CommonUBRedeemWithdrawAll'));
 
         Mirage::loadModels(array('SitesModel', 'TerminalSessionsModel', 'TerminalServicesModel',
             'RefServicesModel', 'LoyaltyRequestLogsModel',
@@ -935,6 +972,7 @@ class FrontendController extends MI_Controller {
         $spyderRequestLogsModel = new SpyderRequestLogsModel();
         $terminalsmodel = new TerminalsModel();
         $asynchronousRequest = new AsynchronousRequest();
+        $commonUBRedeemWithdrawAll = new CommonUBRedeemWithdrawAll();
 
         $paymentType = 1; //always cash upon withdrawal
         $isCreditable = 1;
@@ -1037,6 +1075,26 @@ class FrontendController extends MI_Controller {
                     $locatorname = '';
                     $result = $commonRedeem->redeem($login_pwd, $startSessionFormModel->terminal_id, $this->site_id, $bcf, $service_id, $startSessionFormModel->amount, $paymentType, $this->acc_id, $loyaltyCardNo, $mid, $ref_service['UserMode'], $locatorname, $CPV, $casinoUsername, $casinoPassword, $casinoServiceID, $isewallet);
                     //checking if casino is user based
+                } else if ($ref_service['UserMode'] == 3 && $CPV == 'v15') {
+
+                    if (Mirage::app()->param['SkinCount'][$casinoServiceID] > 1) {
+                        $siteclassification = $sitesModel->getSiteClassification($this->site_id);
+                        if ($siteclassification == 1) { //1 - Non Platinum, 2 - Platinum
+                            $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID][$siteclassification - 1];
+                        } else {
+                            $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID][$siteclassification - 1];
+                        }
+                    } else {
+                        if (Mirage::app()->param['SkinCount'][$casinoServiceID] == 0 || Mirage::app()->param['SkinCount'][$casinoServiceID] = '') {
+                            $locatorname = '';
+                        } else {
+                            $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID];
+                        }
+                    }
+
+                    $terminal_pwd = $terminalsmodel->getTerminalPassword($startSessionFormModel->terminal_id, $startSessionFormModel->casino);
+                    $login_pwd = $terminal_pwd['HashedServicePassword'];
+                    $result = $commonUBRedeemWithdrawAll->redeem($login_pwd, $startSessionFormModel->terminal_id, $this->site_id, $bcf, $service_id, $startSessionFormModel->amount, $paymentType, $this->acc_id, $loyaltyCardNo, $mid, $ref_service['UserMode'], $casinoUsername, $casinoPassword, $casinoServiceID, $isewallet, $locatorname, $CPV);
                 } else if ($ref_service['UserMode'] == 1 && $CPV == 'v15') {
                     if (Mirage::app()->param['SkinCount'][$casinoServiceID] > 1) {
                         $siteclassification = $sitesModel->getSiteClassification($this->site_id);
@@ -1053,8 +1111,6 @@ class FrontendController extends MI_Controller {
                         }
                     }
 
-                    $login_acct = $casinoUsername;
-                    $login_pwd = $casinoHashedPwd;
                     $result = $commonUBRedeem->redeem($login_pwd, $startSessionFormModel->terminal_id, $this->site_id, $bcf, $service_id, $startSessionFormModel->amount, $paymentType, $this->acc_id, $loyaltyCardNo, $mid, $ref_service['UserMode'], $casinoUsername, $casinoPassword, $casinoServiceID, $isewallet, $locatorname, $CPV);
                 } else {
                     $message = 'Error : Failed Redeeming a Session.';
@@ -1425,7 +1481,7 @@ class FrontendController extends MI_Controller {
      */
     protected function _startSession($startSessionFormModel, $return = false) {
         Mirage::loadComponents(array('CommonStartSession', 'LoyaltyAPIWrapper.class', 'VoucherManagement',
-            'CasinoApi', 'CommonUBStartSession', 'AsynchronousRequest.class', 'PCWSAPI.class', 'CommonStartSessionBingo'));
+            'CasinoApi', 'CommonUBStartSession', 'AsynchronousRequest.class', 'PCWSAPI.class', 'CommonStartSessionBingo', 'CommonUBStartSessionWithdrawAll'));
 
         Mirage::loadModels(array('TerminalSessionsModel', 'RefServicesModel', 'SitesModel', 'LoyaltyRequestLogsModel',
             'VMSRequestLogsModel', 'TerminalsModel', 'SpyderRequestLogsModel', 'CompPointsLogsModel', 'SpyderTerminalModel'));
@@ -1445,6 +1501,7 @@ class FrontendController extends MI_Controller {
         $spyderTerminalModel = new SpyderTerminalModel();
 
         $commonStartSessionBingo = new CommonStartSessionBingo();
+        $commonUBStartSessionWithdrawAll = new CommonUBStartSessionWithdrawAll();
 
         $terminal_id = $startSessionFormModel->terminal_id;
         $siteid = $this->site_id;
@@ -1689,10 +1746,10 @@ class FrontendController extends MI_Controller {
                                          */
                                         // CCT END added
                                         if ($ref_service['UserMode'] == 0 || $ref_service['UserMode'] == 2) {
-                                            $result = $commonStartSession->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino, toInt($this->getSiteBalance()), toInt($amount), $accid, $loyaltyCardNo, $startSessionFormModel->voucher_code, $trackingId, $casinoUsername, $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'], $traceNumber, $referenceNumber, $locatorname, $CPV);
+                                            $result = $commonStartSession->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino, toInt($this->getSiteBalance()), toInt($amount), $accid, $loyaltyCardNo, $startSessionFormModel->voucher_code, $trackingId, $login_acct, $terminal_pwd['ServicePassword'], $login_pwd, $casinoServiceID, $mid, $ref_service['UserMode'], $traceNumber, $referenceNumber, $locatorname, $CPV);
                                         } else {
                                             $amount = 0;
-                                            $result = $commonStartSessionBingo->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino, toInt($this->getSiteBalance()), $amount, $accid, $loyaltyCardNo, $startSessionFormModel->voucher_code, $trackingId, $casinoUsername, $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'], $locatorname, $CPV);
+                                            $result = $commonStartSessionBingo->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino, toInt($this->getSiteBalance()), $amount, $accid, $loyaltyCardNo, $startSessionFormModel->voucher_code, $trackingId, $login_acct, $terminal_pwd['ServicePassword'], $login_pwd, $casinoServiceID, $mid, $ref_service['UserMode'], $locatorname, $CPV);
                                         }
 
                                         //$casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'],$traceNumber,$referenceNumber,$locatorname,$CPV,$viptype); // CCT added viptype;
@@ -1721,7 +1778,26 @@ class FrontendController extends MI_Controller {
                                         // CCT END added                                        
                                         $result = $commonStartSession->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino, toInt($this->getSiteBalance()), toInt($amount), $accid, $loyaltyCardNo, $startSessionFormModel->voucher_code, $trackingId, $casinoUsername, $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'], $traceNumber, $referenceNumber, $locatorname, $CPV);
                                         //$casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'],$traceNumber,$referenceNumber,$locatorname,$CPV,$viptype); // CCT added viptype;
-                                        //checking if casino is user based
+                                    } else if ($ref_service['UserMode'] == 3 && $CPV == 'v15') {
+                                        $login_acct = $casinoUsername;
+                                        $login_pwd = $casinoHashedPassword;
+
+                                        if (Mirage::app()->param['SkinCount'][$casinoServiceID] > 1) {
+                                            $siteclassification = $sitesModel->getSiteClassification($siteid);
+                                            if ($siteclassification == 1) { //1 - Non Platinum, 2 - Platinum
+                                                $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID][$siteclassification - 1];
+                                            } else {
+                                                $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID][$siteclassification - 1];
+                                            }
+                                        } else {
+                                            if (Mirage::app()->param['SkinCount'][$casinoServiceID] == 0 || Mirage::app()->param['SkinCount'][$casinoServiceID] = '') {
+                                                $locatorname = '';
+                                            } else {
+                                                $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID];
+                                            }
+                                        }
+
+                                        $result = $commonUBStartSessionWithdrawAll->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino, toInt($this->getSiteBalance()), toInt($amount), $accid, $loyaltyCardNo, $startSessionFormModel->voucher_code, $trackingId, $casinoUsername, $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'], $traceNumber, $referenceNumber, $locatorname, $CPV, $isVIP);
                                     } else if ($ref_service['UserMode'] == 1 && $CPV == 'v15') {
                                         $login_acct = $casinoUsername;
                                         $login_pwd = $casinoHashedPassword;
@@ -1960,9 +2036,9 @@ class FrontendController extends MI_Controller {
                             }
 
                             if ($ref_service['UserMode'] == 0 || $ref_service['UserMode'] == 2) {
-                                $result = $commonStartSession->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino, toInt($this->getSiteBalance()), toInt($amount), $accid, $loyaltyCardNo, $startSessionFormModel->voucher_code, $trackingId, $casinoUsername, $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'], $traceNumber, $referenceNumber, $locatorname, $CPV);
+                                $result = $commonStartSession->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino, toInt($this->getSiteBalance()), toInt($amount), $accid, $loyaltyCardNo, $startSessionFormModel->voucher_code, $trackingId, $login_acct, $terminal_pwd['ServicePassword'], $login_pwd, $casinoServiceID, $mid, $ref_service['UserMode'], $traceNumber, $referenceNumber, $locatorname, $CPV);
                             } else {
-                                $result = $commonStartSessionBingo->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino, toInt($this->getSiteBalance()), toInt($amount), $accid, $loyaltyCardNo, $startSessionFormModel->voucher_code, $trackingId, $casinoUsername, $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'], $locatorname, $CPV);
+                                $result = $commonStartSessionBingo->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino, toInt($this->getSiteBalance()), toInt($amount), $accid, $loyaltyCardNo, $startSessionFormModel->voucher_code, $trackingId, $login_acct, $terminal_pwd['ServicePassword'], $login_pwd, $casinoServiceID, $mid, $ref_service['UserMode'], $locatorname, $CPV);
                             }
                             //$casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'],$traceNumber,$referenceNumber,$locatorname,$CPV,$viptype); // CCT added viptype;
                         }
@@ -1991,6 +2067,26 @@ class FrontendController extends MI_Controller {
                             // CCT END added                            
                             $result = $commonStartSession->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino, toInt($this->getSiteBalance()), toInt($amount), $accid, $loyaltyCardNo, $startSessionFormModel->voucher_code, $trackingId, $casinoUsername, $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'], $traceNumber, $referenceNumber, $locatorname, $CPV);
                             //$casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'],$traceNumber,$referenceNumber,$locatorname,$CPV,$viptype); // CCT added viptype;
+                        } else if ($ref_service['UserMode'] == 3 && $CPV == 'v15') {
+                            $login_acct = $casinoUsername;
+                            $login_pwd = $casinoHashedPassword;
+
+                            if (Mirage::app()->param['SkinCount'][$casinoServiceID] > 1) {
+                                $siteclassification = $sitesModel->getSiteClassification($siteid);
+                                if ($siteclassification == 1) { //1 - Non Platinum, 2 - Platinum
+                                    $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID][$siteclassification - 1];
+                                } else {
+                                    $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID][$siteclassification - 1];
+                                }
+                            } else {
+                                if (Mirage::app()->param['SkinCount'][$casinoServiceID] == 0 || Mirage::app()->param['SkinCount'][$casinoServiceID] = '') {
+                                    $locatorname = '';
+                                } else {
+                                    $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID];
+                                }
+                            }
+
+                            $result = $commonUBStartSessionWithdrawAll->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino, toInt($this->getSiteBalance()), toInt($amount), $accid, $loyaltyCardNo, $startSessionFormModel->voucher_code, $trackingId, $casinoUsername, $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'], $traceNumber, $referenceNumber, $locatorname, $CPV, $isVIP);
                         }
                         //checking if casino is user based
                         else if ($ref_service['UserMode'] == 1 && $CPV == 'v15') {
@@ -2306,7 +2402,7 @@ class FrontendController extends MI_Controller {
         if (!$this->isAjaxRequest() || !$this->isPostRequest())
             Mirage::app()->error404();
 
-        Mirage::loadComponents('CasinoApi');
+        Mirage::loadComponents(array('CasinoApi', 'CasinoApiUB'));
         Mirage::loadModels(array('TerminalSessionsModel', 'TransactionSummaryModel', 'TransactionDetailsModel', 'RefServicesModel'));
 
         //$transactionSummaryModel = new TransactionSummaryModel();
@@ -2314,6 +2410,8 @@ class FrontendController extends MI_Controller {
         $refServicesModel = new RefServicesModel();
         $casinoApi = new CasinoApi();
         $terminalSessionsModel = new TerminalSessionsModel();
+
+        $casinoApiUB = new CasinoApiUB();
 
         $site_id = $this->site_id;
         $terminal_id = isset($_POST['StartSessionFormModel']['terminal_id']) ? $_POST['StartSessionFormModel']['terminal_id'] : '';
@@ -2339,11 +2437,13 @@ class FrontendController extends MI_Controller {
             $casinoServiceID = $val['ServiceID'];
         }
 
-        if ($casinoUserMode == 0 || $casinoUserMode == 2)
+        if ($casinoUserMode == 0 || $casinoUserMode == 2) {
             list($terminal_balance) = $casinoApi->getBalance($terminal_id, $site_id, 'W', $service_id, $this->acc_id);
+        }
 
-        if ($casinoUserMode == 1)
-            list ($terminal_balance) = $casinoApi->getBalanceUB($terminal_id, $site_id, 'W', $casinoServiceID, $this->acc_id, $casinoUsername, $casinoPassword);
+        if ($casinoUserMode == 1 || $casinoUserMode == 3) {
+            list ($terminal_balance) = $casinoApiUB->getBalanceUB($terminal_id, $site_id, 'W', $casinoServiceID, $this->acc_id, $casinoUsername, $casinoPassword);
+        }
 
         $json = array('amount' => toMoney($terminal_balance));
 
