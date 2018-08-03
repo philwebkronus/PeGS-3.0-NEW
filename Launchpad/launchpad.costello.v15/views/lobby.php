@@ -54,36 +54,6 @@
                 var IsALLeSAFE = '<?php echo LPConfig::app()->params["IsALLeSAFE"]; ?>';
                 var serviceid = '';
                 var sysversion = '<?php echo LPConfig::app()->params["sysversionname"]; ?>';
-
-                $.checkSpyderConnection = function()
-                {
-                    $("#tdvv").hide();
-                    $("#tdmm").hide();
-                    $("#tdss").hide();
-                    
-                    $.ajax(
-                            {
-                                url: '../Helper/connector.php',
-                                type: 'post',
-                                dataType: 'json',
-                                async: false,
-                                data: {fn: function() {
-                                        return 'checkSpyderConnection';
-                                    },
-                                    TerminalCode: function() {
-                                        return terminalCode;
-                                    }},
-                                success: function(data)
-                                {
-                                    if (data['state'] != "Connected")
-                                    {
-                                        alert("Please Activate Spyder Connection on this Terminal!");
-                                        window.open("index.php", '_self');
-                                    }
-                                }
-                            });
-                };
-
                 $.checkTerminalType = function()
                 {
                     $.ajax(
@@ -173,7 +143,7 @@
                                                         }
                                                         else
                                                         { //return to the default home page if there's no active session with valid login start
-                                                            if (terminalType == 2 && (userMode == 0 || userMode == 2))
+                                                            if (terminalType == 2 && (userMode == 0 || userMode == 2 || userMode == 3))
                                                             {
                                                                 $.showRegular(true);
                                                             }
@@ -183,7 +153,7 @@
                                                             }
                                                             else
                                                             {
-                                                                $.prompt("Invalid terminal. Terminal is not properly mapped.");
+                                                                $.prompt("ERROR 002: Invalid terminal. Terminal is not properly mapped.");
                                                             }
                                                         }
                                                     }
@@ -213,7 +183,7 @@
                                 success: function(data)
                                 {
                                     if (JSON.stringify(data['Count']).replace(/\"/g, "") != 2)
-                                        $.prompt("Invalid terminal. Terminal is not properly mapped"); //casino != 2
+                                        $.prompt("ERROR 003: Invalid terminal. Terminal is not properly mapped"); //casino != 2
                                 }
                             });
                 }
@@ -235,15 +205,10 @@
                         $("#lobby2footer").html("");
                         $("#ipfooter").html($("#getfooter").html());
                         $("#copyright2").show();
-                        /* CCT BEGIN added */
-                        $("#tdvv").css("display", "block");
-                        /*$("#link-vv").css("margin-right","25px");*/
-                        /*$("#vvimg").css("margin-right","25px");*/
+			$("#tdvv").css("display", "block");
 
                         $("#vvimg").css(
                                 {
-                                    /*"width":lobby2imgW+"px",*/
-                                    /*"height":lobby2imgH+"px"*/
                                     "width": "360px",
                                     "height": "340px",
                                     "list-style-type": "none",
@@ -252,22 +217,15 @@
                                 });
                         $("#link-vv").css(
                                 {
-                                    /*"width":lobby2imgW+"px",*/
-                                    /*"height":lobby2imgH+"px",*/
-                                    /*"background-size":lobby2imgW+"px "+lobby2imgH+"px"*/
                                     "width": "360px",
                                     "height": "340px",
                                     "list-style-type": "none",
                                     "background-size": "100%"
                                 });
                         $("#tdmm").css("display", "block");
-                        /*$("#link-mm").css("margin-right","25px");*/
-                        /*$("#mmimg").css("margin-right","25px");*/
-
+	    
                         $("#mmimg").css(
                                 {
-                                    /*"width":lobby2imgW+"px",*/
-                                    /*"height":lobby2imgH+"px"*/
                                     "width": "360px",
                                     "height": "340px",
                                     "list-style-type": "none",
@@ -275,22 +233,15 @@
                                 });
                         $("#link-mm").css(
                                 {
-                                    /*"width":lobby2imgW+"px",*/
-                                    /*"height":lobby2imgH+"px",*/
-                                    /*"background-size":lobby2imgW+"px "+lobby2imgH+"px"*/
                                     "width": "360px",
                                     "height": "340px",
                                     "list-style-type": "none",
                                     "background-size": "100%"
                                 });
                         $("#tdss").css("display", "block");
-                        /*$("#link-ss").css("margin-right","25px");*/
-                        /*$("#ssimg").css("margin-right","25px");*/
 
                         $("#ssimg").css(
                                 {
-                                    /*"width":lobby2imgW+"px",*/
-                                    /*"height":lobby2imgH+"px"*/
                                     "width": "360px",
                                     "height": "340px",
                                     "list-style-type": "none",
@@ -298,12 +249,9 @@
                                 });
                         $("#link-ss").css(
                                 {
-                                    /*"width":lobby2imgW+"px",*/
-                                    /*"height":lobby2imgH+"px",*/
-                                    /*"background-size":lobby2imgW+"px "+lobby2imgH+"px"*/
-                                    "width": "360px",
-                                    "height": "340px",
-                                    "list-style-type": "none",
+				    "width": "360px",
+				    "height": "340px",
+				    "list-style-type": "none",
                                     "background-size": "100%"
                                 });
                         $.ajax(
@@ -319,7 +267,7 @@
                                         }},
                                     success: function(data)
                                     {
-                                        if (data === '25') {
+                                        if (data === '25' || data === '29') {
 
                                             $("#tdvv").show();
                                             $("#tdmm").hide();
@@ -463,7 +411,6 @@
                 {
                     $('#system-version').html(sysversion);
                     localStorage.clear();
-                    $.checkSpyderConnection();
                     $.checkTerminalType();
                     $.getTerminalUserMode();
                     $.countServices();
@@ -583,7 +530,7 @@
                                                                                                 }},
                                                                                             success: function(data)
                                                                                             {
-                                                                                                if (data.UserMode == '1')
+                                                                                                if (data.UserMode == '1' || data.UserMode == '3')
                                                                                                 {
                                                                                                     login = data.UBServiceLogin;
                                                                                                     if (data.Code == "MM")

@@ -1,19 +1,16 @@
 
-$.launchGame = function(currServiceID, login, terminalPass, isVIP, HBPath)
+$.launchGame = function(currServiceID, login, terminalPass, isVIP, HBPath, terminalCode)
 {
-
     /*
      * For Habanero no calling of Spyder 
      * Added John Aaron Vida
      * 12/21/2017
      */
 
-    if (currServiceID == 25) {
-
-        //var HabaneroPath = 'C:/HABA/ChromiumLauncher.exe';
+    if (currServiceID == 25 || currServiceID == 29) {
 
         var shell = new ActiveXObject("WScript.Shell");
-        var cred = " /u " + login + " /p " + terminalPass + " /v " + isVIP;
+        var cred = " /u " + login + " /p " + terminalPass + " /v " + isVIP + " /t " + terminalCode;
         var path = HBPath + cred;
         shell.Run(path);
         jQuery.fancybox.close();

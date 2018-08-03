@@ -92,8 +92,14 @@ if (!empty($function)) {
             $count = LPTerminalSessions::model()->checkIfTerminalSessionLobby($terminalCode, $terminalID, $terminalIDVIP, $serviceID);
 
             $result['Count'] = (int) $count['Counter'];
-            $result['ServiceUsername'] = $count['TerminalCode'];
-            $result['HashedServicePassword'] = $count['HashedServicePassword'];
+            if ($serviceID == 28 || $serviceID == 29) {
+                $result['ServiceUsername'] = $count['UBServiceLogin'];
+                $result['HashedServicePassword'] = $count['UBHashedServicePassword'];
+                $result['ServicePassword'] = $count['UBServicePassword'];
+            } else {
+                $result['ServiceUsername'] = $count['TerminalCode'];
+                $result['HashedServicePassword'] = $count['HashedServicePassword'];
+            }	
             /*
              * For Habanero Integration
              * Added John Aaron Vida
@@ -230,16 +236,7 @@ if (!empty($function)) {
             $ubServiceID = $_POST['UBServiceID'];
 
             $APIresult = $_PCWS->logoutLaunchPad($ubServiceLogin, $ubServiceID);
-
-            // CCT BEGIN - comment out codes       
-            //Checking for usermode
-            /*
-              $usermode = LPRefServices::model()->checkUsermode($ubServiceID);
-              $source = "3";
-              //Every Logout will Change the Password
-              $_PCWS->changePassword($ubServiceLogin,$ubServiceID,$usermode['UserMode'],$source);
-             */
-            // CCT END - comment out codes                            
+                         
             $result = $APIresult['ForceLogout']['ErrorCode'];
 
             break;

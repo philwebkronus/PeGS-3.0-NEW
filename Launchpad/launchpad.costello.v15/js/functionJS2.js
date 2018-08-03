@@ -1,4 +1,3 @@
-
 $(document).ready(function() {
 
     $.resetVal();
@@ -55,6 +54,12 @@ $(document).ready(function() {
                                 $.checkTerminalBasedSession(termID, termIDVIP);
 
                             }
+                            else if (tmpUserMode == 3 && (tmpServiceGroupID == 4 || tmpServiceGroupID == 6))
+                            {
+
+                                $.checkTerminalBasedSession(termID, termIDVIP);
+
+                            }
                             else
                             {
 
@@ -63,7 +68,7 @@ $(document).ready(function() {
                         }
                         else
                         {
-                            $.prompt("Invalid Terminal. Terminal is not properly mapped");
+                           $.prompt("ERROR 007: Invalid Terminal. Terminal is not properly mapped");
                         }
                     }
                     else
@@ -111,13 +116,14 @@ $(document).ready(function() {
                 if (json.Count != undefined) {
                     if (json.Count != 0) {
                         if (json.Count == 1) {
-                            
+
                             ServiceUsername = json.ServiceUsername;
                             ServicePassword = json.HashedServicePassword;
                             isVIP = json.isVIP;
                             ServicePassword = ServicePassword.replace(/\"/g, "");
                             HabaneroPath = json.HabaneroPath
-                            $.launchGame(tmpServiceID, ServiceUsername, ServicePassword, isVIP, HabaneroPath);
+
+                            $.launchGame(tmpServiceID, ServiceUsername, ServicePassword, isVIP, HabaneroPath, terminalCode);
 
                         } else {
                             jQuery.fancybox.close();
