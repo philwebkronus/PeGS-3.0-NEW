@@ -192,7 +192,7 @@ if (isset($_POST['pager'])) {
                                                 if (empty($checkMS)) {
                                                     //add new memberservices record
                                                     $msresult = $_MemberServices->AddMemberServices($serviceID, $MID, $userName, $password, 
-						    	$hashedpassword, 1, $DateCreated, $isVIP, $vipLevel, null, 1);
+						    	$hashedpassword, 3, $DateCreated, $isVIP, $vipLevel, null, 1);
                                                     $msupdate = 'add';
                                                 } else {
                                                     $msresult = $_MemberServices->UpdateMemberServices(null, $vipLevel, $MID, $serviceID);
@@ -247,7 +247,7 @@ if (isset($_POST['pager'])) {
 
                                                 if (empty($checkMS)) {
                                                     //add new memberservices record
-                                                    $msresult = $_MemberServices->AddMemberServices($serviceID, $MID, $userName, $password, $hashedpassword, 1, $DateCreated, $isVIP, $vipLevel, null, 1);
+                                                    $msresult = $_MemberServices->AddMemberServices($serviceID, $MID, $userName, $password, $hashedpassword, 3, $DateCreated, $isVIP, $vipLevel, null, 1);
                                                     $msupdate = 'add';
                                                 } else {
                                                     $msresult = $_MemberServices->UpdateMemberServices(null, $vipLevel, $MID, $serviceID);

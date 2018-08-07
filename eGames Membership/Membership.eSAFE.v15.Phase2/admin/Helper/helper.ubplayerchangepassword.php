@@ -112,7 +112,7 @@ if (isset($_POST['pager'])) {
                             $hashednewpassword = $rpassword[0]['EncryptedPassword'];
 
                             switch (true) {
-                                case strstr($serviceName, "RTG"):
+                                case strstr($serviceName, "RTG2"):
 
                                     $checkMS = $_MemberServices->CheckMemberService($MID, $serviceID);
                                     if (!empty($checkMS)) {
