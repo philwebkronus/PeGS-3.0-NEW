@@ -276,6 +276,7 @@ class CommonUBRedeemWithdrawAll {
 
                 //check Withdraw API Result
                 if (isset($resultwithdraw['TransactionInfo'])) {
+					$transrefid = '';
                     //RTG / Magic Macau
                     if (isset($resultwithdraw['TransactionInfo']['WithdrawGenericResult'])) {
                         $transrefid = $resultwithdraw['TransactionInfo']['WithdrawGenericResult']['transactionID'];

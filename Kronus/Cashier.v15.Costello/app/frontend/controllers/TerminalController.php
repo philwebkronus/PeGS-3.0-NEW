@@ -162,7 +162,7 @@ class TerminalController extends FrontendController {
 
             foreach ($terminals as $terminal) {
 
-//                if ($terminal['lastbalance'] != null) {
+                if ($terminal['UserMode'] != null) {
                     $casinoUBDetails = $terminalSessionsModel->getLastSessionDetails($terminal['TerminalID']);
                     $casinoUserMode = '';
                     $casinoUsername = '';
@@ -186,7 +186,7 @@ class TerminalController extends FrontendController {
                     if ($casinoUserMode == 1 || $casinoUserMode == 3) {
                         $casinoApiUB->getUBBalanceContinue($terminal['TerminalID'], $this->site_id, 'R', $casinoServiceID, $this->acc_id, $casinoUsername, $casinoPassword);
                     }
-//                }
+                }
             }
             //$terminals = $terminalModel->getTerminalPerPage2($siteid, $start, (Mirage::app()->param['terminal_per_page'] * 4), $len);
             $terminals = $terminalModel->getTerminalPerPage2($siteid, $start, $end, $len);
@@ -208,7 +208,7 @@ class TerminalController extends FrontendController {
             $terminals = $terminalModel->getAllActiveTerminalPerPage2($this->site_id, $start, $end, $len);
             foreach ($terminals as $terminal) {
 
-//                if ($terminal['lastbalance'] != null) {
+                if ($terminal['UserMode'] != null) {
                     $casinoUBDetails = $terminalSessionsModel->getLastSessionDetails($terminal['TerminalID']);
                     $casinoUserMode = '';
                     $casinoUsername = '';
@@ -232,7 +232,7 @@ class TerminalController extends FrontendController {
                     if ($casinoUserMode == 1 || $casinoUserMode == 3) {
                         $casinoApiUB->getUBBalanceContinue($terminal['TerminalID'], $this->site_id, 'R', $casinoServiceID, $this->acc_id, $casinoUsername, $casinoPassword);
                     }
-//                }
+                }
             }
             $terminals = $terminalModel->getTerminalPerPage2($siteid, $start, $end, $len);
             $siteAmountInfo = $sitesModel->getSiteAmountInfo($this->site_id);

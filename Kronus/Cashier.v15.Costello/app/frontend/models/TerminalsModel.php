@@ -388,7 +388,7 @@ class TerminalsModel extends MI_Model {
 //            GROUP BY t.TerminalCode ORDER BY CAST(`tc` AS SIGNED), TerminalID LIMIT :start,".$terminal_per_page;
         
         $sql = "SELECT t.TerminalID,SUBSTR(t.TerminalCode,$len) AS tc,t.TerminalName, DATE_FORMAT(ts.DateStarted,'%Y-%m-%d %H:%i:%s') DateStarted, t.SiteID, t.Status,t.isVIP,ts.LastTransactionDate, DATE_FORMAT(ts.LastTransactionDate,'%m/%d/%Y %H:%i:%s') as ltd,
-            TIMESTAMPDIFF(MINUTE,LastTransactionDate,NOW()) as minutes,TIMESTAMPDIFF(MINUTE,ts.DateStarted,NOW()) as dif , FORMAT(ts.LastBalance,2) as lastbalance, C.ServiceID, ts.ServiceID as usedServiceID
+            TIMESTAMPDIFF(MINUTE,LastTransactionDate,NOW()) as minutes,TIMESTAMPDIFF(MINUTE,ts.DateStarted,NOW()) as dif , FORMAT(ts.LastBalance,2) as lastbalance, C.ServiceID, ts.ServiceID as usedServiceID, ts.UserMode
             FROM terminals t LEFT JOIN terminalsessions ts ON (t.terminalID = ts.terminalID) INNER JOIN terminalservices AS C ON t.TerminalID = C.TerminalID " . 
             "WHERE t.SiteID = :siteid AND C.Status = 1 AND C.isCreated = 1 AND (SUBSTR(REPLACE(t.TerminalCode, 'VIP', ''),$len) BETWEEN $start AND $end)
             GROUP BY t.TerminalCode ORDER BY CAST(`tc` AS SIGNED)";        

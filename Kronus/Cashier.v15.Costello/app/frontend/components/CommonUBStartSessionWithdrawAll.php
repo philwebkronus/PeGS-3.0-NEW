@@ -237,6 +237,7 @@ class CommonUBStartSessionWithdrawAll {
 
             //check Deposit API Result
             if (isset($resultdeposit['TransactionInfo'])) {
+				$transrefid = '';
                 //RTG / Magic Macau
                 if (isset($resultdeposit['TransactionInfo']['DepositGenericResult'])) {
                     $transrefid = $resultdeposit['TransactionInfo']['DepositGenericResult']['transactionID'];
