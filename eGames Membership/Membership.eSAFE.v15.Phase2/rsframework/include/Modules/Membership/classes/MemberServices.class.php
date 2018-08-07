@@ -238,5 +238,14 @@ class MemberServices extends BaseEntity
             App::SetErrorMessage($e->getMessage());
         }
     }
+
+    public function CheckUBMemberService($MID, $usermode) {
+        $query = "SELECT * FROM memberservices WHERE MID = $MID AND UserMode IN ($usermode) LIMIT 1";
+        $result = parent::RunQuery($query);
+
+        return $result;
+    }
+
+
 }
 ?>
