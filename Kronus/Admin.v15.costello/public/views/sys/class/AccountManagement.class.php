@@ -182,6 +182,15 @@ class AccountManagement extends DBHandler{
           return $this->rowCount();
       }
 
+    //account update: update statis in accounts table
+    function updatesiteaccount($zAID,$zStatus)
+    {
+        $this->prepare("UPDATE siteaccounts SET Status = ?  WHERE AID = ?");
+        $this->bindparameter(1, $zStatus);
+        $this->bindparameter(2, $zAID);
+        $this->execute();
+        return $this->rowCount();
+    }
       //view all accounts --> accountedit(views) page
       function viewallaccounts($zaid)
       {
@@ -238,7 +247,7 @@ class AccountManagement extends DBHandler{
       //check if username is unique
       function checkusername($zUserName)
       {
-         $stmt = "Select COUNT(AID) as count FROM accounts WHERE username =?";
+         $stmt = "Select COUNT(*) FROM accounts WHERE username =?";
          $this->prepare($stmt);
          $this->bindparameter(1,$zUserName);
          $this->execute();
@@ -250,7 +259,7 @@ class AccountManagement extends DBHandler{
       {
          if($zaccID > 1)
          {
-             $stmt = "Select COUNT(a.AID) as count from accounts as a INNER JOIN accountdetails as b ON a.AID = b.AID AND a.AID = '".$zaccID."'";
+             $stmt = "Select COUNT(*) as count from accounts as a INNER JOIN accountdetails as b ON a.AID = b.AID AND a.AID = '".$zaccID."'";
          }
          else
          {
@@ -259,7 +268,7 @@ class AccountManagement extends DBHandler{
 
             if($zpegs == 0)
             {
-                $stmt = "Select COUNT(a.AID) as count from accounts as a INNER JOIN accountdetails as b ON a.AID = b.AID WHERE a.AccountTypeID = '".$zAcctType."'";
+                $stmt = "Select COUNT(*) as count from accounts as a INNER JOIN accountdetails as b ON a.AID = b.AID WHERE a.AccountTypeID = '".$zAcctType."'";
             }
             elseif($zAcctType > 0  && count($zpegs) > 0)
             {
@@ -271,12 +280,12 @@ class AccountManagement extends DBHandler{
                     }
                 }
                 $pegs = implode(',',$listpegs);
-                $stmt = "Select COUNT(a.AID) as count from accounts as a INNER JOIN accountdetails as b ON a.AID = b.AID
+                $stmt = "Select COUNT(*) as count from accounts as a INNER JOIN accountdetails as b ON a.AID = b.AID
                       INNER JOIN siteaccounts c on c.AID = a.AID  WHERE a.AccountTypeID = '".$zAcctType."' AND c.SiteID IN (".$pegs.")";
             }
             else
             {
-                 $stmt = "Select COUNT(a.AID) as count from accounts as a INNER JOIN accountdetails as b ON a.AID = b.AID";
+                 $stmt = "Select COUNT(*) as count from accounts as a INNER JOIN accountdetails as b ON a.AID = b.AID";
             }
          }
          $this->executeQuery($stmt);
