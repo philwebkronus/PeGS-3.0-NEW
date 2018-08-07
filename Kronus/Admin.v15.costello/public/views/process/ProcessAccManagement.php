@@ -435,31 +435,34 @@ if($connected)
          {
               $rstatus = $vview['Status'];
               $accID = $vview['AID'];
-              switch($rstatus)
-              {
-                  case 0:
-                      $vstatname = "Inactive";
-                  break;
-                  case 1:
-                      $vstatname = "Active";
-                  break;
-                  case 2:
-                      $vstatname = "Suspended";
-                  break;
-                  case 3:
-                      $vstatname = "Locked(Attempts)";
-                  break;
-                  case 4:
-                      $vstatname = "Locked(Admin)";
-                  break;
-                  case 5:
-                      $vstatname = "Terminated";
-                  break;
-                  case 6:
-                      $vstatname = "Password Expired";
-                  break;
-              }
-
+              // All Status being displayed is Inactive since $rstatus is already Status Description, not Integer
+              // EDITED CCT 08/07/2018 BEGIN
+              //switch($rstatus)
+              //{
+              //    case 0:
+              //        $vstatname = "Inactive";
+              //        break;
+              //    case 1:
+              //        $vstatname = "Active";
+              //        break;
+              //    case 2:
+              //        $vstatname = "Suspended";
+              //        break;
+              //    case 3:
+              //        $vstatname = "Locked(Attempts)";
+              //        break;
+              //    case 4:
+              //        $vstatname = "Locked(Admin)";
+              //        break;
+              //    case 5:
+              //        $vstatname = "Terminated";
+              //        break;
+              //    case 6:
+              //        $vstatname = "Password Expired";
+              //        break;
+              //}
+              $vstatname = $rstatus; // ADDED
+              // EDITED CCT 08/07/2018 END
               $vaccname = $vview['UserName'];
               $responce->rows[$i]['id']=$accID;
               $responce->rows[$i]['cell']=array($vview['UserName'],$vview['Name'],$vview['Email'],$vview['Address'],$vstatname, "<input type=\"button\" class=\"btnterminate\" value=\"Terminate Account\" onclick=\"window.location.href='process/ProcessAccManagement.php?accname=$vaccname&accid=$accID'+'&terminate='+'TerminateAccount';\" />");
@@ -535,6 +538,8 @@ if($connected)
 
                     if(($errorphonenumber == 0) && ($errormobnumber == 0))
                     {
+                        $vLandline = '';
+                        $vMobileNumber = '';
                         //get all POST variables
                         //check if phone number with country and area code are filled up
                         if((strlen(trim($_POST['txtctrycode'])) > 0) && (strlen(trim($_POST['txtareacode'])) > 0) && (strlen($_POST['txtphone']) > 0))
@@ -608,7 +613,8 @@ if($connected)
                             $vEmail = $vEmail.$vctremail; //if email exist append number to the last portion of string
                         }
 
-                        if($isuname['count'] > 0)
+			if($isuname > 0)
+                        //if($isuname['count'] > 0)
                         {
                             $msg = "Account Creation : User name exist.";
                             $_SESSION['mess'] = $msg;
@@ -640,12 +646,10 @@ if($connected)
                                             <br/><br/>
 
                                             <div>
-                                                <b><a href='http://$servername/UpdatePassword.php?username=".urlencode($vUserName)."&password=".urlencode($vPassword)."&aid=".urlencode($resultid)."'>Change initial password</a></b>
+                                                <b><a href='https://$servername/UpdatePassword.php?username=".urlencode($vUserName)."&password=".urlencode($vPassword)."&aid=".urlencode($resultid)."'>Change initial password</a></b>
                                             </div>
                                             <br />
-                                                For further inquiries, please call our Customer Service hotline at telephone numbers (02) 3383388 or toll free from
-                                                PLDT lines 1800-10PHILWEB (1800-107445932)
-                                                or email us at <b>customerservice@philweb.com.ph</b>.
+                                            For further inquiries, please call our Customer Service hotline at (02) 236-5858 or email us at <b>customerservice@philweb.com.ph</b>.
                                             <br/><br/>
                                                 Thank you and good day!
                                             <br/><br/>
@@ -984,7 +988,19 @@ if($connected)
                   {
                       $oaccount->deletesession($vAID);
                   }
-
+                  // CCT 08/07/2018 BEGIN
+                  if ($acctype == 4 || $acctype == 3 || $acctype == 2)
+                  {
+                      if ($vStatus <> 1) // Deactivated
+                      {    
+                        $updatesiteaccount =$oaccount->updatesiteaccount($vAID,2);
+                      }
+                      else // Active
+                      {
+                        $updatesiteaccount =$oaccount->updatesiteaccount($vAID,1);                          
+                      }    
+                  }
+                  // CCT 08/07/2018 END
                   if($acctype == 2 && $vStatus <> 1)
                     $msg = "Account Deactivated : Please update the assigned site for this user";
                   else
