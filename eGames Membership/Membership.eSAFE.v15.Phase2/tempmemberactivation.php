@@ -354,7 +354,6 @@ if ((isset($_GET["tempnumber"]) && (htmlentities($_GET["tempnumber"]))) &&
                     $error = "Applicant is on the National Database of Restricted Persons List. Please ask Player to contact Customer Service Hotline.";
                     $_Log->logAPI(AuditFunctions::MIGRATE_TEMP, $tempAccountCode . ':' . $MembershipCardNumber . ':Failed', $sitecode, $AID);
                     $logger->logger($logdate, $logtype, $error);
-	            echo "<script>alert(" . $error . ");</script>";
 
                     $txtName->Text = $membername;
                     $txtFName->Text = $txtFName->SubmittedValue;
