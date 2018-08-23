@@ -293,6 +293,12 @@ class FrontendController extends MI_Controller {
                 logger($message);
                 $this->throwError($message);
             }
+			
+			if ($ref_service['UserMode'] == 4) {
+                $message = 'Coupons are not allowed in e-Bingo terminals.';
+                logger($message);
+                $this->throwError($message);
+            }
 
             //check if voucher is not yet claim
             if (isset($verifyVoucherResult['VerifyVoucher']['ErrorCode']) && $verifyVoucherResult['VerifyVoucher']['ErrorCode'] == 0) {
@@ -1642,6 +1648,12 @@ class FrontendController extends MI_Controller {
                     logger($message);
                     $this->throwError($message);
                 }
+				
+				if ($ref_service['UserMode'] == 4) {
+                $message = 'Coupons are not allowed in e-Bingo terminals.';
+                logger($message);
+                $this->throwError($message);
+            }
 
                 //check if voucher is not yet claimed
                 if (isset($verifyVoucherResult['VerifyVoucher']['ErrorCode']) && $verifyVoucherResult['VerifyVoucher']['ErrorCode'] == 0) {
