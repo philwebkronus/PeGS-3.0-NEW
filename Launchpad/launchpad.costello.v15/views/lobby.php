@@ -723,7 +723,7 @@
                     <div id="ipfooter" style="margin-top: 30px;"></div>
                 </div> 
                 <div id="footer_logos" class="footer-logos"></div>
-                <div id="system-version" class="sysversion" ></div>
+                <div id="system-version" class="sysversion" onClick="window.location.href = window.location.href"></div>
             </div>  
         </div>     
         <div id="blackOut"></div>
