@@ -211,7 +211,8 @@ class CommonUBRedeem {
             $tracking1 = $trans_req_log_last_id;
             $tracking2 = 'W';
             $tracking3 = $terminal_id;
-            $tracking4 = $site_id;
+//            $tracking4 = $site_id;
+			$tracking4 = str_replace("ICSA-","",str_replace("VIP","",$terminal_name));
             $event_id = Mirage::app()->param['mgcapi_event_id'][2]; //Event ID for Withdraw
             // check if casino's reply is busy, added 05/17/12
             if (!(bool) $casinoApiHandler->IsAPIServerOK()) {
