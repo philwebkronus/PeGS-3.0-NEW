@@ -351,10 +351,10 @@ class LoginFormModel extends MI_Model{
         $old_sessionid = session_id();
         session_regenerate_id();
         $new_sessionid = session_id();
-        $_SESSION['userid'] = isset($_SESSION['accID']) ? $_SESSION['accID'] : '';
-        $vusername = isset($_SESSION['uname']) ? $_SESSION['uname'] : '';
-        $aid =  isset($_SESSION['userid']) ? $_SESSION['userid'] : '';
-        $access = isset($_SESSION['acctype']) ? $_SESSION['acctype'] : '';
+        $_SESSION['userid'] = $_SESSION['accID'];
+        $vusername = $_SESSION['uname'];
+        $aid =  $_SESSION['userid'];
+        $access = $_SESSION['acctype'];
         $_SESSION['sessionID'] = $new_sessionid;
         $_SESSION['acctype'] = $access;
         $date = $this->getDate();
@@ -531,9 +531,9 @@ class LoginFormModel extends MI_Model{
 //            $_SESSION[$k] = $v;
 //        }
 //    }
-
+    
     public function restoreHardwareInfoSession($hardware_info) {        
-           @session_start(); 
+            @session_start();        
         foreach($hardware_info as $k => $v) {
             $_SESSION[$k] = $v;
         }
@@ -815,9 +815,9 @@ class LoginFormModel extends MI_Model{
                                 <br/><br/>
                                     Your username is <b>$username</b>
                                 <br />
-                                    For further inquiries, please call our Customer Service hotline at telephone numbers (02) 3383388 or toll free from
+                                    For further inquiries, please call our Customer Service hotline at telephone numbers (02) 2365858 or toll free from
                                     PLDT lines 1800-10PHILWEB (1800-107445932)
-                                    or email us at <b>customerservice@philweb.com.ph</b>.
+                                    or email us at <b>customersupport@philweb.com.ph</b>.
                                 <br/><br/>
                                     Thank you and good day!
                                 <br/><br/>
@@ -861,9 +861,9 @@ class LoginFormModel extends MI_Model{
                                 <b><a href=\"".$servername."\">".$title."</a></b>
                             </div>
                             <br />
-                                For further inquiries, please call our Customer Service hotline at telephone numbers (02) 3383388 or toll free from
+                                For further inquiries, please call our Customer Service hotline at telephone numbers (02) 2365858 or toll free from
                                 PLDT lines 1800-10PHILWEB (1800-107445932)
-                                or email us at <b>customerservice@philweb.com.ph</b>.
+                                or email us at <b>customersupport@philweb.com.ph</b>.
                             <br/><br/>
                                 Thank you and good day!
                             <br/><br/>

@@ -100,7 +100,7 @@
                             if (StatusValue == "Active" || StatusValue == "Active Temporary" || StatusValue == "New Migrated") {
 
                                 if (servicesCount == 1) {
-                                    if (IsEwallet == 1 && (serviceID == 19 || serviceID == 20))
+                                    if (IsEwallet == 1 && usermode == 1 && (serviceID == 19 || serviceID == 20 || serviceID == 22 || serviceID == 25))
                                     {
 
                                         if (usermode === 1) {
@@ -150,7 +150,7 @@
                                     {
                                         updateLightbox('<center><label  style="font-size: 24px; color: red; font-weight: bold;">Error[000]: Card Number is INVALID.</label>' +
                                                 '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' +
-                                                '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' +
+                                                '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 236-5858.</label></center>' +
                                                 '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
                                                 ''
                                                 );
@@ -160,7 +160,7 @@
                                     {
                                         updateLightbox('<center><label  style="font-size: 24px; color: red; font-weight: bold;">Error[001]: Card Number is INVALID.</label>' +
                                                 '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' +
-                                                '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' +
+                                                '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 236-5858.</label></center>' +
                                                 '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
                                                 ''
                                                 );
@@ -170,7 +170,7 @@
                                     {
                                         updateLightbox('<center><label  style="font-size: 24px; color: red; font-weight: bold;">Error[002]: Card Number is INVALID.</label>' +
                                                 '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' +
-                                                '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' +
+                                                '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 236-5858.</label></center>' +
                                                 '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
                                                 ''
                                                 );
@@ -231,7 +231,7 @@
                                                 {
                                                     updateLightbox('<center><label  style="font-size: 24px; color: red; font-weight: bold;">Card Number is INVALID.</label>' +
                                                             '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' +
-                                                            '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' +
+                                                            '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 236-5858.</label></center>' +
                                                             '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
                                                             ''
                                                             );
@@ -241,7 +241,7 @@
                                             {
                                                 updateLightbox('<center><label  style="font-size: 24px; color: red; font-weight: bold;">Card Number is INVALID.</label>' +
                                                         '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' +
-                                                        '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' +
+                                                        '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 236-5858.</label></center>' +
                                                         '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
                                                         ''
                                                         );
@@ -270,7 +270,7 @@
                                         {
                                             updateLightbox('<center><label  style="font-size: 24px; color: red; font-weight: bold;">Card Number is DEACTIVATED.</label>' +
                                                     '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' +
-                                                    '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' +
+                                                    '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 236-5858.</label></center>' +
                                                     '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
                                                     ''
                                                     );
@@ -288,7 +288,7 @@
                                     {
                                         updateLightbox('<center><label  style="font-size: 24px; color: red; font-weight: bold;">Error[003]: Card Number is INVALID.</label>' +
                                                 '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' +
-                                                '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' +
+                                                '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 236-5858.</label></center>' +
                                                 '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
                                                 ''
                                                 );
@@ -367,7 +367,7 @@
                                     {
                                         updateLightbox('<center><label  style="font-size: 24px; color: red; font-weight: bold;">Error[000]: Card Number is INVALID.</label>' +
                                                 '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' +
-                                                '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' +
+                                                '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 236-5858.</label></center>' +
                                                 '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
                                                 ''
                                                 );
@@ -377,7 +377,7 @@
                                     {
                                         updateLightbox('<center><label  style="font-size: 24px; color: red; font-weight: bold;">Error[001]: Card Number is INVALID.</label>' +
                                                 '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' +
-                                                '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' +
+                                                '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 236-5858.</label></center>' +
                                                 '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
                                                 ''
                                                 );
@@ -387,7 +387,7 @@
                                     {
                                         updateLightbox('<center><label  style="font-size: 24px; color: red; font-weight: bold;">Error[002]: Card Number is INVALID.</label>' +
                                                 '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' +
-                                                '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' +
+                                                '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 236-5858.</label></center>' +
                                                 '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
                                                 ''
                                                 );
@@ -448,7 +448,7 @@
                                                 {
                                                     updateLightbox('<center><label  style="font-size: 24px; color: red; font-weight: bold;">Card Number is INVALID.</label>' +
                                                             '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' +
-                                                            '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' +
+                                                            '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 236-5858.</label></center>' +
                                                             '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
                                                             ''
                                                             );
@@ -458,7 +458,7 @@
                                             {
                                                 updateLightbox('<center><label  style="font-size: 24px; color: red; font-weight: bold;">Card Number is INVALID.</label>' +
                                                         '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' +
-                                                        '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' +
+                                                        '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 236-5858.</label></center>' +
                                                         '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
                                                         ''
                                                         );
@@ -486,7 +486,7 @@
                                         {
                                             updateLightbox('<center><label  style="font-size: 24px; color: red; font-weight: bold;">Card Number is DEACTIVATED.</label>' +
                                                     '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' +
-                                                    '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' +
+                                                    '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 236-5858.</label></center>' +
                                                     '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
                                                     ''
                                                     );
@@ -504,7 +504,7 @@
                                     {
                                         updateLightbox('<center><label  style="font-size: 24px; color: red; font-weight: bold;">Error[003]: Card Number is INVALID.</label>' +
                                                 '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' +
-                                                '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' +
+                                                '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 236-5858.</label></center>' +
                                                 '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
                                                 ''
                                                 );
@@ -589,7 +589,7 @@
                                     {
                                         updateLightbox('<center><label  style="font-size: 24px; color: red; font-weight: bold;">Error[000]: Card Number is INVALID.</label>' +
                                                 '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' +
-                                                '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' +
+                                                '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 236-5858.</label></center>' +
                                                 '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" onclick="javascript: removeDisabled();" class="btnClose" />',
                                                 ''
                                                 );
@@ -599,7 +599,7 @@
                                     {
                                         updateLightbox('<center><label  style="font-size: 24px; color: red; font-weight: bold;">Error[001]: Card Number is INVALID.</label>' +
                                                 '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' +
-                                                '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' +
+                                                '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 236-5858.</label></center>' +
                                                 '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" onclick="javascript: removeDisabled();" class="btnClose" />',
                                                 ''
                                                 );
@@ -609,7 +609,7 @@
                                     {
                                         updateLightbox('<center><label  style="font-size: 24px; color: red; font-weight: bold;">Error[002]: Card Number is INVALID.</label>' +
                                                 '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' +
-                                                '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' +
+                                                '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 236-5858.</label></center>' +
                                                 '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" onclick="javascript: removeDisabled();" class="btnClose" />',
                                                 ''
                                                 );
@@ -669,7 +669,7 @@
                                                 {
                                                     updateLightbox('<center><label  style="font-size: 24px; color: red; font-weight: bold;">Card Number is INVALID.</label>' +
                                                             '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' +
-                                                            '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' +
+                                                            '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 236-5858.</label></center>' +
                                                             '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" onclick="javascript: removeDisabled();" class="btnClose" />',
                                                             ''
                                                             );
@@ -679,7 +679,7 @@
                                             {
                                                 updateLightbox('<center><label  style="font-size: 24px; color: red; font-weight: bold;">Card Number is INVALID.</label>' +
                                                         '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' +
-                                                        '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' +
+                                                        '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 236-5858.</label></center>' +
                                                         '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" onclick="javascript: removeDisabled();" class="btnClose" />',
                                                         ''
                                                         );
@@ -707,7 +707,7 @@
                                         {
                                             updateLightbox('<center><label  style="font-size: 24px; color: red; font-weight: bold;">Card Number is DEACTIVATED.</label>' +
                                                     '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' +
-                                                    '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' +
+                                                    '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 236-5858.</label></center>' +
                                                     '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" onclick="javascript: removeDisabled();" class="btnClose" />',
                                                     ''
                                                     );
@@ -725,7 +725,7 @@
                                     {
                                         updateLightbox('<center><label  style="font-size: 24px; color: red; font-weight: bold;">Error[003]: Card Number is INVALID.</label>' +
                                                 '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' +
-                                                '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' +
+                                                '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 236-5858.</label></center>' +
                                                 '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" onclick="javascript: removeDisabled();" class="btnClose" />',
                                                 ''
                                                 );
@@ -755,4 +755,5 @@
         $('#btnWithdraw2').removeAttr('disabled');
     }
 </script>
+
 
