@@ -93,13 +93,20 @@ class Login extends DBHandler
        $this->bindparameter(2, $credentials['Password']);  
        if ($this->execute()) 
        {
+           //Changed CCT 09/05/2018 BEGIN
            //update password after logging previous password
-           $this->prepare("UPDATE accounts a INNER JOIN accountdetails b ON a.AID = b.AID 
-                           SET ForChangePassword = 0, 
-                           Password = :temppass 
-                           WHERE a.UserName = :username AND 
-                           b.Email = :email");
-            $xparams = array(':username' => $zusername, ':temppass'=> $temppass,':email' => $zemail);
+           //$this->prepare("UPDATE accounts a INNER JOIN accountdetails b ON a.AID = b.AID 
+           //                SET ForChangePassword = 0, 
+           //                Password = :temppass 
+           //                WHERE a.UserName = :username AND 
+           //                b.Email = :email");
+           $this->prepare("UPDATE accounts 
+                            SET ForChangePassword = 0, 
+                                Password = :temppass 
+                            WHERE AID = :aid");
+            //$xparams = array(':username' => $zusername, ':temppass'=> $temppass,':email' => $zemail);
+            $xparams = array(':aid' => $credentials['AID'], ':temppass'=> $temppass);
+            //Changed CCT 09/05/2018 END
             $this->executewithparams($xparams);
             if ($this->execute())
             {
@@ -189,7 +196,7 @@ class Login extends DBHandler
 
    //forgot password: check if email exist
    public function checkemail($zemail){
-         $this->prepare("SELECT COUNT(AID) count, UserName, AccountTypeID acctype FROM accounts a INNER JOIN accountdetails b ON a.AID = b.AID where Email = :email");
+         $this->prepare("SELECT COUNT(*) count, UserName, AccountTypeID acctype FROM accounts a INNER JOIN accountdetails b ON a.AID = b.AID where Email = :email");
          $xparams = array(':email' => $zemail);
          $this->executewithparams($xparams);
          return $this->fetchData();
@@ -198,7 +205,7 @@ class Login extends DBHandler
    //check if passkey entered is equal to the passkey saved in table
    public function checkpasskey($zPasskey)
    {
-       $this->prepare("SELECT COUNT(AID) FROM accounts WHERE Passkey =:passkey");
+       $this->prepare("SELECT COUNT(*) FROM accounts WHERE Passkey =:passkey");
        $xparams = array(':passkey' =>$zPasskey);
        $this->executewithparams($xparams);
        return $this->hasRows();  
@@ -351,7 +358,7 @@ class Login extends DBHandler
     */
    function checkstatus($zusername)
    {
-       $stmt = "SELECT COUNT(AID) as ctrstatus FROM accounts WHERE Status = 1 AND UserName = ?";
+       $stmt = "SELECT COUNT(*) as ctrstatus FROM accounts WHERE Status = 1 AND UserName = ?";
        $this->prepare($stmt);
        $this->bindparameter(1, $zusername);
        $this->execute();
@@ -363,7 +370,7 @@ class Login extends DBHandler
     */
    function checktermstatus($zusername)
    {
-       $stmt = "SELECT COUNT(AID) as ctrstatus FROM accounts WHERE Status = 5 AND UserName = ?";
+       $stmt = "SELECT COUNT(*) as ctrstatus FROM accounts WHERE Status = 5 AND UserName = ?";
        $this->prepare($stmt);
        $this->bindparameter(1, $zusername);
        $this->execute();
@@ -387,7 +394,7 @@ class Login extends DBHandler
     */
    function checkmachineid($zmachineID)
    {
-       $stmt = "SELECT COUNT(CashierMachineInfoId_PK) AS ctrmachine, POSAccountNo FROM cashiermachineinfo WHERE Machine_Id = ? AND isActive = 1";
+       $stmt = "SELECT COUNT(*) AS ctrmachine, POSAccountNo FROM cashiermachineinfo WHERE Machine_Id = ? AND isActive = 1";
        $this->prepare($stmt);
        $this->bindparameter(1, $zmachineID);
        $this->execute();
@@ -409,7 +416,7 @@ class Login extends DBHandler
     */
    function checkpwdexpired($zaid, $zpassword)
    {
-       $stmt = "SELECT COUNT(AID) AS ctrpwd FROM accounts WHERE AID = ? AND Password = ? AND Status = 6 AND ForChangePassword = 0";
+       $stmt = "SELECT COUNT(*) AS ctrpwd FROM accounts WHERE AID = ? AND Password = ? AND Status = 6 AND ForChangePassword = 0";
        $this->prepare($stmt);
        $this->bindparameter(1, $zaid);
        $this->bindparameter(2, $zpassword);

@@ -328,6 +328,17 @@ if($openconn)
                             $updatedrow = $ologin->resetpassword($vhashpassword, $vusername, $vaid);
                             if($updatedrow > 0)
                             {
+                                //COMMENT OUT CCT 09/05/2018 BEGIN    
+                                //$chkSiteAcct = $ologin->checkSiteAccount($vaid);
+                                //if($chkSiteAcct['count']>=1)
+                                //{
+                                //    $updateSiteAccount = $ologin->updateSiteAccount($vaid);
+                                //    if(!$updateSiteAccount)
+                                //    {
+                                //     $msg = "Error in updating Account Status";   
+                                //    }                                            
+                                //}
+                                //COMMENT OUT CCT 09/05/2018 END
                                 $msg = "Success in updating password";
                                 $transdetails = "Username ".$vusername;
                                 $ologin->logtoaudit($new_sessionid, $vaid, $transdetails, $date, $ipaddress,'3'); //insert in audittrail
@@ -397,30 +408,23 @@ if($openconn)
                                                     <br/><br/>
 
                                                     <div>
-                                                        <b><a href='http://$servername/UpdatePassword.php?username=".urlencode($vusername)."&password=".urlencode($newhashedpass)."&aid=".urlencode($vaid['AID'])."'>Forgot password</a></b>
+                                                        <b><a href='https://$servername/UpdatePassword.php?username=".urlencode($vusername)."&password=".urlencode($newhashedpass)."&aid=".urlencode($vaid['AID'])."'>Forgot password</a></b>
                                                     </div>
                                                     <br />
-                                                        For further inquiries, please call our Customer Service hotline at telephone numbers (02) 3383388 or toll free from
-                                                        PLDT lines 1800-10PHILWEB (1800-107445932)
-                                                        or email us at <b>customerservice@philweb.com.ph</b>.
+                                                        For further inquiries, please call our Customer Service hotline at telephone numbers (02) 2365858 or toll free from
+                                                        PLDT lines 1800-10PHILWEB (1800-107445932) or email us at <b>customersupport@philweb.com.ph</b>.
                                                     <br/><br/>
                                                         Thank you and good day!
                                                     <br/><br/>
                                                     Best Regards,<br/>
                                                     PhilWeb Customer Service Team
                                                     <br /><br />
-                                                    This email and any attachments are confidential and may also be
-                                                    privileged.  If you are not the addressee, do not disclose, copy,
-                                                    circulate or in any other way use or rely on the information contained
-                                                    in this email or any attachments.  If received in error, notify the
-                                                    sender immediately and delete this email and any attachments from your
-                                                    system.  Any opinions expressed in this message do not necessarily
-                                                    represent the official positions of PhilWeb Corporation. Emails cannot
-                                                    be guaranteed to be secure or error free as the message and any
-                                                    attachments could be intercepted, corrupted, lost, delayed, incomplete
-                                                    or amended.  PhilWeb Corporation and its subsidiaries do not accept
-                                                    liability for damage caused by this email or any attachments and may
-                                                    monitor email traffic.
+                                                    This email and any attachments are confidential and may also be privileged.  If you are not the addressee, do not disclose, copy,
+                                                    circulate or in any other way use or rely on the information contained in this email or any attachments.  If received in error, notify the
+                                                    sender immediately and delete this email and any attachments from your system.  Any opinions expressed in this message do not necessarily
+                                                    represent the official positions of PhilWeb Corporation. Emails cannot be guaranteed to be secure or error free as the message and any
+                                                    attachments could be intercepted, corrupted, lost, delayed, incomplete or amended.  PhilWeb Corporation and its subsidiaries do not accept
+                                                    liability for damage caused by this email or any attachments and may monitor email traffic.
                                                </body>
                                                </html>";
                                      $headers="From: poskronusadmin@philweb.com.ph\r\nContent-type:text/html";
@@ -491,27 +495,20 @@ if($openconn)
                                                         <br/><br/>
                                                             Your username is <b>$vusername</b>
                                                         <br />
-                                                            For further inquiries, please call our Customer Service hotline at telephone numbers (02) 3383388 or toll free from
-                                                            PLDT lines 1800-10PHILWEB (1800-107445932)
-                                                            or email us at <b>customerservice@philweb.com.ph</b>.
+                                                            For further inquiries, please call our Customer Service hotline at telephone numbers (02) 2365858 or toll free from
+                                                            PLDT lines 1800-10PHILWEB (1800-107445932) or email us at <b>customersupport@philweb.com.ph</b>.
                                                         <br/><br/>
                                                             Thank you and good day!
                                                         <br/><br/>
                                                         Best Regards,<br/>
                                                         PhilWeb Customer Service Team
                                                         <br /><br />
-                                                        This email and any attachments are confidential and may also be
-                                                        privileged.  If you are not the addressee, do not disclose, copy,
-                                                        circulate or in any other way use or rely on the information contained
-                                                        in this email or any attachments.  If received in error, notify the
-                                                        sender immediately and delete this email and any attachments from your
-                                                        system.  Any opinions expressed in this message do not necessarily
-                                                        represent the official positions of PhilWeb Corporation. Emails cannot
-                                                        be guaranteed to be secure or error free as the message and any
-                                                        attachments could be intercepted, corrupted, lost, delayed, incomplete
-                                                        or amended.  PhilWeb Corporation and its subsidiaries do not accept
-                                                        liability for damage caused by this email or any attachments and may
-                                                        monitor email traffic.
+                                                        This email and any attachments are confidential and may also be privileged.  If you are not the addressee, do not disclose, copy,
+                                                        circulate or in any other way use or rely on the information contained in this email or any attachments.  If received in error, notify the
+                                                        sender immediately and delete this email and any attachments from your system.  Any opinions expressed in this message do not necessarily
+                                                        represent the official positions of PhilWeb Corporation. Emails cannot be guaranteed to be secure or error free as the message and any
+                                                        attachments could be intercepted, corrupted, lost, delayed, incomplete or amended.  PhilWeb Corporation and its subsidiaries do not accept
+                                                        liability for damage caused by this email or any attachments and may monitor email traffic.
                                                     </body>
                                                  </html>";
                                          $headers="From: poskronusadmin@philweb.com.ph\r\nContent-type:text/html";
@@ -596,32 +593,24 @@ if($openconn)
                                                       <br/><br/>
                                                           Please click through the link provided below to log-in to your account.
                                                       <br/><br/>
-
                                                       <div>
-                                                           <b><a href='http://$servername/UpdatePassword.php?username=".urlencode($vusername)."&password=".urlencode($newhashedpass)."&aid=".urlencode($vaid['AID'])."'>Change password</a></b>
+                                                           <b><a href='https://$servername/UpdatePassword.php?username=".urlencode($vusername)."&password=".urlencode($newhashedpass)."&aid=".urlencode($vaid['AID'])."'>Change password</a></b>
                                                       </div>
                                                       <br />
-                                                          For further inquiries, please call our Customer Service hotline at telephone numbers (02) 3383388 or toll free from
-                                                          PLDT lines 1800-10PHILWEB (1800-107445932)
-                                                          or email us at <b>customerservice@philweb.com.ph</b>.
+                                                          For further inquiries, please call our Customer Service hotline at telephone numbers (02) 2365858 or toll free from
+                                                          PLDT lines 1800-10PHILWEB (1800-107445932) or email us at <b>customersupport@philweb.com.ph</b>.
                                                       <br/><br/>
                                                           Thank you and good day!
                                                       <br/><br/>
                                                       Best Regards,<br/>
                                                       PhilWeb Customer Service Team
                                                       <br /><br />
-                                                      This email and any attachments are confidential and may also be
-                                                      privileged.  If you are not the addressee, do not disclose, copy,
-                                                      circulate or in any other way use or rely on the information contained
-                                                      in this email or any attachments.  If received in error, notify the
-                                                      sender immediately and delete this email and any attachments from your
-                                                      system.  Any opinions expressed in this message do not necessarily
-                                                      represent the official positions of PhilWeb Corporation. Emails cannot
-                                                      be guaranteed to be secure or error free as the message and any
-                                                      attachments could be intercepted, corrupted, lost, delayed, incomplete
-                                                      or amended.  PhilWeb Corporation and its subsidiaries do not accept
-                                                      liability for damage caused by this email or any attachments and may
-                                                      monitor email traffic.
+                                                      This email and any attachments are confidential and may also be privileged.  If you are not the addressee, do not disclose, copy,
+                                                      circulate or in any other way use or rely on the information contained in this email or any attachments.  If received in error, notify the
+                                                      sender immediately and delete this email and any attachments from your system.  Any opinions expressed in this message do not necessarily
+                                                      represent the official positions of PhilWeb Corporation. Emails cannot be guaranteed to be secure or error free as the message and any
+                                                      attachments could be intercepted, corrupted, lost, delayed, incomplete or amended.  PhilWeb Corporation and its subsidiaries do not accept
+                                                      liability for damage caused by this email or any attachments and may monitor email traffic.
                                                   </body>
                                                </html>";
                                        $headers="From: poskronusadmin@philweb.com.ph\r\nContent-type:text/html";
