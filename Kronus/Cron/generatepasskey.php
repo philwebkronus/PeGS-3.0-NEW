@@ -30,9 +30,8 @@
   $expired = date('Y-m-d H:i:s', $timeStamp);
 
   $dbh = new PDO($oconnectionstring1, $oconnectionstring2, $oconnectionstring3);
-  $stmt = "SELECT AID,DatePasskeyExpires FROM accounts 
-                    WHERE DatePasskeyExpires <= ?  
-                    AND AccountTypeID = 4  AND WithPasskey = 1 AND Status = 1";
+  $stmt = "SELECT AID,DatePasskeyExpires FROM accounts WHERE DatePasskeyExpires <= ? 
+           AND AccountTypeID = 4 AND WithPasskey = 1 AND Status = 1";
   $sth = $dbh->prepare($stmt);
   $sth->bindParam(1,$date);
   $result= $sth->execute();
@@ -140,8 +139,8 @@
                                  <b>$vpasskey</b>
                             </div>
                             <br/><br/>
-                                For further inquiries, please call our Customer Service Hotline at telephone numbers (02) 3383388 
-                            or toll free from PLDT lines 1800-10PHILWEB (1800-107445932) or email us at <b>customerservice@philweb.com.ph</b>.                            
+                                For further inquiries, please call our Customer Service Hotline at telephone numbers (02) 2365858 
+                            or toll free from PLDT lines 1800-10PHILWEB (1800-107445932) or email us at <b>customersupport@philweb.com.ph</b>.                            
                             <br/><br/>
                                 Thank you and good day!
                             <br/><br/>

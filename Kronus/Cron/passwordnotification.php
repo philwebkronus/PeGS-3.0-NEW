@@ -82,9 +82,9 @@
                                      <b><a href='".$updateurl."username=".urlencode($vusername)."&password=".urlencode($vnewhashedpass)."&aid=".urlencode($vaid)."'>Change password</a></b>
                                 </div>
                                 <br />
-                                    For further inquiries, please call our Customer Service hotline at telephone numbers (02) 3383388 or toll free from
+                                    For further inquiries, please call our Customer Service hotline at telephone numbers (02) 2365858 or toll free from
                                     PLDT lines 1800-10PHILWEB (1800-107445932)
-                                    or email us at <b>customerservice@philweb.com.ph</b>.
+                                    or email us at <b>customersupport@philweb.com.ph</b>.
                                 <br/><br/>
                                     Thank you and good day!
                                 <br/><br/>
