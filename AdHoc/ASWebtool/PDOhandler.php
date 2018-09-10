@@ -488,7 +488,7 @@ class PDOhandler {
     }
 
     public function getHabaneroAccountsForCreation($Count) {
-        $query = $this->_connection->prepare('SELECT * FROM membership.memberservices where ServiceID = 29 AND Status = 1  AND  OptionID1 IS NULL ORDER BY MID ASC LIMIT ' . $Count);
+        $query = $this->_connection->prepare('SELECT * FROM membership.tempmemberservices where ServiceID = 29 AND Status = 1  AND  OptionID1 IS NULL ORDER BY MID ASC LIMIT ' . $Count);
 
         if ($query->execute()) {
             $res = $query->fetchAll();
@@ -503,7 +503,7 @@ class PDOhandler {
 
     public function updateOptionID($MID) {
         try {
-            $query = $this->_connection->prepare('UPDATE membership.memberservices
+            $query = $this->_connection->prepare('UPDATE membership.tempmemberservices
                                         SET OptionID1 = 1 WHERE MID = "' . $MID . '" AND ServiceID = 29 AND Status = 1  AND  OptionID1 IS NULL');
 
             if ($query->execute()) {
