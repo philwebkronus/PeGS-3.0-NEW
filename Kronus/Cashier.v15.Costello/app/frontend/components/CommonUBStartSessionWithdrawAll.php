@@ -22,7 +22,7 @@ class CommonUBStartSessionWithdrawAll {
     public function start($terminal_id, $site_id, $trans_type, $paymentType, $service_id, $bcf, $initial_deposit, $acctid, $loyalty_card = '', $voucher_code = '', $trackingid = '', $casinoUsername = '', $casinoPassword = '', $casinoHashedPassword = '', $casinoServiceID = '', $mid = '', $userMode = '', $traceNumber = '', $referenceNumber = '', $locatorname = '', $CPV = '', $isVIP) {
         Mirage::loadComponents(array('CasinoApiUB', 'PCWSAPI.class'));
         Mirage::loadModels(array('TerminalsModel', 'EgmSessionsModel', 'SiteBalanceModel', 'CommonTransactionsModel',
-            'PendingTerminalTransactionCountModel', 'BankTransactionLogsModel'));
+            'PendingTerminalTransactionCountModel', 'BankTransactionLogsModel', 'RefServicesModel'));
 
         $casinoApi = new CasinoApiUB();
         $terminalsModel = new TerminalsModel();
@@ -31,6 +31,7 @@ class CommonUBStartSessionWithdrawAll {
         $commonTransactionsModel = new CommonTransactionsModel();
         $pendingTerminalTransactionCountModel = new PendingTerminalTransactionCountModel();
         $bankTransactionLogs = new BankTransactionLogsModel();
+        $refServicesModel = new RefServicesModel();
 
         if ($terminalsModel->isPartnerAlreadyStarted($terminal_id)) {
             $message = 'Error: ' . $terminalsModel->terminal_code . ' terminal already started';
@@ -62,7 +63,15 @@ class CommonUBStartSessionWithdrawAll {
         }
 
         if ($terminal_balance != 0) {
-            $message = 'Error: Please inform customer service for manual redemption.';
+            $is_card_has_session = $terminalSessionsModel->checkSession($loyalty_card, $service_id);
+
+            if ($is_card_has_session > 0) {
+                $alias = $refServicesModel->getAliasById($service_id);
+                $message = 'Error: Only one active session for ' . $alias . ' casino is allowed for this card.';
+            } else {
+                $message = 'Error: Please inform customer service for manual redemption.';
+            }
+
             logger($message . ' TerminalID=' . $terminal_id . ' ServiceID=' . $service_id);
             CasinoApi::throwError($message);
         }
@@ -164,8 +173,7 @@ class CommonUBStartSessionWithdrawAll {
         $tracking1 = $trans_req_log_last_id;
         $tracking2 = 'D';
         $tracking3 = $terminal_id;
-//        $tracking4 = $site_id;
-		$tracking4 = str_replace("ICSA-","",str_replace("VIP","",$terminal_name));
+        $tracking4 = str_replace("ICSA-", "", str_replace("VIP", "", $terminal_name));
         $event_id = Mirage::app()->param['mgcapi_event_id'][0]; //Event ID for Deposit
         // check if casino's reply is busy, added 05/17/12
         if (!(bool) $casinoApiHandler->IsAPIServerOK()) {
@@ -238,7 +246,7 @@ class CommonUBStartSessionWithdrawAll {
 
             //check Deposit API Result
             if (isset($resultdeposit['TransactionInfo'])) {
-				$transrefid = '';
+                $transrefid = '';
                 //RTG / Magic Macau
                 if (isset($resultdeposit['TransactionInfo']['DepositGenericResult'])) {
                     $transrefid = $resultdeposit['TransactionInfo']['DepositGenericResult']['transactionID'];
