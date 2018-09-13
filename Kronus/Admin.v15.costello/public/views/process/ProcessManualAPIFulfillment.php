@@ -446,6 +446,13 @@ if ($connected && $connected2)
                     $login = $login['TerminalCode'];
                 }
 
+		//CCT 09/13/2018 BEGIN
+                $terminalcode = $maf->getTerminalCode($cmbterm);
+                $terminalcode = $terminalcode['TerminalCode'];
+		$tracking4 = trim(str_replace('ICSA-', '', $terminalcode));
+		$tracking4 = trim(str_replace('VIP', '', $tracking4));
+		//CCT 09/13/2018 END
+
                 $servicegroupname = $maf->getServiceGrpNameByName($txtcasino);
 
                 //check if casino is RTG, HAB, EB
@@ -569,6 +576,7 @@ if ($connected && $connected2)
                     {
                         echo json_encode($transstatus);
                     }
+
                     //$apiresult = $transSearchInfo['TransactionInfo']['TrackingInfoTransactionSearchResult']['transactionStatus'];
                     if ($apiresult == 'TRANSACTIONSTATUS_APPROVED' || $apiresult == 'true' || $apiresult == 'approved') 
                     {
@@ -583,6 +591,7 @@ if ($connected && $connected2)
                         $_SESSION['servicestatus'] = $apiresult;
                     }
                 }
+
                 echo json_encode($transstatus);
                 unset($transstatus, $transSearchInfo, $apiresult, $transrefid);
                 $maf->close();
@@ -724,8 +733,11 @@ if ($connected && $connected2)
                             } 
                             else 
                             {
-                                $newbal = $bcf - $amount;
-                                $maf->updateBcf($newbal, $cmbsite, 'Start session'); //update bcf 
+                                //CCT 09/13/2018 BEGIN
+                                //$newbal = $bcf - $amount;
+                                //$maf->updateBcf($newbal, $cmbsite, 'Start session'); //update bcf 
+                                $maf->updateBcf($amount, $cmbsite, 'Start session'); //update bcf 
+                                //CCT 09/13/2018 END
                                 $msg = 'Manual Casino Fulfillment: Transaction Successful';
                             }
                         }
@@ -835,8 +847,11 @@ if ($connected && $connected2)
                             } 
                             else 
                             {
-                                $newbal = $bcf - $amount;
-                                $maf->updateBcf($newbal, $cmbsite, 'Reload session');
+                                //CCT 09/13/2018 BEGIN
+                                //$newbal = $bcf - $amount;
+                                //$maf->updateBcf($newbal, $cmbsite, 'Reload session');
+                                $maf->updateBcf($amount, $cmbsite, 'Reload session');
+                                //CCT 09/13/2018 END
                                 $msg = 'Manual Casino Fulfillment: Transaction Successful';
                             }
                         }
