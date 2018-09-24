@@ -745,6 +745,7 @@ if ($connected)
                                     $capipassword = '';
                                     $capiplayername = '';
                                     $capiserverID = '';
+                                    
                                     if (strstr($vlogin, "VIP") == true) 
                                     {
                                         $isVIP = 1;
@@ -770,6 +771,7 @@ if ($connected)
                                     $capipassword = '';
                                     $capiplayername = '';
                                     $capiserverID = '';
+                                    
                                     if (strstr($vlogin, "VIP") == true) 
                                     {
                                         $isVIP = 1;
@@ -795,13 +797,24 @@ if ($connected)
                                 $vcurrentpwd = $vctrstatus['ServicePassword'];
                                 $vcurrenthashed = $vctrstatus['HashedServicePassword'];
                                 $isassigned = 1; //aleady recorded in kronus
+                                
+                                //CCT 09/21/2018 ADDED BEGIN
+                                // Force change password in Habanero if is not existing, it is possible that the password is not synched with our DB
+                                if (strstr($vprovidername, "HAB") == true)
+                                {
+                                    if ($vaccountExist<=0) 
+                                    {
+                                        $vapiResult = $_CasinoGamingPlayerAPI->changeTerminalPassword($vprovidername, $serverId, $url, $casinoID, 
+                                                $login, $password, $password, $capiusername, $capipassword, $capiplayername, $capiserverID, $usermode);
+                                    }    
+                                }
+                                // CCT 09/21/2018 ADDED END
                             } 
                             else 
                             {
                                 $isassigned = 0; //not assigned in kronus
                             }
 
-                            //call CasinoAPI creation (RTG)
                             if ($usermode == 1) 
                             {
                                 $vapiResult = array('IsSucceed' => true);
@@ -834,7 +847,7 @@ if ($connected)
                                 $vapiResult = $_CasinoGamingPlayerAPI->createTerminalAccount($vprovidername, $serverId, $url, $login, $password, $aid, $currency, $email, $fname, $lname, $dayphone, $evephone, $addr1, $addr2, $city, $country, $state, $zip, $userID, $birthdate, $fax, $occupation, $sex, $alias, $casinoID, $ip, $mac, $downloadID, $clientID, $putInAffPID, $calledFromCasino, $hashedPassword, $agentID, $currentPosition, $thirdPartyPID, $capiusername, $capipassword, $capiplayername, $capiserverID, $isVIP, $usermode);
                             }
                             // CCT EDITED 06/29/2018 END
-                            // 
+
                             //API returns successfull creation
                             if (isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true) 
                             {
@@ -860,7 +873,7 @@ if ($connected)
                             } 
                             else 
                             {
-                                //if account does not created in casino's RTG check the errorcode is exists
+                                //if account does not created in casino', check the errorcode
                                 if ($vapiResult['ErrorCode'] == 5 || $vapiResult['ErrorCode'] == 1 || $vapiResult['ErrorCode'] == 3 || 
                                     $vapiResult['ErrorID'] == 5 || $vapiResult['ErrorID'] == 1 || $vapiResult['ErrorID'] == 3 || $vapiResult['ErrorCode'] == 200 ) 
                                 {
