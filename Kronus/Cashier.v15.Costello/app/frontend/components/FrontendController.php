@@ -279,6 +279,12 @@ class FrontendController extends MI_Controller {
             }
         }
 
+        if (strpos($loyaltyCardNo, 'eGames') !== false) {
+            $message = 'Active temporary card cannot reload a session on this terminal.';
+            logger($message);
+            $this->throwError($message);
+        }
+
         //check if voucher
         if (isset($startSessionFormModel->voucher_code) && $startSessionFormModel->voucher_code != '') {
             $paymentType = 2; //payment type is coupon method
@@ -293,8 +299,8 @@ class FrontendController extends MI_Controller {
                 logger($message);
                 $this->throwError($message);
             }
-			
-			if ($ref_service['UserMode'] == 4) {
+
+            if ($ref_service['UserMode'] == 4) {
                 $message = 'Coupons are not allowed in e-Bingo terminals.';
                 logger($message);
                 $this->throwError($message);
@@ -1097,7 +1103,6 @@ class FrontendController extends MI_Controller {
                             $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID];
                         }
                     }
-
                     $terminal_pwd = $terminalsmodel->getTerminalPassword($startSessionFormModel->terminal_id, $startSessionFormModel->casino);
                     $login_pwd = $terminal_pwd['HashedServicePassword'];
                     $result = $commonUBRedeemWithdrawAll->redeem($login_pwd, $startSessionFormModel->terminal_id, $this->site_id, $bcf, $service_id, $startSessionFormModel->amount, $paymentType, $this->acc_id, $loyaltyCardNo, $mid, $ref_service['UserMode'], $casinoUsername, $casinoPassword, $casinoServiceID, $isewallet, $locatorname, $CPV);
@@ -1581,6 +1586,12 @@ class FrontendController extends MI_Controller {
                 $this->throwError($message);
             }
 
+            if (strpos($loyaltyCardNo, 'eGames') !== false) {
+                $message = 'Active temporary card cannot start a session on this terminal.';
+                logger($message);
+                $this->throwError($message);
+            }
+
             if (Mirage::app()->param['IsALLeSAFE'] && $isewallet == 0 && $ref_service['UserMode'] == 1) {
                 $message = 'Non e-SAFE card cannot start a session on this terminal.';
                 logger($message);
@@ -1648,12 +1659,12 @@ class FrontendController extends MI_Controller {
                     logger($message);
                     $this->throwError($message);
                 }
-				
-				if ($ref_service['UserMode'] == 4) {
-                $message = 'Coupons are not allowed in e-Bingo terminals.';
-                logger($message);
-                $this->throwError($message);
-            }
+
+                if ($ref_service['UserMode'] == 4) {
+                    $message = 'Coupons are not allowed in e-Bingo terminals.';
+                    logger($message);
+                    $this->throwError($message);
+                }
 
                 //check if voucher is not yet claimed
                 if (isset($verifyVoucherResult['VerifyVoucher']['ErrorCode']) && $verifyVoucherResult['VerifyVoucher']['ErrorCode'] == 0) {
@@ -2049,10 +2060,10 @@ class FrontendController extends MI_Controller {
 
                             if ($ref_service['UserMode'] == 0 || $ref_service['UserMode'] == 2) {
                                 $result = $commonStartSession->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino, toInt($this->getSiteBalance()), toInt($amount), $accid, $loyaltyCardNo, $startSessionFormModel->voucher_code, $trackingId, $login_acct, $terminal_pwd['ServicePassword'], $login_pwd, $casinoServiceID, $mid, $ref_service['UserMode'], $traceNumber, $referenceNumber, $locatorname, $CPV);
-                            } else {
+			   } else {
                                 $result = $commonStartSessionBingo->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino, toInt($this->getSiteBalance()), toInt($amount), $accid, $loyaltyCardNo, $startSessionFormModel->voucher_code, $trackingId, $login_acct, $terminal_pwd['ServicePassword'], $login_pwd, $casinoServiceID, $mid, $ref_service['UserMode'], $locatorname, $CPV);
                             }
-                            //$casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'],$traceNumber,$referenceNumber,$locatorname,$CPV,$viptype); // CCT added viptype;
+
                         }
                         //checking if casino is terminal based
                         else if (($ref_service['UserMode'] == 0 || $ref_service['UserMode'] == 2) && $CPV == 'v12') {
@@ -2098,7 +2109,7 @@ class FrontendController extends MI_Controller {
                                 }
                             }
 
-                            $result = $commonUBStartSessionWithdrawAll->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino, toInt($this->getSiteBalance()), toInt($amount), $accid, $loyaltyCardNo, $startSessionFormModel->voucher_code, $trackingId, $casinoUsername, $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'], $traceNumber, $referenceNumber, $locatorname, $CPV, $isVIP);
+                            $result = $commonUBStartSessionWithdrawAll->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino, toInt($this->getSiteBalance()), toInt($amount), $accid, $loyaltyCardNo, $startSessionFormModel->voucher_code, $trackingId, $casinoUsername, $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'], $traceNumber, $referenceNumber, $locatorname, $CPV,$isVIP);
                         }
                         //checking if casino is user based
                         else if ($ref_service['UserMode'] == 1 && $CPV == 'v15') {
@@ -2948,3 +2959,4 @@ class JsonTerminal {
     public $server_date = null;
 
 }
+
