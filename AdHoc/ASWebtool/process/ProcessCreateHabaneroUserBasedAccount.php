@@ -2,6 +2,8 @@
 
 ini_set('display_errors', true);
 ini_set('log_errors', true);
+ini_set('memory_limit', '2048M');
+ini_set('max_execution_time', 0);
 
 include '../PDOhandler.php';
 include 'HabaneroPlayerAPI.php';
