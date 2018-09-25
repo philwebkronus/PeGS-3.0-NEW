@@ -1,18 +1,14 @@
 <?php
 
-/**
- * @author elperez
- * @date modified 08-05-13
- * add machine description for Video Games
- */
 include_once "init.php";
-require_once 'helper/common.class.php';
+require_once "helper/common.class.php";
 include "Autoemail.class.php";
 include "Membership.class.php";
 include "Loyaltydb.class.php";
 include "RealtimeGamingLobbyAPI.class.php";
-ini_set('display_errors', true);
-ini_set('log_errors', true);
+
+ini_set('display_errors',true);
+ini_set('log_errors',true);
 
 $obwinnings = new Autoemail($_DBConnectionString[0]);
 $membership = new Membership($_DBConnectionString[1]);
@@ -20,57 +16,58 @@ $loyaltydb = new Loyaltydb($_DBConnectionString[2]);
 $connected1 = $obwinnings->open();
 $connected2 = $membership->open();
 $connected3 = $loyaltydb->open();
-
-if ($connected1 && $connected2 && $connected3) 
+if($connected1 && $connected2 && $connected3)
 {
-    $vlastcron = $obwinnings->getcronsched('EmailDate');
+//    $vlastcron['EmailDate'] = "2018-09-24 09:30:17.908629";
+    $vlastcron = $obwinnings->getcronsched('EmailDate');      
+    $vresultrw = $obwinnings->getredeem($vlastcron['EmailDate']);    
+    $vbigwithdrawamt = (float)($vresultrw['Amount']);
 
-    $vresultrw = $obwinnings->getredeem($vlastcron['EmailDate']);
-
-    $vbigwithdrawamt = (float) ($vresultrw['Amount']);
-    if ($vbigwithdrawamt > 0) 
-    {
+    if($vbigwithdrawamt > 0)
+    {       
         // insert time into autoemailsched table
-        $vtime = $obwinnings->updatetime($vresultrw['querytime'], 'EmailDate');
-        if ($vtime == 1) 
-	{
+        $vtime = $obwinnings->updatetime($vresultrw['querytime'],'EmailDate');        //uncomment after testing
+//        $vtime = 1;
+	if($vtime == 1)
+        {
             //get all records equal to $vresult['Amount']
-            $vbigwinnings = $obwinnings->getallbigredeem($vlastcron['EmailDate'], $vbigwithdrawamt);
-            $vctr = 0;
-            while ($vctr < count($vbigwinnings)) 
-	    {
+            $vbigwinnings = $obwinnings->getallbigredeem($vlastcron['EmailDate'],$vbigwithdrawamt);   
+
+            $vctr = 0;            
+            while($vctr < count($vbigwinnings))
+            {                
                 $vterminalID = $vbigwinnings[$vctr]['TerminalID'];
                 $vredeemamt = $vbigwinnings[$vctr]['Redeem'];
                 $vtranstype = $vbigwinnings[$vctr]['TransactionType'];
-                $vend = date("m/d/Y h:i:s A", (strtotime($vbigwinnings[$vctr]["EndDate"])));
+                $vend = date("m/d/Y h:i:s A", (strtotime($vbigwinnings[$vctr]["EndDate"])));          
                 //check if terminalID is nut null; otherwise this will not send email                
-                if ($vterminalID <> null) 
-		{
-                    //get TerminalID from redeem result
-                    $vresultd = $obwinnings->getdeposits($vbigwinnings[$vctr]['TransactionSummaryID']);
-                    $vstart = date("m/d/Y h:i:s A", (strtotime($vresultd['DateStarted'])));
-                    if (count($vresultd) > 0) 
-		    {
-                        $vresultr = $obwinnings->getreload($vbigwinnings[$vctr]['TransactionSummaryID']);
-                        $vtotalload = $vresultd['Deposit'] + $vresultr['Reload'];
-                        $vlogid = $vbigwinnings[$vctr]["TransactionRequestLogID"];
-                        $vttype = $vbigwinnings[$vctr]["TransactionType"];
-                        $vreload = $vtotalload;
-                        $vposno = $vbigwinnings[$vctr]['POS'];
-                        $vsite = $vbigwinnings[$vctr]["SiteName"];
-                        $vsitecode = $vbigwinnings[$vctr]["SiteCode"];
-                        $voperator = $vbigwinnings[$vctr]["Name"];
-                        $vterminalcode = $vbigwinnings[$vctr]["TerminalCode"];
-                        $vserver = $vbigwinnings[$vctr]["ServiceName"];
-                        $vservercode = $vbigwinnings[$vctr]["Code"];
-                        $vnetwin = (float) $vredeemamt - (float) $vreload; //compute the net win 
-                        $vsiteID = $vbigwinnings[$vctr]['SiteID'];
-                        $vserviceID = $vbigwinnings[$vctr]['ServiceID'];
-                        $vMID = $vbigwinnings[$vctr]['MID'];
-                        $vuserMode = $vbigwinnings[$vctr]['UserMode'];
-                        $terminalcodez = $vterminalcode;
-                        $terminalnumber = str_replace($vsitecode, '', $terminalcodez);
-
+                if($vterminalID <> null)
+                {
+                        //get TerminalID from redeem result
+                        $vresultd = $obwinnings->getdeposits($vbigwinnings[$vctr]['TransactionSummaryID']);
+                        $vstart = date("m/d/Y h:i:s A", (strtotime($vresultd['DateStarted'])));
+                        if(count($vresultd) > 0)
+                        {                      
+                            $vresultr = $obwinnings->getreload($vbigwinnings[$vctr]['TransactionSummaryID']);                      
+                            $vtotalload = $vresultd['Deposit'] + $vresultr['Reload'];                      
+                            $vlogid = $vbigwinnings[$vctr]["TransactionRequestLogID"];
+                            $vttype = $vbigwinnings[$vctr]["TransactionType"];
+                            $vreload = $vtotalload;
+                            $vposno = $vbigwinnings[$vctr]['POS'];
+                            $vsite = $vbigwinnings[$vctr]["SiteName"];
+                            $vsitecode = $vbigwinnings[$vctr]["SiteCode"];
+                            $voperator = $vbigwinnings[$vctr]["Name"];
+                            $vterminalcode = $vbigwinnings[$vctr]["TerminalCode"];
+                            $vserver = $vbigwinnings[$vctr]["ServiceName"];
+                            $vservercode = $vbigwinnings[$vctr]["Code"];
+                            $vnetwin = (float)$vredeemamt - (float)$vreload; //compute the net win 
+                            $vsiteID = $vbigwinnings[$vctr]['SiteID'];
+                            $vserviceID = $vbigwinnings[$vctr]['ServiceID'];        
+                            $vMID = $vbigwinnings[$vctr]['MID'];        
+                            $vuserMode = $vbigwinnings[$vctr]['UserMode'];
+                            $terminalcodez = $vterminalcode;
+                            $terminalnumber = str_replace($vsitecode, '', $terminalcodez);
+                            
                         //check $vbracket vs $vnetwin
                         $bracketsize = count($varrbracketwin);
                         $ctrbracket = 0;
@@ -82,7 +79,7 @@ if ($connected1 && $connected2 && $connected3)
                                     $vbracket = $varrbracketwin["group" . $x];
                                     $emailgroup = $emailgroups["group" . $x];
                                     // uncomment to display for debugging purpose
-				    // echo "netwin >= " . $varrbracketwin["group" . $x] . " and " . "netwin < " . $varrbracketwin["group" . $y] . "\n";
+                                    // echo "netwin >= " . $varrbracketwin["group" . $x] . " and " . "netwin < " . $varrbracketwin["group" . $y] . "\n";
                                     break;
                                 }
                             }
@@ -90,73 +87,86 @@ if ($connected1 && $connected2 && $connected3)
                                 $vbracket = $varrbracketwin["group" . $y];
                                 $emailgroup = $emailgroups["group" . $y];
                                 // uncomment to display for debugging purpose
-				// echo "netwin >= " . $varrbracketwin["group" . $y] . "\n";
+                                // echo "netwin >= " . $varrbracketwin["group" . $y] . "\n";
                             }
                             $ctrbracket = $ctrbracket + 1;
                         }
-                        //check if net win is greater than its reload
-                        if ($vbracket > 0) 
-			{
-                            if ($vnetwin > $vreload && $vnetwin >= $vbracket) 
-			    {
-                                //checked if RTG
-                                if ($vservercode == "MM") 
-				{
-                                    $certFilePath = RTGCerts_DIR . $vserviceID . '/cert.pem';
-                                    $keyFilePath = RTGCerts_DIR . $vserviceID . '/key.pem';
 
-                                    $lobby = new RealtimeGamingLobbyAPI($url = '', $certFilePath, $keyFilePath, $passPhrase = '');
+                            //check if net win is greater than its reload
+                            if($vbracket > 0)
+                            {
+                                if($vnetwin > $vreload && $vnetwin >= $vbracket)
+                                { 
+                                    //checked if RTG
+                                    if($vservercode == "MM")
+                                    {
+                                        $certFilePath = RTGCerts_DIR . $vserviceID  . '/cert.pem';
+                                        $keyFilePath = RTGCerts_DIR . $vserviceID  . '/key.pem';
 
-                                    if ($vuserMode == 1 || $vuserMode == 3) {
-                                        $ubcredentials = $membership->getUBCredentials($vserviceID, $vMID);
-                                        $login = $ubcredentials["ServiceUsername"];
-                                        $acctname = $membership->getPlayerName($vMID);
-                                        $voperator = $acctname[0]["FirstName"] . " " . $acctname[0]["LastName"];
-                                        $cardnumber = $loyaltydb->getCardNumber($vMID);
-                                        $vterminalcode = $cardnumber["CardNumber"];
-                                    } else {
-                                        $login = $vterminalcode;
-                                    }
-                                    
-                                    $cashierURI = $_ServiceAPI[$vserviceID - 1];
+                                        $lobby = new RealtimeGamingLobbyAPI($url ='', $certFilePath, $keyFilePath, $passPhrase = '');
+                                        
+                                        if($vuserMode == 1 || $vuserMode == 3){
+                                            $ubcredentials = $membership->getUBCredentials($vserviceID, $vMID);
+                                            $login = $ubcredentials["ServiceUsername"];
+					    $acctname = $membership->getPlayerName($vMID);
+					    $voperator = $acctname[0]["FirstName"] . " " . $acctname[0]["LastName"];
+                                            $cardnumber = $loyaltydb->getCardNumber($vMID);
+                                            $vterminalcode = $cardnumber["CardNumber"];
+                                        } else {
+                                            $login = $vterminalcode;
+                                        }
+                                        
+                                        $cashierURI = $_ServiceAPI[$vserviceID-1];
+                                        
+                                        $getPidFromLogin = $lobby->GetPIDFromLogin($cashierURI, $login);
 
-                                    $getPidFromLogin = $lobby->GetPIDFromLogin($cashierURI, $login);
+                                        $pid = $getPidFromLogin['GetPIDFromLoginResult'];
 
-                                    $pid = $getPidFromLogin['GetPIDFromLoginResult'];
-
-                                    $games = '';
-                                    //player id must not be null
-                                    if (count($pid) > 0) {
-                                        $lobbyURI = $_LobbyAPI[$vserviceID - 1];
-                                        $gamesnum = 1; //no of games that can be displayed
-                                        $getgame = $lobby->getLastGamesPlayed($lobbyURI, $pid, $gamesnum);
-                                        if ($getgame <> null) {
-                                            //if slot games and video poker, get the machine description
-                                            if ($getgame['GameDescription'] == "Real-Series Video Slots" || $getgame['GameDescription'] == "Video Poker") {
-                                                $games = $getgame['GameDescription'] . " - " . $getgame['MachineDescription'];
-                                            } else {
-                                                $games = $getgame['GameDescription'];
+                                        $games = '';
+                                        //player id must not be null
+                                        if(count($pid) > 0){
+                                            $lobbyURI = $_LobbyAPI[$vserviceID-1];
+                                            $gamesnum = 1; //no of games that can be displayed
+                                            $getgame = $lobby->getLastGamesPlayed($lobbyURI, $pid, $gamesnum);
+                                            if($getgame <> null ){
+                                                //if slot games and video poker, get the machine description
+                                                if ( $getgame['GameDescription'] == "Real-Series Video Slots" || $getgame['GameDescription'] == "Video Poker") {
+                                                    $games = $getgame['GameDescription'] . " - " . $getgame['MachineDescription'];
+                                                } else {
+                                                    $games = $getgame['GameDescription'];
+                                                }
                                             }
                                         }
+                                        $vgamedesc = "<br/><br/> Last Game Played: ".$games; 
                                     }
-                                    $vgamedesc = "<br/><br/> Last Game Played: " . $games;
-                                } else {
-                                    $vgamedesc = "";
-                                }
+                                    else
+                                    {
+					if($vuserMode == 1 || $vuserMode == 3){
+                                            $ubcredentials = $membership->getUBCredentials($vserviceID, $vMID);
+                                            $login = $ubcredentials["ServiceUsername"];
+                                            $acctname = $membership->getPlayerName($vMID);
+                                            $voperator = $acctname[0]["FirstName"] . " " . $acctname[0]["LastName"];
+                                            $cardnumber = $loyaltydb->getCardNumber($vMID);
+                                            $vterminalcode = $cardnumber["CardNumber"];
+                                        } else {
+                                            $login = $vterminalcode;
+                                        }
+										 $vgamedesc = "<br/><br/> Last Game Played: N/A"; 
+                                    }          
 
-                                $ctr = 0;
-                                $forexit = 0;
+                                    $ctr = 0;
+                                    $forexit = 0; 
 
-                                $vinserted = $obwinnings->insertbigreload($vstart, $vend, $vsiteID, $vsite, $vterminalID, $vterminalcode, $vreload, $vredeemamt, $vnetwin, $vserviceID, $vtranstype);
-                                if ($vinserted > 0) 
-				{
-                                    $vcount = 0;
-                                    while ($vcount < count($emailgroup)) 
-				    {
-                                        $to = $emailgroup[$vcount];
-                                        $subject = 'e-Games Alert - Player Wins More than or Equal to PHP ' . number_format($vbracket, 2, '.', ',');
+                                    $vinserted = $obwinnings->insertbigreload($vstart,$vend, $vsiteID, $vsite, $vterminalID, $vterminalcode,$vreload, $vredeemamt, $vnetwin, $vserviceID, $vtranstype);
+                                    if($vinserted > 0)
+                                    {
+                                        $vcount = 0;
+                                        while($vcount < count($emailgroup))
+                                        {
+                                        	$to = $emailgroup[$vcount];
+                                                $subject = 'e-Games Alert - Player Wins More than or Equal to PHP '.number_format($vbracket, 2, '.',',');
 
-                                        $message = "
+                                                $message = "
                                                     <html>
                                                     <head>
                                                             <title>$subject</title>
@@ -165,7 +175,7 @@ if ($connected1 && $connected2 && $connected3)
                                                         <br/><br/>
                                                             ALERT: CRITICAL!
                                                         <br/><br/>
-                                                            PLAYER WINS MORE THAN  OR EQUAL TO  PHP " . number_format($vbracket, 2, '.', ',') . "
+                                                            PLAYER WINS MORE THAN  OR EQUAL TO  PHP ".number_format($vbracket, 2, '.',',')."
                                                         <br/><br/>
                                                             DETAILS
                                                         <br/><br/>
@@ -181,15 +191,15 @@ if ($connected1 && $connected2 && $connected3)
                                                         <br/><br/>
                                                             Account No.: $vposno 
                                                         <br/><br/>
-                                                            Login: $login
+                                                            Login: $vterminalcode
                                                         <br/><br/>
                                                             Account Name: $voperator $vsite
                                                         <br/><br/>
-                                                            Player Total Load: PHP " . number_format($vreload, 2, '.', ',') . "
+                                                            Player Total Load: PHP ".number_format($vreload, 2, '.', ',')."
                                                         <br/><br/>
-                                                            Amount Withdrawn: PHP " . number_format($vredeemamt, 2, '.', ',') . "
+                                                            Amount Withdrawn: PHP ".number_format($vredeemamt, 2, '.', ',')."
                                                         <br/><br/>
-                                                            Player Net Win: PHP " . number_format($vnetwin, 2, '.', ',') . "
+                                                            Player Net Win: PHP ".number_format($vnetwin, 2, '.', ',')."
                                                             $vgamedesc
                                                         <br/><br/>    
                                                             Casino Server: $vserver                                  
@@ -198,27 +208,27 @@ if ($connected1 && $connected2 && $connected3)
                                                         <br/><br/>                            
                                                     </body>
                                                     </html>";
-                                        $headers = "From: poskronusadmin@philweb.com.ph\r\nContent-type:text/html";
-                                        $sentEmail = mail($to, $subject, $message, $headers);
-                                        $vcount = $vcount + 1;
+                                                $headers="From: poskronusadmin@philweb.com.ph\r\nContent-type:text/html";
+                                                $sentEmail = mail($to, $subject, $message, $headers);    
+                                                $vcount = $vcount + 1;
+                                        }
+                                        if($vcount > 0)
+                                        break;                                   
                                     }
-                                    if ($vcount > 0)
-                                        break;
-                                }
+                                }                            
                             }
                         }
-                    }
                 }
                 $vctr++;
-            }
+                }
         }
     }
 }
-unset($vlastcron, $vresultrw, $vtime, $vbigwinnings, $vctr, $vterminalID, $vredeemamt, 
-	$vtranstype, $vend, $vresultd, $vresultr, $vtotalload, $vlogid, $vttype, $vreload, 
-	$vposno, $vsite, $voperator, $vterminalcode, $vstart, $vserver, $vservercode, 
-	$vnetwin, $vsiteID, $vserviceID, $vgamedesc, $vbracket, $group2, $vinserted, 
-	$vcount, $sentEmail, $ctr, $to, $subject, $message, $headers);
+unset($vlastcron,$vresultrw,$vtime,$vbigwinnings,$vctr,$vterminalID,$vredeemamt,
+        $vtranstype,$vend,$vresultd,$vresultr,$vtotalload,$vlogid,$vttype,$vreload,
+        $vposno,$vsite,$voperator,$vterminalcode,$vstart,$vserver,$vservercode,
+        $vnetwin,$vsiteID,$vserviceID,$vgamedesc,$vbracket,$group2,$vinserted,
+        $vcount,$sentEmail,$ctr,$to,$subject,$message,$headers);
 $obwinnings->close();
 $membership->close();
 $loyaltydb->close();

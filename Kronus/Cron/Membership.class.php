@@ -121,7 +121,6 @@ class Membership {
         $sth = $this->_dbh->prepare($query);
         $sth->execute();
         $result = $sth->fetch(PDO::FETCH_LAZY);
-
         $exp = explode(";", $result['OUTfldListRet']);
         return array(0 => array('FirstName' => $exp[0], 
                                 'MiddleName' => $exp[1], 
