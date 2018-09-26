@@ -280,7 +280,7 @@ class FrontendController extends MI_Controller {
         }
 
         if (strpos($loyaltyCardNo, 'eGames') !== false) {
-            $message = 'Active temporary card cannot reload a session on this terminal.';
+            $message = 'Active temporary card cannot be used to reload a session.';
             logger($message);
             $this->throwError($message);
         }
@@ -1587,7 +1587,7 @@ class FrontendController extends MI_Controller {
             }
 
             if (strpos($loyaltyCardNo, 'eGames') !== false) {
-                $message = 'Active temporary card cannot start a session on this terminal.';
+                $message = 'Active temporary card cannot be used to start a session.';
                 logger($message);
                 $this->throwError($message);
             }
