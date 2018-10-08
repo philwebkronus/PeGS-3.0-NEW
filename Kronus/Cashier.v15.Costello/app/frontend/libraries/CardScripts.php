@@ -31,6 +31,7 @@
         var url_transfer = '<?php echo Mirage::app()->createUrl('loyalty/transferpoints') ?>';
         var url_activate = '<?php echo Mirage::app()->param['member_activation'] ?>';
         var url_tempactivate = '<?php echo Mirage::app()->param['temp_activation'] ?>';
+	var isTerminalMappingCheckingOn = '<?php echo Mirage::app()->param['isTerminalMappingCheckingON'] ?>';
         var servertime = '<?php echo date('m-d-Y H:i:s'); ?>';
         var AID = $('#acc_id').val();
         var siteid = <?php echo $_SESSION['AccountSiteID'] ?>;
@@ -99,6 +100,28 @@
 
                             if (StatusValue == "Active" || StatusValue == "Active Temporary" || StatusValue == "New Migrated") {
 
+				if(isTerminalMappingCheckingOn == 0){
+
+                                if (servicesCount > 0) {
+                                    if (IsEwallet == 1 && usermode == 1 && (serviceID == 19 || serviceID == 20 || serviceID == 22 || serviceID == 25))
+                                    {
+
+                                        if (usermode === 1) {
+                                            isEwalletSessionMode = true;
+                                            $('.hideControls').hide();
+                                        }
+                                    }
+                                    else
+                                    {
+                                        isEwalletSessionMode = false;
+                                        isValidated = true;
+                                        $('.hideControls').show();
+                                    }
+
+                                    response = "false";
+                                }
+				}else{
+
                                 if (servicesCount == 1) {
                                     if (IsEwallet == 1 && usermode == 1 && (serviceID == 19 || serviceID == 20 || serviceID == 22 || serviceID == 25))
                                     {
@@ -125,6 +148,8 @@
                                     // CCT - END added                                       
                                     alert('More than 1 casinos are mapped in this terminal');
                                 }
+
+				}
                             }
                             else if (StatusValue == 'Banned Card')
                             {
