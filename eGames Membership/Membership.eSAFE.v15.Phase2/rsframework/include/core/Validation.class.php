@@ -152,6 +152,15 @@ class Validation extends BaseObject
         }
     }
 
+   function validateDate($date, $format = 'Y-m-d') {
+        $d = DateTime::createFromFormat($format, $date);
+
+        if ($d && $d->format($format) === $date) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 }
 ?>

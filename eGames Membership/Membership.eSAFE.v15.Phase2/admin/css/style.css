@@ -20,6 +20,14 @@ p                                   { margin: 15px 0; }
     height: 30px;
 }
 
+#dtBirthDateBan
+{
+    font-size: 18px;
+    margin-left: 20px;
+    height: 30px;
+}
+
+
 #btnSearch
 {
     height: 35px;
