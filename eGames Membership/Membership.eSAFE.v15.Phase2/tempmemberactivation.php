@@ -351,9 +351,10 @@ if ((isset($_GET["tempnumber"]) && (htmlentities($_GET["tempnumber"]))) &&
                 } else {
                     $isSuccess = false;
                     $isSubmitted = false;
-                    $error = "Applicant is on the National Database of Restricted Persons List. Please ask Player to contact Customer Service Hotline.";
+                    $error = "Applicant is on the National Database of Restricted Persons (NDRP). Restricted persons are prohibited to enter & play. Check NDRP for details of banning order. ";
                     $_Log->logAPI(AuditFunctions::MIGRATE_TEMP, $tempAccountCode . ':' . $MembershipCardNumber . ':Failed', $sitecode, $AID);
                     $logger->logger($logdate, $logtype, $error);
+	            
 
                     $txtName->Text = $membername;
                     $txtFName->Text = $txtFName->SubmittedValue;
@@ -484,6 +485,7 @@ if ((isset($_GET["tempnumber"]) && (htmlentities($_GET["tempnumber"]))) &&
         setInterval("displaytime()", 1000)
     }
 </script>
+
 <div id="membersactivation">
     <h1>Membership Card Activation</h1>
     <table>

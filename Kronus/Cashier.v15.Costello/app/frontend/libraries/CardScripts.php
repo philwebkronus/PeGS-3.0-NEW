@@ -157,8 +157,8 @@
                                 // CCT - BEGIN added
                                 //$('.hideControlsVIP').hide();
                                 // CCT - END added                                 
-                                updateLightbox('<center><label  style="font-size: 24px; color: red; font-weight: bold;">Player is on the National Database of Restricted Persons List.</label>' +
-                                        '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please ask Player to contact Customer Service Hotline.</label>' +
+                                updateLightbox('<center><label  style="font-size: 24px; color: red; font-weight: bold;">Player is on the National Database of Restricted Persons (NDRP).</label>' +
+                                        '<br /><label style="font-size: 24px; color: red; font-weight: bold;"> Restricted persons are prohibited to enter & play. <br />Check NDRP for details of banning order.</label>' +
                                         '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
                                         ''
                                         );
@@ -378,8 +378,8 @@
                             }
                             else if (StatusValue == 'Banned Card')
                             {
-                                updateLightbox('<center><label  style="font-size: 24px; color: red; font-weight: bold;">Player is on the National Database of Restricted Persons List.</label>' +
-                                        '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please ask Player to contact Customer Service Hotline.</label>' +
+                                updateLightbox('<center><label  style="font-size: 24px; color: red; font-weight: bold;">Player is on the National Database of Restricted Persons (NDRP).</label>' +
+                                        '<br /><label style="font-size: 24px; color: red; font-weight: bold;"> Restricted persons are prohibited to enter & play.<br />Check NDRP for details of banning order.</label>' +
                                         '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
                                         ''
                                         );
@@ -600,8 +600,8 @@
                             }
                             else if (StatusValue == 'Banned Card')
                             {
-                                updateLightbox('<center><label  style="font-size: 24px; color: red; font-weight: bold;">Player is on the National Database of Restricted Persons List.</label>' +
-                                        '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please ask Player to contact Customer Service Hotline.</label>' +
+                                updateLightbox('<center><label  style="font-size: 24px; color: red; font-weight: bold;">Player is on the National Database of Restricted Persons (NDRP).</label>' +
+                                        '<br /><label style="font-size: 24px; color: red;  font-weight: bold;"> Restricted persons are prohibited to enter & play.<br /> Check NDRP for details of banning order.</label>' +
                                         '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" onclick="javascript: removeDisabled();" class="btnClose" />',
                                         ''
                                         );
@@ -780,5 +780,6 @@
         $('#btnWithdraw2').removeAttr('disabled');
     }
 </script>
+
 
 
