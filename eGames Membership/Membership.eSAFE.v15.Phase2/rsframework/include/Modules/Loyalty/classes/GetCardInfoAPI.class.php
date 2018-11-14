@@ -146,6 +146,12 @@ class GetCardInfoAPI extends BaseEntity
                                                 "IsReg"                => intval($isreg),
                                                 "IsEwallet"            => intval($ewallet[0]['IsEwallet']),
                                                 "CoolingPeriod"        => "",
+
+                        "FirstName" => $row['FirstName'],
+                        "MiddleName" => $row['MiddleName'],
+                        "LastName" => $row['LastName'],
+                        "IdentificationNumber" => $row['IdentificationNumber'],
+
                                                 "StatusCode"           => intval(CardStatus::ACTIVE),
                                                 "StatusMsg"            => 'Active Card',
                                                     )
@@ -291,7 +297,7 @@ class GetCardInfoAPI extends BaseEntity
                 */
                 $_Log = new AuditTrail();
                 $activation = $_ActivateMember->Migrate( $cardnumber, $siteID );
-                
+
                 if(count ( $activation ) > 0 )
                 {
                     $status = $activation['status'];

@@ -558,6 +558,12 @@
                 }
                 var issuccess = identifyCard();
 
+                Email = Email.slice(0, 7) + Email.slice(-12);
+                if (FirstName == "TST MarkEng" || MiddleName == "" || LastName == "Salva" || Email == "MarkEng@yopmail.com" || Birthdate == "1989-05-05"
+                        || MobileNumber == "9091111111" || IdentificationNumber == "123456789") {
+                    alert('Player needs to update member details. Please contact Customer Support.');
+                }
+
                 var usermode = $('#mode').val();
                 if (issuccess === "false")
                 {

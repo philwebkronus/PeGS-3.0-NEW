@@ -98,6 +98,14 @@
                             //get isewallet value
                             var IsEwallet = json.CardInfo.IsEwallet;
 
+                                FirstName = json.CardInfo.FirstName;
+                                MiddleName = json.CardInfo.MiddleName;
+                                LastName = json.CardInfo.LastName;
+                                Email = json.CardInfo.Email;
+                                Birthdate = json.CardInfo.Birthdate;
+                                MobileNumber = json.CardInfo.MobileNumber;
+                                IdentificationNumber = json.CardInfo.IdentificationNumber;
+
                             if (StatusValue == "Active" || StatusValue == "Active Temporary" || StatusValue == "New Migrated") {
 
 				if(isTerminalMappingCheckingOn == 0){
