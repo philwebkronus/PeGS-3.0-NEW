@@ -24,6 +24,7 @@ body
 #link-mm{width: 360px; height:340px; list-style-type:none; background: url(../images/magic-macau-hover.png) no-repeat;}
 #link-vv{width: 360px; height:340px; list-style-type:none; background: url(../images/viva-lasvegas-hover.png) no-repeat;}
 #link-ss{width: 360px; height:340px; list-style-type:none; background: url(../images/swinging-singapore-hover.png) no-repeat;}
+#link-start{width: 142px; height:37px; list-style-type:none; background: url(../images/refresh_large_hover.png) no-repeat;}
 
 .link-container a, .link-container a:link, .link-container a:visited 
 {
@@ -35,10 +36,10 @@ body
     width:100%; height:100%; border:none;
 }
 
-.link-container a:hover img 
+/*.link-container a:hover img 
 {
     visibility:hidden;
-}
+}*/
 
 #fancybox-overlay{overflow: hidden;}
 #fancybox-content{font-family: Calibri, 'Verdana', Ariel, sans-serif;}
@@ -546,9 +547,12 @@ a.boxclose
     margin-top:-10px;
     margin-right:-10px;
     cursor:pointer;
-    color: #fff;
+    /*color: #fff;
     border: 1px solid #AEAEAE;
-    background: #605F61;
+    background: #605F61;*/
+    color: #000;
+    border: 1px solid #fff;
+    background: #fff;
     font-size: 25px;
     font-weight: bold;
     display: inline-block;
@@ -559,7 +563,7 @@ a.boxclose
 
 .boxclose:before 
 {
-    content: "Ã—";
+    content: "x";
 }   
 
 #formCardNumber,#formPassword,#formNewPIN,#formRePIN
@@ -633,14 +637,15 @@ p
     margin:5px;
 }
 */
-#casino
+
+/*#casino
 {
     width:250px;
     height:30px;
     font-weight: bold;
     font-size:20px;
 }
-
+*/
 hr 
 {
     padding: 0;

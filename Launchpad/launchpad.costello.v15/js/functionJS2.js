@@ -5,9 +5,6 @@ $(document).ready(function() {
     $.resetVal(1);
 
     $.checkSession2 = function() {
-        var termID = "";
-        var termIDVIP = "";
-
         $.post("../Helper/lock.php",
                 {
                     data: 'countMappedCasinos',
@@ -16,79 +13,40 @@ $(document).ready(function() {
                     option: 1
                 }, function(data) {
 
-            if (data == 1)
+            if (data > 0)
             {
                 $.post("../Helper/lock.php",
                         {
-                            data: 'checkTerminaServicesSession',
+                            data: 'checkIfTerminalSession',
                             terminalCode: terminalCode,
-                            option: 0
                         }, function(data) {
 
-                    if (JSON.stringify(data['Count']) > 0)
+                    if (JSON.stringify(data['TerminalID']) > 0)
                     {
-                        tmpServiceID = JSON.stringify(data['ServiceID']);
-                        tmpUserMode = JSON.stringify(data['UserMode']);
-                        tmpServiceGroupID = JSON.stringify(data['ServiceGroupID']);
+                        ServiceID = JSON.stringify(data['ServiceID']);
 
-                        if (tmpServiceID == JSON.stringify(data['ServiceIDVIP']))
+                        if (JSON.stringify(data['Usermode']) != 0 || JSON.stringify(data['Usermode']) != 3)
                         {
 
-//                                      if(tmpUserMode==0&&tmpServiceGroupID==4)
-//                                      {
-//                                          ServicePassword = JSON.stringify(data['HashedServicePassword']);
-//                                      }
-//                                      if(tmpUserMode==0&&tmpServiceGroupID!=4)
-//                                      {
-//                                          ServicePassword = JSON.stringify(data['ServicePassword']);
-//                                      }
+                            $.checkTerminalBasedSession();
 
-                            ServicePassword = JSON.stringify(data['HashedServicePassword']);
-
-                            termID = JSON.stringify(data['TerminalID']);
-                            termIDVIP = JSON.stringify(data['TerminalIDVIP']);
-
-                            if (tmpUserMode != 1 && tmpServiceGroupID != 4)
-                            {
-
-                                $.checkTerminalBasedSession(termID, termIDVIP);
-
-                            }
-                            else if (tmpUserMode == 3 && (tmpServiceGroupID == 4 || tmpServiceGroupID == 6))
-                            {
-
-                                $.checkTerminalBasedSession(termID, termIDVIP);
-
-                            }
-                            else
-                            {
-
-                                $.checkEwalletSession2();
-                            }
                         }
                         else
                         {
-                           $.prompt("ERROR 007: Invalid Terminal. Terminal is not properly mapped");
+
+                            $.checkEwalletSession2();
                         }
                     }
                     else
                     {
-                        //check session regular
-                        $.checkEwalletSession2();
+                        $.prompt("[ERROR 002] Terminal has no valid session");
                     }
 
                 }, 'json');
             }
-            else if (data > 1)
-            {
-                $.prompt("Invalid terminal. Terminal has more than one(1) casino​");
-                $.resetVal(0);
-                $.resetVal(1);
-                $.resetVal();
-            }
             else
             {
-                $.prompt("Casino not available");
+                $.prompt("[ERROR 001] Casino not available");
                 $.resetVal(0);
                 $.resetVal(1);
                 $.resetVal();
@@ -98,21 +56,18 @@ $(document).ready(function() {
 
     };
 
-    $.checkTerminalBasedSession = function(TerminalID, TerminalIDVIP)
+    $.checkTerminalBasedSession = function()
     {
-
-
         showLightbox(function() {
 
             $.post("../Helper/lock.php",
                     {
                         data: 'checkIfTerminalSessionLobby',
                         terminalCode: terminalCode,
-                        terminalID: TerminalID,
-                        terminalIDVIP: TerminalIDVIP,
-                        ServiceID: tmpServiceID
+                        ServiceID: ServiceID,
                     }, function(data) {
                 var json = $.parseJSON(data);
+
                 if (json.Count != undefined) {
                     if (json.Count != 0) {
                         if (json.Count == 1) {
@@ -121,22 +76,22 @@ $(document).ready(function() {
                             ServicePassword = json.HashedServicePassword;
                             isVIP = json.isVIP;
                             ServicePassword = ServicePassword.replace(/\"/g, "");
-                            HabaneroPath = json.HabaneroPath
+                            HabaneroPath = json.HabaneroPath;
 
-                            $.launchGame(tmpServiceID, ServiceUsername, ServicePassword, isVIP, HabaneroPath, terminalCode);
+                            $.launchGame(ServiceID, ServiceUsername, ServicePassword, isVIP, HabaneroPath, terminalCode);
 
                         } else {
                             jQuery.fancybox.close();
-                            $.prompt("Terminal has more than One (1) active session.");
+                            $.prompt("[ERROR 005] Terminal has more than One (1) active session.");
                         }
                     } else {
                         jQuery.fancybox.close();
-                        $.prompt(" Terminal has no valid session");
+                        $.prompt("[ERROR 004] Terminal has no valid session");
                     }
                 }
                 else {
                     jQuery.fancybox.close();
-                    $.prompt("Error was encountered. Kindly retry.");
+                    $.prompt("[ERROR 003] Error was encountered. Kindly retry.");
                 }
 
             });
@@ -208,3 +163,4 @@ $(document).ready(function() {
 
 
 });
+

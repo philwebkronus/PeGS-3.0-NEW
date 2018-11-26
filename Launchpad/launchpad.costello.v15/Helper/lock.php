@@ -69,27 +69,18 @@ if (!empty($function)) {
 
         case 'checkIfTerminalSession':
             $terminalCode = $_POST['terminalCode'];
-            $option = $_POST['option'];
+            $terminalID = LPTerminalSessions::model()->checkSession($terminalCode);
+	    $result['TerminalID'] = (int) $terminalID['TerminalID'];
+            $result['Usermode'] = (int) $terminalID['Usermode'];
+            $result['ServiceID'] = (int) $terminalID['ServiceID'];
 
-            if ($option == 0) {
-                $count = LPTerminalSessions::model()->checkSession($terminalCode, $option);
-                $result['Count'] = count($count);
-                $result['MID'] = (int) $count['MID'];
-                $result['UserMode'] = (int) $count['UserMode'];
-                $result['UBCard'] = $count['LoyaltyCardNumber'];
-            } else {
-                $terminalID = LPTerminalSessions::model()->checkSession($terminalCode, $option);
-                $result = (int) $terminalID['TerminalID'];
-            }
             break;
 
         case 'checkIfTerminalSessionLobby':
             $terminalCode = $_POST['terminalCode'];
-            $terminalID = $_POST['terminalID'];
-            $terminalIDVIP = $_POST['terminalIDVIP'];
             $serviceID = $_POST['ServiceID'];
-
-            $count = LPTerminalSessions::model()->checkIfTerminalSessionLobby($terminalCode, $terminalID, $terminalIDVIP, $serviceID);
+            
+            $count = LPTerminalSessions::model()->checkIfTerminalSessionLobby($terminalCode, $serviceID);
 
             $result['Count'] = (int) $count['Counter'];
             if ($serviceID == 28 || $serviceID == 29) {
@@ -99,15 +90,23 @@ if (!empty($function)) {
             } else {
                 $result['ServiceUsername'] = $count['TerminalCode'];
                 $result['HashedServicePassword'] = $count['HashedServicePassword'];
-            }	
+            }
+
+            if ($serviceID == 28 || $serviceID == 22) {
+                $result['HabaneroPath'] = LPConfig::app()->params["topaz_path"];
+            } else {
+                $result['HabaneroPath'] = LPConfig::app()->params["habanero_path"];
+            }
+
+
             /*
              * For Habanero Integration
              * Added John Aaron Vida
              * 12/21/2017
              */
             $result['isVIP'] = $count['isVIP'];
-            $result['HabaneroPath'] = LPConfig::app()->params["habanero_path"];
             break;
+
 
         case 'isEwallet':
             $mid = $_POST['mid'];
@@ -236,7 +235,16 @@ if (!empty($function)) {
             $ubServiceID = $_POST['UBServiceID'];
 
             $APIresult = $_PCWS->logoutLaunchPad($ubServiceLogin, $ubServiceID);
-                         
+
+            // CCT BEGIN - comment out codes       
+            //Checking for usermode
+            /*
+              $usermode = LPRefServices::model()->checkUsermode($ubServiceID);
+              $source = "3";
+              //Every Logout will Change the Password
+              $_PCWS->changePassword($ubServiceLogin,$ubServiceID,$usermode['UserMode'],$source);
+             */
+            // CCT END - comment out codes                            
             $result = $APIresult['ForceLogout']['ErrorCode'];
 
             break;
@@ -326,3 +334,4 @@ if (!empty($function)) {
     echo json_encode($result);
 }
 ?>
+

@@ -1,14 +1,7 @@
 $(document).ready(function()
 {
     $.getMaxAttempts();
-    
-    //Login for ewallet and for conversion disabled
-    //$("#ubfield").attr('disabled',true);
-    //$("#pinfield").attr('disabled',true);
-    //$("#Login").attr('disabled',true);
-    //$("#signUP").attr('disabled',false);
-    //*********************************
-    //$("#pinfield").attr('disabled',true);
+   
 
     $("#signUP").click(function()
     {
@@ -265,36 +258,10 @@ $(document).ready(function()
            infoPinValue="000000";
         }
     });
-
-    $("#casinomm").click(function()
-    {
-        $.checkTerminalType();
- 
-        if(terminalType==2)
-        {
-            $.checkSession2();
-        } 
-        else if(terminalType == 0)
-        {
-            $.prompt("Invalid terminal. Terminal should be setup as e-SAFE");
-            infoPinValue="";
-            infoPinValue="000000";
-            return false;
-        }
-        else
-        {
-            $.prompt("Invalid terminal. Terminal should be setup as genesis");
-            $.resetVal(0);
-            $.resetVal(1);
-            $.resetVal(2);
-            $.resetVal();
-            infoPinValue="";
-            infoPinValue="000000";
-        }
-    });
+    
 /* CCT BEGIN comment */    
 
-    $("#casinovv").click(function()
+    $("#casinonew").click(function()
     {
         $.checkTerminalType();
  
@@ -397,13 +364,6 @@ $(document).ready(function()
             $("button").attr('disabled',true);  
         }
     });
-
-//$('body').on("dblclick",".shift",function(){
-//    
-//   capsLock=true;
-//   isAlwaysCaps = true;
-//    
-//});
 
 //changepin
 
@@ -576,18 +536,10 @@ $(document).ready(function()
     $('body').on("click","#platinum",function()
     {
         $.checkUBSession(1);
-//        if(tmpServiceID==20)
-//            $.launchGame(tmpServiceID+".2",tmpUBserviceLogin,tmpUBServicePassword);
-//        else
-//            $.launchGame(tmpServiceID,tmpUBserviceLogin,tmpUBServicePassword);
-//        $.resetVal(0);
-//        $.resetVal(1);
-//        $.resetVal(2); 
     });
 
     $('body').on("click","#endSession",function()
     {        
-        //$.endCurrentSession();
         $.checkUBSession();
         $.resetVal(0);
         $.resetVal(1);

@@ -54,6 +54,34 @@
                 var IsALLeSAFE = '<?php echo LPConfig::app()->params["IsALLeSAFE"]; ?>';
                 var serviceid = '';
                 var sysversion = '<?php echo LPConfig::app()->params["sysversionname"]; ?>';
+
+                $.checkSpyderConnection = function()
+                {
+                    $("#tdnew").hide();
+
+                    $.ajax(
+                            {
+                                url: '../Helper/connector.php',
+                                type: 'post',
+                                dataType: 'json',
+                                async: false,
+                                data: {fn: function() {
+                                        return 'checkSpyderConnection';
+                                    },
+                                    TerminalCode: function() {
+                                        return terminalCode;
+                                    }},
+                                success: function(data)
+                                {
+                                    if (data['state'] != "Connected")
+                                    {
+                                        alert("Please Activate Spyder Connection on this Terminal!");
+                                        window.open("index.php", '_self');
+                                    }
+                                }
+                            });
+                };
+
                 $.checkTerminalType = function()
                 {
                     $.ajax(
@@ -153,7 +181,7 @@
                                                             }
                                                             else
                                                             {
-                                                                $.prompt("ERROR 002: Invalid terminal. Terminal is not properly mapped.");
+                                                                $.prompt("Invalid terminal. Terminal is not properly mapped.");
                                                             }
                                                         }
                                                     }
@@ -183,7 +211,7 @@
                                 success: function(data)
                                 {
                                     if (JSON.stringify(data['Count']).replace(/\"/g, "") != 2)
-                                        $.prompt("ERROR 003: Invalid terminal. Terminal is not properly mapped"); //casino != 2
+                                        $.prompt("Invalid terminal. Terminal is not properly mapped"); //casino != 2
                                 }
                             });
                 }
@@ -192,9 +220,7 @@
                 {
                     if (bool)
                     {
-                        $("#tdvv").hide();
-                        $("#tdmm").hide();
-                        $("#tdss").hide();
+                        $("#tdnew").hide();
                         $("#copyright1").hide();
                         $("#copyright2").hide();
                         $("#contentt").hide();
@@ -205,55 +231,24 @@
                         $("#lobby2footer").html("");
                         $("#ipfooter").html($("#getfooter").html());
                         $("#copyright2").show();
-			$("#tdvv").css("display", "block");
+                        $("#tdnew").css("display", "block");
 
-                        $("#vvimg").css(
+                        $("#vvnew").css(
                                 {
-                                    "width": "360px",
-                                    "height": "340px",
+                                    "width": "700px",
+                                    "height": "250px",
                                     "list-style-type": "none",
                                     "background-size": "100%"
 
                                 });
-                        $("#link-vv").css(
+                        $("#link-new").css(
                                 {
-                                    "width": "360px",
-                                    "height": "340px",
+                                    "width": "700px",
+                                    "height": "250px",
                                     "list-style-type": "none",
                                     "background-size": "100%"
                                 });
-                        $("#tdmm").css("display", "block");
-	    
-                        $("#mmimg").css(
-                                {
-                                    "width": "360px",
-                                    "height": "340px",
-                                    "list-style-type": "none",
-                                    "background-size": "100%"
-                                });
-                        $("#link-mm").css(
-                                {
-                                    "width": "360px",
-                                    "height": "340px",
-                                    "list-style-type": "none",
-                                    "background-size": "100%"
-                                });
-                        $("#tdss").css("display", "block");
 
-                        $("#ssimg").css(
-                                {
-                                    "width": "360px",
-                                    "height": "340px",
-                                    "list-style-type": "none",
-                                    "background-size": "100%"
-                                });
-                        $("#link-ss").css(
-                                {
-				    "width": "360px",
-				    "height": "340px",
-				    "list-style-type": "none",
-                                    "background-size": "100%"
-                                });
                         $.ajax(
                                 {
                                     url: '../Helper/connector.php',
@@ -267,26 +262,7 @@
                                         }},
                                     success: function(data)
                                     {
-                                        if (data === '25' || data === '29') {
-
-                                            $("#tdvv").show();
-                                            $("#tdmm").hide();
-                                            $("#tdss").hide();
-                                            $("#tdss").css("display", "block");
-                                            $("#tdmm").css("display", "block");
-                                            $("#link-mm").css("display", "none");
-                                            $("#link-ss").css("display", "none");
-
-                                        }
-                                        else {
-                                            $("#tdmm").show();
-                                            $("#tdvv").hide();
-                                            $("#tdss").hide();
-                                            $("#tdss").css("display", "block");
-                                            $("#tdvv").css("display", "block");
-                                            $("#link-vv").css("display", "none");
-                                            $("#link-ss").css("display", "none");
-                                        }
+                                        $("#tdnew").show();
 
                                     },
                                     error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -411,6 +387,7 @@
                 {
                     $('#system-version').html(sysversion);
                     localStorage.clear();
+                    $.checkSpyderConnection();
                     $.checkTerminalType();
                     $.getTerminalUserMode();
                     $.countServices();
@@ -464,208 +441,6 @@
                                 alert("Please setup the registry");
                                 return false;
                             }
-
-                            $('#casino0').live('click', function()
-                            {
-                                var currServiceID = '';
-                                $.ajax({
-                                    url: '../Helper/connector.php',
-                                    type: 'post',
-                                    dataType: 'json',
-                                    data: {fn: function() {
-                                            return "getServiceID";
-                                        },
-                                        TerminalCode: function() {
-                                            return terminalCode;
-                                        }},
-                                    success: function(data)
-                                    {
-                                        currServiceID = data;
-                                        if (currServiceID)
-                                        {
-                                            var url = '../Helper/connector.php';
-                                            $.ajax(
-                                                    {
-                                                        url: url,
-                                                        type: 'post',
-                                                        dataType: 'json',
-                                                        data: {fn: function() {
-                                                                return "casinoServiceClick";
-                                                            }},
-                                                        success: function(data)
-                                                        {
-                                                            var currentbal = data.currentbal;
-                                                            try
-                                                            {
-                                                                if (data.html == 'not ok')
-                                                                {
-                                                                    try
-                                                                    {
-                                                                        window.external.ScreenBlocker(true);
-                                                                    }
-                                                                    catch (e)
-                                                                    { //do nothing
-                                                                    }
-                                                                    tempAlert("Session has been ended!", 3000);
-                                                                    return false;
-                                                                }
-                                                                else
-                                                                {
-                                                                    try
-                                                                    {
-                                                                        if (terminalCode !== '')
-                                                                        {
-                                                                            showLightbox(function()
-                                                                            {
-                                                                                $.ajax(
-                                                                                        {
-                                                                                            url: '../Helper/connector.php',
-                                                                                            type: 'post',
-                                                                                            dataType: 'json',
-                                                                                            data: {fn: function() {
-                                                                                                    return "getUserBaseLogin";
-                                                                                                },
-                                                                                                TerminalCode: function() {
-                                                                                                    return terminalCode;
-                                                                                                }},
-                                                                                            success: function(data)
-                                                                                            {
-                                                                                                if (data.UserMode == '1' || data.UserMode == '3')
-                                                                                                {
-                                                                                                    login = data.UBServiceLogin;
-                                                                                                    if (data.Code == "MM")
-                                                                                                    {
-                                                                                                        terminalPass = data.UBHashedServicePassword;
-                                                                                                    }
-                                                                                                    else
-                                                                                                    {
-                                                                                                        terminalPass = data.UBServicePassword;
-                                                                                                    }
-                                                                                                    currServiceID = data.ServiceID;
-                                                                                                    if (login != '' && terminalPass != '')
-                                                                                                    {
-                                                                                                        window.external.OpenGameClient(currServiceID, login, terminalPass);
-                                                                                                        jQuery.fancybox.close();
-                                                                                                    }
-                                                                                                    else
-                                                                                                    {
-                                                                                                        alert("Please try again.");
-                                                                                                        return false;
-                                                                                                    }
-                                                                                                }
-                                                                                                else
-                                                                                                {
-                                                                                                    $.ajax(
-                                                                                                            {
-                                                                                                                url: '../Helper/connector.php',
-                                                                                                                type: 'post',
-                                                                                                                dataType: 'json',
-                                                                                                                data: {fn: function() {
-                                                                                                                        return "getTerminalBaseLogin";
-                                                                                                                    },
-                                                                                                                    TerminalCode: function() {
-                                                                                                                        return data.TerminalCode;
-                                                                                                                    },
-                                                                                                                    ServiceID: function() {
-                                                                                                                        return data.ServiceID;
-                                                                                                                    }},
-                                                                                                                success: function(data)
-                                                                                                                {
-                                                                                                                    if (data.TerminalCode != '')
-                                                                                                                    {
-                                                                                                                        login = data.TerminalCode;
-                                                                                                                        if (data.Code == "MM")
-                                                                                                                        {
-                                                                                                                            terminalPass = data.HashedServicePassword;
-                                                                                                                        }
-                                                                                                                        else
-                                                                                                                        {
-                                                                                                                            terminalPass = data.ServicePassword;
-                                                                                                                        }
-                                                                                                                        currServiceID = data.ServiceID;
-                                                                                                                        if (login != '' && terminalPass != '')
-                                                                                                                        {
-                                                                                                                            window.external.OpenGameClient(currServiceID, login, terminalPass);
-                                                                                                                            jQuery.fancybox.close();
-                                                                                                                        }
-                                                                                                                        else
-                                                                                                                        {
-                                                                                                                            alert("Please try again.");
-                                                                                                                            return false;
-                                                                                                                        }
-                                                                                                                    }
-                                                                                                                },
-                                                                                                                error: function(XMLHttpRequest, e)
-                                                                                                                {
-                                                                                                                    alert(XMLHttpRequest.responseText);
-                                                                                                                    if (XMLHttpRequest.status == 401)
-                                                                                                                    {
-                                                                                                                        window.location.reload();
-                                                                                                                    }
-                                                                                                                }
-                                                                                                            });
-                                                                                                }
-                                                                                            },
-                                                                                            error: function(XMLHttpRequest, e)
-                                                                                            {
-                                                                                                alert(XMLHttpRequest.responseText);
-                                                                                                if (XMLHttpRequest.status == 401)
-                                                                                                {
-                                                                                                    window.location.reload();
-                                                                                                }
-                                                                                            }
-                                                                                        });
-                                                                            });
-                                                                        }
-                                                                    }
-                                                                    catch (e)
-                                                                    {
-                                                                        alert("Game client not found.");
-                                                                        setTimeout($(function() {
-                                                                            location.reload();
-                                                                        }), 3000);
-                                                                    }
-                                                                }
-                                                            }
-                                                            catch (e)
-                                                            {
-                                                                alert("Parse error");
-                                                                setTimeout($(function() {
-                                                                    location.reload();
-                                                                }), 3000);
-                                                            }
-                                                        },
-                                                        error: function(e)
-                                                        {
-                                                            alert(e.responseText);
-                                                            setTimeout($(function() {
-                                                                location.reload();
-                                                            }), 3000);
-                                                        }
-                                                    });
-                                        }
-                                        else
-                                        {
-                                            try
-                                            {
-                                                window.external.ScreenBlocker(true);
-                                            } catch (e)
-                                            {  //do nothing
-                                            }
-                                            tempAlert("Session has been ended!", 3000);
-                                        }
-                                    },
-                                    error: function(XMLHttpRequest, e)
-                                    {
-                                        alert(XMLHttpRequest.responseText);
-                                        if (XMLHttpRequest.status == 401)
-                                        {
-                                            window.location.reload();
-                                        }
-                                    }
-                                });
-                                return false;
-                            });
                         } catch (e)
                         {
                             alert('There is a problem in activex');
@@ -689,43 +464,28 @@
     </head>
     <body>
         <div id="blackwrapper"></div>
-
-        <!-- page begin -->
-        <div id="page"> 
-            <!-- wrapper begin -->
-            <div class="wrapper"> 
-                <div class="banner"></div> <!-- banner  -->
-
-                <div class="games-logo-container"> 
-
-
-                    <table id="iptable" style="margin-top: 10px;" align="center">
-
-                        <tr>
-                            <td id="tdvv" align="center">
-                                <div id="link-vv" class="link-container">
-                                    <a id='casinovv' ><img id="vvimg" src="../images/viva-lasvegas.png" /></a>
-                                </div>
-                            </td>
-                            <td id="tdmm" align="center">
-                                <div id="link-mm" class="link-container">
-                                    <a id='casinomm' ><img id="mmimg" src="../images/magic-macau.png" /></a>
-                                </div>
-                            </td>
-                            <td id="tdss" align="center">
-                                <div id="link-ss" class="link-container">
-                                    <a id=''><img id="ssimg" src="../images/swinging-singapore.png" /></a>
-                                </div>
-                            </td>                
-                        </tr>
-                    </table>
-                    <div style='margin-bottom: 5px'></div>
-                    <div id="ipfooter" style="margin-top: 30px;"></div>
-                </div> 
-                <div id="footer_logos" class="footer-logos"></div>
-                <div id="system-version" class="sysversion" onClick="window.location.href = window.location.href"></div>
-            </div>  
-        </div>     
+        <a id='casinonew' >
+            <!-- page begin -->
+            <div id="page"> 
+                <!-- wrapper begin -->
+                <div class="wrapper"> 
+                    <!--<div class="banner"></div>  banner  -->
+                    <div class="games-logo-container"> 
+                        <table id="iptable" style="margin-top: 10px;" align="center">
+                            <tr>
+                                <td id="tdnew" align="center">
+					<img id="newimg" src="../images/start-logo.png" />
+                                </td>        
+                            </tr>
+                        </table>
+                        <div style='margin-bottom: 5px'></div>
+                        <div id="ipfooter" style="margin-top: 30px;"></div>
+                    </div> 
+                    <div id="footer_logos" class="footer-logos"></div>
+                    <div id="system-version" class="sysversion" onClick="window.location.href = window.location.href"></div>
+                </div>  
+            </div>    
+        </a>
         <div id="blackOut"></div>
         <div id="blocker"></div>
         <div id="whiteBox"></div>    
