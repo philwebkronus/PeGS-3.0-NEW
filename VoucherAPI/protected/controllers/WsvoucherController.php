@@ -127,11 +127,14 @@ class WsvoucherController extends Controller {
 
                         $checkIfVV = trim(substr($voucherCode, 0, 3));
                         if ($checkIfVV == 'VVC') {
-                            if ($request['serviceid'] == 25) {
+			   // EDITED CCT 12/17/2018 BEGIN
+                           // if ($request['serviceid'] == 25) {
+                            if ($request['serviceid'] == 29) {
+			  //EDITED CCT 12/17/2018 END
                                 $result = $commonController->verifyCoupon($AID, $voucherCode, $source, $trackingid, self::COUPON);
                                 $transMsg = $result['TransMsg'];
                             } else {
-                                $result['TransMsg'] = 'This voucher type can only use to Habanero Terminals.';
+                                $result['TransMsg'] = 'Congratulations! Please use this prize voucher on Habanero terminals.';
                                 $result['ErrorCode'] = 12;
                             }
                         } else {
