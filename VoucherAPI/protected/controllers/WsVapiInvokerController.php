@@ -211,6 +211,10 @@ class WsVapiInvokerController extends Controller{
             curl_setopt( $curl, CURLOPT_RETURNTRANSFER, TRUE );
             // Data+Files to be posted
             curl_setopt($curl, CURLOPT_POSTFIELDS, $postdata);
+	    // CCT ADDED 01/07/2019 BEGIN
+	    // FORCE TLS 1.2
+	    curl_setopt($curl, CURLOPT_SSLVERSION, 6 );
+            // CCT ADDED 01/07/2019 END
             $response = curl_exec( $curl );
 
             $http_status = curl_getinfo( $curl, CURLINFO_HTTP_CODE );
