@@ -14,43 +14,92 @@ $_DBHost = "";
 $_DBName = "";
 $_DBUser = "";
 $_DBPassword = "";
-
 $_SpyderConnTimeout = 3;
 $_SpyderPort = 35000;
 
-/** Do not edit beyond this line **/
+//ADDED JAV 02132019
+$incrementCasinoID = 90; // Do not use for other casinoIDs; Dedicated for Habanero only
 
-$terminaName = $_GET[ "TerminalName" ];
-$commandId = $_GET[ "CommandID" ];
+//for old sapi
 $username = $_GET[ "UserName" ];
 $password = $_GET[ "Password" ];
-$type = $_GET[ "Type" ];
 $casinoId = $_GET[ "CasinoID" ];
 
-if ( !isset( $_GET[ "TerminalName" ] ) ||
-    !isset( $_GET[ "CommandID" ] ) ||
-    !isset( $_GET[ "UserName" ] ) ||
-    !isset( $_GET[ "Password" ] ) ||
-    !isset( $_GET[ "Type" ] ) ||
-    !isset( $_GET[ "CasinoID" ] ) )
+//ADDED JAV 02132019
+if($casinoId == 29 || $casinoId == 25)
 {
-    echo 'Required parameters missing';
-} else {
+  $casinoId = $incrementCasinoID;
+}
+
+/** Do not edit beyond this line **/
+if (!( isset( $_GET[ "TerminalName" ])&&
+    (isset( $_GET[ "CommandID" ] ) )))
+{
+    echo 'TerminalName or CommandID missing';
+} else {    
+    $terminaName = $_GET[ "TerminalName" ];
+    $commandId = $_GET[ "CommandID" ];
     $terminalConnectionInfo = getServerConnectionByTerminal( $terminaName );
 
     if ( $terminalConnectionInfo != null ) {
         $message = null;
-
-        if ( $commandId == "0" ) {
-            $message = "unlock|" . $username . "|" . $password . "|" . $casinoId;
-        } else if ( $commandId == "1" ) {
-            $message = "lock|||";
-        }
-
-        if ( $message != null ) {
-            sendMessage ( $terminalConnectionInfo->server, $_SpyderPort, $terminalConnectionInfo->channelid, $message );
-        } else {
+		$oldmsg = null;
+        if ( $commandId == "0" ) {//UNLOCK will go to lobby reqts: cardnumber
+			$oldmsg =  "unlock|" . $username . "|" . $password . "|" . $casinoId;
+            $info['Command'] = "UNLOCK";
+            $message = json_encode($info);
+        } else if ( $commandId == "1" || $commandId == "9" ) {//LOCK
+			$oldmsg = "lock|||";
+            $info['Command'] = "LOCK";
+            $message = json_encode($info);
+        } else if ( $commandId == "2" ) {
+            $casinoId = $_GET[ "CasinoID" ];
+            $info['Command'] = "RemoveEGMSession";
+            $message = json_encode($info);
+        }else if ( $commandId == "3" ) {
+            $info['Command'] = "RELOAD";
+            $message = json_encode($info);
+        
+        }else if ( $commandId == "4" ) {
+            $info['Command'] = "DISABLEBV";
+            $message = json_encode($info);
+        }else if ( $commandId == "5" ) {
+            $info['Command'] = "ENABLEBV";
+            $message = json_encode($info);
+        }else if ( $commandId == "6" ) {
+            $info['Command'] = "DISABLETP";
+            $message = json_encode($info);
+        }else if ( $commandId == "7" ) {
+            $info['Command'] = "ENABLETP";
+            $message = json_encode($info);
+        }else if ( $commandId == "8" ) {
+            $info['Command'] = "EXITEGM";
+            $message = json_encode($info);
+	}else if ( $commandId == "9" ) {
+            $info['Command'] = "CLOSEGAME";
+            $message = json_encode($info);
+	}else if ( $commandId == "10" ) {
+            $info['Command'] = "ENDSESSION";
+            $message = json_encode($info);
+        }else{
+            $message = null;
             echo 'Invalid command id supplied';
+        }
+        if ( $message != null ) {
+            //echo $message;
+            $server = $terminalConnectionInfo->server;
+            try {
+                if (strpos($server, ':'))
+                {
+                    list($terminalConnectionInfo->server, $_SpyderPort) = explode(":", $server);
+                }
+				else{
+					$message = $oldmsg;
+				}
+            }catch(Exception $ex){
+                
+            }
+            sendMessage ( $terminalConnectionInfo->server, $_SpyderPort, $terminalConnectionInfo->channelid, $message );
         }
     } else {
         echo 'No terminal connection info found';
@@ -114,8 +163,8 @@ function getConnection() {
     global $_DBName;
     global $_DBUser;
     global $_DBPassword;
-
     $dbh = new PDO( "mysql:host=$_DBHost;dbname=$_DBName", $_DBUser, $_DBPassword );
+
     $dbh->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 
     return $dbh;
