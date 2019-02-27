@@ -14,11 +14,13 @@ $.launchGame = function(currServiceID, login, terminalPass, isVIP, HBPath, termi
 
     }
     else {
+
         try {
-            window.external.OpenGameClient(currServiceID, login, terminalPass);
-        }
-        catch (e)
-        {
+            var shell = new ActiveXObject("WScript.Shell");
+            var cred = " -l " + login + " -p " + terminalPass;
+            var path = '"' + HBPath + '"' + cred;
+            shell.Run(path);
+        } catch (e) {
             $.prompt("Game client not found");
         }
 
@@ -27,5 +29,6 @@ $.launchGame = function(currServiceID, login, terminalPass, isVIP, HBPath, termi
     jQuery.fancybox.close();
 
 };
+
 
 
