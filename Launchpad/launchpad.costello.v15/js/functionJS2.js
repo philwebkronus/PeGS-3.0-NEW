@@ -73,7 +73,7 @@ $(document).ready(function() {
                         if (json.Count == 1) {
 
                             ServiceUsername = json.ServiceUsername;
-                            ServicePassword = json.HashedServicePassword;
+                            ServicePassword = json.ServicePassword;
                             isVIP = json.isVIP;
                             ServicePassword = ServicePassword.replace(/\"/g, "");
                             HabaneroPath = json.HabaneroPath;
