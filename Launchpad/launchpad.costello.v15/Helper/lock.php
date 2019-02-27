@@ -90,6 +90,7 @@ if (!empty($function)) {
             } else {
                 $result['ServiceUsername'] = $count['TerminalCode'];
                 $result['HashedServicePassword'] = $count['HashedServicePassword'];
+		$result['ServicePassword'] = $count['ServicePassword'];
             }
 
             if ($serviceID == 28 || $serviceID == 22) {
