@@ -1,0 +1,153 @@
+<?php
+
+/**
+ * For Terminal Based Transaction
+ * Common start session for eBingo on TerminalMonitoring. Stand-alone and Hotkey
+ * Core transaction process for deposit
+ * Date Created 1 25, 18 2:00:24 PM <pre />
+ * @author javida
+ */
+class CommonStartSessionBingo {
+
+    /**
+     * @param int $terminal_id
+     * @param int $site_id
+     * @param string $trans_type
+     * @param int $service_id
+     * @param int $bcf
+     * @param int $initial_deposit
+     * @param int $acctid
+     * @return array 
+     */
+    public function start($terminal_id, $site_id, $trans_type, $paymentType, $service_id, $bcf, $initial_deposit, $acctid, $loyalty_card = '', $voucher_code = '', $trackingid = '', $casinoUsername, $casinoPassword, $casinoHashedPassword, $casinoServiceID = '', $mid = '', $userMode = '', $CPV = '') {
+
+
+        Mirage::loadComponents(array('CasinoApi', 'PCWSAPI.class'));
+        Mirage::loadModels(array('TerminalsModel', 'EgmSessionsModel', 'SiteBalanceModel', 'CommonTransactionsModel',
+            'PendingTerminalTransactionCountModel', 'BankTransactionLogsModel', 'TransactionRequestLogsModel'));
+
+        $casinoApi = new CasinoApi();
+        $terminalsModel = new TerminalsModel();
+        $egmSessionsModel = new EgmSessionsModel();
+        $siteBalance = new SiteBalanceModel();
+        $commonTransactionsModel = new CommonTransactionsModel();
+        $pendingTerminalTransactionCountModel = new PendingTerminalTransactionCountModel();
+        $pcwsapi = new PCWSAPI();
+        $bankTransactionLogs = new BankTransactionLogsModel();
+        $terminalSessionsModel = new TerminalSessionsModel();
+        $transReqLogsModel = new TransactionRequestLogsModel();
+
+        $amount = $initial_deposit;
+        $initial_deposit = 0;
+
+        if ($terminalsModel->isPartnerAlreadyStarted($terminal_id)) {
+            $message = 'Error: ' . $terminalsModel->terminal_code . ' terminal already started';
+            logger($message . ' TerminalID=' . $terminal_id . ' ServiceID=' . $service_id);
+            CasinoApi::throwError($message);
+        }
+
+        $is_terminal_active = $terminalSessionsModel->isSessionActive($terminal_id);
+
+        if ($is_terminal_active === false) {
+            $message = 'Error: Can\'t get status.';
+            logger($message . ' TerminalID=' . $terminal_id . ' ServiceID=' . $service_id);
+            CasinoApi::throwError($message);
+        }
+
+        if ($is_terminal_active != 0) {
+            $message = 'Error: Terminal is already active.';
+            logger($message . ' TerminalID=' . $terminal_id . ' ServiceID=' . $service_id);
+            CasinoApi::throwError($message);
+        }
+
+        if ($terminal_balance != 0) {
+            $message = 'Error: Please inform customer service for manual redemption.';
+            logger($message . ' TerminalID=' . $terminal_id . ' ServiceID=' . $service_id);
+            CasinoApi::throwError($message);
+        }
+
+        if (($bcf - $initial_deposit) < 0) {
+            $message = 'Error: BCF is not enough.';
+            logger($message . ' TerminalID=' . $terminal_id . ' ServiceID=' . $service_id);
+            CasinoApi::throwError($message);
+        }
+
+        $terminal_name = $terminalsModel->getTerminalName($terminal_id);
+
+        $udate = CasinoApi::udate('YmdHisu');
+
+        //check terminal type if Genesis = 1
+        $terminaltype = $terminalsModel->checkTerminalType($terminal_id);
+
+        if ($terminaltype == 1) {
+            //insert egm session
+            $egmsessionsresult = $egmSessionsModel->insert($mid, $terminal_id, $service_id, $_SESSION['accID']);
+
+            if (!$egmsessionsresult) {
+                $message = 'Error: The terminal has an ongoing terminal deposit session.';
+                logger($message . ' TerminalID=' . $terminal_id . ' ServiceID=' . $service_id);
+                CasinoApi::throwError($message);
+            }
+        }
+
+        $checkegmsession = $egmSessionsModel->checkEgmSession($service_id, $mid);
+
+        if (!empty($checkegmsession)) {
+            $message = 'Error: User has an ongoing EGM deposit session.';
+            logger($message . ' TerminalID=' . $terminal_id . ' ServiceID=' . $service_id);
+            CasinoApi::throwError($message);
+        }
+
+        //insert into terminalsessions, throw error if there is existing session 
+        //this terminal / user
+        $trans_summary_max_id = null;
+
+        $is_terminal_exist = $terminalSessionsModel->insert($terminal_id, $service_id, $initial_deposit, $trans_summary_max_id, $loyalty_card, $mid, $userMode, $casinoUsername, $casinoPassword, $casinoHashedPassword);
+
+        if (!$is_terminal_exist) {
+            $message = 'Error: Terminal / User has an existing session.';
+            logger($message . ' TerminalID=' . $terminal_id . ' ServiceID=' . $service_id);
+            CasinoApi::throwError($message);
+        }
+
+        //insert into transaction request log
+        $bankTransactionStatus = null;
+        $trans_req_log_last_id = $transReqLogsModel->insert($udate, $initial_deposit, 'D', $paymentType, $terminal_id, $site_id, $service_id, $loyalty_card, $mid, $userMode, $trackingid, $voucher_code, $transaction_id);
+
+        if (!$trans_req_log_last_id) {
+            $pendingTerminalTransactionCountModel->updatePendingTerminalCount($terminal_id);
+            $message = 'There was a pending transaction for this user / terminal.';
+            $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
+            $egmSessionsModel->deleteEgmSessionById($terminal_id);
+            logger($message . ' TerminalID=' . $terminal_id . ' ServiceID=' . $service_id);
+            CasinoApi::throwError($message);
+        }
+
+        $transstatus = 1;
+        $trans_summary_id = $commonTransactionsModel->startTransaction($site_id, $terminal_id, $initial_deposit, $acctid, $udate, 'D', $paymentType, $service_id, $transstatus, $loyalty_card, $mid);
+
+        $apiresult = "Success eBingo";
+
+        $transrefid = null;
+        $transReqLogsModel->update($trans_req_log_last_id, $apiresult, $transstatus, $transrefid, $terminal_id);
+
+        $newbal = $bcf - $initial_deposit;
+        $siteBalance->updateBcf($newbal, $site_id, 'Start session'); //update bcf
+
+        if (!$trans_summary_id) {
+            $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
+            $egmSessionsModel->deleteEgmSessionById($terminal_id);
+            $message = 'Error: Failed to insert records in transaction tables.';
+            logger($message . ' TerminalID=' . $terminal_id . ' ServiceID=' . $service_id);
+            CasinoApi::throwError($message);
+        }
+
+        $message = 'New player session started.The player initial playing balance is PhP 0.00';
+
+        return array('message' => $message, 'newbcf' => toMoney($newbal), 'initial_deposit' => toMoney(0),
+            'udate' => $udate, 'terminal_name' => $terminal_name, 'trans_ref_id' => $transrefid, 'trans_summary_id' => $trans_summary_id["trans_summary_max_id"],
+            'trans_details_id' => $trans_summary_id["transdetails_max_id"]);
+    }
+
+}
+
