@@ -182,7 +182,7 @@ class RealtimeGamingWCFPlayerAPI
 	            'ZipCode' => $zip
 	        ),
         	'DownloadID' => $downloadID,
-	        'HashedPassword' => $hashedPassword,
+	        'HashedPassword' => '', //$hashedPassword,
         	'Login' => $login,
 	        'Password' => $password,
 	        'PlayerCurrencyID' => 'PHP'
