@@ -263,10 +263,10 @@ class TerminalSessionsModel extends MI_Model
         return $result1['cnt'];
     }
     
-    public function getEwalletTerminal($siteID,$serviceID)
+    public function getEwalletTerminal($siteID)
     {
-        $sql = "SELECT t.TerminalID, t.TerminalCode, ts.LoyaltyCardNumber FROM terminalsessions ts INNER JOIN membership.members m ON ts.MID=m.MID INNER JOIN terminals t ON t.TerminalID=ts.TerminalID WHERE ts.ServiceID=:serviceID AND m.IsEwallet=1 AND t.SiteID=:siteID ORDER BY t.TerminalCode";
-        $param = array(':siteID'=>$siteID,':serviceID'=>$serviceID);
+        $sql = "SELECT t.TerminalID, t.TerminalCode, ts.LoyaltyCardNumber FROM terminalsessions ts INNER JOIN membership.members m ON ts.MID=m.MID INNER JOIN terminals t ON t.TerminalID=ts.TerminalID WHERE ts.Usermode=1 AND m.IsEwallet=1 AND t.SiteID=:siteID ORDER BY t.TerminalCode";
+        $param = array(':siteID'=>$siteID);
         $this->exec($sql, $param);
         $result =  $this->findAll();
         return $result;
@@ -301,6 +301,24 @@ class TerminalSessionsModel extends MI_Model
         $this->exec($sql, $param);
         $result = $this->find();
         return $result['LastBalance'];
+    }
+
+    public function updateActiveServiceIDByTerminalID($terminal_id, $service_id, $status) {
+        $sql = 'UPDATE terminalsessions SET ActiveServiceStatus =  :active_service_status, ActiveLastTransdateUpd = NOW(6) WHERE TerminalID = :terminal_id AND ServiceID = :service_id';
+        
+        $param = array(
+            ':service_id' => $service_id,
+            ':active_service_status' => $status,
+            ':terminal_id' => $terminal_id);
+        return $this->exec($sql, $param);
+    }
+
+    public function getActiveServiceStatusByTerminalID($terminal_id) {
+        $sql = "SELECT ActiveServiceStatus FROM terminalsessions WHERE TerminalID = :terminalid";
+        $param = array(":terminalid" => $terminal_id);
+        $this->exec($sql, $param);
+        $result = $this->find();
+        return $result['ActiveServiceStatus'];
     }
 
 }

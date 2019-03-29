@@ -1537,6 +1537,7 @@ class FrontendController extends MI_Controller {
             $this->throwError($message);
         }
 
+
         /*
          * Added John Aaron Vida
          * 12/19/2017
@@ -1600,6 +1601,16 @@ class FrontendController extends MI_Controller {
         } else {
             $isewallet == 0;
         }
+
+        $countSession = $terminalSessionsModel->checkCardSession($loyaltyCardNo);
+
+        if ($countSession > 0) {
+            $message = 'Error: Only one active session is allowed for this card.';
+            logger($message . ' TerminalID=' . $terminal_id . ' ServiceID=' . $service_id);
+            CasinoApi::throwError($message);
+        }
+
+
 
         if ($isewallet > 0 && $ref_service['UserMode'] == 1) {
             if ($terminaltype != 2) {

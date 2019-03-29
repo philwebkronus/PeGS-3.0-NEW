@@ -22,7 +22,7 @@ class CommonUBStartSessionWithdrawAll {
     public function start($terminal_id, $site_id, $trans_type, $paymentType, $service_id, $bcf, $initial_deposit, $acctid, $loyalty_card = '', $voucher_code = '', $trackingid = '', $casinoUsername = '', $casinoPassword = '', $casinoHashedPassword = '', $casinoServiceID = '', $mid = '', $userMode = '', $traceNumber = '', $referenceNumber = '', $locatorname = '', $CPV = '', $isVIP) {
         Mirage::loadComponents(array('CasinoApiUB', 'PCWSAPI.class'));
         Mirage::loadModels(array('TerminalsModel', 'EgmSessionsModel', 'SiteBalanceModel', 'CommonTransactionsModel',
-            'PendingTerminalTransactionCountModel', 'BankTransactionLogsModel', 'RefServicesModel'));
+            'PendingTerminalTransactionCountModel', 'BankTransactionLogsModel', 'RefServicesModel', 'MembersModel'));
 
         $casinoApi = new CasinoApiUB();
         $terminalsModel = new TerminalsModel();
@@ -32,6 +32,7 @@ class CommonUBStartSessionWithdrawAll {
         $pendingTerminalTransactionCountModel = new PendingTerminalTransactionCountModel();
         $bankTransactionLogs = new BankTransactionLogsModel();
         $refServicesModel = new RefServicesModel();
+        $membersModel = new MembersModel();
 
         if ($terminalsModel->isPartnerAlreadyStarted($terminal_id)) {
             $message = 'Error: ' . $terminalsModel->terminal_code . ' terminal already started';
@@ -61,6 +62,7 @@ class CommonUBStartSessionWithdrawAll {
             logger($message . ' TerminalID=' . $terminal_id . ' ServiceID=' . $service_id);
             CasinoApi::throwError($message);
         }
+
 
         if ($terminal_balance != 0) {
             $is_card_has_session = $terminalSessionsModel->checkSession($loyalty_card, $service_id);
@@ -285,12 +287,26 @@ class CommonUBStartSessionWithdrawAll {
                 CasinoApi::throwError($message);
             }
 
+            $updateActiveServiceID = $terminalSessionsModel->updateActiveServiceIDByTerminalID($terminal_id, $service_id, 1);
+
+            if (!$updateActiveServiceID) {
+                $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
+                $egmSessionsModel->deleteEgmSessionById($terminal_id);
+                $message = 'Error: Failed to update records in terminal sessions tables.';
+                logger($message . ' TerminalID=' . $terminal_id . ' ServiceID=' . $service_id);
+                CasinoApi::throwError($message);
+            }
+
+            $membersModel->updateMemberOptionID1ByMID($service_id, $mid);
+
             $message = 'New player session started.The player initial playing balance is PhP ' . toMoney($initial_deposit);
 
             return array('message' => $message, 'newbcf' => toMoney($newbal), 'initial_deposit' => toMoney($initial_deposit),
                 'udate' => $udate, 'terminal_name' => $terminal_name, 'trans_ref_id' => $transrefid, 'trans_summary_id' => $trans_summary_id["trans_summary_max_id"],
                 'trans_details_id' => $trans_summary_id["transdetails_max_id"]);
         } else {
+            
+            $membersModel->updateMemberOptionID1ByMID($service_id, $mid);
 
             $transReqLogsModel->update($trans_req_log_last_id, $apiresult, 2, null, $terminal_id);
             $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
@@ -302,3 +318,4 @@ class CommonUBStartSessionWithdrawAll {
     }
 
 }
+

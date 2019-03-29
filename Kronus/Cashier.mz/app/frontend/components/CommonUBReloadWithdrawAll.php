@@ -109,8 +109,7 @@ class CommonUBReloadWithdrawAll {
         $tracking1 = $trans_req_log_last_id;
         $tracking2 = 'R';
         $tracking3 = $terminal_id;
- //       $tracking4 = $site_id;
-		$tracking4 = str_replace("ICSA-","",str_replace("VIP","",$terminal_name));
+            $tracking4 = str_replace("ICSA-","",str_replace("VIP","",$terminal_name));
         $event_id = Mirage::app()->param['mgcapi_event_id'][1]; //Event ID for Reload
         // check if casino's reply is busy, added 05/17/12
         if (!(bool) $casinoApiHandler->IsAPIServerOK()) {
@@ -119,6 +118,29 @@ class CommonUBReloadWithdrawAll {
             logger($message . ' TerminalID=' . $terminal_id . ' ServiceID=' . $service_id);
             CasinoApiUB::throwError($message);
         }
+
+        $ActiveServiceStatus = (int) $terminalSessionsModel->getActiveServiceStatusByTerminalID($terminal_id);
+
+        if ($ActiveServiceStatus > 1) {
+            $transReqLogsModel->update($trans_req_log_last_id, 'false', 2, null, $terminal_id);
+            $message = 'Reload is currently not allowed at the moment. Please try again later';
+            logger($message . ' TerminalID=' . $terminal_id . ' ServiceID=' . $service_id);
+            CasinoApi::throwError($message);
+        }
+
+        if ($ActiveServiceStatus == 1) {
+            $updateActiveServiceID = $terminalSessionsModel->updateActiveServiceIDByTerminalID($terminal_id, $service_id, 0);
+
+            if (!$updateActiveServiceID) {
+                $transReqLogsModel->update($trans_req_log_last_id, 'false', 2, null, $terminal_id);
+                $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
+                $egmSessionsModel->deleteEgmSessionById($terminal_id);
+                $message = 'Error: Failed to update records in terminal sessions tables.';
+                logger($message . ' TerminalID=' . $terminal_id . ' ServiceID=' . $service_id);
+                CasinoApi::throwError($message);
+            }
+        }
+
 
         /*         * *********************** RELOAD ************************************ */
         $resultdeposit = $casinoApiHandler->Deposit($casinoUsername, $amount, $tracking1, $tracking2, $tracking3, $tracking4, $casinoPassword, $event_id, $transaction_id, $locatorname);
@@ -172,7 +194,6 @@ class CommonUBReloadWithdrawAll {
 
             //check Deposit API Result
             if (isset($resultdeposit['TransactionInfo'])) {
-				$transrefid = '';
                 //RTG / Magic Macau
                 if (isset($resultdeposit['TransactionInfo']['DepositGenericResult'])) {
                     $transrefid = $resultdeposit['TransactionInfo']['DepositGenericResult']['transactionID'];
@@ -225,6 +246,8 @@ class CommonUBReloadWithdrawAll {
                 }
             }
 
+            $updateActiveServiceID = $terminalSessionsModel->updateActiveServiceIDByTerminalID($terminal_id, $service_id, 1);
+
             $message = 'The amount of PhP ' . toMoney($amount) . ' is successfully loaded.';
 
             $new_terminal_balance = toInt($terminal_balance) + toInt($amount);
@@ -233,11 +256,13 @@ class CommonUBReloadWithdrawAll {
                 'terminal_balance' => toMoney($new_terminal_balance), 'trans_summary_id' => $trans_summary_id, 'udate' => $udate,
                 'trans_ref_id' => $transrefid, 'terminal_name' => $terminal_name, 'trans_details_id' => $isupdated);
         } else {
+            $updateActiveServiceID = $terminalSessionsModel->updateActiveServiceIDByTerminalID($terminal_id, $service_id, 1);
+
             $transReqLogsModel->update($trans_req_log_last_id, $apiresult, 2, null, $terminal_id);
             $message = 'Error: Request denied. Please try again.';
             logger($message . ' TerminalID=' . $terminal_id . ' ServiceID=' . $service_id);
             CasinoApiUB::throwError($message);
         }
     }
-
 }
+
