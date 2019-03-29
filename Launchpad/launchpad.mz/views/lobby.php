@@ -35,6 +35,7 @@
 
         <link rel="shortcut icon" href="http://pj.pagcoregames.com/favicon.ico" type="image/x-icon" />
         <title>Screen Saver</title>
+        <link rel="stylesheet" type="text/css" href="../css/menu.css" media="screen, projection" />
 
         <script type="text/javascript">
             try
@@ -53,34 +54,59 @@
                 var IsDetectTerminalType = '<?php echo LPConfig::app()->params["isDetectTerminalType"]; ?>';
                 var IsALLeSAFE = '<?php echo LPConfig::app()->params["IsALLeSAFE"]; ?>';
                 var serviceid = '';
+                var vvserviceid = '';
+                var mmserviceid = '';
                 var sysversion = '<?php echo LPConfig::app()->params["sysversionname"]; ?>';
 
-                $.checkSpyderConnection = function()
-                {
-                    $("#tdnew").hide();
+                var LasVegasHome = '<?php echo json_encode(LPConfig::app()->params["vvhome"]); ?>';
+                var Game1 = '<?php echo json_encode(LPConfig::app()->params["game1"]); ?>';
+                var Game2 = '<?php echo json_encode(LPConfig::app()->params["game2"]); ?>';
+                var Game3 = '<?php echo json_encode(LPConfig::app()->params["game3"]); ?>';
+                var Game4 = '<?php echo json_encode(LPConfig::app()->params["game4"]); ?>';
+                var Game5 = '<?php echo json_encode(LPConfig::app()->params["game5"]); ?>';
+                var Game6 = '<?php echo json_encode(LPConfig::app()->params["game6"]); ?>';
+                var Game7 = '<?php echo json_encode(LPConfig::app()->params["game7"]); ?>';
+                var Game8 = '<?php echo json_encode(LPConfig::app()->params["game8"]); ?>';
+                var Game9 = '<?php echo json_encode(LPConfig::app()->params["game9"]); ?>';
+                var Game10 = '<?php echo json_encode(LPConfig::app()->params["game10"]); ?>';
+                var Game11 = '<?php echo json_encode(LPConfig::app()->params["game11"]); ?>';
+                var Game12 = '<?php echo json_encode(LPConfig::app()->params["game12"]); ?>';
+                var Game13 = '<?php echo json_encode(LPConfig::app()->params["game13"]); ?>';
+                var Game14 = '<?php echo json_encode(LPConfig::app()->params["game14"]); ?>';
+                var Game15 = '<?php echo json_encode(LPConfig::app()->params["game15"]); ?>';
 
-                    $.ajax(
-                            {
-                                url: '../Helper/connector.php',
-                                type: 'post',
-                                dataType: 'json',
-                                async: false,
-                                data: {fn: function() {
-                                        return 'checkSpyderConnection';
-                                    },
-                                    TerminalCode: function() {
-                                        return terminalCode;
-                                    }},
-                                success: function(data)
-                                {
-                                    if (data['state'] != "Connected")
-                                    {
-                                        alert("Please Activate Spyder Connection on this Terminal!");
-                                        window.open("index.php", '_self');
-                                    }
-                                }
-                            });
-                };
+                $("#tdvv").hide();
+                $("#tdmm").hide();
+                $("#tdvv").css("display", "none");
+                $("#tdmm").css("display", "none");
+
+                /*               
+                 $.checkSpyderConnection = function()
+                 {
+                 
+                 $.ajax(
+                 {
+                 url: '../Helper/connector.php',
+                 type: 'post',
+                 dataType: 'json',
+                 async: false,
+                 data: {fn: function() {
+                 return 'checkSpyderConnection';
+                 },
+                 TerminalCode: function() {
+                 return terminalCode;
+                 }},
+                 success: function(data)
+                 {
+                 if (data['state'] != "Connected")
+                 {
+                 alert("Please Activate Spyder Connection on this Terminal!");
+                 window.open("index.php", '_self');
+                 }
+                 }
+                 });
+                 };
+                 */
 
                 $.checkTerminalType = function()
                 {
@@ -220,7 +246,10 @@
                 {
                     if (bool)
                     {
-                        $("#tdnew").hide();
+
+                        $("#tdvv").hide();
+                        $("#tdmm").hide();
+
                         $("#copyright1").hide();
                         $("#copyright2").hide();
                         $("#contentt").hide();
@@ -231,24 +260,53 @@
                         $("#lobby2footer").html("");
                         $("#ipfooter").html($("#getfooter").html());
                         $("#copyright2").show();
-                        $("#tdnew").css("display", "block");
+                        /* CCT BEGIN added */
+                        $("#tdvv").css("display", "block");
 
-                        $("#vvnew").css(
+                        $("#vvimg").css(
                                 {
-                                    "width": "700px",
-                                    "height": "250px",
+                                    /*"width":lobby2imgW+"px",*/
+                                    /*"height":lobby2imgH+"px"*/
+                                    "width": "266px",
+                                    "height": "266px",
                                     "list-style-type": "none",
-                                    "background-size": "100%"
-
-                                });
-                        $("#link-new").css(
-                                {
-                                    "width": "700px",
-                                    "height": "250px",
-                                    "list-style-type": "none",
-                                    "background-size": "100%"
+                                    "background-size": "100%",
+                                    /*"padding": "20px",
+                                     "border": "2px solid transparent",
+                                     "border-radius": "50px",*/
                                 });
 
+                        $("#tdmm").css("display", "block");
+                        /*$("#link-mm").css("margin-right","50px");*/
+                        /*$("#mmimg").css("margin-right","50px");*/
+
+                        $("#mmimg").css(
+                                {
+                                    /*"width":lobby2imgW+"px",*/
+                                    /*"height":lobby2imgH+"px"*/
+                                    "width": "266px",
+                                    "height": "266px",
+                                    "list-style-type": "none",
+                                    "background-size": "100%",
+                                    /*"padding": "20px",
+                                     "border": "2px solid transparent",
+                                     "border-radius": "50px",*/
+                                });
+
+                        /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
+                        $("#games-holder").css("display", "block");
+                        $("#games").css(
+                                {
+                                    /*"width":lobby2imgW+"px",*/
+                                    /*"height":lobby2imgH+"px"*/
+                                    "width": "126",
+                                    "height": "135",
+                                    "list-style-type": "none",
+                                    "background-size": "100%",
+                                    /*"padding": "20px",
+                                     "border": "2px solid transparent",
+                                     "border-radius": "50px",*/
+                                });
                         $.ajax(
                                 {
                                     url: '../Helper/connector.php',
@@ -262,7 +320,32 @@
                                         }},
                                     success: function(data)
                                     {
-                                        $("#tdnew").show();
+                                        var array = data.split(", ");
+
+                                        for (i = 0; i < array.length; i++) {
+                                            if (array[i] === '22' || array[i] === '28') {
+                                                mmserviceid = array[i];
+
+                                                $("#tdvv2").show();
+                                                $("#tdmm2").show();
+                                                $("#tdss2").show();
+                                                $("#tdvv2").css("display", "block");
+                                                $("#tdss2").css("display", "block");
+                                                $("#tdmm2").css("display", "block");
+                                            }
+
+                                            if (array[i] === '25' || array[i] === '29') {
+                                                vvserviceid = array[i];
+
+                                                $("#tdvv").show();
+                                                $("#tdmm").show();
+                                                $("#tdss").show();
+                                                $("#tdvv").css("display", "block");
+                                                $("#tdss").css("display", "block");
+                                                $("#tdmm").css("display", "block");
+
+                                            }
+                                        }
 
                                     },
                                     error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -387,7 +470,6 @@
                 {
                     $('#system-version').html(sysversion);
                     localStorage.clear();
-                    $.checkSpyderConnection();
                     $.checkTerminalType();
                     $.getTerminalUserMode();
                     $.countServices();
@@ -441,51 +523,375 @@
                                 alert("Please setup the registry");
                                 return false;
                             }
+
+                            $('#casino0').live('click', function()
+                            {
+                                var currServiceID = '';
+                                $.ajax({
+                                    url: '../Helper/connector.php',
+                                    type: 'post',
+                                    dataType: 'json',
+                                    data: {fn: function() {
+                                            return "getServiceID";
+                                        },
+                                        TerminalCode: function() {
+                                            return terminalCode;
+                                        }},
+                                    success: function(data)
+                                    {
+                                        currServiceID = data;
+                                        if (currServiceID)
+                                        {
+                                            var url = '../Helper/connector.php';
+                                            $.ajax(
+                                                    {
+                                                        url: url,
+                                                        type: 'post',
+                                                        dataType: 'json',
+                                                        data: {fn: function() {
+                                                                return "casinoServiceClick";
+                                                            }},
+                                                        success: function(data)
+                                                        {
+                                                            var currentbal = data.currentbal;
+                                                            try
+                                                            {
+                                                                if (data.html == 'not ok')
+                                                                {
+                                                                    try
+                                                                    {
+                                                                        window.external.ScreenBlocker(true);
+                                                                    }
+                                                                    catch (e)
+                                                                    { //do nothing
+                                                                    }
+                                                                    tempAlert("Session has been ended!", 3000);
+                                                                    return false;
+                                                                }
+                                                                else
+                                                                {
+                                                                    try
+                                                                    {
+                                                                        if (terminalCode !== '')
+                                                                        {
+                                                                            showLightbox(function()
+                                                                            {
+                                                                                $.ajax(
+                                                                                        {
+                                                                                            url: '../Helper/connector.php',
+                                                                                            type: 'post',
+                                                                                            dataType: 'json',
+                                                                                            data: {fn: function() {
+                                                                                                    return "getUserBaseLogin";
+                                                                                                },
+                                                                                                TerminalCode: function() {
+                                                                                                    return terminalCode;
+                                                                                                }},
+                                                                                            success: function(data)
+                                                                                            {
+
+                                                                                                if (data.UserMode == '1' || data.UserMode == '3')
+                                                                                                {
+                                                                                                    login = data.UBServiceLogin;
+                                                                                                    if (data.Code == "MM")
+                                                                                                    {
+                                                                                                        terminalPass = data.UBHashedServicePassword;
+                                                                                                    }
+                                                                                                    else
+                                                                                                    {
+                                                                                                        terminalPass = data.UBServicePassword;
+                                                                                                    }
+                                                                                                    currServiceID = data.ServiceID;
+                                                                                                    if (login != '' && terminalPass != '')
+                                                                                                    {
+                                                                                                        window.external.OpenGameClient(currServiceID, login, terminalPass);
+                                                                                                        jQuery.fancybox.close();
+                                                                                                    }
+                                                                                                    else
+                                                                                                    {
+                                                                                                        alert("Please try again.");
+                                                                                                        return false;
+                                                                                                    }
+                                                                                                }
+                                                                                                else
+                                                                                                {
+                                                                                                    $.ajax(
+                                                                                                            {
+                                                                                                                url: '../Helper/connector.php',
+                                                                                                                type: 'post',
+                                                                                                                dataType: 'json',
+                                                                                                                data: {fn: function() {
+                                                                                                                        return "getTerminalBaseLogin";
+                                                                                                                    },
+                                                                                                                    TerminalCode: function() {
+                                                                                                                        return data.TerminalCode;
+                                                                                                                    },
+                                                                                                                    ServiceID: function() {
+                                                                                                                        return data.ServiceID;
+                                                                                                                    }},
+                                                                                                                success: function(data)
+                                                                                                                {
+                                                                                                                    if (data.TerminalCode != '')
+                                                                                                                    {
+                                                                                                                        login = data.TerminalCode;
+                                                                                                                        if (data.Code == "MM")
+                                                                                                                        {
+                                                                                                                            terminalPass = data.HashedServicePassword;
+                                                                                                                        }
+                                                                                                                        else
+                                                                                                                        {
+                                                                                                                            terminalPass = data.ServicePassword;
+                                                                                                                        }
+                                                                                                                        currServiceID = data.ServiceID;
+                                                                                                                        if (login != '' && terminalPass != '')
+                                                                                                                        {
+                                                                                                                            window.external.OpenGameClient(currServiceID, login, terminalPass);
+                                                                                                                            jQuery.fancybox.close();
+                                                                                                                        }
+                                                                                                                        else
+                                                                                                                        {
+                                                                                                                            alert("Please try again.");
+                                                                                                                            return false;
+                                                                                                                        }
+                                                                                                                    }
+                                                                                                                },
+                                                                                                                error: function(XMLHttpRequest, e)
+                                                                                                                {
+                                                                                                                    alert(XMLHttpRequest.responseText);
+                                                                                                                    if (XMLHttpRequest.status == 401)
+                                                                                                                    {
+                                                                                                                        window.location.reload();
+                                                                                                                    }
+                                                                                                                }
+                                                                                                            });
+                                                                                                }
+                                                                                            },
+                                                                                            error: function(XMLHttpRequest, e)
+                                                                                            {
+                                                                                                alert(XMLHttpRequest.responseText);
+                                                                                                if (XMLHttpRequest.status == 401)
+                                                                                                {
+                                                                                                    window.location.reload();
+                                                                                                }
+                                                                                            }
+                                                                                        });
+                                                                            });
+                                                                        }
+                                                                    }
+                                                                    catch (e)
+                                                                    {
+                                                                        alert("Game client not found.");
+                                                                        setTimeout($(function() {
+                                                                            location.reload();
+                                                                        }), 3000);
+                                                                    }
+                                                                }
+                                                            }
+                                                            catch (e)
+                                                            {
+                                                                alert("Parse error");
+                                                                setTimeout($(function() {
+                                                                    location.reload();
+                                                                }), 3000);
+                                                            }
+                                                        },
+                                                        error: function(e)
+                                                        {
+                                                            alert(e.responseText);
+                                                            setTimeout($(function() {
+                                                                location.reload();
+                                                            }), 3000);
+                                                        }
+                                                    });
+                                        }
+                                        else
+                                        {
+                                            try
+                                            {
+                                                window.external.ScreenBlocker(true);
+                                            } catch (e)
+                                            {  //do nothing
+                                            }
+                                            tempAlert("Session has been ended!", 3000);
+                                        }
+                                    },
+                                    error: function(XMLHttpRequest, e)
+                                    {
+                                        alert(XMLHttpRequest.responseText);
+                                        if (XMLHttpRequest.status == 401)
+                                        {
+                                            window.location.reload();
+                                        }
+                                    }
+                                });
+                                return false;
+                            });
                         } catch (e)
                         {
-                            alert('There is a problem in activex');
-                            window.open("index.php", '_self');
+//                            alert('There is a problem in activex');
+//                            window.open("index.php", '_self');
                         }
                     } catch (e)
                     {
-                        alert("Access Denied! Unauthorized browser.");
-                        //window.close();
-                        window.open("index.php", '_self');
+//                        alert("Access Denied! Unauthorized browser.");
+//                        //window.close();
+//                        window.open("index.php", '_self');
 
                     }
                 });
             }
             catch (e)
             {
-                alert('There is a problem in activex');
-                window.open("index.php", '_self');
+//                alert('There is a problem in activex');
+//                window.open("index.php", '_self');
+            }
+        </script>
+        <script type="text/javascript">
+            function toggle_visibility(id) {
+
+                var e = document.getElementById(id);
+
+                var pgames = document.getElementById('iptable pgames');
+                var ngames = document.getElementById('iptable ngames');
+                var fgames = document.getElementById('iptable fgames');
+
+                var pgamesLink = document.getElementById('popular-games-link');
+                var ngamesLink = document.getElementById('new-games-link');
+                var fgamesLink = document.getElementById('featured-games-link');
+
+                if (id == 'iptable pgames') {
+                    e.style.display = 'block';
+                    ngames.style.display = 'none';
+                    fgames.style.display = 'none';
+
+                    pgamesLink.className = pgamesLink.className + ' active';
+                    ngamesLink.className = ngamesLink.className.replace(/(?:^|\s)active(?!\S)/g, '');
+                    fgamesLink.className = fgames.className.replace(/(?:^|\s)active(?!\S)/g, '');
+                }
+                else if (id == 'iptable ngames') {
+                    e.style.display = 'block';
+                    pgames.style.display = 'none';
+                    fgames.style.display = 'none';
+
+                    ngamesLink.className = ngamesLink.className + ' active';
+                    pgamesLink.className = pgamesLink.className.replace(/(?:^|\s)active(?!\S)/g, '');
+                    fgamesLink.className = fgames.className.replace(/(?:^|\s)active(?!\S)/g, '');
+                }
+                else {
+                    e.style.display = 'block';
+                    pgames.style.display = 'none';
+                    ngames.style.display = 'none';
+
+                    fgamesLink.className = fgamesLink.className + ' active';
+                    ngamesLink.className = ngamesLink.className.replace(/(?:^|\s)active(?!\S)/g, '');
+                    pgamesLink.className = pgamesLink.className.replace(/(?:^|\s)active(?!\S)/g, '');
+                }
+
             }
         </script>
     </head>
     <body>
         <div id="blackwrapper"></div>
-        <a id='casinonew' >
-            <!-- page begin -->
-            <div id="page"> 
-                <!-- wrapper begin -->
-                <div class="wrapper"> 
-                    <!--<div class="banner"></div>  banner  -->
-                    <div class="games-logo-container"> 
-                        <table id="iptable" style="margin-top: 10px;" align="center">
-                            <tr>
-                                <td id="tdnew" align="center">
-					<img id="newimg" src="../images/start-logo.png" />
-                                </td>        
-                            </tr>
-                        </table>
-                        <div style='margin-bottom: 5px'></div>
-                        <div id="ipfooter" style="margin-top: 30px;"></div>
-                    </div> 
-                    <div id="footer_logos" class="footer-logos"></div>
-                    <div id="system-version" class="sysversion" onClick="window.location.href = window.location.href"></div>
-                </div>  
-            </div>    
-        </a>
+
+        <!-- page begin -->
+        <div id="page"> 
+            <!-- wrapper begin -->
+            <div class="wrapper"> 
+                <!-- eGames Logo  -->
+                <div class="banner"></div>
+
+                <div class="games-logo-container"> 
+
+                    <!-- Magic Macau && Viva Las Vegas  -->
+                    <table id="iptable" style="margin-top: 35px;" align="center">
+                        <tr>
+                            <td id="tdvv" align="center" style="padding: 17px;">
+                                <a id='casinovv' ><img id="vvimg" src="../images/viva-lasvegas.png" /></a>
+                            </td>
+                            <td id="tdmm" align="center" style="padding: 17px;">
+                                <a id='casinomm' ><img id="mmimg" src="../images/magic-macau.png" /></a>
+                            </td>    
+                        </tr>
+                    </table>
+
+                    <!-- NAVIGATION BAR --->
+                    <div id="moveCenter" style="margin-top: 10px;">
+                        <ul class="menu">
+                            <li class="featured-games" onclick="toggle_visibility('iptable fgames');"><a id ="featured-games-link" href="#"></a></li>
+                            <li class="new-games" onclick="toggle_visibility('iptable ngames');"><a id ="new-games-link" href="#"></a></li>
+                            <li class="popular-games" onclick="toggle_visibility('iptable pgames');"><a class="active" id="popular-games-link" href="#"></a></li>
+                        </ul>
+                    </div>
+
+                    <!-- NAVIGATION GAMES --->
+                    <table id="iptable pgames" style="margin-top: 10px; width : 500px;" align="center">
+                        <tr>
+                            <td id="games-holder" align="center" style="padding: 9px;">
+                                <a id='casinovvgame1' ><img id="games" src="../images/image-1.png" /></a>
+                            </td>
+                            <td id="games-holder" align="center" style="padding: 9px;">
+                                <a id='casinovvgame2' ><img id="games" src="../images/image-2.png" /></a>
+                            </td>    
+                            <td id="games-holder" align="center" style="padding: 9px;">
+                                <a id='casinovvgame3' ><img id="games" src="../images/image-3.png" /></a>
+                            </td> 
+                            <td id="games-holder" align="center" style="padding: 9px;">
+                                <a id='casinovvgame4' ><img id="games" src="../images/image-4.png" /></a>
+                            </td>
+                            <td id="games-holder" align="center" style="padding: 9px;">
+                                <a id='casinovvgame5' ><img id="games" src="../images/image-5.png" /></a>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- NEW GAMES --->
+                    <table id="iptable ngames" style="margin-top: 10px; display: none;" align="center">
+                        <tr>
+                            <td id="games-holder" align="center" style="padding: 9px;">
+                                <a id='casinovvgame6' ><img id="games" src="../images/image-6.png" /></a>
+                            </td>
+                            <td id="games-holder" align="center" style="padding: 9px;">
+                                <a id='casinovvgame7' ><img id="games" src="../images/image-7.png" /></a>
+                            </td>    
+                            <td id="games-holder" align="center" style="padding: 9px;">
+                                <a id='casinovvgame8' ><img id="games" src="../images/image-8.png" /></a>
+                            </td> 
+                            <td id="games-holder" align="center" style="padding: 9px;">
+                                <a id='casinovvgame9' ><img id="games" src="../images/image-9.png" /></a>
+                            </td>                             
+                            <td id="games-holder" align="center" style="padding: 9px;">
+                                <a id='casinovvgame10' ><img id="games" src="../images/image-10.png" /></a>
+                            </td> 
+                        </tr>
+                    </table>
+
+                    <!-- FEATURED GAMES --->
+                    <table id="iptable fgames" style="margin-top: 10px; display: none;" align="center">
+                        <tr>
+                            <td id="games-holder" align="center" style="padding: 9px;">
+                                <a id='casinovvgame11' ><img id="games" src="../images/image-11.png" /></a>
+                            </td>
+                            <td id="games-holder" align="center" style="padding: 9px;">
+                                <a id='casinovvgame12' ><img id="games" src="../images/image-12.png" /></a>
+                            </td>    
+                            <td id="games-holder" align="center" style="padding: 9px;">
+                                <a id='casinovvgame13' ><img id="games" src="../images/image-13.png" /></a>
+                            </td> 
+                            <td id="games-holder" align="center" style="padding: 9px;">
+                                <a id='casinovvgame14' ><img id="games" src="../images/image-14.png" /></a>
+                            </td>                             
+                            <td id="games-holder" align="center" style="padding: 9px;">
+                                <a id='casinovvgame15' ><img id="games" src="../images/image-15.png" /></a>
+                            </td> 
+                        </tr>
+                    </table>
+                    <div style='margin-bottom: 5px'></div>
+                    <div id="ipfooter" style="margin-top: 30px;"></div>
+                </div> 
+                <div id="footer_logos" class="footer-logos"></div>
+                <div id="system-version" class="sysversion" onClick="window.location.reload()"></div>
+            </div>  
+        </div>     
         <div id="blackOut"></div>
         <div id="blocker"></div>
         <div id="whiteBox"></div>    

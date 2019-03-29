@@ -14,6 +14,7 @@ include_once '../models/LPMemberCards.php';
 include_once '../models/LPRefAllowedEwalletUser.php';
 include_once '../models/LPEGMSessions.php';
 include_once '../controllers/PcwsWrapper.php';
+include_once '../controllers/MzapiWrapper.php';
 require_once '../models/LPConfig.php';
 include_once '../models/LPRefServices.php';
 
@@ -21,8 +22,12 @@ $function = $_POST["data"];
 $pin = "";
 $terminalCodePath = "";
 if (!empty($function)) {
+
     $lobbycontroller = new LobbyController();
     $_PCWS = new PcwsWrapper();
+    $_MZAPI = new MzapiWrapper();
+
+
     switch ($function) {
 
         case 'checkUbCard':
@@ -70,16 +75,18 @@ if (!empty($function)) {
         case 'checkIfTerminalSession':
             $terminalCode = $_POST['terminalCode'];
             $terminalID = LPTerminalSessions::model()->checkSession($terminalCode);
-	    $result['TerminalID'] = (int) $terminalID['TerminalID'];
+            $result['TerminalID'] = (int) $terminalID['TerminalID'];
             $result['Usermode'] = (int) $terminalID['Usermode'];
             $result['ServiceID'] = (int) $terminalID['ServiceID'];
 
             break;
-
+/*
         case 'checkIfTerminalSessionLobby':
             $terminalCode = $_POST['terminalCode'];
+            $terminalID = $_POST['terminalID'];
+            $terminalIDVIP = $_POST['terminalIDVIP'];
             $serviceID = $_POST['ServiceID'];
-            
+
             $count = LPTerminalSessions::model()->checkIfTerminalSessionLobby($terminalCode, $serviceID);
 
             $result['Count'] = (int) $count['Counter'];
@@ -90,7 +97,28 @@ if (!empty($function)) {
             } else {
                 $result['ServiceUsername'] = $count['TerminalCode'];
                 $result['HashedServicePassword'] = $count['HashedServicePassword'];
-		$result['ServicePassword'] = $count['ServicePassword'];
+            }
+
+            $result['isVIP'] = $count['isVIP'];
+            $result['UserMode'] = $count['UserMode'];
+            $result['HabaneroPath'] = LPConfig::app()->params["habanero_path"];
+            break;
+*/
+        case 'checkIfTerminalSessionLobby':
+            $terminalCode = $_POST['terminalCode'];
+            $serviceID = $_POST['ServiceID'];
+
+            $count = LPTerminalSessions::model()->checkIfTerminalSessionLobby($terminalCode, $serviceID);
+
+            $result['Count'] = (int) $count['Counter'];
+            if ($serviceID == 28 || $serviceID == 29) {
+                $result['ServiceUsername'] = $count['UBServiceLogin'];
+                $result['HashedServicePassword'] = $count['UBHashedServicePassword'];
+                $result['ServicePassword'] = $count['UBServicePassword'];
+            } else {
+                $result['ServiceUsername'] = $count['TerminalCode'];
+                $result['HashedServicePassword'] = $count['HashedServicePassword'];
+                $result['ServicePassword'] = $count['ServicePassword'];
             }
 
             if ($serviceID == 28 || $serviceID == 22) {
@@ -327,7 +355,25 @@ if (!empty($function)) {
 
             break;
 
+        case 'transferWallet':
 
+            $TerminalCode = $_POST['terminalCode'];
+            $ServiceID = $_POST['ServiceID'];
+            $UserMode = $_POST['UserMode'];
+
+            $APIresult = $_MZAPI->transferWallet($TerminalCode, $ServiceID, $UserMode);
+            $result = $APIresult;
+
+            break;
+
+
+        case 'countSession':
+            $terminalCode = $_POST['terminalCode'];
+
+            $count = LPTerminalSessions::model()->countSession($terminalCode);
+
+            $result['Count'] = $count['SessionCount'];
+            break;
 
         default:
             break;
