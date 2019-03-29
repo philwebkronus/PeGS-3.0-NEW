@@ -25,12 +25,21 @@ if (isset($_SESSION['accID']))
 
 $maf = new ManualAPIFulfillment($_DBConnectionString[0]);
 $maf2 = new ManualAPIFulfillment($_DBConnectionString[2]);
+//ADDED CCT 12/12/2018 BEGIN
+$maf3 = new ManualAPIFulfillment($_DBConnectionString[5]);
+//ADDED CCT 12/12/2018 END
 $CasinoGamingCAPI = new CasinoGamingCAPI();
 $loyalty = new LoyaltyUBWrapper();
 $connected = $maf->open();
 $connected2 = $maf2->open();
+//ADDED CCT 12/12/2018 BEGIN
+$connected3 = $maf3->open();
+//ADDED CCT 12/12/2018 END
 
-if ($connected && $connected2) 
+//EDITED CCT 03/25/2019 BEGIN
+//if ($connected && $connected2) 
+if ($connected && $connected2 && $connected3) 
+//EDITED CCT 03/25/2019 END
 {
     $vipaddress = gethostbyaddr($_SERVER['REMOTE_ADDR']);
     $vdate = $maf->getDate();
@@ -738,6 +747,16 @@ if ($connected && $connected2)
                                 //$maf->updateBcf($newbal, $cmbsite, 'Start session'); //update bcf 
                                 $maf->updateBcf($amount, $cmbsite, 'Start session'); //update bcf 
                                 //CCT 09/13/2018 END
+                                
+                                // ADDED CCT 12/12/2018 BEGIN
+                                //update member active wallet (fire and forget)
+                                if($maf3->open())
+                                {
+                                    $maf3->updateMembersOption($mid, $serviceid);
+                                }
+                                $maf3->close();
+                                // ADDED CCT 12/12/2018 END
+                                
                                 $msg = 'Manual Casino Fulfillment: Transaction Successful';
                             }
                         }
@@ -852,6 +871,16 @@ if ($connected && $connected2)
                                 //$maf->updateBcf($newbal, $cmbsite, 'Reload session');
                                 $maf->updateBcf($amount, $cmbsite, 'Reload session');
                                 //CCT 09/13/2018 END
+                                
+                                // ADDED CCT 12/12/2018 BEGIN
+                                //update member active wallet (fire and forget)
+                                if($maf3->open())
+                                {
+                                    $maf3->updateMembersOption($mid, $serviceid);
+                                }
+                                $maf3->close();
+                                // ADDED CCT 12/12/2018 END
+                                
                                 $msg = 'Manual Casino Fulfillment: Transaction Successful';
                             }
                         }
@@ -900,6 +929,15 @@ if ($connected && $connected2)
                             } 
                             else 
                             {
+                                // ADDED CCT 12/12/2018 BEGIN
+                                //update member active wallet (fire and forget)
+                                if($maf3->open())
+                                {
+                                    $maf3->updateMembersOption($mid, $serviceid);
+                                }
+                                $maf3->close();
+                                // ADDED CCT 12/12/2018 END
+                                
                                 $msg = 'Manual Casino Fulfillment: Transaction Successful';
                             }
                         }
@@ -976,7 +1014,18 @@ if ($connected && $connected2)
                                     $maf->updateEgmRequestLogs($status, $transrefid, $egmreqid);
                                 }
                             }
+                            
+                            // ADDED CCT 12/12/2018 BEGIN
+                            //check if terminal has a session
+                            $sessioncount = $maf->countSessions($cmbterm);
+                            $sessioncount = $sessioncount['termsess'];
 
+                            if ($sessioncount > 0) 
+                            {
+                                $maf->updTermSessActiveServiceStatus(1, $cmbterm);
+                            }
+                            // ADDED CCT 12/12/2018 END
+                            
                             $zaid = $aid;
                             $zdate = $vdate;
                             $ztransdetails = 'Casino Service = ' . "$serviceid" . ' Status = ' . "$status" . ' TerminalID = ' . "$cmbterm" . ' UserMode = ' . "$usermode";

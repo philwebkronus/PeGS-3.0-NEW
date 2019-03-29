@@ -43,9 +43,13 @@ if(isset($_SESSION['acctype']))
             <td>
                 <select name="selserviceCode" id="selserviceCode">
                     <option value="-1">All</option>
-                    <?php foreach($param['serviceCode'] as $v): ?>
-                        <option value="<?php echo $v['ServiceID']; ?>"> <?php echo $v['ServiceName']; ?></option>
-                    <?php endforeach; ?>
+                    <!-- COMMENT OUT CCT 12/13/2018 BEGIN -->
+                    <?php /* foreach($param['serviceCode'] as $v): */ ?>
+                        <!--
+                        <option value="<?php /* echo $v['ServiceID']; */ ?>"> <?php /* echo $v['ServiceName']; */ ?></option>
+                        -->
+                    <?php /* endforeach; */ ?>
+                    <!-- COMMENT OUT CCT 12/13/2018 END -->
                 </select>       
             </td>
         </tr>

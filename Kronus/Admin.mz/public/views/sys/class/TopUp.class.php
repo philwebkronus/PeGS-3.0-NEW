@@ -15,7 +15,50 @@ class TopUp extends DBHandler
     {
         parent::__construct($sconectionstring);
     }
-
+    
+    // ADDED CCT 01/14/2019 BEGIN
+    // Check if UB Card has active terminal session with respective service provider
+    public function checkUBactivesession($MID, $serviceID) 
+    {
+        $stmt = "SELECT ActiveServiceStatus, ServiceID FROM terminalsessions WHERE MID = ? AND ServiceID = ?";
+        $this->prepare($stmt);
+        $this->bindparameter(1, $MID);
+        $this->bindparameter(2, $serviceID);
+        $this->execute();
+        $activesessionresult = $this->fetchData();
+        return $activesessionresult;
+    }    
+    
+    //Count active terminalsessions for this UB Card excluding provided service provider
+    public function countUBactivesession($MID, $serviceID) 
+    {    
+        $stmt = "SELECT COUNT(ServiceID) As CountServices FROM terminalsessions WHERE MID = ? AND ServiceID <> ? ";
+        $this->prepare($stmt);
+        $this->bindparameter(1, $MID);
+        $this->bindparameter(2, $serviceID);
+        $this->execute();
+        $activesessionresult = $this->fetchData();
+        return $activesessionresult;
+    }
+    
+    //Update Active Service Status in terminalsessions
+    function updateactiveservicestatus($MID, $status, $activelasttransupd = 0)   
+    {
+        if ($activelasttransupd == 0)
+        {    
+            $this->prepare("UPDATE terminalsessions SET activeservicestatus = ? WHERE MID = ? ");
+        }
+        else
+        {
+            $this->prepare("UPDATE terminalsessions SET activeservicestatus = ?, activelasttransdateupd = NOW(6) WHERE MID = ? ");
+        }
+        $this->bindparameter(1,$status);
+        $this->bindparameter(2,$MID);
+        $this->execute();
+        return $this->rowCount();
+    }
+    // ADDED CCT 01/14/2019 END
+    
     // ADDED CCT 02/12/2018 BEGIN
     public function getoldGHBalancePAGCOR($sort, $dir, $startdate, $enddate, $zsiteid, $servProvider)
     {       
@@ -5385,6 +5428,45 @@ class TopUp extends DBHandler
             return $total_row;
       }
       
+      // ADDED CCT 12/12/2018 BEGIN
+      public function getManualDepositTotal($startdate,$enddate) 
+      {
+            $total_row = 0;
+            $query = "SELECT count(md.ManualDepositsID) AS totalrow 
+                      FROM manualdeposits md INNER JOIN sites st ON md.SiteID = st.SiteID 
+                        LEFT JOIN terminals tm ON md.TerminalID = tm.TerminalID 
+                        INNER JOIN accounts at ON md.ProcessedByAID = at.AID 
+                        LEFT JOIN ref_services rs ON md.ServiceID = rs.ServiceID 
+                      WHERE md.TransactionDate >= '$startdate' AND md.TransactionDate < '$enddate'";
+            $this->prepare($query);
+            $this->execute();
+            
+            $rows = $this->fetchAllData(); 
+            if(isset($rows[0]['totalrow'])) 
+            {
+                $total_row = $rows[0]['totalrow'];
+            }
+            unset($query, $rows);
+            return $total_row;
+      }
+      
+      public function getManualDeposit($sort, $dir, $start, $limit,$startdate,$enddate) 
+      {
+            $query = "SELECT md.ManualDepositsID, md.ReportedAmount, md.ActualAmount, md.Remarks, 
+                        md.Status, md.TransactionDate TransDate, md.TicketID, md.TransactionID, 
+                        st.SiteName, st.SiteCode, tm.TerminalCode, st.POSAccountNo, at.Name, rs.ServiceName 
+                    FROM manualdeposits md INNER JOIN sites st ON md.SiteID = st.SiteID 
+                        LEFT JOIN terminals tm ON md.TerminalID = tm.TerminalID 
+                        INNER JOIN accountdetails at ON md.ProcessedByAID = at.AID 
+                        LEFT JOIN ref_services rs ON md.ServiceID = rs.ServiceID
+                    WHERE md.TransactionDate >= '$startdate' AND md.TransactionDate < '$enddate' 
+                    ORDER BY $sort $dir LIMIT $start,$limit";
+            $this->prepare($query);
+            $this->execute();
+            return $this->fetchAllData();      
+      }      
+      // ADDED CCT 12/12/2018 END
+      
       public function getManualRedemption($sort, $dir, $start, $limit,$startdate,$enddate) 
       {
             $query = "SELECT mr.ManualRedemptionsID, mr.ReportedAmount, mr.ActualAmount, mr.Remarks,
@@ -6199,17 +6281,13 @@ class TopUp extends DBHandler
     * @return integer 
     * insert into manualredemption user based with loyalty card number, memberid and user mode
     */
-    function insertmanualredemptionub($zsiteID, $zterminalID, $zreportedAmt, 
-              $zactualAmt, $ztransactionDate, $zreqByAID, $zprocByAID, $zremarks, 
-              $zdateeff, $zstatus, $ztransactionID, $zsummaryID,$zticketID, $zCmbServerID,
-              $ztransStatus, $loyaltycardnumber, $mid, $usermode)
-    {
+    function insertmanualredemptionub($zsiteID, $zterminalID, $zreportedAmt, $zactualAmt, $ztransactionDate, $zreqByAID, $zprocByAID, $zremarks, $zdateeff, $zstatus, $ztransactionID, $zsummaryID, $zticketID, $zCmbServerID, $ztransStatus, $loyaltycardnumber, $mid, $usermode, $transferID = "", $fromServiceID = "") {
         $this->begintrans();
         $this->prepare("INSERT INTO manualredemptions(SiteID, TerminalID, ReportedAmount, 
             ActualAmount, TransactionDate, RequestedByAID, ProcessedByAID, Remarks, 
             DateEffective, Status, TransactionID, LastTransactionSummaryID, TicketID, ServiceID,
-            TransactionStatus, LoyaltyCardNumber, MID, UserMode) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            TransactionStatus, LoyaltyCardNumber, MID, UserMode, TransferID, FromServiceID) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         $this->bindparameter(1, $zsiteID);
         $this->bindparameter(2, $zterminalID);
         $this->bindparameter(3, $zreportedAmt);
@@ -6228,14 +6306,13 @@ class TopUp extends DBHandler
         $this->bindparameter(16, $loyaltycardnumber);
         $this->bindparameter(17, $mid);
         $this->bindparameter(18, $usermode);
-        if($this->execute())
-        {
+        $this->bindparameter(19, $transferID);
+        $this->bindparameter(20, $fromServiceID);
+        if ($this->execute()) {
             $lastid = $this->insertedid();
             $this->committrans();
             return $lastid;
-        }
-        else
-        {
+        } else {
             $this->rollbacktrans();
             return 0;
         }
@@ -7130,5 +7207,236 @@ class TopUp extends DBHandler
 //        $this->prepare($getprintedtickets);
 //        $this->bindparameter(":startdate", $zfield)
 //    }
+
+ /**
+     * @author John Aaron Vida
+     * @param $mid
+     * @return array 
+     * get temialsessiondetails of a certain mid
+     */
+    public function getTransactionSummaryID($MID) {
+        $stmt = "SELECT * FROM npos.terminalsessions WHERE MID = ?";
+        $this->prepare($stmt);
+        $this->bindparameter(1, $MID);
+        $this->execute();
+        $ubresult = $this->fetchData();
+        return $ubresult;
+    }
+
+    /**
+     * @author John Aaron Vida
+     * @param $transsummaryid
+     * @return numeric 
+     * get MzTransactionTransfer Detials of a certain transactionsummaryid
+     */
+    public function getMZTransactionTransferDetails($TransactionSummaryID) {
+        $stmt = "SELECT * FROM npos.mztransactiontransfer WHERE TransactionSummaryID = ? ORDER BY TransferID DESC";
+        $this->prepare($stmt);
+        $this->bindparameter(1, $TransactionSummaryID);
+        $this->execute();
+        $ubresult = $this->fetchData();
+        return $ubresult;
+    }
+
+    /**
+     * @author John Aaron Vida
+     * @param $transsummaryid
+     * @return numeric 
+     * get MaxTransferID of a certain transactionsummaryid
+     */
+    public function getMaxTransferID($transsummaryid) {
+        $stmt = "SELECT MAX(TransferID) AS MaxTransferID FROM npos.mztransactiontransfer 
+                WHERE TransactionSummaryID = ?";
+        $this->prepare($stmt);
+        $this->bindparameter(1, $transsummaryid);
+        $this->execute();
+        $site = $this->fetchData();
+        return $site['MaxTransferID'];
+    }
+
+    /**
+     * @author John Aaron Vida
+     * @param $transsummaryid
+     * @return numeric 
+     * get MaxTransferID of a certain transactionsummaryid
+     */
+    public function getTerminalSessionsDetails($LoyaltyCardNumber) {
+        $stmt = "SELECT * FROM npos.terminalsessions 
+                WHERE LoyaltyCardNumber = ?";
+        $this->prepare($stmt);
+        $this->bindparameter(1, $LoyaltyCardNumber);
+        $this->execute();
+        $site = $this->fetchData();
+        return $site;
+    }
+
+    /**
+     * @author John Aaron Vida
+     * @param $transsummaryid
+     * @return numeric 
+     * get MaxTransferID of a certain transactionsummaryid
+     */
+    public function updateActiveServiceStatusTW($activeservicestatus, $newactiveservicestatus, $loyaltycardnumber) {
+        $this->begintrans();
+        try {
+            $sql = "UPDATE terminalsessions SET OldActiveServiceStatus = ?, ActiveServiceStatus = ? WHERE LoyaltyCardNumber = ?";
+            $this->prepare($sql);
+            $this->bindparameter(1, $activeservicestatus);
+            $this->bindparameter(2, $newactiveservicestatus);
+            $this->bindparameter(3, $loyaltycardnumber);
+            if ($this->execute()) {
+                try {
+                    $this->committrans();
+                    return true;
+                } catch (PDOException $e) {
+                    $this->rollbacktrans();
+                    return false;
+                }
+            } else {
+                $this->rollbacktrans();
+                return false;
+            }
+        } catch (PDOException $e) {
+            $this->rollbacktrans();
+            return false;
+        }
+    }
+
+    public function updateActiveServiceStatusRollback($activeservicestatus, $loyaltycardnumber) {
+        $this->begintrans();
+        try {
+            $sql = "UPDATE terminalsessions SET ActiveServiceStatus = ? WHERE LoyaltyCardNumber = ?";
+            $this->prepare($sql);
+            $this->bindparameter(1, $activeservicestatus);
+            $this->bindparameter(2, $loyaltycardnumber);
+            if ($this->execute()) {
+                try {
+                    $this->committrans();
+                    return true;
+                } catch (PDOException $e) {
+                    $this->rollbacktrans();
+                    return false;
+                }
+            } else {
+                $this->rollbacktrans();
+                return false;
+            }
+        } catch (PDOException $e) {
+            $this->rollbacktrans();
+            return false;
+        }
+    }
+
+    public function updateMzTransactionTransfer($transferStatus, $toUpdatedByAID, $TransferID) {
+        $this->begintrans();
+        try {
+            $sql = "UPDATE npos.mztransactiontransfer SET TransferStatus = ?, ToUpdatedByAID = ?, Option1 = NOW(6) WHERE TransferID = ?";
+            $this->prepare($sql);
+            $this->bindparameter(1, $transferStatus);
+            $this->bindparameter(2, $toUpdatedByAID);
+            $this->bindparameter(3, $TransferID);
+            if ($this->execute()) {
+                try {
+                    $this->committrans();
+                    return true;
+                } catch (PDOException $e) {
+                    $this->rollbacktrans();
+                    return false;
+                }
+            } else {
+                $this->rollbacktrans();
+                return false;
+            }
+        } catch (PDOException $e) {
+            $this->rollbacktrans();
+            return false;
+        }
+    }
+
+    public function getPlayerCredentialsByUB($mid, $ServiceID) {
+        $stmt = "SELECT ServiceUsername, ServicePassword, HashedServicePassword, Usermode FROM memberservices WHERE MID = ? AND ServiceID = ?";
+        $this->prepare($stmt);
+        $this->bindparameter(1, $mid);
+        $this->bindparameter(2, $ServiceID);
+        $this->execute();
+        $site = $this->fetchData();
+        return $site;
+    }
+
+
+
+public function updateTerminalSessionsCredentials($activeServiceStatus, $serviceID, $login, $password, $hashedpassword, $lastbalance, $terminalID) {
+        $this->begintrans();
+        try {
+            $sql = "UPDATE npos.terminalsessions SET ActiveServiceStatus = ? , ActiveServiceID = ?, ServiceID = ?,
+                     UBServiceLogin = ? , UBServicePassword = ?, UBHashedServicePassword = ?, LastBalance = ?,
+                     LastTransactionDate = NOW(6) , ActiveLastTransdateUpd = NOW(6) WHERE TerminalID = ?";
+
+            $this->prepare($sql);
+            $this->bindparameter(1, $activeServiceStatus);
+            $this->bindparameter(2, $serviceID);
+            $this->bindparameter(3, $serviceID);
+            $this->bindparameter(4, $login);
+            $this->bindparameter(5, $password);
+            $this->bindparameter(6, $hashedpassword);
+            $this->bindparameter(7, $lastbalance);
+            $this->bindparameter(8, $terminalID);
+            if ($this->execute()) {
+                if ($this->rowCount() > 0) {
+                    try {
+                        $this->committrans();
+                        return true;
+                    } catch (PDOException $e) {
+                        $this->rollbacktrans();
+                        return false;
+                    }
+                } else {
+                    $this->rollbacktrans();
+                    return false;
+                }
+            } else {
+                $this->rollbacktrans();
+                return false;
+            }
+        } catch (PDOException $e) {
+            $this->rollbacktrans();
+            return false;
+        }
+    }
+
+    public function updateMember($ServiceID, $MID) {
+        $this->begintrans();
+        try {
+            $sql = "UPDATE membership.members SET Option1 = ? WHERE MID = ?";
+            $this->prepare($sql);
+            $this->bindparameter(1, $ServiceID);
+            $this->bindparameter(2, $MID);
+            if ($this->execute()) {
+                try {
+                    $this->committrans();
+                    return true;
+                } catch (PDOException $e) {
+                    $this->rollbacktrans();
+                    return false;
+                }
+            } else {
+                $this->rollbacktrans();
+                return false;
+            }
+        } catch (PDOException $e) {
+            $this->rollbacktrans();
+            return false;
+        }
+    }
+
+    public final function getSiteIDByTerminalID($TerminalID) {
+        $query = "SELECT SiteID FROM terminals WHERE TerminalID = :terminalid";
+        $this->prepare($query);
+        $this->bindParam(":terminalid", $TerminalID);
+        $this->execute();
+        $record = $this->fetchData();
+        return $record["SiteID"];
+    }
+
  }
 ?>

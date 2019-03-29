@@ -12,6 +12,53 @@ class ManualAPIFulfillment extends DBHandler
         parent::__construct($sconectionstring);
     }
 
+    // ADDED CCT 12/12/2018 BEGIN
+    public function updateMembersOption($mid, $serviceid)
+    {
+        $this->prepare("UPDATE members SET OptionID1 = ? WHERE MID = ?");
+        $this->bindparameter(1,$serviceid);
+        $this->bindparameter(2,$mid);
+        $this->execute();
+        return $this->rowCount();
+    }
+
+    public function updTermSessActiveServiceStatus($servicestatus, $terminalid) 
+    {
+        $this->begintrans();
+        try 
+        {
+            $stmt = "UPDATE terminalsessions SET ActiveServiceStatus = ?, ActiveLastTransDateUpd = now(6) WHERE TerminalID = ?";
+            $this->prepare($stmt);
+            $this->bindparameter(1, $servicestatus);
+            $this->bindparameter(2, $terminalid);
+
+            if($this->execute())
+            {
+                try 
+                {
+                    $this->committrans();
+                    return true;
+                } 
+                catch(Exception $e) 
+                {
+                    $this->rollbacktrans();
+                    return false;
+                }
+            }
+            else 
+            {
+                $this->rollbacktrans();
+                return false;
+            }
+        } 
+        catch (Exception $e) 
+        {
+            $this->rollbacktrans();
+            return false;
+        }
+    }
+    // ADDED CCT 12/12/2018 END
+    
     /**
     * @author Gerardo V. Jagolino Jr.
     * @param int $terminal
@@ -497,7 +544,11 @@ class ManualAPIFulfillment extends DBHandler
                 if($this->execute()) 
                 {
                     $trans_details_id = $this->insertedid();
-                    $stmt3 = "UPDATE terminalsessions SET TransactionSummaryID = ? WHERE TerminalID = ?";
+                    //EDITED CCT 12/12/2018 BEGIN
+                    //$stmt3 = "UPDATE terminalsessions SET TransactionSummaryID = ? WHERE TerminalID = ?";
+                    $stmt3 = "UPDATE terminalsessions SET TransactionSummaryID = ?,  ActiveServiceID = ServiceID, "
+                            . " ActiveServiceStatus = 1, ActiveLastTransDateUpd = now(6) WHERE TerminalID = ?";
+                    //EDITED CCT 12/12/2018 END
                     $this->prepare($stmt3);
                     $this->bindparameter(1, $trans_summary_max_id);
                     $this->bindparameter(2, $terminal_id);
@@ -583,13 +634,20 @@ class ManualAPIFulfillment extends DBHandler
                 if($this->execute()) 
                 {
                     $trans_details_id = $this->insertedid();
-                    $stmt = "UPDATE terminalsessions SET ServiceID = ?,  LastBalance = ?, LastTransactionDate = now_usec() 
-                                WHERE TerminalID = ?";
+                    // EDITED CCT 12/12/2018 BEGIN
+                    //$stmt = "UPDATE terminalsessions SET ServiceID = ?,  LastBalance = ?, LastTransactionDate = now_usec() 
+                    //            WHERE TerminalID = ?";
+                    $stmt = "UPDATE terminalsessions SET ServiceID = ?,  LastBalance = ?, LastTransactionDate = now_usec(), "
+                            . "ActiveServiceID = ? , ActiveServiceStatus = 1, ActiveLastTransDateUpd = now(6) "
+                            . "WHERE TerminalID = ?";
+                    
                     $this->prepare($stmt);
                     $this->bindparameter(1, $service_id);
                     $this->bindparameter(2, $total_terminal_balance);
-                    $this->bindparameter(3, $terminal_id);
-
+                    //$this->bindparameter(3, $terminal_id);
+                    $this->bindparameter(3, $service_id);
+                    $this->bindparameter(4, $terminal_id);
+                    // EDITED CCT 12/12/2018 END
                     $isupdated = $this->rowCount();
 
                     if($this->execute()) 

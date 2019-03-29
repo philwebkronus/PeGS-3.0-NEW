@@ -13,7 +13,326 @@ class ApplicationSupport extends DBHandler
       {
           parent::__construct($sconectionstring);
       }
-      
+
+        // CCT 12/11/2018 ADDED BEGIN
+        public function exportmlpcfulfillmenthistroy($SiteID, $TerminalID, $transstatus, $From, $To)
+        {
+            //validate if combo boxes of transaction status and transaction type are selected ALL 
+            if($transstatus == 'All')
+            {
+                $stmt = "SELECT t.TerminalCode, mz.TransferID, mz.TransactionSummaryID, mz.LoyaltyCardNumber, 
+                        mz.FromTransactionType, mz.FromAmount, rserv.ServiceName AS FromServiceID, mz.FromStartTransDate, 
+                        mz.FromEndTransDate, mz.FromServiceTransID, mz.FromServiceStatus, mz.FromStatus, mz.FromUpdatedByAID, 
+                        mz.ToTransactionType,  mz.ToAmount, rserv2.ServiceName AS  ToServiceID, mz.ToStartTransDate, 
+                        mz.ToEndTransDate, mz.ToServiceTransID, mz.ToServiceStatus, mz.ToStatus, mz.ToUpdatedByAID, mz.TransferStatus 
+                    FROM mztransactiontransfer mz INNER JOIN ref_services rserv ON rserv.ServiceID = mz.FromServiceID 
+                        INNER JOIN ref_services rserv2 ON rserv2.ServiceID = mz.ToServiceID 
+                        INNER JOIN sites s ON s.SiteID = mz.SiteID 
+                        INNER JOIN terminals t ON t.TerminalID = mz.TerminalID 
+                    WHERE mz.SiteID = ? AND mz.TerminalID = ? 
+                        AND ( (mz.FromStartTransDate >= ? AND mz.FromStartTransDate < ?) 
+                        OR (mz.ToStartTransDate >= ? AND mz.ToStartTransDate < ?) 
+                        OR (mz.FromEndTransDate >= ? AND mz.FromEndTransDate < ?) 
+                        OR (mz.ToEndTransDate >= ? AND mz.ToEndTransDate < ?) ) 
+                        AND ( (mz.FromStatus IN (3,4)) OR (mz.ToStatus IN (3,4))) 
+                    ORDER BY mz.TransferID";
+                        
+                $this->prepare($stmt);
+                $this->bindparameter(1,$SiteID);
+                $this->bindparameter(2,$TerminalID);
+                $this->bindparameter(3,$From);
+                $this->bindparameter(4,$To);   
+                $this->bindparameter(5,$From);
+                $this->bindparameter(6,$To);   
+                $this->bindparameter(7,$From);
+                $this->bindparameter(8,$To);   
+                $this->bindparameter(9,$From);
+                $this->bindparameter(10,$To);   
+            }
+            else 
+            {
+                $stmt =  "SELECT t.TerminalCode, mz.TransferID, mz.TransactionSummaryID, mz.LoyaltyCardNumber, 
+                        mz.FromTransactionType, mz.FromAmount, rserv.ServiceName AS FromServiceID, mz.FromStartTransDate, 
+                        mz.FromEndTransDate, mz.FromServiceTransID, mz.FromServiceStatus, mz.FromStatus, mz.FromUpdatedByAID, 
+                        mz.ToTransactionType,  mz.ToAmount, rserv2.ServiceName AS  ToServiceID, mz.ToStartTransDate, 
+                        mz.ToEndTransDate, mz.ToServiceTransID, mz.ToServiceStatus, mz.ToStatus, mz.ToUpdatedByAID, mz.TransferStatus 
+                    FROM mztransactiontransfer mz INNER JOIN ref_services rserv ON rserv.ServiceID = mz.FromServiceID 
+                        INNER JOIN ref_services rserv2 ON rserv2.ServiceID = mz.ToServiceID 
+                        INNER JOIN sites s ON s.SiteID = mz.SiteID 
+                        INNER JOIN terminals t ON t.TerminalID = mz.TerminalID 
+                    WHERE mz.SiteID = ? AND mz.TerminalID = ? 
+                        AND ( (mz.FromStartTransDate >= ? AND mz.FromStartTransDate < ?) 
+                        OR (mz.ToStartTransDate >= ? AND mz.ToStartTransDate < ?) 
+                        OR (mz.FromEndTransDate >= ? AND mz.FromEndTransDate < ?) 
+                        OR (mz.ToEndTransDate >= ? AND mz.ToEndTransDate < ?) ) 
+                         AND ( (mz.FromStatus = ?) OR (mz.ToStatus = ?)) 
+                    ORDER BY mz.TransferID"; 
+                
+                $this->prepare($stmt);
+                $this->bindparameter(1,$SiteID);
+                $this->bindparameter(2,$TerminalID);
+                $this->bindparameter(3,$From);
+                $this->bindparameter(4,$To);  
+                $this->bindparameter(5,$From);
+                $this->bindparameter(6,$To);   
+                $this->bindparameter(7,$From);
+                $this->bindparameter(8,$To);   
+                $this->bindparameter(9,$From);
+                $this->bindparameter(10,$To);                  
+                $this->bindparameter(11,$transstatus);  
+                $this->bindparameter(12,$transstatus);  
+            }
+
+            try 
+            {
+                $this->execute();
+            } 
+            catch(PDOException $e) 
+            {
+                var_dump($e->getMessage()); 
+                exit;
+            }
+            return $this->fetchAllData();
+        }
+
+        //Manual LaunchPad Casino Fulfillment Transaction details
+        function getmlptransferlogs($zsiteID, $zterminalID, $zdatefrom, $zdateto, $zstart, $zlimit, $zsort, $zdirection)
+        {
+            $stmt = "SELECT mz.TransferID, mz.TransactionSummaryID, mz.LoyaltyCardNumber, 
+                        mz.FromTransactionType, mz.FromAmount, rserv.ServiceName AS FromServiceID, mz.FromStartTransDate, 
+                        mz.FromEndTransDate, mz.FromServiceTransID, mz.FromServiceStatus, mz.FromStatus, 
+                        mz.ToTransactionType,  mz.ToAmount, rserv2.ServiceName AS  ToServiceID, mz.ToStartTransDate, 
+                        mz.ToEndTransDate, mz.ToServiceTransID, mz.ToServiceStatus, mz.ToStatus, mz.TransferStatus 
+                    FROM mztransactiontransfer mz INNER JOIN ref_services rserv ON rserv.ServiceID = mz.FromServiceID 
+                        INNER JOIN ref_services rserv2 ON rserv2.ServiceID = mz.ToServiceID 
+                        INNER JOIN sites s ON s.SiteID = mz.SiteID 
+                        INNER JOIN terminals t ON t.TerminalID = mz.TerminalID 
+                    WHERE mz.SiteID = ? AND mz.TerminalID = ? 
+                        AND ( (mz.FromStartTransDate >= ? AND mz.FromStartTransDate < ?) 
+                        OR (mz.ToStartTransDate >= ? AND mz.ToStartTransDate < ?) 
+                        OR (mz.FromEndTransDate >= ? AND mz.FromEndTransDate < ?) 
+                        OR (mz.ToEndTransDate >= ? AND mz.ToEndTransDate < ?) ) 
+                    ORDER BY ".$zsort." ".$zdirection." LIMIT ".$zstart.",".$zlimit.""; 
+            $this->prepare($stmt);
+            $this->bindparameter(1, $zsiteID);
+            $this->bindparameter(2, $zterminalID);
+            $this->bindparameter(3, $zdatefrom);
+            $this->bindparameter(4, $zdateto);
+            $this->bindparameter(5, $zdatefrom);
+            $this->bindparameter(6, $zdateto);
+            $this->bindparameter(7, $zdatefrom);
+            $this->bindparameter(8, $zdateto);
+            $this->bindparameter(9, $zdatefrom);
+            $this->bindparameter(10, $zdateto);
+            $this->execute();
+            return $this->fetchAllData();
+        }
+
+        public function getlpfulfillmenthistory($SiteID, $TerminalID, $transstatus, $From, $To, $start, $limit)
+        {
+            //validate if combo boxes of transaction status and transaction type are selected ALL 
+            if($transstatus == 'All')
+            {
+                $stmt = "SELECT t.TerminalCode, mz.TransferID, mz.TransactionSummaryID, mz.LoyaltyCardNumber, 
+                        mz.FromTransactionType, mz.FromAmount, rserv.ServiceName AS FromServiceID, mz.FromStartTransDate, 
+                        mz.FromEndTransDate, mz.FromServiceTransID, mz.FromServiceStatus, mz.FromStatus, mz.FromUpdatedByAID, 
+                        mz.ToTransactionType,  mz.ToAmount, rserv2.ServiceName AS  ToServiceID, mz.ToStartTransDate, 
+                        mz.ToEndTransDate, mz.ToServiceTransID, mz.ToServiceStatus, mz.ToStatus, mz.ToUpdatedByAID, mz.TransferStatus 
+                    FROM mztransactiontransfer mz INNER JOIN ref_services rserv ON rserv.ServiceID = mz.FromServiceID 
+                        INNER JOIN ref_services rserv2 ON rserv2.ServiceID = mz.ToServiceID 
+                        INNER JOIN sites s ON s.SiteID = mz.SiteID 
+                        INNER JOIN terminals t ON t.TerminalID = mz.TerminalID 
+                    WHERE mz.SiteID = ? AND mz.TerminalID = ? 
+                        AND ( (mz.FromStartTransDate >= ? AND mz.FromStartTransDate < ?) 
+                        OR (mz.ToStartTransDate >= ? AND mz.ToStartTransDate < ?) 
+                        OR (mz.FromEndTransDate >= ? AND mz.FromEndTransDate < ?) 
+                        OR (mz.ToEndTransDate >= ? AND mz.ToEndTransDate < ?) ) 
+                        AND ( (mz.FromStatus IN (3,4)) OR (mz.ToStatus IN (3,4))) 
+                    ORDER BY mz.TransferID LIMIT ".$start.",".$limit.""; 
+                $this->prepare($stmt);
+                $this->bindparameter(1,$SiteID);
+                $this->bindparameter(2,$TerminalID);
+                $this->bindparameter(3,$From);
+                $this->bindparameter(4,$To);   
+                $this->bindparameter(5,$From);
+                $this->bindparameter(6,$To);   
+                $this->bindparameter(7,$From);
+                $this->bindparameter(8,$To);   
+                $this->bindparameter(9,$From);
+                $this->bindparameter(10,$To);   
+            }
+            else 
+            {
+                $stmt = "SELECT t.TerminalCode, mz.TransferID, mz.TransactionSummaryID, mz.LoyaltyCardNumber, 
+                        mz.FromTransactionType, mz.FromAmount, rserv.ServiceName AS FromServiceID, mz.FromStartTransDate, 
+                        mz.FromEndTransDate, mz.FromServiceTransID, mz.FromServiceStatus, mz.FromStatus, mz.FromUpdatedByAID, 
+                        mz.ToTransactionType,  mz.ToAmount, rserv2.ServiceName AS  ToServiceID, mz.ToStartTransDate, 
+                        mz.ToEndTransDate, mz.ToServiceTransID, mz.ToServiceStatus, mz.ToStatus, mz.ToUpdatedByAID, mz.TransferStatus 
+                    FROM mztransactiontransfer mz INNER JOIN ref_services rserv ON rserv.ServiceID = mz.FromServiceID 
+                        INNER JOIN ref_services rserv2 ON rserv2.ServiceID = mz.ToServiceID 
+                        INNER JOIN sites s ON s.SiteID = mz.SiteID 
+                        INNER JOIN terminals t ON t.TerminalID = mz.TerminalID 
+                    WHERE mz.SiteID = ? AND mz.TerminalID = ? 
+                        AND ( (mz.FromStartTransDate >= ? AND mz.FromStartTransDate < ?) 
+                        OR (mz.ToStartTransDate >= ? AND mz.ToStartTransDate < ?) 
+                        OR (mz.FromEndTransDate >= ? AND mz.FromEndTransDate < ?) 
+                        OR (mz.ToEndTransDate >= ? AND mz.ToEndTransDate < ?) ) 
+                         AND ( (mz.FromStatus = ?) OR (mz.ToStatus = ?)) 
+                    ORDER BY mz.TransferID LIMIT ".$start.",".$limit.""; 
+                $this->prepare($stmt);
+                $this->bindparameter(1,$SiteID);
+                $this->bindparameter(2,$TerminalID);
+                $this->bindparameter(3,$From);
+                $this->bindparameter(4,$To);  
+                $this->bindparameter(5,$From);
+                $this->bindparameter(6,$To);   
+                $this->bindparameter(7,$From);
+                $this->bindparameter(8,$To);   
+                $this->bindparameter(9,$From);
+                $this->bindparameter(10,$To);   
+                $this->bindparameter(11,$transstatus);  
+                $this->bindparameter(12,$transstatus);  
+            }
+
+            try 
+            {
+                $this->execute();
+            } 
+            catch(PDOException $e) 
+            {
+                var_dump($e->getMessage()); 
+                exit;
+            }
+            return $this->fetchAllData();
+        }
+
+        //Manual LaunchPad Casino Fulfillment Transactions count
+        public function countlpfulfillmenthistory($SiteID, $TerminalID, $transstatus, $From, $To)
+        {
+            if($transstatus == 'All')
+            {
+                $stmt = "SELECT COUNT(mz.TransferID) AS Count 
+                        FROM mztransactiontransfer mz INNER JOIN ref_services rserv ON rserv.ServiceID = mz.FromServiceID 
+                            INNER JOIN ref_services rserv2 ON rserv2.ServiceID = mz.ToServiceID 
+                            INNER JOIN sites s ON s.SiteID = mz.SiteID 
+                            INNER JOIN terminals t ON t.TerminalID = mz.TerminalID 
+                        WHERE mz.SiteID = ? AND mz.TerminalID = ? 
+                            AND ( (mz.FromStartTransDate >= ? AND mz.FromStartTransDate < ?) 
+                            OR (mz.ToStartTransDate >= ? AND mz.ToStartTransDate < ?) 
+                            OR (mz.FromEndTransDate >= ? AND mz.FromEndTransDate < ?) 
+                            OR (mz.ToEndTransDate >= ? AND mz.ToEndTransDate < ?) ) 
+                            AND ( (mz.FromStatus IN (3,4)) OR (mz.ToStatus IN (3,4)))";
+                        
+                $this->prepare($stmt);
+                $this->bindparameter(1,$SiteID);
+                $this->bindparameter(2,$TerminalID);
+                $this->bindparameter(3,$From);
+                $this->bindparameter(4,$To);   
+                $this->bindparameter(5,$From);
+                $this->bindparameter(6,$To);  
+                $this->bindparameter(7,$From);
+                $this->bindparameter(8,$To);  
+                $this->bindparameter(9,$From);
+                $this->bindparameter(10,$To);  
+                }
+            else 
+            {
+                $stmt = "SELECT COUNT(mz.TransferID) AS Count 
+                        FROM mztransactiontransfer mz INNER JOIN ref_services rserv ON rserv.ServiceID = mz.FromServiceID 
+                            INNER JOIN ref_services rserv2 ON rserv2.ServiceID = mz.ToServiceID 
+                            INNER JOIN sites s ON s.SiteID = mz.SiteID 
+                            INNER JOIN terminals t ON t.TerminalID = mz.TerminalID 
+                        WHERE mz.SiteID = ? AND mz.TerminalID = ? 
+                            AND ( (mz.FromStartTransDate >= ? AND mz.FromStartTransDate < ?) 
+                            OR (mz.ToStartTransDate >= ? AND mz.ToStartTransDate < ?) 
+                            OR (mz.FromEndTransDate >= ? AND mz.FromEndTransDate < ?) 
+                            OR (mz.ToEndTransDate >= ? AND mz.ToEndTransDate < ?) ) 
+                            AND ( (mz.FromStatus = ?) OR (mz.ToStatus = ?))";               
+                $this->prepare($stmt);
+                $this->bindparameter(1,$SiteID);
+                $this->bindparameter(2,$TerminalID);
+                $this->bindparameter(3,$From);
+                $this->bindparameter(4,$To);   
+                $this->bindparameter(5,$From);
+                $this->bindparameter(6,$To);  
+                $this->bindparameter(7,$From);
+                $this->bindparameter(8,$To);  
+                $this->bindparameter(9,$From);
+                $this->bindparameter(10,$To);   
+                $this->bindparameter(11,$transstatus);  
+                $this->bindparameter(12,$transstatus);  
+            }
+
+            try 
+            {
+                $this->execute();
+            } 
+            catch(PDOException $e) 
+            {
+                var_dump($e->getMessage()); 
+                exit;
+            }
+            return $this->fetchData();
+        }
+        
+        //LaunchPad Transfer Transactions count
+        function countlptransferlogs($zsiteID, $zterminalID, $zdatefrom, $zdateto)
+        {
+            $stmt = "SELECT COUNT(TransferID) ctrlogs FROM mztransactiontransfer  
+                    WHERE SiteID = ? AND TerminalID = ? 
+                        AND ( (FromStartTransDate >= ? AND FromStartTransDate < ?) 
+                            OR (ToStartTransDate >= ? AND ToStartTransDate < ?) 
+                            OR (FromEndTransDate >= ? AND FromEndTransDate < ?)
+                            OR (ToEndTransDate >= ? AND ToEndTransDate < ?) )";
+            $this->prepare($stmt);
+            $this->bindparameter(1, $zsiteID);
+            $this->bindparameter(2, $zterminalID);
+            $this->bindparameter(3, $zdatefrom);
+            $this->bindparameter(4, $zdateto);
+            $this->bindparameter(5, $zdatefrom);
+            $this->bindparameter(6, $zdateto);
+            $this->bindparameter(7, $zdatefrom);
+            $this->bindparameter(8, $zdateto);
+            $this->bindparameter(9, $zdatefrom);
+            $this->bindparameter(10, $zdateto);
+            $this->execute();
+            return $this->fetchData();
+        }
+        
+        //LaunchPad Transfer Transactions details
+        function getlptransferlogs($zsiteID, $zterminalID, $zdatefrom, $zdateto, $zstart, $zlimit, $zsort, $zdirection)
+        {
+            $stmt = "SELECT mz.TransferID, mz.TransactionSummaryID, mz.LoyaltyCardNumber, 
+                        mz.FromTransactionType, mz.FromAmount, rserv.ServiceName AS FromServiceID, mz.FromStartTransDate, 
+                        mz.FromEndTransDate, mz.FromServiceTransID, mz.FromServiceStatus, mz.FromStatus, 
+                        mz.ToTransactionType,  mz.ToAmount, rserv2.ServiceName AS  ToServiceID, mz.ToStartTransDate, 
+                        mz.ToEndTransDate, mz.ToServiceTransID, mz.ToServiceStatus, mz.ToStatus, mz.TransferStatus 
+                    FROM mztransactiontransfer mz INNER JOIN ref_services rserv ON rserv.ServiceID = mz.FromServiceID 
+                        INNER JOIN ref_services rserv2 ON rserv2.ServiceID = mz.ToServiceID 
+                        INNER JOIN sites s ON s.SiteID = mz.SiteID 
+                        INNER JOIN terminals t ON t.TerminalID = mz.TerminalID 
+                    WHERE mz.SiteID = ? AND mz.TerminalID = ? 
+                        AND ( (mz.FromStartTransDate >= ? AND mz.FromStartTransDate < ?) 
+                        OR (mz.ToStartTransDate >= ? AND mz.ToStartTransDate < ?) 
+                        OR (mz.FromEndTransDate >= ? AND mz.FromEndTransDate < ?) 
+                        OR (mz.ToEndTransDate >= ? AND mz.ToEndTransDate < ?) ) 
+                    ORDER BY ".$zsort." ".$zdirection." LIMIT ".$zstart.",".$zlimit.""; 
+            $this->prepare($stmt);
+            $this->bindparameter(1, $zsiteID);
+            $this->bindparameter(2, $zterminalID);
+            $this->bindparameter(3, $zdatefrom);
+            $this->bindparameter(4, $zdateto);
+            $this->bindparameter(5, $zdatefrom);
+            $this->bindparameter(6, $zdateto);
+            $this->bindparameter(7, $zdatefrom);
+            $this->bindparameter(8, $zdateto);
+            $this->bindparameter(9, $zdatefrom);
+            $this->bindparameter(10, $zdateto);
+            $this->execute();
+            return $this->fetchAllData();
+        }
+        // CCT 12/11/2018 ADDED END
+
       // ADDED CCT 07/30/2018 BEGIN
       //get CasinoInfo using MID
       function getCasinoInfoUsingMID($zMID)

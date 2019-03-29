@@ -1551,7 +1551,170 @@ if ($connected && $connected2 && $connected3)
                     exit;
                 }
                 break;
+            //ADDED CCT 12/13/2018 BEGIN
+            //Manual LaunchPad Casino Fulfillment History
+            case 'MLCFHistory':
+                if (isset($_POST['cmbsite']) && isset($_POST['cmbterminal']) && isset($_POST['txtDate1']) && isset($_POST['cmbstatus'])) 
+                {
+                    $vSiteID = $_POST['cmbsite'];
+                    $vTerminalID = $_POST['cmbterminal'];
+                    $vdate1 = $_POST['txtDate1'];
+                    $vFrom = $vdate1;
+                    $vTo = date('Y-m-d', strtotime('+1 day', strtotime($vdate1)));
+                    $vtransstatus = $_POST['cmbstatus'];
+                    $vFrom = $vFrom . ' 06;00:00';
+                    $vTo = $vTo . ' 06;00:00';
 
+                    $rcount = $oas->countlpfulfillmenthistory($vSiteID, $vTerminalID, $vtransstatus, $vFrom, $vTo);
+                    $count = $rcount['Count'];
+
+                    if ($count > 0) 
+                    {
+                        $total_pages = ceil($count / $limit);
+                    } 
+                    else 
+                    {
+                        $total_pages = 0;
+                    }
+                    
+                    if ($page > $total_pages) 
+                    {
+                        $page = $total_pages;
+                    }
+                    $start = $limit * $page - $limit;
+                    $limit = (int) $limit;
+                    $result = $oas->getlpfulfillmenthistory($vSiteID, $vTerminalID, $vtransstatus, $vFrom, $vTo, $start, $limit);
+
+                    if (count($result) > 0) 
+                    {
+                        $i = 0;
+                        $responce->page = $page;
+                        $responce->total = $total_pages;
+                        $responce->records = $count;
+                        foreach ($result as $vview) 
+                        {
+                            switch ($vview['FromTransactionType']) 
+                            {
+                                case 'D': $vfromtranstype = 'Deposit';
+                                    break;
+                                case 'W': $vfromtranstype = 'Withdrawal';
+                                    break;
+                                case 'RD': $vfromtranstype = 'Re-Deposit';
+                                    break;
+                            }        
+
+                            switch ($vview['FromStatus']) 
+                            {
+                                case 0: $vfromstatus = 'Pending';
+                                    break;
+                                case 1: $vfromstatus = 'Successful';
+                                    break;
+                                case 2: $vfromstatus = 'Failed';
+                                    break;
+                                case 3: $vfromstatus = 'Fulfillment Approved';
+                                    break;
+                                case 4: $vfromstatus = 'Fulfillment Denied';
+                                    break;
+                                default: $vfromstatus = '';
+                                    break;                            
+                            }                        
+
+                            switch ($vview['ToTransactionType']) 
+                            {
+                                case 'D': $vtotranstype = 'Deposit';
+                                    break;
+                                case 'W': $vtotranstype = 'Withdrawal';
+                                    break;
+                                case 'RD': $vtotranstype = 'Re-Deposit';
+                                    break;
+                                default: $vtotranstype = '';
+                                    break;                                
+                            }        
+
+                            switch ($vview['ToStatus']) 
+                            {
+                                case 0: $vtostatus = 'Pending';
+                                    break;
+                                case 1: $vtostatus = 'Successful';
+                                    break;
+                                case 2: $vtostatus = 'Failed';
+                                    break;
+                                case 3: $vtostatus = 'Fulfillment Approved';
+                                    break;
+                                case 4: $vtostatus = 'Fulfillment Denied';
+                                    break;
+                                default: $vtostatus = '';
+                                    break;
+                            }              
+
+                            switch ($vview['TransferStatus']) 
+                            {
+                                case 0: $vtransferstatus = 'Pending Withdrawal';
+                                    break;
+                                case 1: $vtransferstatus = 'Successful Withdrawal';
+                                    break;
+                                case 2: $vtransferstatus = 'Failed Withdrawal';
+                                    break;
+                                case 3: $vtransferstatus = 'Pending Deposit';
+                                    break;
+                                case 4: $vtransferstatus = 'Successful Deposit';
+                                    break;
+                                case 5: $vtransferstatus = 'Failed Deposit';
+                                    break;
+                                case 6: $vtransferstatus = 'Pending Re-Deposit';
+                                    break;
+                                case 7: $vtransferstatus = 'Successful Re-Deposit';
+                                    break;
+                                case 8: $vtransferstatus = 'Failed Re-Deposit';
+                                    break;
+                                case 9: $vtransferstatus = 'Successful transfer wallet (zero balance)';
+                                    break;
+                                case 90: $vtransferstatus = 'Balance not zero after Withdrawal';
+                                    break;
+                                case 91: $vtransferstatus = 'Balance not equal to withdrawn amount';
+                                    break;
+                                case 92: $vtransferstatus = 'Re-Deposit amount not equal to withdrawn amount';
+                                    break;
+                                case 93: $vtransferstatus = 'Re-Deposit, balance of current casino is not zero';
+                                    break;
+                                case 100: $vtransferstatus = 'Manual Redemption (Floating Balance Fulfillment)';
+                                    break;
+                                case 101: $vtransferstatus = 'Manual Redemption (LaunchPad Casino Fulfillment)';
+                                    break;                                  
+                            }   
+
+                            $fromname = $oas->getNamebyAid($vview['FromUpdatedByAID']);
+                            $toname = $oas->getNamebyAid($vview['ToUpdatedByAID']);
+                            
+                            $responce->rows[$i]['cell'] =                                 
+                                array($vview['TerminalCode'], $vview['TransferID'], $vview['LoyaltyCardNumber'],
+                                    $vfromtranstype, number_format($vview['FromAmount'], 2),  $vview['FromServiceID'],
+                                    $vview['FromStartTransDate'], $vview['FromEndTransDate'], $vview['FromServiceTransID'],
+                                    $vview['FromServiceStatus'], $vfromstatus, $fromname, 
+                                    $vtotranstype, number_format($vview['ToAmount'], 2), $vview['ToServiceID'],
+                                    $vview['ToStartTransDate'], $vview['ToEndTransDate'], $vview['ToServiceTransID'],
+                                    $vview['ToServiceStatus'], $vtostatus, $toname,
+                                    $vtransferstatus);
+                            $i++;
+                        }
+                    } 
+                    else 
+                    {
+                        $i = 0;
+                        $responce->page = $page;
+                        $responce->total = $total_pages;
+                        $responce->records = $count;
+                        $msg = "Application Support: No returned result";
+                        $responce->msg = $msg;
+                    }
+
+                    echo json_encode($responce);
+                    unset($result);
+                    $oas->close();
+                    exit;
+                }
+                break;
+            //ADDED CCT 12/13/2018 END
             case 'MCFHistory':
                 if (isset($_POST['cmbsite']) && isset($_POST['cmbterminal']) && isset($_POST['txtDate1']) && isset($_POST['cmbstatus'])) 
                 {
@@ -2001,6 +2164,174 @@ if ($connected && $connected2 && $connected3)
                 $oas->close();
                 exit;
                 break;
+            
+            // CCT ADDED 12/11/2018 BEGIN
+            //page post for launchpad transfer transactions
+            case 'LPTransferLogs':
+                
+                $vSiteID = $_POST['cmbsite'];
+                $vTerminalID = $_POST['cmbterminal'];
+                $vdate1 = $_POST['txtDate1'];
+                $vFrom = $vdate1 . " " . $cutoff_time;
+                $vTo = date('Y-m-d', strtotime('+1 day', strtotime($vdate1))) . " " . $cutoff_time;
+
+                //for sorting
+                if ($_POST['sidx'] != "") 
+                {
+                    $sort = $_POST['sidx'];
+                } 
+                else 
+                {
+                    $sort = "TransferID";
+                }
+
+                $rcount = $oas->countlptransferlogs($vSiteID, $vTerminalID, $vFrom, $vTo);
+                $count = $rcount['ctrlogs'];
+
+                if ($count > 0) 
+                {
+                    $total_pages = ceil($count / $limit);
+                } 
+                else 
+                {
+                    $total_pages = 0;
+                }
+                
+                if ($page > $total_pages) 
+                {
+                    $page = $total_pages;
+                }
+                
+                $start = $limit * $page - $limit;
+                $limit = (int) $limit;
+
+                $result = $oas->getlptransferlogs($vSiteID, $vTerminalID, $vFrom, $vTo, $start, $limit, $sort, $direction);
+
+                if (count($result) > 0) 
+                {
+                    $i = 0;
+                    $responce->page = $page;
+                    $responce->total = $total_pages;
+                    $responce->records = $count;
+                    foreach ($result as $vview) 
+                    {
+                        switch ($vview['FromTransactionType']) 
+                        {
+                            case 'D': $vfromtranstype = 'Deposit';
+                                break;
+                            case 'W': $vfromtranstype = 'Withdrawal';
+                                break;
+                            case 'RD': $vfromtranstype = 'Re-Deposit';
+                                break;
+                        }        
+        
+                        switch ($vview['FromStatus']) 
+                        {
+                            case 0: $vfromstatus = 'Pending';
+                                break;
+                            case 1: $vfromstatus = 'Successful';
+                                break;
+                            case 2: $vfromstatus = 'Failed';
+                                break;
+                            case 3: $vfromstatus = 'Fulfilled Approved';
+                                break;
+                            case 4: $vfromstatus = 'Fulfilled Denied';
+                                break;
+                            default: $vfromstatus = '';
+                                break;                            
+                        }                        
+                        
+                        switch ($vview['ToTransactionType']) 
+                        {
+                            case 'D': $vtotranstype = 'Deposit';
+                                break;
+                            case 'W': $vtotranstype = 'Withdrawal';
+                                break;
+                            case 'RD': $vtotranstype = 'Re-Deposit';
+                                break;
+                            default: $vtotranstype = '';
+                                break;                                
+                        }        
+        
+                        switch ($vview['ToStatus']) 
+                        {
+                            case 0: $vtostatus = 'Pending';
+                                break;
+                            case 1: $vtostatus = 'Successful';
+                                break;
+                            case 2: $vtostatus = 'Failed';
+                                break;
+                            case 3: $vtostatus = 'Fulfilled Approved';
+                                break;
+                            case 4: $vtostatus = 'Fulfilled Denied';
+                                break;
+                            default: $vtostatus = '';
+                                break;
+                        }              
+
+                        switch ($vview['TransferStatus']) 
+                        {
+                            case 0: $vtransferstatus = 'Pending Withdrawal';
+                                break;
+                            case 1: $vtransferstatus = 'Successful Withdrawal';
+                                break;
+                            case 2: $vtransferstatus = 'Failed Withdrawal';
+                                break;
+                            case 3: $vtransferstatus = 'Pending Deposit';
+                                break;
+                            case 4: $vtransferstatus = 'Successful Deposit';
+                                break;
+                            case 5: $vtransferstatus = 'Failed Deposit';
+                                break;
+                            case 6: $vtransferstatus = 'Pending Re-Deposit';
+                                break;
+                            case 7: $vtransferstatus = 'Successful Re-Deposit';
+                                break;
+                            case 8: $vtransferstatus = 'Failed Re-Deposit';
+                                break;
+                            case 9: $vtransferstatus = 'Successful transfer wallet (zero balance)';
+                                break;
+                            case 90: $vtransferstatus = 'Balance not zero after Withdrawal';
+                                break;
+                            case 91: $vtransferstatus = 'Balance not equal to withdrawn amount';
+                                break;
+                            case 92: $vtransferstatus = 'Re-Deposit amount not equal to withdrawn amount';
+                                break;
+                            case 93: $vtransferstatus = 'Re-Deposit, balance of current casino is not zero';
+                                break;
+                            case 100: $vtransferstatus = 'Manual Redemption (Floating Balance Fulfillment)';
+                                break;
+                            case 101: $vtransferstatus = 'Manual Redemption (LaunchPad Casino Fulfillment)';
+                                break;                            
+                        }   
+
+                        $responce->rows[$i]['cell'] =                                 
+                            array($vview['TransferID'], $vview['LoyaltyCardNumber'],
+                                    $vfromtranstype, number_format($vview['FromAmount'], 2),  $vview['FromServiceID'],
+                                    $vview['FromStartTransDate'], $vview['FromEndTransDate'], $vview['FromServiceTransID'],
+                                    $vview['FromServiceStatus'], $vfromstatus,
+                                    $vtotranstype, number_format($vview['ToAmount'], 2), $vview['ToServiceID'],
+                                    $vview['ToStartTransDate'], $vview['ToEndTransDate'], $vview['ToServiceTransID'],
+                                    $vview['ToServiceStatus'], $vtostatus,
+                                    $vtransferstatus);
+                        $i++;
+                    }
+                } 
+                else 
+                {
+                    $i = 0;
+                    $responce->page = $page;
+                    $responce->total = $total_pages;
+                    $responce->records = $count;
+                    $msg = "LaunchPad Transfer Transactions: No returned result";
+                    $responce->msg = $msg;
+                }
+                echo json_encode($responce);
+                unset($result);
+                $oas->close();
+                exit;
+                break;
+            // CCT ADDED 12/11/2018 END
         }
     }
 

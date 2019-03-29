@@ -4,6 +4,10 @@
  * Modified By: Edson L. Perez
  */
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 include __DIR__."/../sys/class/TopUp.class.php";
 include __DIR__."/../sys/class/LoyaltyUBWrapper.class.php";
 require __DIR__.'/../sys/core/init.php';
@@ -380,8 +384,7 @@ if($connected)
                $ubserviceID = $_POST['txtserviceid'];
                if(isset($usermode))
                {
-                    if ($usermode == 1) 
-                   {
+                    if ($usermode == 1 || $usermode == 3) {
                         $mid = $otopup->getMIDByUBCard($loyaltycardnumber);
                         //check if has sesssion
                         $hasEGM = $otopup->checkIfHasEGMSession($mid);
@@ -415,6 +418,3697 @@ if($connected)
                 }
            break;
 
+
+
+
+
+///TRANSWALLET
+
+
+
+
+
+case "TransferWallet":
+$login = $_POST['terminalcode'];
+$provider = $_POST['txtservices'];
+$vterminalID = $_POST['cmbterminal'];
+$ubserviceID = $_POST['txtserviceid'];
+$ubterminalID = $_POST['txtterminalid'];
+$vserviceBalance = $_POST['txtamount2'];
+$amountToRedeem = $_POST['hdnamtwithdraw'];
+$ticketub = $_POST['txtticketub'];
+$remarksub = $_POST['txtremarksub'];
+$loyaltycardnumber = $_POST['txtcardnumber'];
+$mid = $_POST['txtmid'];
+$usermode = $_POST['txtusermode'];
+$siteID = $_POST['cmbsite'];
+
+if (!isset($siteID) && $siteID == "-1") {
+    $msg = "Please select Site ID";
+}
+
+if (isset($usermode)) {
+    if ($usermode == 1 || $usermode == 3) {
+        $mid = $otopup->getMIDByUBCard($loyaltycardnumber);
+
+        //check if has sesssion
+        $hasTS = $otopup->checkIfHasTermalSession($mid);
+
+        $getservicename = $otopup->getCasinoName($ubserviceID);
+        $servicegrpname = $otopup->getServiceGrpName($ubserviceID);
+
+        $serviceName = $getservicename[0]['ServiceName'];
+
+
+        if (!$hasTS > 0) {
+
+            if ($serviceName == "PWW") {
+                $msg = "Cannot proceed with manual redemption. Kindly ask IR/CS to review player transactions.";
+                echo json_encode($msg);
+                exit;
+            }
+
+            if ($servicegrpname == "RTG" || $servicegrpname == "RTG2" || $servicegrpname == "HAB") {
+
+                $casino = $_SESSION['CasinoArray2'];
+                $rmid = $_SESSION['MID2'];
+
+                $addedPwuu = array(
+                    array('ServiceUsername' => null,
+                        'ServicePassword' => null,
+                        'HashedServicePassword' => null,
+                        'ServiceID' => 1,
+                        'UserMode' => 3,
+                        'isVIP' => null,
+                        'Status' => 1)
+                );
+
+                $casino = array_merge($casino, $addedPwuu);
+                $casinoarray_count = count($casino);
+
+                $casinos = array();
+                $balPerCasino = array();
+
+                if ($casinoarray_count != 0) {
+                    for ($ctr = 0; $ctr < $casinoarray_count; $ctr++) {
+                        if (is_array($casino[$ctr])) {
+                            $casinos[$ctr] = array(
+                                array('ServiceUsername' => $casino[$ctr]['ServiceUsername'],
+                                    'ServicePassword' => $casino[$ctr]['ServicePassword'],
+                                    'HashedServicePassword' => $casino[$ctr]['HashedServicePassword'],
+                                    'ServiceID' => $casino[$ctr]['ServiceID'],
+                                    'UserMode' => $casino[$ctr]['UserMode'],
+                                    'isVIP' => $casino[$ctr]['isVIP'],
+                                    'Status' => $casino[$ctr]['Status'],)
+                            );
+                        } else {
+                            $casinos[$ctr] = array(
+                                array('ServiceUsername' => $casino[$ctr]->ServiceUsername,
+                                    'ServicePassword' => $casino[$ctr]->ServicePassword,
+                                    'HashedServicePassword' => $casino[$ctr]->HashedServicePassword,
+                                    'ServiceID' => $casino[$ctr]->ServiceID,
+                                    'UserMode' => $casino[$ctr]->UserMode,
+                                    'isVIP' => $casino[$ctr]->isVIP,
+                                    'Status' => $casino[$ctr]->Status)
+                            );
+                        }
+
+                        //loop through array output to get casino array from membership card
+                        foreach ($casinos[$ctr] as $value) {
+                            $rserviceuname = $value['ServiceUsername'];
+                            $rservicepassword = $value['ServicePassword'];
+                            $rserviceid = $value['ServiceID'];
+                            $rusermode = $value['UserMode'];
+                            $risvip = $value['isVIP'];
+                            $hashedpassword = $value['HashedServicePassword'];
+                            $rstatus = $value['Status'];
+
+                            $servicename = $otopup->getCasinoName($rserviceid);
+                            $servicegrp = $otopup->getServiceGrpName($rserviceid);
+                            $servicestat = $otopup->getServiceStatus($rserviceid);
+
+                            if ($servicestat == 1) {
+                                //loop htrough services to get if has pedning balance
+                                foreach ($servicename as $service2) {
+                                    $serviceName = $service2['ServiceName'];
+                                    $serviceStatus = $service2['Status'];
+                                    $servicegrp = $servicegrp;
+
+                                    switch (true) {
+                                        case strstr($serviceName, "Habanero UB"): //if provider is Habanero, then
+                                            //call get balance method of Habanero
+                                            $url = $_ServiceAPI[$rserviceid - 1];
+                                            $capiusername = $_HABbrandID;
+                                            $capipassword = $_HABapiKey;
+                                            $capiplayername = '';
+                                            $capiserverID = '';
+                                            $balance = $CasinoGamingCAPI->getBalance($servicegrp, $rserviceid, $url, $rserviceuname, $capiusername, $capipassword, $capiplayername, $capiserverID, $rusermode, $rservicepassword);
+                                            break;
+                                        case strstr($serviceName, "RTG - Sapphire V17 UB"): //if provider is RTG, then
+                                            //call get balance method of RTG
+                                            $url = $_ServiceAPI[$rserviceid - 1];
+                                            $capiusername = $_CAPIUsername;
+                                            $capipassword = $_CAPIPassword;
+                                            $capiplayername = $_CAPIPlayerName;
+                                            $capiserverID = '';
+                                            $balance = $CasinoGamingCAPI->getBalance($servicegrp, $rserviceid, $url, $rserviceuname, $capiusername, $capipassword, $capiplayername, $capiserverID, $rusermode);
+                                            break;
+
+                                        case strstr($serviceName, "PWW"): //if provider is PWW, then
+
+                                            $getTransactionSummaryID = $otopup->getTransactionSummaryID($rmid);
+
+                                            if ($getTransactionSummaryID['TransactionSummaryID']) {
+
+                                                $getMZTransactionTransferDetails = $otopup->getMZTransactionTransferDetails($getTransactionSummaryID['TransactionSummaryID']);
+                                                if (!empty($getMZTransactionTransferDetails)) {
+                                                    $balance = $getMZTransactionTransferDetails['FromAmount'];
+                                                }
+                                            } else {
+                                                $balance = 0;
+                                            }
+
+                                            break;
+
+                                        default :
+                                            $msg = "Error: Invalid Casino Provider";
+                                            echo json_encode($msg);
+                                            exit;
+
+                                            break;
+                                    }
+
+                                    $balPerCasino[] = array(
+                                        "ServiceName" => $serviceName,
+                                        "Balance" => $balance
+                                    );
+                                }
+                            }
+                        }
+                    }
+
+                    $balanceNotZeroCount = 0;
+                    foreach ($balPerCasino as $value) {
+                        if ($getservicename[0]['ServiceName'] <> $value['ServiceName']) {
+                            if ($value['Balance'] > 0) {
+                                $balanceNotZeroCount = $balanceNotZeroCount + 1;
+                            }
+                        }
+                    }
+
+                    if ($balanceNotZeroCount > 0) {
+                        $msg = "Cannot proceed with manual redemption. Multiple balances found on this player. Kindly ask IR/CS to review player transactions.";
+                        echo json_encode($msg);
+                        exit;
+                    }
+
+
+                    $getUBInfo = $otopup->getUBInfo($mid, $ubserviceID);
+
+                    if (empty($getUBInfo)) {
+                        $msg = "Can't get player details";
+                        echo json_encode($msg);
+                        exit;
+                    }
+
+                    $login = $getUBInfo['ServiceUserName'];
+                    $password = $getUBInfo['ServicePassword'];
+
+                    $ubterminalID = null;
+                    $server = $otopup->getCasinoName($ubserviceID);
+                    foreach ($server as $value2) {
+                        $servername = $value2['ServiceName'];
+                        $stat = $value2['Status'];
+                        $usermode = $value2['UserMode'];
+                    }
+
+                    $servicegrp = $otopup->getServiceGrpName($ubserviceID);
+                    $servername = $servicegrp;
+
+                    //check if card is ewallet
+                    $isEwallet = $otopup->checkIsEwallet($mid);
+
+                    $ramount = ereg_replace(",", "", $vserviceBalance); //format number replace (,)
+
+                    $_maxRedeem = ereg_replace(",", "", $_maxRedeem); //format number replace (,)
+                    if ($ramount > $_maxRedeem) {
+                        $balance = $ramount - $_maxRedeem;
+                        $ramount = $_maxRedeem;
+                    } else {
+                        $balance = 0;
+                    }
+
+                    $vsiteID = $siteID;
+                    $vterminalID = $ubterminalID;
+                    $vreportedAmt = ereg_replace(",", "", $vserviceBalance);
+                    $vactualAmt = $ramount;
+                    $vtransactionDate = $otopup->getDate();
+                    $vreqByAID = $aid;
+                    $vprocByAID = $aid;
+                    $vdateEffective = $otopup->getDate();
+                    $vstatus = 0;
+                    $vtransactionID = 0;
+                    $vremarks = $remarksub;
+                    $vticket = $ticketub;
+                    $cmbServerID = $ubserviceID;
+
+                    $vtransStatus = '';
+                    $transsummaryid = $otopup->getLastSummaryID($vterminalID);
+                    $transsummaryid = $transsummaryid['summaryID'];
+
+                    $trans_req_log_last_id = $otopup->getMaxTransreqlogid($loyaltycardnumber, $ubserviceID);
+
+                    $lastmrid = $otopup->insertmanualredemptionub($vsiteID, $vterminalID, $vreportedAmt, $vactualAmt, $vtransactionDate, $vreqByAID, $vprocByAID, $vremarks, $vdateEffective, $vstatus, $vtransactionID, $transsummaryid, $vticket, $cmbServerID, $vtransStatus, $loyaltycardnumber, $mid, $usermode);
+
+                    if ($lastmrid > 0) {
+                        switch (true) {
+                            case strstr($servername, "RTG"): //if provider is RTG, then
+                                if (is_null($trans_req_log_last_id)) {
+                                    $trans_req_log_last_id = "";
+                                }
+                                if (is_null($vterminalID)) {
+                                    $vterminalID = "";
+                                }
+
+                                $url = $_ServiceAPI[$ubserviceID - 1];
+                                $capiusername = $_CAPIUsername;
+                                $capipassword = $_CAPIPassword;
+                                $capiplayername = $_CAPIPlayerName;
+                                $capiserverID = '';
+                                $tracking1 = $trans_req_log_last_id;
+                                $tracking2 = "MR" . "$lastmrid";
+                                $tracking3 = $vterminalID;
+                                $withdraw = array();
+                                //get siteclassificationID
+                                $siteClass = $otopup->getSiteClassByTerminal($vterminalID);
+
+                                $locatorname = null;
+                                //withdraw rtg casino
+                                $withdraw = $CasinoGamingCAPI->Withdraw($servername, $ubserviceID, $url, $login, $capiusername, $capipassword, $capiplayername, $capiserverID, $ramount, $tracking1, $tracking2, $tracking3, $tracking4 = '', $methodname = '', $usermode, $locatorname);
+
+                                break;
+
+                            case strstr($servername, "HAB"): //if provider is Habanero, then
+                                if (is_null($trans_req_log_last_id)) {
+                                    $trans_req_log_last_id = "";
+                                }
+                                if (is_null($vterminalID)) {
+                                    $vterminalID = "";
+                                }
+
+                                $url = $_ServiceAPI[$ubserviceID - 1];
+                                $capiusername = $_HABbrandID;
+                                $capipassword = $_HABapiKey;
+                                $capiplayername = $_CAPIPlayerName;
+                                $capiserverID = '';
+                                $tracking1 = $trans_req_log_last_id;
+                                $tracking2 = "MR" . "$lastmrid";
+                                $tracking3 = $vterminalID;
+                                $withdraw = array();
+                                //get siteclassificationID
+                                $siteClass = $otopup->getSiteClassByTerminal($vterminalID);
+
+                                $locatorname = null;
+                                //withdraw hab casino
+                                $withdraw = $CasinoGamingCAPI->Withdraw($servername, $ubserviceID, $url, $login, $capiusername, $capipassword, $capiplayername, $capiserverID, $ramount, $tracking1, $tracking2, $tracking3, $tracking4 = '', $methodname = '', $usermode, $locatorname, $password);
+
+                                break;
+
+                            default :
+                                $msg = "Error: Invalid Casino Provider";
+                                echo json_encode($msg);
+                                exit;
+                                break;
+                        }
+
+                        switch (true) {
+                            case strstr($servername, "RTG"): //if provider is RTG, then
+                                //check if redemption was successfull, and insert information on manualredemptions and audittrail
+                                if ($withdraw['IsSucceed'] == true) {
+                                    //fetch the information when calling the RTG Withdraw Method
+                                    foreach ($withdraw as $results) {
+                                        $riserror = $results['WithdrawGenericResult']['errorMsg'];
+                                        $reffdate = $results['WithdrawGenericResult']['effDate']; //uses ISO8601 date format
+                                        $rwamount = $results['WithdrawGenericResult']['amount'];
+                                        $rremarks = $results['WithdrawGenericResult']['transactionStatus'];
+                                        $rtransactionID = $results['WithdrawGenericResult']['transactionID'];
+                                    }
+                                    $fmteffdate = str_replace("T", " ", $reffdate);
+                                    $vsiteID = $siteID;
+                                    $vterminalID = $ubterminalID;
+                                    $vreportedAmt = $ramount;
+                                    $vactualAmt = $rwamount;
+                                    $vtransactionDate = $otopup->getDate();
+                                    $vreqByAID = $aid;
+                                    $vprocByAID = $aid;
+                                    //$vremarks = $rremarks;
+                                    $vdateEffective = $fmteffdate;
+                                    $vstatus = 1;
+                                    $vtransactionID = $rtransactionID;
+                                    $vremarks = $remarksub;
+                                    $vticket = $ticketub;
+                                    $cmbServerID = $ubserviceID;
+
+                                    //check if there was no error on withdrawal
+                                    if ($riserror == "OK") {
+                                        $vtransStatus = $rremarks;
+                                        $transsummaryid = $otopup->getLastSummaryID($vterminalID);
+                                        $transsummaryid = $transsummaryid['summaryID'];
+                                        $issucess = $otopup->updateManualRedemptionub($vstatus, $vactualAmt, $vtransactionID, $fmteffdate, $vtransStatus, $lastmrid);
+                                        if ($issucess > 0) {
+                                            //get new balance after redemption
+                                            $balance = $CasinoGamingCAPI->getBalance($servername, $ubserviceID, $url, $login, $capiusername, $capipassword, $capiplayername, $capiserverID);
+
+                                            $ramount = number_format($ramount, 2, ".", ",");
+                                            $balance = number_format($balance, 2, ".", ",");
+
+                                            //update member services
+                                            if ($otopupmembership->open()) {
+                                                $otopupmembership->updateMemberServices($balance, $mid, $ubserviceID, $issucess);
+                                            }
+                                            $otopupmembership->close();
+                                            //insert into audit trail
+                                            $vtransdetails = "transaction id " . $vtransactionID . ",amount " . $vreportedAmt;
+                                            $vauditfuncID = 7;
+                                            $otopup->logtoaudit($new_sessionid, $aid, $vtransdetails, $vtransactionDate, $vipaddress, $vauditfuncID);
+                                            $msg = "Redeemed: " . $ramount . "; Remaining Balance: " . $balance;
+                                            echo json_encode($msg);
+                                            exit;
+                                        } else {
+                                            $msg = "Manual Redemption: Error on inserting manual redemption";
+                                            echo json_encode($msg);
+                                            exit;
+                                        }
+                                    } else {
+                                        if ($riserror == "") {
+                                            $msg = $rremarks;
+                                            echo json_encode($msg);
+                                            exit;
+                                        } else {
+                                            $status = 2;
+                                            $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                            $msg = $riserror; //error message when calling the withdrawal result
+                                            echo json_encode($msg);
+                                            exit;
+                                        }
+                                    }
+                                } else {
+                                    $status = 2;
+                                    $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                    $msg = "Manual Redemption: " . $withdraw['ErrorMessage']; //error message when initially calling the RTG API
+                                    echo json_encode($msg);
+                                    exit;
+                                }
+                                break;
+
+                            case strstr($servername, "HAB"): //if provider is HAB, then
+                                //check if redemption was successful, and insert information on manualredemptions and audittrail
+                                if ($withdraw['IsSucceed'] == true) {
+                                    //fetch the information when calling the RTG Withdraw Method
+                                    foreach ($withdraw as $results) {
+                                        $riserror = $results['withdrawmethodResult']['Message'];
+                                        $rwamount = abs($results['withdrawmethodResult']['Amount']);
+                                        $rremarks = $results['withdrawmethodResult']['Message'];
+                                        $rtransactionID = $results['withdrawmethodResult']['TransactionId'];
+                                        $reffdate = $otopup->getDate();
+                                    }
+
+                                    $fmteffdate = str_replace("T", " ", $reffdate);
+                                    $vsiteID = $siteID;
+                                    $vterminalID = $ubterminalID;
+                                    $vreportedAmt = $ramount;
+                                    $vactualAmt = $rwamount;
+                                    $vtransactionDate = $otopup->getDate();
+                                    $vreqByAID = $aid;
+                                    $vprocByAID = $aid;
+                                    $vdateEffective = $fmteffdate;
+                                    $vstatus = 1;
+                                    $vtransactionID = $rtransactionID;
+                                    $vremarks = $remarksub;
+                                    $vticket = $ticketub;
+                                    $cmbServerID = $ubserviceID;
+
+                                    //check if there was no error on withdrawal
+                                    if ($riserror == "Withdrawal Success") {
+                                        $vtransStatus = $rremarks;
+                                        $transsummaryid = $otopup->getLastSummaryID($vterminalID);
+                                        $transsummaryid = $transsummaryid['summaryID'];
+                                        $issucess = $otopup->updateManualRedemptionub($vstatus, $vactualAmt, $vtransactionID, $fmteffdate, $vtransStatus, $lastmrid);
+                                        if ($issucess > 0) {
+                                            //get new balance after redemption
+                                            $balance = $CasinoGamingCAPI->getBalance($servername, $ubserviceID, $url, $login, $capiusername, $capipassword, $capiplayername, $capiserverID, null, $password);
+
+                                            $ramount = number_format($ramount, 2, ".", ",");
+                                            $balance = number_format($balance, 2, ".", ",");
+
+                                            //update member services
+                                            if ($otopupmembership->open()) {
+                                                $otopupmembership->updateMemberServices($balance, $mid, $ubserviceID, $issucess);
+                                            }
+                                            $otopupmembership->close();
+                                            //insert into audit trail
+                                            $vtransdetails = "transaction id " . $vtransactionID . ",amount " . $vreportedAmt;
+                                            $vauditfuncID = 7;
+                                            $otopup->logtoaudit($new_sessionid, $aid, $vtransdetails, $vtransactionDate, $vipaddress, $vauditfuncID);
+                                            $msg = "Redeemed: " . $ramount . "; Remaining Balance: " . $balance;
+                                            echo json_encode($msg);
+                                            exit;
+                                        } else {
+                                            $msg = "Manual Redemption: Error on inserting manual redemption";
+                                            echo json_encode($msg);
+                                            exit;
+                                        }
+                                    } else {
+                                        if ($riserror == "") {
+                                            $msg = $rremarks;
+                                            echo json_encode($msg);
+                                            exit;
+                                        } else {
+                                            $status = 2;
+                                            $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                            $msg = $riserror; //error message when calling the withdrawal result
+                                            echo json_encode($msg);
+                                            exit;
+                                        }
+                                    }
+                                } else {
+                                    $status = 2;
+                                    $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                    $msg = "Manual Redemption: " . $withdraw['ErrorMessage']; //error message when initially calling the RTG API
+                                    echo json_encode($msg);
+                                    exit;
+                                }
+                                break;
+
+                            default :
+                                $msg = "Error: Invalid Casino Provider";
+                                echo json_encode($msg);
+                                exit;
+                                break;
+                        }
+                    } else {
+                        $msg = "Error: Failed to insert in Manual Redemptions Table";
+                        echo json_encode($msg);
+                        exit;
+                    }
+                }
+            }
+        } else {
+            $getTerminalSessionsDetails = $otopup->getTerminalSessionsDetails($loyaltycardnumber);
+
+            $ActiveServiceStatus = $getTerminalSessionsDetails['ActiveServiceStatus'];
+            $TransactionSummary = $getTerminalSessionsDetails['TransactionSummaryID'];
+
+            $tsTerminalID = $getTerminalSessionsDetails['TerminalID'];
+            $tsServiceID = $getTerminalSessionsDetails['ServiceID'];
+            $tsAmount = $getTerminalSessionsDetails['LastBalance'];
+
+            $getSiteIDByTerminalID = $otopup->getSiteIDByTerminalID($tsTerminalID);
+
+            $tsSiteID = $getSiteIDByTerminalID;
+
+            $MaxTransferID = $otopup->getMaxTransferID($TransactionSummary);
+
+            if ($ActiveServiceStatus == 1 || $ActiveServiceStatus == 8 || $ActiveServiceStatus == 9) {
+                if ($ActiveServiceStatus == 1 || $ActiveServiceStatus == 9) {
+                    $NewActiveServiceStatus = 8;
+                    $updateTerminalSessions = $otopup->updateActiveServiceStatusTW($ActiveServiceStatus, $NewActiveServiceStatus, $loyaltycardnumber);
+                }
+
+                if ($serviceName == "PWW") {
+
+                    if (empty($MaxTransferID)) { // IF NO MZTRANSACTIONTRANSFER RECORD
+                        $updateActiveServiceStatusRollback = $otopup->updateActiveServiceStatusRollback($ActiveServiceStatus, $loyaltycardnumber);
+                        if ($updateActiveServiceStatusRollback) {
+                            $msg = "Cannot proceed with manual redemption. Kindly ask IR/CS to review player transactions.";
+                            echo json_encode($msg);
+                            exit;
+                        } else {
+                            $msg = "Failed to update terminalsessions table.";
+                            echo json_encode($msg);
+                            exit;
+                        }
+                    } else { //IF HAS MZTRANSACTIONTRANSFER RECORD
+                        $getMZTransactionTransferDetails = $otopup->getMZTransactionTransferDetails($TransactionSummary);
+
+                        $mzSiteID = $getMZTransactionTransferDetails['SiteID'];
+                        $mzTerminalID = $getMZTransactionTransferDetails['TerminalID'];
+                        $mzToServiceID = $getMZTransactionTransferDetails['ToServiceID'];
+                        $mzFromServiceID = $getMZTransactionTransferDetails['FromServiceID'];
+                        $mzMID = $getMZTransactionTransferDetails['MID'];
+                        $MzTransferStatus = (int) $getMZTransactionTransferDetails['TransferStatus'];
+
+
+                        if ($MzTransferStatus != 8 && $MzTransferStatus != 90 && $MzTransferStatus != 93) {
+                            $updateActiveServiceStatusRollback = $otopup->updateActiveServiceStatusRollback($ActiveServiceStatus, $loyaltycardnumber);
+                            if ($updateActiveServiceStatusRollback) {
+                                $msg = "Cannot proceed with manual redemption. Kindly ask IR/CS to review player transactions.";
+                                echo json_encode($msg);
+                                exit;
+                            } else {
+                                $msg = "Failed to update terminalsessions table.";
+                                echo json_encode($msg);
+                                exit;
+                            }
+                        }
+
+
+                        switch ($MzTransferStatus) {
+                            case 8:
+
+                                if ($otopupmembership->open()) {
+
+                                    $getPlayerCredentialsByUB = $otopupmembership->getPlayerCredentialsByUB($mid, $mzToServiceID);
+                                }
+
+                                $otopupmembership->close();
+
+                                $UBServiceLogin = $getPlayerCredentialsByUB['ServiceUsername'];
+                                $UBServicePassword = $getPlayerCredentialsByUB['ServicePassword'];
+                                $UBHashedServicePassword = $getPlayerCredentialsByUB['HashedServicePassword'];
+                                $usermode = $getPlayerCredentialsByUB['Usermode'];
+
+                                $getservicename = $otopup->getCasinoName($mzToServiceID);
+                                $servicegrpname = $otopup->getServiceGrpName($mzToServiceID);
+                                $serviceName = $getservicename[0]['ServiceName'];
+
+                                switch (true) {
+
+                                    case strstr($serviceName, "Habanero UB"): //if provider is Habanero, then
+                                        //call get balance method of Habanero
+                                        $url = $_ServiceAPI[$mzToServiceID - 1];
+                                        $capiusername = $_HABbrandID;
+                                        $capipassword = $_HABapiKey;
+                                        $capiplayername = '';
+                                        $capiserverID = '';
+                                        $balance = $CasinoGamingCAPI->getBalance($servicegrpname, $mzToServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $usermode, $UBServicePassword);
+                                        break;
+
+                                    case strstr($serviceName, "RTG - Sapphire V17 UB"): //if provider is RTG, then
+                                        //call get balance method of RTG
+                                        $url = $_ServiceAPI[$mzToServiceID - 1];
+                                        $capiusername = $_CAPIUsername;
+                                        $capipassword = $_CAPIPassword;
+                                        $capiplayername = $_CAPIPlayerName;
+                                        $capiserverID = '';
+                                        $balance = $CasinoGamingCAPI->getBalance($servicegrpname, $mzToServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $usermode);
+                                        break;
+
+                                    default :
+                                        $msg = "Error: Invalid Casino Provider";
+                                        echo json_encode($msg);
+                                        exit;
+                                        break;
+                                }
+
+                                $lastbalance = $balance;
+
+                                $vsiteID = $mzSiteID;
+                                $vterminalID = $mzTerminalID;
+                                $vreportedAmt = 0;
+                                $vactualAmt = 0;
+                                $vtransactionDate = $otopup->getDate();
+                                $vreqByAID = $aid;
+                                $vprocByAID = $aid;
+                                $vdateEffective = $otopup->getDate();
+                                $vstatus = 1;
+                                $vtransactionID = 0;
+                                $vremarks = $remarksub;
+                                $vticket = $ticketub;
+                                $cmbServerID = $mzToServiceID;
+                                $fromServiceID = 1;
+
+                                $vtransStatus = '';
+                                $transsummaryid = $otopup->getLastSummaryID($vterminalID);
+                                $transsummaryid = $transsummaryid['summaryID'];
+
+                                $trans_req_log_last_id = $otopup->getMaxTransreqlogid($loyaltycardnumber, $ubserviceID);
+
+                                $lastmrid = $otopup->insertmanualredemptionub($vsiteID, $vterminalID, $vreportedAmt, $vactualAmt, $vtransactionDate, $vreqByAID, $vprocByAID, $vremarks, $vdateEffective, $vstatus, $vtransactionID, $transsummaryid, $vticket, $cmbServerID, $vtransStatus, $loyaltycardnumber, $mid, $usermode, $MaxTransferID, $fromServiceID);
+
+                                if ($lastmrid > 0) {
+                                    $TransferStatus = 100;
+
+                                    $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
+                                    if ($updateMzTransactionTransfer) {
+                                        $updateTerminalSessionsCredentials = $otopup->updateTerminalSessionsCredentials(1, $mzToServiceID, $UBServiceLogin, $UBServicePassword, $UBHashedServicePassword, $lastbalance, $mzTerminalID);
+
+                                        if ($updateTerminalSessionsCredentials) {
+                                            $updateMember = $otopup->updateMember($mzToServiceID, $mzMID);
+
+                                            $msg = "Succesful Failed Re-Deposit Fulfillment";
+                                            echo json_encode($msg);
+                                            exit;
+                                        } else {
+                                            $msg = "Failed to update terminalsessions table.";
+                                            echo json_encode($msg);
+                                            exit;
+                                        }
+                                    } else {
+                                        $msg = "Failed to update mztransactiontransfer table.";
+                                        echo json_encode($msg);
+                                        exit;
+                                    }
+                                } else {
+                                    $msg = "Failed to insert manualredepmtion table.";
+                                    echo json_encode($msg);
+                                    exit;
+                                }
+                                break;
+
+                            case 90:
+
+                                if ($otopupmembership->open()) {
+
+                                    $getPlayerCredentialsByUB = $otopupmembership->getPlayerCredentialsByUB($mid, $mzFromServiceID);
+                                }
+
+                                $otopupmembership->close();
+
+                                $UBServiceLogin = $getPlayerCredentialsByUB['ServiceUsername'];
+                                $UBServicePassword = $getPlayerCredentialsByUB['ServicePassword'];
+                                $UBHashedServicePassword = $getPlayerCredentialsByUB['HashedServicePassword'];
+                                $usermode = $getPlayerCredentialsByUB['Usermode'];
+
+                                $getservicename = $otopup->getCasinoName($mzFromServiceID);
+                                $servicegrpname = $otopup->getServiceGrpName($mzFromServiceID);
+                                $serviceName = $getservicename[0]['ServiceName'];
+
+                                switch (true) {
+
+                                    case strstr($serviceName, "Habanero UB"): //if provider is Habanero, then
+                                        //call get balance method of Habanero
+                                        $url = $_ServiceAPI[$mzFromServiceID - 1];
+                                        $capiusername = $_HABbrandID;
+                                        $capipassword = $_HABapiKey;
+                                        $capiplayername = '';
+                                        $capiserverID = '';
+                                        $balance = $CasinoGamingCAPI->getBalance($servicegrpname, $mzFromServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $usermode, $UBServicePassword);
+                                        break;
+
+                                    case strstr($serviceName, "RTG - Sapphire V17 UB"): //if provider is RTG, then
+                                        //call get balance method of RTG
+                                        $url = $_ServiceAPI[$mzFromServiceID - 1];
+                                        $capiusername = $_CAPIUsername;
+                                        $capipassword = $_CAPIPassword;
+                                        $capiplayername = $_CAPIPlayerName;
+                                        $capiserverID = '';
+                                        $balance = $CasinoGamingCAPI->getBalance($servicegrpname, $mzFromServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $usermode);
+                                        break;
+
+                                    default :
+                                        $msg = "Error: Invalid Casino Provider";
+                                        echo json_encode($msg);
+                                        exit;
+                                        break;
+                                }
+
+                                $lastbalance = $balance;
+
+                                $vsiteID = $mzSiteID;
+                                $vterminalID = $mzTerminalID;
+                                $vreportedAmt = ereg_replace(",", "", $lastbalance);
+                                $vactualAmt = $lastbalance;
+                                $vtransactionDate = $otopup->getDate();
+                                $vreqByAID = $aid;
+                                $vprocByAID = $aid;
+                                $vdateEffective = $otopup->getDate();
+                                $vstatus = 0;
+                                $vtransactionID = 0;
+                                $vremarks = $remarksub;
+                                $vticket = $ticketub;
+                                $cmbServerID = $mzFromServiceID;
+                                $fromServiceID = 1;
+
+                                $vtransStatus = '';
+                                $transsummaryid = $otopup->getLastSummaryID($vterminalID);
+                                $transsummaryid = $transsummaryid['summaryID'];
+
+                                $trans_req_log_last_id = $otopup->getMaxTransreqlogid($loyaltycardnumber, $mzFromServiceID);
+
+                                $lastmrid = $otopup->insertmanualredemptionub($vsiteID, $vterminalID, $vreportedAmt, $vactualAmt, $vtransactionDate, $vreqByAID, $vprocByAID, $vremarks, $vdateEffective, $vstatus, $vtransactionID, $transsummaryid, $vticket, $cmbServerID, $vtransStatus, $loyaltycardnumber, $mid, $usermode, $MaxTransferID, $fromServiceID);
+
+                                if ($lastmrid > 0) {
+
+                                    switch (true) {
+                                        case strstr($serviceName, "RTG - Sapphire V17 UB"): //if provider is RTG, then
+                                            if (is_null($trans_req_log_last_id)) {
+                                                $trans_req_log_last_id = "";
+                                            }
+                                            if (is_null($vterminalID)) {
+                                                $vterminalID = "";
+                                            }
+
+                                            $url = $_ServiceAPI[$mzFromServiceID - 1];
+                                            $capiusername = $_CAPIUsername;
+                                            $capipassword = $_CAPIPassword;
+                                            $capiplayername = $_CAPIPlayerName;
+                                            $capiserverID = '';
+                                            $tracking1 = $trans_req_log_last_id;
+                                            $tracking2 = "MR" . "$lastmrid";
+                                            $tracking3 = $vterminalID;
+                                            $withdraw = array();
+                                            //get siteclassificationID
+                                            $siteClass = $otopup->getSiteClassByTerminal($vterminalID);
+
+                                            $locatorname = null;
+                                            //withdraw rtg casino
+                                            $withdraw = $CasinoGamingCAPI->Withdraw($servicegrpname, $mzFromServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $lastbalance, $tracking1, $tracking2, $tracking3, $tracking4 = '', $methodname = '', $usermode, $locatorname);
+
+                                            break;
+
+                                        case strstr($serviceName, "Habanero UB"): //if provider is Habanero, then
+                                            if (is_null($trans_req_log_last_id)) {
+                                                $trans_req_log_last_id = "";
+                                            }
+                                            if (is_null($vterminalID)) {
+                                                $vterminalID = "";
+                                            }
+
+                                            $url = $_ServiceAPI[$mzFromServiceID - 1];
+                                            $capiusername = $_HABbrandID;
+                                            $capipassword = $_HABapiKey;
+                                            $capiplayername = $_CAPIPlayerName;
+                                            $capiserverID = '';
+                                            $tracking1 = $trans_req_log_last_id;
+                                            $tracking2 = "MR" . "$lastmrid";
+                                            $tracking3 = $vterminalID;
+                                            $withdraw = array();
+                                            //get siteclassificationID
+                                            $siteClass = $otopup->getSiteClassByTerminal($vterminalID);
+
+                                            $locatorname = null;
+                                            //withdraw hab casino
+                                            $withdraw = $CasinoGamingCAPI->Withdraw($servicegrpname, $mzFromServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $lastbalance, $tracking1, $tracking2, $tracking3, $tracking4 = '', $methodname = '', $usermode, $locatorname, $UBServicePassword);
+
+                                            break;
+
+                                        default :
+                                            $msg = "Error: Invalid Casino Provider";
+                                            echo json_encode($msg);
+                                            exit;
+                                            break;
+                                    }
+
+                                    switch (true) {
+
+                                        case strstr($serviceName, "RTG - Sapphire V17 UB"): //if provider is RTG, then
+                                            //check if redemption was successfull, and insert information on manualredemptions and audittrail
+                                            if ($withdraw['IsSucceed'] == true) {
+                                                //fetch the information when calling the RTG Withdraw Method
+                                                foreach ($withdraw as $results) {
+                                                    $riserror = $results['WithdrawGenericResult']['errorMsg'];
+                                                    $reffdate = $results['WithdrawGenericResult']['effDate']; //uses ISO8601 date format
+                                                    $rwamount = $results['WithdrawGenericResult']['amount'];
+                                                    $rremarks = $results['WithdrawGenericResult']['transactionStatus'];
+                                                    $rtransactionID = $results['WithdrawGenericResult']['transactionID'];
+                                                }
+                                                $fmteffdate = str_replace("T", " ", $reffdate);
+                                                $vsiteID = $mzSiteID;
+                                                $vterminalID = $mzTerminalID;
+                                                $vreportedAmt = $lastbalance;
+                                                $vactualAmt = $lastbalance;
+                                                $vtransactionDate = $otopup->getDate();
+                                                $vreqByAID = $aid;
+                                                $vprocByAID = $aid;
+                                                //$vremarks = $rremarks;
+                                                $vdateEffective = $fmteffdate;
+                                                $vstatus = 1;
+                                                $vtransactionID = $rtransactionID;
+                                                $vremarks = $remarksub;
+                                                $vticket = $ticketub;
+                                                $cmbServerID = $mzFromServiceID;
+
+                                                //check if there was no error on withdrawal
+                                                if ($riserror == "OK") {
+                                                    $vtransStatus = $rremarks;
+                                                    $transsummaryid = $otopup->getLastSummaryID($vterminalID);
+                                                    $transsummaryid = $transsummaryid['summaryID'];
+                                                    $issucess = $otopup->updateManualRedemptionub($vstatus, $vactualAmt, $vtransactionID, $fmteffdate, $vtransStatus, $lastmrid);
+                                                    if ($issucess > 0) {
+
+                                                        //get new balance after redemption
+                                                        $balance = $CasinoGamingCAPI->getBalance($servicegrpname, $mzFromServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID);
+
+                                                        $TransferStatus = 100;
+
+                                                        $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
+                                                        if ($updateMzTransactionTransfer) {
+                                                            $updateTerminalSessionsCredentials = $otopup->updateTerminalSessionsCredentials(1, $mzFromServiceID, $UBServiceLogin, $UBServicePassword, $UBHashedServicePassword, $balance, $mzTerminalID);
+
+                                                            if ($updateTerminalSessionsCredentials) {
+                                                                $updateTerminalSessionsCredentials = $otopup->updateMember($mzFromServiceID, $mzMID);
+
+                                                                $msg = "Succesful Failed Re-Deposit Fulfillment";
+                                                                echo json_encode($msg);
+                                                                exit;
+                                                            } else {
+                                                                $msg = "Failed to update terminalsessions table.";
+                                                                echo json_encode($msg);
+                                                                exit;
+                                                            }
+                                                        } else {
+                                                            $msg = "Failed to update mztransactiontransfer table.";
+                                                            echo json_encode($msg);
+                                                            exit;
+                                                        }
+
+                                                        $ramount = number_format($ramount, 2, ".", ",");
+                                                        $balance = number_format($balance, 2, ".", ",");
+
+                                                        //update member services
+                                                        if ($otopupmembership->open()) {
+                                                            $otopupmembership->updateMemberServices($balance, $mid, $mzFromServiceID, $issucess);
+                                                        }
+                                                        $otopupmembership->close();
+                                                        //insert into audit trail
+                                                        $vtransdetails = "transaction id " . $vtransactionID . ",amount " . $vreportedAmt;
+                                                        $vauditfuncID = 7;
+                                                        $otopup->logtoaudit($new_sessionid, $aid, $vtransdetails, $vtransactionDate, $vipaddress, $vauditfuncID);
+                                                        $msg = "Redeemed: " . $ramount . "; Remaining Balance: " . $balance;
+                                                        echo json_encode($msg);
+                                                        exit;
+                                                    } else {
+                                                        $msg = "Manual Redemption: Error on inserting manual redemption";
+                                                        echo json_encode($msg);
+                                                        exit;
+                                                    }
+                                                } else {
+                                                    if ($riserror == "") {
+                                                        $status = 2;
+                                                        $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                        $msg = $rremarks;
+                                                        echo json_encode($msg);
+                                                        exit;
+                                                    } else {
+                                                        $status = 2;
+                                                        $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                        $msg = $riserror; //error message when calling the withdrawal result
+                                                        echo json_encode($msg);
+                                                        exit;
+                                                    }
+                                                }
+                                            } else {
+                                                $status = 2;
+                                                $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                $msg = "Manual Redemption: " . $withdraw['ErrorMessage']; //error message when initially calling the RTG API
+                                                echo json_encode($msg);
+                                                exit;
+                                            }
+                                            break;
+
+                                        case strstr($serviceName, "Habanero UB"): //if provider is HAB, then
+                                            //check if redemption was successful, and insert information on manualredemptions and audittrail
+                                            if ($withdraw['IsSucceed'] == true) {
+                                                //fetch the information when calling the RTG Withdraw Method
+                                                foreach ($withdraw as $results) {
+                                                    $riserror = $results['withdrawmethodResult']['Message'];
+                                                    $rwamount = abs($results['withdrawmethodResult']['Amount']);
+                                                    $rremarks = $results['withdrawmethodResult']['Message'];
+                                                    $rtransactionID = $results['withdrawmethodResult']['TransactionId'];
+                                                    $reffdate = $otopup->getDate();
+                                                }
+
+                                                $fmteffdate = str_replace("T", " ", $reffdate);
+                                                $vsiteID = $mzSiteID;
+                                                $vterminalID = $mzTerminalID;
+                                                $vreportedAmt = $lastbalance;
+                                                $vactualAmt = $rwamount;
+                                                $vtransactionDate = $otopup->getDate();
+                                                $vreqByAID = $aid;
+                                                $vprocByAID = $aid;
+                                                $vdateEffective = $fmteffdate;
+                                                $vstatus = 1;
+                                                $vtransactionID = $rtransactionID;
+                                                $vremarks = $remarksub;
+                                                $vticket = $ticketub;
+                                                $cmbServerID = $mzFromServiceID;
+
+                                                //////////////////////123//////////////////
+                                                //check if there was no error on withdrawal
+                                                if ($riserror == "Withdrawal Success") {
+                                                    $vtransStatus = $rremarks;
+                                                    $transsummaryid = $otopup->getLastSummaryID($vterminalID);
+                                                    $transsummaryid = $transsummaryid['summaryID'];
+                                                    $issucess = $otopup->updateManualRedemptionub($vstatus, $vactualAmt, $vtransactionID, $fmteffdate, $vtransStatus, $lastmrid);
+                                                    if ($issucess > 0) {
+
+
+                                                        $TransferStatus = 100;
+
+                                                        $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
+                                                        if ($updateMzTransactionTransfer) {
+                                                            $updateTerminalSessionsCredentials = $otopup->updateTerminalSessionsCredentials(1, $mzFromServiceID, $UBServiceLogin, $UBServicePassword, $UBHashedServicePassword, $lastbalance, $mzTerminalID);
+
+                                                            if ($updateTerminalSessionsCredentials) {
+
+                                                                if ($otopupmembership->open()) {
+                                                                    $updateTerminalSessionsCredentials = $otopupmembership->updateMember($mzFromServiceID, $mzMID);
+                                                                }
+                                                                $otopupmembership->close();
+
+                                                                $msg = "Succesful Failed Re-Deposit Fulfillment";
+                                                                echo json_encode($msg);
+                                                                exit;
+                                                            } else {
+                                                                $msg = "Failed to update terminalsessions table.";
+                                                                echo json_encode($msg);
+                                                                exit;
+                                                            }
+                                                        } else {
+                                                            $msg = "Failed to update mztransactiontransfer table.";
+                                                            echo json_encode($msg);
+                                                            exit;
+                                                        }
+
+                                                        //get new balance after redemption
+                                                        $balance = $CasinoGamingCAPI->getBalance($servername, $mzFromServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, null, $UBServicePassword);
+
+                                                        $ramount = number_format($ramount, 2, ".", ",");
+                                                        $balance = number_format($balance, 2, ".", ",");
+
+                                                        //update member services
+                                                        if ($otopupmembership->open()) {
+                                                            $otopupmembership->updateMemberServices($balance, $mid, $mzFromServiceID, $issucess);
+                                                        }
+                                                        $otopupmembership->close();
+                                                        //insert into audit trail
+                                                        $vtransdetails = "transaction id " . $vtransactionID . ",amount " . $vreportedAmt;
+                                                        $vauditfuncID = 7;
+                                                        $otopup->logtoaudit($new_sessionid, $aid, $vtransdetails, $vtransactionDate, $vipaddress, $vauditfuncID);
+                                                        $msg = "Redeemed: " . $ramount . "; Remaining Balance: " . $balance;
+                                                        echo json_encode($msg);
+                                                        exit;
+                                                    } else {
+                                                        $msg = "Manual Redemption: Error on inserting manual redemption";
+                                                        echo json_encode($msg);
+                                                        exit;
+                                                    }
+                                                } else {
+                                                    if ($riserror == "") {
+                                                        $status = 2;
+                                                        $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                        $msg = $rremarks;
+                                                        echo json_encode($msg);
+                                                        exit;
+                                                    } else {
+                                                        $status = 2;
+                                                        $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                        $msg = $riserror; //error message when calling the withdrawal result
+                                                        echo json_encode($msg);
+                                                        exit;
+                                                    }
+                                                }
+                                            } else {
+                                                $status = 2;
+                                                $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                $msg = "Manual Redemption: " . $withdraw['ErrorMessage']; //error message when initially calling the RTG API
+                                                echo json_encode($msg);
+                                                exit;
+                                            }
+                                            break;
+
+                                        default :
+                                            $msg = "Error: Invalid Casino Provider";
+                                            echo json_encode($msg);
+                                            exit;
+                                            break;
+                                    }
+                                }
+                                break;
+
+                            case 93:
+
+                                if ($otopupmembership->open()) {
+
+                                    $getPlayerCredentialsByUB = $otopupmembership->getPlayerCredentialsByUB($mid, $mzToServiceID);
+                                }
+
+                                $otopupmembership->close();
+
+
+                                $UBServiceLogin = $getPlayerCredentialsByUB['ServiceUsername'];
+                                $UBServicePassword = $getPlayerCredentialsByUB['ServicePassword'];
+                                $UBHashedServicePassword = $getPlayerCredentialsByUB['HashedServicePassword'];
+                                $usermode = $getPlayerCredentialsByUB['Usermode'];
+
+                                $getservicename = $otopup->getCasinoName($mzToServiceID);
+                                $servicegrpname = $otopup->getServiceGrpName($mzToServiceID);
+                                $serviceName = $getservicename[0]['ServiceName'];
+
+                                switch (true) {
+
+                                    case strstr($serviceName, "Habanero UB"): //if provider is Habanero, then
+                                        //call get balance method of Habanero
+                                        $url = $_ServiceAPI[$mzToServiceID - 1];
+                                        $capiusername = $_HABbrandID;
+                                        $capipassword = $_HABapiKey;
+                                        $capiplayername = '';
+                                        $capiserverID = '';
+                                        $balance = $CasinoGamingCAPI->getBalance($servicegrpname, $mzToServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $usermode, $UBServicePassword);
+                                        break;
+
+                                    case strstr($serviceName, "RTG - Sapphire V17 UB"): //if provider is RTG, then
+                                        //call get balance method of RTG
+                                        $url = $_ServiceAPI[$mzToServiceID - 1];
+                                        $capiusername = $_CAPIUsername;
+                                        $capipassword = $_CAPIPassword;
+                                        $capiplayername = $_CAPIPlayerName;
+                                        $capiserverID = '';
+                                        $balance = $CasinoGamingCAPI->getBalance($servicegrpname, $mzToServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $usermode);
+                                        break;
+
+                                    default :
+                                        $msg = "Error: Invalid Casino Provider";
+                                        echo json_encode($msg);
+                                        exit;
+                                        break;
+                                }
+
+                                $lastbalance = $balance;
+
+                                $vsiteID = $mzSiteID;
+                                $vterminalID = $mzTerminalID;
+                                $vreportedAmt = ereg_replace(",", "", $lastbalance);
+                                $vactualAmt = $lastbalance;
+                                $vtransactionDate = $otopup->getDate();
+                                $vreqByAID = $aid;
+                                $vprocByAID = $aid;
+                                $vdateEffective = $otopup->getDate();
+                                $vstatus = 0;
+                                $vtransactionID = 0;
+                                $vremarks = $remarksub;
+                                $vticket = $ticketub;
+                                $cmbServerID = $mzToServiceID;
+                                $fromServiceID = 1;
+
+                                $vtransStatus = '';
+                                $transsummaryid = $otopup->getLastSummaryID($vterminalID);
+                                $transsummaryid = $transsummaryid['summaryID'];
+
+                                $trans_req_log_last_id = $otopup->getMaxTransreqlogid($loyaltycardnumber, $mzToServiceID);
+
+                                $lastmrid = $otopup->insertmanualredemptionub($vsiteID, $vterminalID, $vreportedAmt, $vactualAmt, $vtransactionDate, $vreqByAID, $vprocByAID, $vremarks, $vdateEffective, $vstatus, $vtransactionID, $transsummaryid, $vticket, $cmbServerID, $vtransStatus, $loyaltycardnumber, $mid, $usermode, $MaxTransferID, $fromServiceID);
+
+                                if ($lastmrid > 0) {
+
+                                    switch (true) {
+                                        case strstr($serviceName, "RTG - Sapphire V17 UB"): //if provider is RTG, then
+                                            if (is_null($trans_req_log_last_id)) {
+                                                $trans_req_log_last_id = "";
+                                            }
+                                            if (is_null($vterminalID)) {
+                                                $vterminalID = "";
+                                            }
+
+                                            $url = $_ServiceAPI[$mzToServiceID - 1];
+                                            $capiusername = $_CAPIUsername;
+                                            $capipassword = $_CAPIPassword;
+                                            $capiplayername = $_CAPIPlayerName;
+                                            $capiserverID = '';
+                                            $tracking1 = $trans_req_log_last_id;
+                                            $tracking2 = "MR" . "$lastmrid";
+                                            $tracking3 = $mzTerminalID;
+                                            $withdraw = array();
+                                            //get siteclassificationID
+                                            $siteClass = $otopup->getSiteClassByTerminal($vterminalID);
+
+                                            $locatorname = null;
+                                            //withdraw rtg casino
+                                            $withdraw = $CasinoGamingCAPI->Withdraw($servicegrpname, $mzToServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $lastbalance, $tracking1, $tracking2, $tracking3, $tracking4 = '', $methodname = '', $usermode, $locatorname);
+
+                                            break;
+
+                                        case strstr($serviceName, "Habanero UB"): //if provider is RTG, then
+                                            if (is_null($trans_req_log_last_id)) {
+                                                $trans_req_log_last_id = "";
+                                            }
+                                            if (is_null($vterminalID)) {
+                                                $vterminalID = "";
+                                            }
+
+                                            $url = $_ServiceAPI[$mzToServiceID - 1];
+                                            $capiusername = $_HABbrandID;
+                                            $capipassword = $_HABapiKey;
+                                            $capiplayername = $_CAPIPlayerName;
+                                            $capiserverID = '';
+                                            $tracking1 = $trans_req_log_last_id;
+                                            $tracking2 = "MR" . "$lastmrid";
+                                            $tracking3 = $mzTerminalID;
+                                            $withdraw = array();
+                                            //get siteclassificationID
+                                            $siteClass = $otopup->getSiteClassByTerminal($vterminalID);
+
+                                            $locatorname = null;
+                                            //withdraw hab casino
+                                            $withdraw = $CasinoGamingCAPI->Withdraw($servicegrpname, $mzToServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $lastbalance, $tracking1, $tracking2, $tracking3, $tracking4 = '', $methodname = '', $usermode, $locatorname, $UBServicePassword);
+
+                                            break;
+
+                                        default :
+                                            $msg = "Error: Invalid Casino Provider";
+                                            echo json_encode($msg);
+                                            exit;
+                                            break;
+                                    }
+
+                                    switch (true) {
+
+                                        case strstr($serviceName, "RTG - Sapphire V17 UB"): //if provider is RTG, then
+                                            //check if redemption was successfull, and insert information on manualredemptions and audittrail
+                                            if ($withdraw['IsSucceed'] == true) {
+                                                //fetch the information when calling the RTG Withdraw Method
+                                                foreach ($withdraw as $results) {
+                                                    $riserror = $results['WithdrawGenericResult']['errorMsg'];
+                                                    $reffdate = $results['WithdrawGenericResult']['effDate']; //uses ISO8601 date format
+                                                    $rwamount = $results['WithdrawGenericResult']['amount'];
+                                                    $rremarks = $results['WithdrawGenericResult']['transactionStatus'];
+                                                    $rtransactionID = $results['WithdrawGenericResult']['transactionID'];
+                                                }
+                                                $fmteffdate = str_replace("T", " ", $reffdate);
+                                                $vsiteID = $mzSiteID;
+                                                $vterminalID = $mzTerminalID;
+                                                $vreportedAmt = $lastbalance;
+                                                $vactualAmt = $lastbalance;
+                                                $vtransactionDate = $otopup->getDate();
+                                                $vreqByAID = $aid;
+                                                $vprocByAID = $aid;
+                                                //$vremarks = $rremarks;
+                                                $vdateEffective = $fmteffdate;
+                                                $vstatus = 1;
+                                                $vtransactionID = $rtransactionID;
+                                                $vremarks = $remarksub;
+                                                $vticket = $ticketub;
+                                                $cmbServerID = $mzToServiceID;
+
+                                                //check if there was no error on withdrawal
+                                                if ($riserror == "OK") {
+                                                    $vtransStatus = $rremarks;
+                                                    $transsummaryid = $otopup->getLastSummaryID($vterminalID);
+                                                    $transsummaryid = $transsummaryid['summaryID'];
+                                                    $issucess = $otopup->updateManualRedemptionub($vstatus, $vactualAmt, $vtransactionID, $fmteffdate, $vtransStatus, $lastmrid);
+                                                    if ($issucess > 0) {
+
+
+                                                        //get new balance after redemption
+                                                        $balance = $CasinoGamingCAPI->getBalance($servicegrpname, $mzToServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID);
+
+                                                        $TransferStatus = 100;
+
+                                                        $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
+                                                        if ($updateMzTransactionTransfer) {
+                                                            $updateTerminalSessionsCredentials = $otopup->updateTerminalSessionsCredentials(1, $mzToServiceID, $UBServiceLogin, $UBServicePassword, $UBHashedServicePassword, $balance, $mzTerminalID);
+
+                                                            if ($updateTerminalSessionsCredentials) {
+                                                                $updateTerminalSessionsCredentials = $otopup->updateMember($mzToServiceID, $mzMID);
+
+                                                                $msg = "Succesful Failed Re-Deposit Fulfillment";
+                                                                echo json_encode($msg);
+                                                                exit;
+                                                            } else {
+                                                                $msg = "Failed to update terminalsessions table.";
+                                                                echo json_encode($msg);
+                                                                exit;
+                                                            }
+                                                        } else {
+                                                            $msg = "Failed to update mztransactiontransfer table.";
+                                                            echo json_encode($msg);
+                                                            exit;
+                                                        }
+
+
+                                                        $ramount = number_format($ramount, 2, ".", ",");
+                                                        $balance = number_format($balance, 2, ".", ",");
+
+                                                        //update member services
+                                                        if ($otopupmembership->open()) {
+                                                            $otopupmembership->updateMemberServices($balance, $mid, $mzToServiceID, $issucess);
+                                                        }
+                                                        $otopupmembership->close();
+
+
+                                                        if ($otopupmembership->open()) {
+                                                            $updateTerminalSessionsCredentials = $otopupmembership->updateMember($mzFromServiceID, $mzMID);
+                                                        }
+                                                        //insert into audit trail
+                                                        $vtransdetails = "transaction id " . $vtransactionID . ",amount " . $vreportedAmt;
+                                                        $vauditfuncID = 7;
+                                                        $otopup->logtoaudit($new_sessionid, $aid, $vtransdetails, $vtransactionDate, $vipaddress, $vauditfuncID);
+                                                        $msg = "Redeemed: " . $ramount . "; Remaining Balance: " . $balance;
+                                                        echo json_encode($msg);
+                                                        exit;
+                                                    } else {
+                                                        $msg = "Manual Redemption: Error on inserting manual redemption";
+                                                        echo json_encode($msg);
+                                                        exit;
+                                                    }
+                                                } else {
+                                                    if ($riserror == "") {
+                                                        $status = 2;
+                                                        $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                        $msg = $rremarks;
+                                                        echo json_encode($msg);
+                                                        exit;
+                                                    } else {
+                                                        $status = 2;
+                                                        $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                        $msg = $riserror; //error message when calling the withdrawal result
+                                                        echo json_encode($msg);
+                                                        exit;
+                                                    }
+                                                }
+                                            } else {
+                                                $status = 2;
+                                                $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                $msg = "Manual Redemption: " . $withdraw['ErrorMessage']; //error message when initially calling the RTG API
+                                                echo json_encode($msg);
+                                                exit;
+                                            }
+                                            break;
+
+                                        case strstr($serviceName, "Habanero UB"): //if provider is RTG, then
+                                            //check if redemption was successful, and insert information on manualredemptions and audittrail
+                                            if ($withdraw['IsSucceed'] == true) {
+                                                //fetch the information when calling the RTG Withdraw Method
+                                                foreach ($withdraw as $results) {
+                                                    $riserror = $results['withdrawmethodResult']['Message'];
+                                                    $rwamount = abs($results['withdrawmethodResult']['Amount']);
+                                                    $rremarks = $results['withdrawmethodResult']['Message'];
+                                                    $rtransactionID = $results['withdrawmethodResult']['TransactionId'];
+                                                    $reffdate = $otopup->getDate();
+                                                }
+
+                                                $fmteffdate = str_replace("T", " ", $reffdate);
+                                                $vsiteID = $mzSiteID;
+                                                $vterminalID = $mzTerminalID;
+                                                $vreportedAmt = $lastbalance;
+                                                $vactualAmt = $lastbalance;
+                                                $vtransactionDate = $otopup->getDate();
+                                                $vreqByAID = $aid;
+                                                $vprocByAID = $aid;
+                                                $vdateEffective = $fmteffdate;
+                                                $vstatus = 1;
+                                                $vtransactionID = $rtransactionID;
+                                                $vremarks = $remarksub;
+                                                $vticket = $ticketub;
+                                                $cmbServerID = $mzToServiceID;
+
+                                                //////////////////////123//////////////////
+                                                //check if there was no error on withdrawal
+                                                if ($riserror == "Withdrawal Success") {
+                                                    $vtransStatus = $rremarks;
+                                                    $transsummaryid = $otopup->getLastSummaryID($vterminalID);
+                                                    $transsummaryid = $transsummaryid['summaryID'];
+                                                    $issucess = $otopup->updateManualRedemptionub($vstatus, $vactualAmt, $vtransactionID, $fmteffdate, $vtransStatus, $lastmrid);
+                                                    if ($issucess > 0) {
+
+                                                        //get new balance after redemption
+                                                        $balance = $CasinoGamingCAPI->getBalance($servicegrpname, $mzToServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, null, $UBServicePassword);
+
+                                                        $TransferStatus = 100;
+
+                                                        $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
+                                                        if ($updateMzTransactionTransfer) {
+                                                            $updateTerminalSessionsCredentials = $otopup->updateTerminalSessionsCredentials(1, $mzToServiceID, $UBServiceLogin, $UBServicePassword, $UBHashedServicePassword, $lastbalance, $mzTerminalID);
+
+                                                            if ($updateTerminalSessionsCredentials) {
+                                                                if ($otopupmembership->open()) {
+                                                                    $updateTerminalSessionsCredentials = $otopupmembership->updateMember($mzFromServiceID, $mzMID);
+                                                                }
+                                                                $otopupmembership->close();
+                                                                
+                                                                $msg = "Succesful Failed Re-Deposit Fulfillment";
+                                                                echo json_encode($msg);
+                                                                exit;
+                                                            } else {
+                                                                $msg = "Failed to update terminalsessions table.";
+                                                                echo json_encode($msg);
+                                                                exit;
+                                                            }
+                                                        } else {
+                                                            $msg = "Failed to update mztransactiontransfer table.";
+                                                            echo json_encode($msg);
+                                                            exit;
+                                                        }
+
+
+                                                        $ramount = number_format($ramount, 2, ".", ",");
+                                                        $balance = number_format($balance, 2, ".", ",");
+
+                                                        //update member services
+                                                        if ($otopupmembership->open()) {
+                                                            $otopupmembership->updateMemberServices($balance, $mid, $mzToServiceID, $issucess);
+                                                        }
+                                                        $otopupmembership->close();
+                                                        //insert into audit trail
+                                                        $vtransdetails = "transaction id " . $vtransactionID . ",amount " . $vreportedAmt;
+                                                        $vauditfuncID = 7;
+                                                        $otopup->logtoaudit($new_sessionid, $aid, $vtransdetails, $vtransactionDate, $vipaddress, $vauditfuncID);
+                                                        $msg = "Redeemed: " . $ramount . "; Remaining Balance: " . $balance;
+                                                        echo json_encode($msg);
+                                                        exit;
+                                                    } else {
+                                                        $msg = "Manual Redemption: Error on inserting manual redemption";
+                                                        echo json_encode($msg);
+                                                        exit;
+                                                    }
+                                                } else {
+                                                    if ($riserror == "") {
+                                                        $status = 2;
+                                                        $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                        $msg = $rremarks;
+                                                        echo json_encode($msg);
+                                                        exit;
+                                                    } else {
+                                                        $status = 2;
+                                                        $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                        $msg = $riserror; //error message when calling the withdrawal result
+                                                        echo json_encode($msg);
+                                                        exit;
+                                                    }
+                                                }
+                                            } else {
+                                                $status = 2;
+                                                $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                $msg = "Manual Redemption: " . $withdraw['ErrorMessage']; //error message when initially calling the RTG API
+                                                echo json_encode($msg);
+                                                exit;
+                                            }
+                                            break;
+
+                                        default :
+                                            $msg = "Error: Invalid Casino Provider";
+                                            echo json_encode($msg);
+                                            exit;
+                                            break;
+                                    }
+                                }
+                                break;
+
+                            default:
+                                $msg = "Error: Invalid Active Service Status";
+                                echo json_encode($msg);
+                                exit;
+                                break;
+                        }
+                    }
+                } else if ($servicegrpname == "RTG" || $servicegrpname == "RTG2" || $servicegrpname == "HAB") {
+
+                    $getTerminalSessionsDetails = $otopup->getTerminalSessionsDetails($loyaltycardnumber);
+
+                    $ActiveServiceStatus = $getTerminalSessionsDetails['ActiveServiceStatus'];
+                    $TransactionSummary = $getTerminalSessionsDetails['TransactionSummaryID'];
+
+                    $tsTerminalID = $getTerminalSessionsDetails['TerminalID'];
+                    $tsServiceID = $getTerminalSessionsDetails['ServiceID'];
+                    $tsAmount = $getTerminalSessionsDetails['LastBalance'];
+
+                    $getSiteIDByTerminalID = $otopup->getSiteIDByTerminalID($tsTerminalID);
+
+                    $tsSiteID = $getSiteIDByTerminalID;
+
+
+                    if (empty($MaxTransferID)) { // IF NO MZTRANSACTIONTRANSFER RECORD
+                        if ($tsServiceID <> $ubserviceID) {
+
+                            $updateActiveServiceStatusRollback = $otopup->updateActiveServiceStatusRollback($ActiveServiceStatus, $loyaltycardnumber);
+
+                            if ($updateActiveServiceStatusRollback) {
+                                $msg = "No pending transaction to fulfill";
+                                echo json_encode($msg);
+                                exit;
+                            }
+                        }
+
+                        if ($otopupmembership->open()) {
+
+                            $getPlayerCredentialsByUB = $otopupmembership->getPlayerCredentialsByUB($mid, $tsServiceID);
+                        }
+
+                        $otopupmembership->close();
+
+                        $UBServiceLogin = $getPlayerCredentialsByUB['ServiceUsername'];
+                        $UBServicePassword = $getPlayerCredentialsByUB['ServicePassword'];
+                        $UBHashedServicePassword = $getPlayerCredentialsByUB['HashedServicePassword'];
+                        $usermode = $getPlayerCredentialsByUB['Usermode'];
+
+                        $getservicename = $otopup->getCasinoName($tsServiceID);
+                        $servicegrpname = $otopup->getServiceGrpName($tsServiceID);
+                        $serviceName = $getservicename[0]['ServiceName'];
+
+                        $vsiteID = $tsSiteID;
+                        $vterminalID = $tsTerminalID;
+                        $vreportedAmt = ereg_replace(",", "", $tsAmount);
+                        $vactualAmt = $tsAmount;
+                        $vtransactionDate = $otopup->getDate();
+                        $vreqByAID = $aid;
+                        $vprocByAID = $aid;
+                        $vdateEffective = $otopup->getDate();
+                        $vstatus = 0;
+                        $vtransactionID = 0;
+                        $vremarks = $remarksub;
+                        $vticket = $ticketub;
+                        $cmbServerID = $tsServiceID;
+
+                        $vtransStatus = '';
+                        $transsummaryid = $otopup->getLastSummaryID($vterminalID);
+                        $transsummaryid = $transsummaryid['summaryID'];
+
+                        $trans_req_log_last_id = $otopup->getMaxTransreqlogid($loyaltycardnumber, $tsServiceID);
+
+                        $lastmrid = $otopup->insertmanualredemptionub($vsiteID, $vterminalID, $vreportedAmt, $vactualAmt, $vtransactionDate, $vreqByAID, $vprocByAID, $vremarks, $vdateEffective, $vstatus, $vtransactionID, $transsummaryid, $vticket, $cmbServerID, $vtransStatus, $loyaltycardnumber, $mid, $usermode);
+
+                        if ($lastmrid > 0) {
+
+                            switch (true) {
+                                case strstr($serviceName, "RTG - Sapphire V17 UB"): //if provider is RTG, then
+                                    if (is_null($trans_req_log_last_id)) {
+                                        $trans_req_log_last_id = "";
+                                    }
+                                    if (is_null($vterminalID)) {
+                                        $vterminalID = "";
+                                    }
+
+                                    $url = $_ServiceAPI[$tsServiceID - 1];
+                                    $capiusername = $_CAPIUsername;
+                                    $capipassword = $_CAPIPassword;
+                                    $capiplayername = $_CAPIPlayerName;
+                                    $capiserverID = '';
+                                    $tracking1 = $trans_req_log_last_id;
+                                    $tracking2 = "MR" . "$lastmrid";
+                                    $tracking3 = $vterminalID;
+                                    $withdraw = array();
+                                    //get siteclassificationID
+                                    $siteClass = $otopup->getSiteClassByTerminal($vterminalID);
+
+                                    $locatorname = null;
+                                    //withdraw rtg casino
+                                    $withdraw = $CasinoGamingCAPI->Withdraw($servicegrpname, $tsServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $tsAmount, $tracking1, $tracking2, $tracking3, $tracking4 = '', $methodname = '', $usermode, $locatorname);
+
+                                    break;
+
+                                case strstr($serviceName, "Habanero UB"): //if provider is Habanero, then
+                                    if (is_null($trans_req_log_last_id)) {
+                                        $trans_req_log_last_id = "";
+                                    }
+                                    if (is_null($vterminalID)) {
+                                        $vterminalID = "";
+                                    }
+
+                                    $url = $_ServiceAPI[$tsServiceID - 1];
+                                    $capiusername = $_HABbrandID;
+                                    $capipassword = $_HABapiKey;
+                                    $capiplayername = $_CAPIPlayerName;
+                                    $capiserverID = '';
+                                    $tracking1 = $trans_req_log_last_id;
+                                    $tracking2 = "MR" . "$lastmrid";
+                                    $tracking3 = $vterminalID;
+                                    $withdraw = array();
+                                    //get siteclassificationID
+                                    $siteClass = $otopup->getSiteClassByTerminal($vterminalID);
+
+                                    $locatorname = null;
+                                    //withdraw hab casino
+                                    $withdraw = $CasinoGamingCAPI->Withdraw($servicegrpname, $tsServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $tsAmount, $tracking1, $tracking2, $tracking3, $tracking4 = '', $methodname = '', $usermode, $locatorname, $UBServicePassword);
+
+                                    break;
+
+                                default :
+                                    $msg = "Error: Invalid Casino Provider";
+                                    echo json_encode($msg);
+                                    exit;
+                                    break;
+                            }
+
+                            switch (true) {
+
+                                case strstr($serviceName, "RTG - Sapphire V17 UB"): //if provider is RTG, then
+                                    //check if redemption was successfull, and insert information on manualredemptions and audittrail
+                                    if ($withdraw['IsSucceed'] == true) {
+                                        //fetch the information when calling the RTG Withdraw Method
+                                        foreach ($withdraw as $results) {
+                                            $riserror = $results['WithdrawGenericResult']['errorMsg'];
+                                            $reffdate = $results['WithdrawGenericResult']['effDate']; //uses ISO8601 date format
+                                            $rwamount = $results['WithdrawGenericResult']['amount'];
+                                            $rremarks = $results['WithdrawGenericResult']['transactionStatus'];
+                                            $rtransactionID = $results['WithdrawGenericResult']['transactionID'];
+                                        }
+                                        $fmteffdate = str_replace("T", " ", $reffdate);
+                                        $vsiteID = $tsSiteID;
+                                        $vterminalID = $tsServiceID;
+                                        $vreportedAmt = $tsAmount;
+                                        $vactualAmt = $tsAmount;
+                                        $vtransactionDate = $otopup->getDate();
+                                        $vreqByAID = $aid;
+                                        $vprocByAID = $aid;
+                                        //$vremarks = $rremarks;
+                                        $vdateEffective = $fmteffdate;
+                                        $vstatus = 01;
+                                        $vtransactionID = $rtransactionID;
+                                        $vremarks = $remarksub;
+                                        $vticket = $ticketub;
+                                        $cmbServerID = $tsServiceID;
+
+                                        //check if there was no error on withdrawal
+                                        if ($riserror == "OK") {
+                                            $vtransStatus = $rremarks;
+                                            $transsummaryid = $otopup->getLastSummaryID($vterminalID);
+                                            $transsummaryid = $transsummaryid['summaryID'];
+                                            $issucess = $otopup->updateManualRedemptionub($vstatus, $vactualAmt, $vtransactionID, $fmteffdate, $vtransStatus, $lastmrid);
+                                            if ($issucess > 0) {
+
+                                                //get new balance after redemption
+                                                $balance = $CasinoGamingCAPI->getBalance($servicegrpname, $tsServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID);
+
+                                                $TransferStatus = 100;
+
+                                                $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
+                                                if ($updateMzTransactionTransfer) {
+                                                    $updateTerminalSessionsCredentials = $otopup->updateTerminalSessionsCredentials(1, $tsServiceID, $UBServiceLogin, $UBServicePassword, $UBHashedServicePassword, $balance, $tsTerminalID);
+
+                                                    if ($updateTerminalSessionsCredentials) {
+                                                        $updateTerminalSessionsCredentials = $otopup->updateMember($tsServiceID, $mid);
+
+                                                        //insert into audit trail
+                                                        $vtransdetails = "transaction id " . $vtransactionID . ",amount " . $vreportedAmt;
+                                                        $vauditfuncID = 7;
+                                                        $otopup->logtoaudit($new_sessionid, $aid, $vtransdetails, $vtransactionDate, $vipaddress, $vauditfuncID);
+                                                        $msg = "Redeemed: " . $tsAmount . "; Remaining Balance: " . $balance;
+                                                        echo json_encode($msg);
+                                                        exit;
+                                                    } else {
+                                                        $msg = "Failed to update terminalsessions table.";
+                                                        echo json_encode($msg);
+                                                        exit;
+                                                    }
+                                                } else {
+                                                    $msg = "Failed to update mztransactiontransfer table.";
+                                                    echo json_encode($msg);
+                                                    exit;
+                                                }
+
+                                                $ramount = number_format($ramount, 2, ".", ",");
+                                                $balance = number_format($balance, 2, ".", ",");
+
+                                                //update member services
+                                                if ($otopupmembership->open()) {
+                                                    $otopupmembership->updateMemberServices($balance, $mid, $tsServiceID, $issucess);
+                                                }
+                                                $otopupmembership->close();
+                                            } else {
+                                                $msg = "Manual Redemption: Error on inserting manual redemption";
+                                                echo json_encode($msg);
+                                                exit;
+                                            }
+                                        } else {
+                                            if ($riserror == "") {
+                                                $status = 2;
+                                                $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                $msg = $rremarks;
+                                                echo json_encode($msg);
+                                                exit;
+                                            } else {
+                                                $status = 2;
+                                                $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                $msg = $riserror; //error message when calling the withdrawal result
+                                                echo json_encode($msg);
+                                                exit;
+                                            }
+                                        }
+                                    } else {
+                                        $status = 2;
+                                        $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                        $msg = "Manual Redemption: " . $withdraw['ErrorMessage']; //error message when initially calling the RTG API
+                                        echo json_encode($msg);
+                                        exit;
+                                    }
+                                    break;
+
+                                case strstr($serviceName, "Habanero UB"): //if provider is HAB, then
+                                    //check if redemption was successful, and insert information on manualredemptions and audittrail
+                                    if ($withdraw['IsSucceed'] == true) {
+                                        //fetch the information when calling the RTG Withdraw Method
+                                        foreach ($withdraw as $results) {
+                                            $riserror = $results['withdrawmethodResult']['Message'];
+                                            $rwamount = abs($results['withdrawmethodResult']['Amount']);
+                                            $rremarks = $results['withdrawmethodResult']['Message'];
+                                            $rtransactionID = $results['withdrawmethodResult']['TransactionId'];
+                                            $reffdate = $otopup->getDate();
+                                        }
+
+                                        $fmteffdate = str_replace("T", " ", $reffdate);
+                                        $vsiteID = $tsSiteID;
+                                        $vterminalID = $tsTerminalID;
+                                        $vreportedAmt = $tsAmount;
+                                        $vactualAmt = $tsAmount;
+                                        $vtransactionDate = $otopup->getDate();
+                                        $vreqByAID = $aid;
+                                        $vprocByAID = $aid;
+                                        $vdateEffective = $fmteffdate;
+                                        $vstatus = 1;
+                                        $vtransactionID = $rtransactionID;
+                                        $vremarks = $remarksub;
+                                        $vticket = $ticketub;
+                                        $cmbServerID = $tsServiceID;
+
+                                        //////////////////////123//////////////////
+                                        //check if there was no error on withdrawal
+                                        if ($riserror == "Withdrawal Success") {
+                                            $vtransStatus = $rremarks;
+                                            $transsummaryid = $otopup->getLastSummaryID($vterminalID);
+                                            $transsummaryid = $transsummaryid['summaryID'];
+                                            $issucess = $otopup->updateManualRedemptionub($vstatus, $vactualAmt, $vtransactionID, $fmteffdate, $vtransStatus, $lastmrid);
+                                            if ($issucess > 0) {
+
+
+                                                //get new balance after redemption
+                                                $balance = $CasinoGamingCAPI->getBalance($servicegrpname, $tsServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, null, $UBServicePassword);
+
+                                                $TransferStatus = 100;
+
+                                                $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
+                                                if ($updateMzTransactionTransfer) {
+                                                    $updateTerminalSessionsCredentials = $otopup->updateTerminalSessionsCredentials(1, $tsServiceID, $UBServiceLogin, $UBServicePassword, $UBHashedServicePassword, $balance, $tsTerminalID);
+
+                                                    if ($updateTerminalSessionsCredentials) {
+                                                        $updateTerminalSessionsCredentials = $otopup->updateMember($tsServiceID, $mid);
+
+                                                        //update member services
+                                                        if ($otopupmembership->open()) {
+                                                            $otopupmembership->updateMemberServices($balance, $mid, $tsServiceID, $issucess);
+                                                        }
+                                                        $otopupmembership->close();
+                                                        //insert into audit trail
+                                                        $vtransdetails = "transaction id " . $vtransactionID . ",amount " . $vreportedAmt;
+                                                        $vauditfuncID = 7;
+                                                        $otopup->logtoaudit($new_sessionid, $aid, $vtransdetails, $vtransactionDate, $vipaddress, $vauditfuncID);
+                                                        $msg = "Redeemed: " . $tsAmount . "; Remaining Balance: " . $balance;
+                                                        echo json_encode($msg);
+                                                        exit;
+                                                    } else {
+                                                        $msg = "Failed to update terminalsessions table.";
+                                                        echo json_encode($msg);
+                                                        exit;
+                                                    }
+                                                } else {
+                                                    $msg = "Failed to update mztransactiontransfer table.";
+                                                    echo json_encode($msg);
+                                                    exit;
+                                                }
+
+                                                $ramount = number_format($ramount, 2, ".", ",");
+                                                $balance = number_format($balance, 2, ".", ",");
+                                            } else {
+                                                $msg = "Manual Redemption: Error on inserting manual redemption";
+                                                echo json_encode($msg);
+                                                exit;
+                                            }
+                                        } else {
+                                            if ($riserror == "") {
+                                                $status = 2;
+                                                $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                $msg = $rremarks;
+                                                echo json_encode($msg);
+                                                exit;
+                                            } else {
+                                                $status = 2;
+                                                $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                $msg = $riserror; //error message when calling the withdrawal result
+                                                echo json_encode($msg);
+                                                exit;
+                                            }
+                                        }
+                                    } else {
+                                        $status = 2;
+                                        $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                        $msg = "Manual Redemption: " . $withdraw['ErrorMessage']; //error message when initially calling the RTG API
+                                        echo json_encode($msg);
+                                        exit;
+                                    }
+                                    break;
+
+                                default :
+                                    $msg = "Error: Invalid Casino Provider";
+                                    echo json_encode($msg);
+                                    exit;
+                                    break;
+                            }
+                        }
+                    } else { //IF HAS MZTRANSACTIONTRANSFER RECORD
+                        $getMZTransactionTransferDetails = $otopup->getMZTransactionTransferDetails($TransactionSummary);
+
+                        $mzSiteID = $getMZTransactionTransferDetails['SiteID'];
+                        $mzTerminalID = $getMZTransactionTransferDetails['TerminalID'];
+                        $mzToServiceID = $getMZTransactionTransferDetails['ToServiceID'];
+                        $mzFromServiceID = $getMZTransactionTransferDetails['FromServiceID'];
+                        $mzMID = $getMZTransactionTransferDetails['MID'];
+                        $MzTransferStatus = (int) $getMZTransactionTransferDetails['TransferStatus'];
+                        $mzToStatus = $getMZTransactionTransferDetails['ToStatus'];
+                        $mzFromStatus = $getMZTransactionTransferDetails['FromStatus'];
+                        $mzFromAmount = $getMZTransactionTransferDetails['FromAmount'];
+                        $mzToAmount = $getMZTransactionTransferDetails['ToAmount'];
+                        $mzTransferID = $getMZTransactionTransferDetails['TransferID'];
+                        $mzFromTransactionType = "MZ" . $getMZTransactionTransferDetails['FromTransactionType'];
+                        $mzToTransactionType = "MZ" . $getMZTransactionTransferDetails['ToTransactionType'];
+
+                        if ($MzTransferStatus == 8 || $MzTransferStatus == 90 || $MzTransferStatus == 93) {
+
+                            $updateActiveServiceStatusRollback = $otopup->updateActiveServiceStatusRollback($ActiveServiceStatus, $loyaltycardnumber);
+                            if ($updateActiveServiceStatusRollback) {
+                                $msg = "Cannot proceed with manual redemption as floating balance was found for this player.";
+                                echo json_encode($msg);
+                                exit;
+                            } else {
+                                $msg = "Failed to update terminalsessions table.";
+                                echo json_encode($msg);
+                                exit;
+                            }
+                        } elseif ($MzTransferStatus == 1 || $MzTransferStatus == 2 || $MzTransferStatus == 4 || $MzTransferStatus == 5 || $MzTransferStatus == 7 || $MzTransferStatus == 9 || $MzTransferStatus == 100 || $MzTransferStatus == 101) {
+
+                            $updateActiveServiceStatusRollback = $otopup->updateActiveServiceStatusRollback($ActiveServiceStatus, $loyaltycardnumber);
+                            if ($updateActiveServiceStatusRollback) {
+                                $msg = "Nothing to process";
+                                echo json_encode($msg);
+                                exit;
+                            } else {
+                                $msg = "Failed to update terminalsessions table.";
+                                echo json_encode($msg);
+                                exit;
+                            }
+                        } elseif ($MzTransferStatus == 91) {
+
+                            $updateActiveServiceStatusRollback = $otopup->updateActiveServiceStatusRollback($ActiveServiceStatus, $loyaltycardnumber);
+                            if ($updateActiveServiceStatusRollback) {
+                                $msg = "Cannot proceed with manual redemption. Transferred amount not equal to withdrawn amount. Kindly ask IR/CS to review player transactions.";
+                                echo json_encode($msg);
+                                exit;
+                            } else {
+                                $msg = "Failed to update terminalsessions table.";
+                                echo json_encode($msg);
+                                exit;
+                            }
+                        } elseif ($MzTransferStatus == 92) {
+
+                            $updateActiveServiceStatusRollback = $otopup->updateActiveServiceStatusRollback($ActiveServiceStatus, $loyaltycardnumber);
+                            if ($updateActiveServiceStatusRollback) {
+                                $msg = "Cannot proceed with manual redemption. Re-Deposit amount not equal to withdrawn amount. Kindly ask IR/CS to review player transactions.";
+                                echo json_encode($msg);
+                                exit;
+                            } else {
+                                $msg = "Failed to update terminalsessions table.";
+                                echo json_encode($msg);
+                                exit;
+                            }
+                        } elseif ($MzTransferStatus == 0) {
+
+                            if ($mzFromServiceID <> $ubserviceID) {
+                                $updateActiveServiceStatusRollback = $otopup->updateActiveServiceStatusRollback($ActiveServiceStatus, $loyaltycardnumber);
+                                if ($updateActiveServiceStatusRollback) {
+                                    $msg = "Invalid casino to fulfill.";
+                                    echo json_encode($msg);
+                                    exit;
+                                } else {
+                                    $msg = "Failed to update terminalsessions table.";
+                                    echo json_encode($msg);
+                                    exit;
+                                }
+                            } else {
+                                if ($mzFromStatus <> 0 || $mzToStatus <> NULL) {
+                                    $updateActiveServiceStatusRollback = $otopup->updateActiveServiceStatusRollback($ActiveServiceStatus, $loyaltycardnumber);
+                                    if ($updateActiveServiceStatusRollback) {
+                                        $msg = "An unexpected transaction was encountered. Kindly ask IR/CS to review player transactions.";
+                                        echo json_encode($msg);
+                                        exit;
+                                    } else {
+                                        $msg = "Failed to update terminalsessions table.";
+                                        echo json_encode($msg);
+                                        exit;
+                                    }
+                                }
+                                if ($mzFromStatus == 0 && $mzToStatus == NULL) {
+
+                                    if ($otopupmembership->open()) {
+
+                                        $getPlayerCredentialsByUB = $otopupmembership->getPlayerCredentialsByUB($mid, $mzFromServiceID);
+                                    }
+
+                                    $otopupmembership->close();
+
+                                    $UBServiceLogin = $getPlayerCredentialsByUB['ServiceUsername'];
+                                    $UBServicePassword = $getPlayerCredentialsByUB['ServicePassword'];
+                                    $UBHashedServicePassword = $getPlayerCredentialsByUB['HashedServicePassword'];
+                                    $usermode = $getPlayerCredentialsByUB['Usermode'];
+
+                                    $getservicename = $otopup->getCasinoName($mzFromServiceID);
+                                    $servicegrpname = $otopup->getServiceGrpName($mzFromServiceID);
+                                    $serviceName = $getservicename[0]['ServiceName'];
+
+
+                                    $trans_req_log_last_id = $otopup->getMaxTransreqlogid($loyaltycardnumber, $mzFromServiceID);
+
+                                    switch (true) {
+                                        case strstr($serviceName, "RTG - Sapphire V17 UB"): //if provider is RTG, then
+                                            if (is_null($trans_req_log_last_id)) {
+                                                $trans_req_log_last_id = "";
+                                            }
+
+                                            $url = $_ServiceAPI[$mzFromServiceID - 1];
+                                            $capiusername = $_CAPIUsername;
+                                            $capipassword = $_CAPIPassword;
+                                            $capiplayername = $_CAPIPlayerName;
+                                            $capiserverID = '';
+                                            $tracking1 = $mzTransferID . $mzFromTransactionType;
+
+                                            $transinfo = array();
+
+                                            $transinfo = $CasinoGamingCAPI->TransSearchInfo($servicegrpname, $mzFromServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $tracking1, $tracking2 = '', $tracking3 = '', $tracking4 = '', $usermode);
+
+                                            break;
+
+                                        case strstr($serviceName, "Habanero UB"): //if provider is Habanero, then
+                                            if (is_null($trans_req_log_last_id)) {
+                                                $trans_req_log_last_id = "";
+                                            }
+
+                                            $url = $_ServiceAPI[$mzFromServiceID - 1];
+                                            $capiusername = $_HABbrandID;
+                                            $capipassword = $_HABapiKey;
+                                            $capiplayername = $_CAPIPlayerName;
+                                            $capiserverID = '';
+                                            $tracking1 = $mzTransferID . $mzFromTransactionType;
+
+                                            $transinfo = array();
+
+                                            $transinfo = $CasinoGamingCAPI->TransSearchInfo($servicegrpname, $mzFromServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $tracking1, $tracking2 = '', $tracking3 = '', $tracking4 = '', $usermode);
+                                            break;
+
+                                        default :
+                                            $msg = "Error: Invalid Casino Provider";
+                                            echo json_encode($msg);
+                                            exit;
+                                            break;
+                                    }
+
+                                    switch (true) {
+
+                                        case strstr($serviceName, "RTG - Sapphire V17 UB"): //if provider is RTG, then
+                                            //check if redemption was successfull, and insert information on manualredemptions and audittrail
+                                            if ($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"] == "TRANSACTIONSTATUS_APPROVED") {
+                                                //fetch the information when calling the RTG Withdraw Method
+                                                foreach ($transinfo as $results) {
+                                                    $riserror = $results['TrackingInfoTransactionSearchResult']['errorMsg'];
+                                                    $reffdate = $results['TrackingInfoTransactionSearchResult']['effDate']; //uses ISO8601 date format
+                                                    $rwamount = $results['TrackingInfoTransactionSearchResult']['amount'];
+                                                    $rremarks = $results['TrackingInfoTransactionSearchResult']['transactionStatus'];
+                                                    $rtransactionID = $results['TrackingInfoTransactionSearchResult']['transactionID'];
+                                                }
+
+                                                $vsiteID = $mzSiteID;
+                                                $vterminalID = $mzTerminalID;
+                                                $vreportedAmt = ereg_replace(",", "", 0);
+                                                $vactualAmt = 0;
+                                                $vtransactionDate = $otopup->getDate();
+                                                $vreqByAID = $aid;
+                                                $vprocByAID = $aid;
+                                                $vdateEffective = $otopup->getDate();
+                                                $vstatus = 1;
+                                                $vtransactionID = $rtransactionID;
+                                                $vremarks = $remarksub;
+                                                $vticket = $ticketub;
+                                                $cmbServerID = $mzFromServiceID;
+
+                                                $vtransStatus = $rremarks;
+                                                $transsummaryid = $otopup->getLastSummaryID($vterminalID);
+                                                $transsummaryid = $transsummaryid['summaryID'];
+
+                                                $lastmrid = $otopup->insertmanualredemptionub($vsiteID, $vterminalID, $vreportedAmt, $vactualAmt, $vtransactionDate, $vreqByAID, $vprocByAID, $vremarks, $vdateEffective, $vstatus, $vtransactionID, $transsummaryid, $vticket, $cmbServerID, $vtransStatus, $loyaltycardnumber, $mid, $usermode, $mzTransferID, $mzFromServiceID);
+
+                                                if ($lastmrid > 0) {
+                                                    //check if there was no error on withdrawal
+                                                    if ($rtransactionID > -1) {
+
+                                                        $issucess = $otopup->updateManualRedemptionub($vstatus, $vactualAmt, $vtransactionID, $fmteffdate, $vtransStatus, $lastmrid);
+
+                                                        if ($issucess > 0) {
+
+                                                            $TransferStatus = 101;
+
+                                                            $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
+                                                            if ($updateMzTransactionTransfer) {
+                                                                $updateTerminalSessionsCredentials = $otopup->updateTerminalSessionsCredentials(1, $mzFromServiceID, $UBServiceLogin, $UBServicePassword, $UBHashedServicePassword, $vactualAmt, $mzTerminalID);
+
+                                                                if ($updateTerminalSessionsCredentials) {
+                                                                    $updateTerminalSessionsCredentials = $otopup->updateMember($mzFromServiceID, $mid);
+
+                                                                    //insert into audit trail
+                                                                    $vtransdetails = "transaction id " . $vtransactionID . ",amount " . $vreportedAmt;
+                                                                    $vauditfuncID = 7;
+                                                                    $otopup->logtoaudit($new_sessionid, $aid, $vtransdetails, $vtransactionDate, $vipaddress, $vauditfuncID);
+                                                                    $msg = "Succesful RTG Casino Fulfillment";
+                                                                    echo json_encode($msg);
+                                                                    exit;
+                                                                } else {
+                                                                    $msg = "Failed to update terminalsessions table.";
+                                                                    echo json_encode($msg);
+                                                                    exit;
+                                                                }
+                                                            } else {
+                                                                $msg = "Failed to update mztransactiontransfer table.";
+                                                                echo json_encode($msg);
+                                                                exit;
+                                                            }
+
+                                                            //update member services
+                                                            if ($otopupmembership->open()) {
+                                                                $otopupmembership->updateMemberServices($vactualAmt, $mid, $mzFromServiceID, $issucess);
+                                                            }
+                                                            $otopupmembership->close();
+                                                        }
+                                                    } else {
+
+                                                        if ($riserror == "") {
+                                                            $status = 2;
+                                                            $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                            $msg = $rremarks;
+                                                            echo json_encode($msg);
+                                                            exit;
+                                                        } else {
+                                                            $status = 2;
+                                                            $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                            $msg = $riserror; //error message when calling the withdrawal result
+                                                            echo json_encode($msg);
+                                                            exit;
+                                                        }
+                                                    }
+                                                } else {
+                                                    $msg = "Manual Redemption: Error on inserting manual redemption";
+                                                    echo json_encode($msg);
+                                                    exit;
+                                                }
+                                            } else {
+
+                                                $fmteffdate = $otopup->getDate();
+                                                $vsiteID = $mzSiteID;
+                                                $vterminalID = $mzTerminalID;
+                                                $vreportedAmt = ereg_replace(",", "", $mzFromAmount);
+                                                $vactualAmt = $mzFromAmount;
+                                                $vtransactionDate = $otopup->getDate();
+                                                $vreqByAID = $aid;
+                                                $vprocByAID = $aid;
+                                                $vdateEffective = $otopup->getDate();
+                                                $vstatus = 0;
+                                                $vtransactionID = 0;
+                                                $vremarks = $remarksub;
+                                                $vticket = $ticketub;
+                                                $cmbServerID = $mzFromServiceID;
+
+
+                                                $vtransStatus = "";
+                                                $transsummaryid = $otopup->getLastSummaryID($vterminalID);
+                                                $transsummaryid = $transsummaryid['summaryID'];
+
+                                                $lastmrid = $otopup->insertmanualredemptionub($vsiteID, $vterminalID, $vreportedAmt, $vactualAmt, $vtransactionDate, $vreqByAID, $vprocByAID, $vremarks, $vdateEffective, $vstatus, $vtransactionID, $transsummaryid, $vticket, $cmbServerID, $vtransStatus, $loyaltycardnumber, $mid, $usermode, $mzTransferID, $mzFromServiceID);
+
+                                                if ($lastmrid > 0) {
+
+                                                    $url = $_ServiceAPI[$mzFromServiceID - 1];
+                                                    $capiusername = $_CAPIUsername;
+                                                    $capipassword = $_CAPIPassword;
+                                                    $capiplayername = $_CAPIPlayerName;
+                                                    $capiserverID = '';
+                                                    $tracking1 = $trans_req_log_last_id;
+                                                    $tracking2 = "MR" . "$lastmrid";
+                                                    $tracking3 = $mzFromServiceID;
+                                                    $withdraw = array();
+
+                                                    $locatorname = null;
+                                                    //withdraw rtg casino
+                                                    $withdraw = $CasinoGamingCAPI->Withdraw($servicegrpname, $mzFromServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $mzFromAmount, $tracking1, $tracking2, $tracking3, $tracking4 = '', $methodname = '', $usermode, $locatorname);
+
+
+                                                    if ($withdraw["TransactionInfo"]['WithdrawGenericResult']['transactionStatus'] == 'TRANSACTIONSTATUS_APPROVED') {
+                                                        //fetch the information when calling the RTG Withdraw Method
+                                                        foreach ($withdraw as $results) {
+                                                            $riserror = $results['WithdrawGenericResult']['errorMsg'];
+                                                            $reffdate = $results['WithdrawGenericResult']['effDate']; //uses ISO8601 date format
+                                                            $rwamount = $results['WithdrawGenericResult']['amount'];
+                                                            $rremarks = $results['WithdrawGenericResult']['transactionStatus'];
+                                                            $rtransactionID = $results['WithdrawGenericResult']['transactionID'];
+                                                        }
+                                                        //check if there was no error on withdrawal
+                                                        if ($riserror == "OK") {
+
+                                                            $fmteffdate = $otopup->getDate();
+                                                            $vstatus = 1;
+                                                            $vtransactionID = $rtransactionID;
+                                                            $vtransStatus = $rremarks;
+
+                                                            $issucess = $otopup->updateManualRedemptionub($vstatus, $vactualAmt, $vtransactionID, $fmteffdate, $vtransStatus, $lastmrid);
+
+                                                            if ($issucess > 0) {
+                                                                $TransferStatus = 101;
+
+                                                                $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
+                                                                if ($updateMzTransactionTransfer) {
+                                                                    $updateTerminalSessionsCredentials = $otopup->updateTerminalSessionsCredentials(1, $mzFromServiceID, $UBServiceLogin, $UBServicePassword, $UBHashedServicePassword, $vactualAmt, $mzTerminalID);
+
+                                                                    if ($updateTerminalSessionsCredentials) {
+                                                                        $updateTerminalSessionsCredentials = $otopup->updateMember($mzFromServiceID, $mid);
+
+                                                                        //insert into audit trail
+                                                                        $vtransdetails = "transaction id " . $vtransactionID . ",amount " . $vreportedAmt;
+                                                                        $vauditfuncID = 7;
+                                                                        $otopup->logtoaudit($new_sessionid, $aid, $vtransdetails, $vtransactionDate, $vipaddress, $vauditfuncID);
+                                                                        $msg = "Successful RTG Casino Fulfillment";
+                                                                        echo json_encode($msg);
+                                                                        exit;
+                                                                    } else {
+                                                                        $msg = "Failed to update terminalsessions table.";
+                                                                        echo json_encode($msg);
+                                                                        exit;
+                                                                    }
+                                                                } else {
+                                                                    $msg = "Failed to update mztransactiontransfer table.";
+                                                                    echo json_encode($msg);
+                                                                    exit;
+                                                                }
+
+                                                                //update member services
+                                                                if ($otopupmembership->open()) {
+                                                                    $otopupmembership->updateMemberServices($vactualAmt, $mid, $mzFromServiceID, $issucess);
+                                                                }
+                                                                $otopupmembership->close();
+                                                            }
+                                                        } else {
+                                                            if ($riserror == "") {
+                                                                $status = 2;
+                                                                $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                                $msg = $rremarks;
+                                                                echo json_encode($msg);
+                                                                exit;
+                                                            } else {
+                                                                $status = 2;
+                                                                $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                                $msg = $riserror; //error message when calling the withdrawal result
+                                                                echo json_encode($msg);
+                                                                exit;
+                                                            }
+                                                        }
+                                                    } else {
+                                                        $url = $_ServiceAPI[$mzFromServiceID - 1];
+                                                        $capiusername = $_CAPIUsername;
+                                                        $capipassword = $_CAPIPassword;
+                                                        $capiplayername = $_CAPIPlayerName;
+                                                        $capiserverID = '';
+                                                        $tracking1 = $mzTransferID . $mzFromTransactionType;
+
+                                                        $transinfo = array();
+
+                                                        $transinfo = $CasinoGamingCAPI->TransSearchInfo($servicegrpname, $mzFromServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $tracking1, $tracking2 = '', $tracking3 = '', $tracking4 = '', $usermode);
+
+                                                        if ($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"] == "TRANSACTIONSTATUS_APPROVED") {
+                                                            //fetch the information when calling the RTG Withdraw Method
+                                                            foreach ($transinfo as $results) {
+                                                                $riserror = $results['TrackingInfoTransactionSearchResult']['errorMsg'];
+                                                                $reffdate = $results['TrackingInfoTransactionSearchResult']['effDate']; //uses ISO8601 date format
+                                                                $rwamount = $results['TrackingInfoTransactionSearchResult']['amount'];
+                                                                $rremarks = $results['TrackingInfoTransactionSearchResult']['transactionStatus'];
+                                                                $rtransactionID = $results['TrackingInfoTransactionSearchResult']['transactionID'];
+                                                            }
+
+                                                            //check if there was no error on withdrawal
+                                                            if ($rtransactionID > -1) {
+
+                                                                $fmteffdate = $otopup->getDate();
+                                                                $vsiteID = $mzSiteID;
+                                                                $vterminalID = $mzTerminalID;
+                                                                $vreportedAmt = ereg_replace(",", "", 0);
+                                                                $vactualAmt = 0;
+                                                                $vtransactionDate = $otopup->getDate();
+                                                                $vreqByAID = $aid;
+                                                                $vprocByAID = $aid;
+                                                                $vdateEffective = $otopup->getDate();
+                                                                $vstatus = 1;
+                                                                $vtransactionID = $rtransactionID;
+                                                                $vremarks = $remarksub;
+                                                                $vticket = $ticketub;
+                                                                $cmbServerID = $mzFromServiceID;
+
+                                                                $issucess = $otopup->updateManualRedemptionub($vstatus, $vactualAmt, $vtransactionID, $fmteffdate, $vtransStatus, $lastmrid);
+
+                                                                if ($issucess > 0) {
+                                                                    $TransferStatus = 101;
+
+                                                                    $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
+                                                                    if ($updateMzTransactionTransfer) {
+                                                                        $updateTerminalSessionsCredentials = $otopup->updateTerminalSessionsCredentials(1, $mzFromServiceID, $UBServiceLogin, $UBServicePassword, $UBHashedServicePassword, $vactualAmt, $mzTerminalID);
+
+                                                                        if ($updateTerminalSessionsCredentials) {
+                                                                            $updateTerminalSessionsCredentials = $otopup->updateMember($mzFromServiceID, $mid);
+
+                                                                            //insert into audit trail
+                                                                            $vtransdetails = "transaction id " . $vtransactionID . ",amount " . $vreportedAmt;
+                                                                            $vauditfuncID = 7;
+                                                                            $otopup->logtoaudit($new_sessionid, $aid, $vtransdetails, $vtransactionDate, $vipaddress, $vauditfuncID);
+                                                                            $msg = "Succesful RTG Casino Fulfillment";
+                                                                            echo json_encode($msg);
+                                                                            exit;
+                                                                        } else {
+                                                                            $msg = "Failed to update terminalsessions table.";
+                                                                            echo json_encode($msg);
+                                                                            exit;
+                                                                        }
+                                                                    } else {
+                                                                        $msg = "Failed to update mztransactiontransfer table.";
+                                                                        echo json_encode($msg);
+                                                                        exit;
+                                                                    }
+
+                                                                    //update member services
+                                                                    if ($otopupmembership->open()) {
+                                                                        $otopupmembership->updateMemberServices($vactualAmt, $mid, $mzFromServiceID, $issucess);
+                                                                    }
+                                                                    $otopupmembership->close();
+                                                                }
+                                                            } else {
+                                                                if ($riserror == "") {
+                                                                    $status = 2;
+                                                                    $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                                    $msg = $rremarks;
+                                                                    echo json_encode($msg);
+                                                                    exit;
+                                                                } else {
+                                                                    $status = 2;
+                                                                    $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                                    $msg = $riserror; //error message when calling the withdrawal result
+                                                                    echo json_encode($msg);
+                                                                    exit;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                } else {
+                                                    $msg = "Manual Redemption: Error on inserting manual redemption";
+                                                    echo json_encode($msg);
+                                                    exit;
+                                                }
+                                            }
+                                            break;
+
+                                        case strstr($serviceName, "Habanero UB"): //if provider is HAB, then
+                                            //check if redemption was successfull, and insert information on manualredemptions and audittrail
+                                            if ($transinfo['IsSucceed'] == true) {
+                                                //fetch the information when calling the RTG Withdraw Method
+                                                foreach ($transinfo as $results) {
+                                                    $riserror = $results['querytransmethodResult']['Success'];
+                                                    $reffdate = $results['querytransmethodResult']['DtAdded'];
+                                                    $rwamount = $results['querytransmethodResult']['Amount'];
+                                                    $rremarks = "Withdrawal Successful";
+                                                    $rtransactionID = $results['querytransmethodResult']['TransactionId'];
+                                                    $rwbalafter = $results['querytransmethodResult']['BalanceAfter'];
+                                                }
+
+                                                $fmteffdate = $otopup->getDate();
+                                                $vsiteID = $mzSiteID;
+                                                $vterminalID = $mzTerminalID;
+                                                $vreportedAmt = ereg_replace(",", "", 0);
+                                                $vactualAmt = 0;
+                                                $vtransactionDate = $otopup->getDate();
+                                                $vreqByAID = $aid;
+                                                $vprocByAID = $aid;
+                                                $vdateEffective = $otopup->getDate();
+                                                $vstatus = 0;
+                                                $vtransactionID = 0;
+                                                $vremarks = $remarksub;
+                                                $vticket = $ticketub;
+                                                $cmbServerID = $mzFromServiceID;
+
+                                                $vtransStatus = $rremarks;
+                                                $transsummaryid = $otopup->getLastSummaryID($vterminalID);
+                                                $transsummaryid = $transsummaryid['summaryID'];
+
+                                                $lastmrid = $otopup->insertmanualredemptionub($vsiteID, $vterminalID, $vreportedAmt, $vactualAmt, $vtransactionDate, $vreqByAID, $vprocByAID, $vremarks, $vdateEffective, $vstatus, $vtransactionID, $transsummaryid, $vticket, $cmbServerID, $vtransStatus, $loyaltycardnumber, $mid, $usermode, $mzTransferID, $mzFromServiceID);
+
+                                                if ($lastmrid > 0) {
+
+                                                    //check if there was no error on withdrawal
+                                                    if ($riserror) {
+
+                                                        $fmteffdate = $otopup->getDate();
+                                                        $vstatus = 1;
+                                                        $vtransactionID = $rtransactionID;
+                                                        $vtransStatus = $rremarks;
+
+                                                        $issucess = $otopup->updateManualRedemptionub($vstatus, $vactualAmt, $vtransactionID, $fmteffdate, $vtransStatus, $lastmrid);
+
+                                                        if ($issucess > 0) {
+                                                            $TransferStatus = 101;
+
+                                                            $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
+                                                            if ($updateMzTransactionTransfer) {
+                                                                $updateTerminalSessionsCredentials = $otopup->updateTerminalSessionsCredentials(1, $mzFromServiceID, $UBServiceLogin, $UBServicePassword, $UBHashedServicePassword, $vactualAmt, $mzTerminalID);
+
+                                                                if ($updateTerminalSessionsCredentials) {
+                                                                    $updateTerminalSessionsCredentials = $otopup->updateMember($mzFromServiceID, $mid);
+
+                                                                    //insert into audit trail
+                                                                    $vtransdetails = "transaction id " . $vtransactionID . ",amount " . $vreportedAmt;
+                                                                    $vauditfuncID = 7;
+                                                                    $otopup->logtoaudit($new_sessionid, $aid, $vtransdetails, $vtransactionDate, $vipaddress, $vauditfuncID);
+                                                                    $msg = "Succesful Habanero Casino Fulfillment";
+                                                                    echo json_encode($msg);
+                                                                    exit;
+                                                                } else {
+                                                                    $msg = "Failed to update terminalsessions table.";
+                                                                    echo json_encode($msg);
+                                                                    exit;
+                                                                }
+                                                            } else {
+                                                                $msg = "Failed to update mztransactiontransfer table.";
+                                                                echo json_encode($msg);
+                                                                exit;
+                                                            }
+
+                                                            //update member services
+                                                            if ($otopupmembership->open()) {
+                                                                $otopupmembership->updateMemberServices($vactualAmt, $mid, $mzFromServiceID, $issucess);
+                                                            }
+                                                            $otopupmembership->close();
+                                                        }
+                                                    } else {
+
+                                                        if ($riserror == "") {
+                                                            $status = 2;
+                                                            $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                            $msg = $rremarks;
+                                                            echo json_encode($msg);
+                                                            exit;
+                                                        } else {
+                                                            $status = 2;
+                                                            $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                            $msg = $riserror; //error message when calling the withdrawal result
+                                                            echo json_encode($msg);
+                                                            exit;
+                                                        }
+                                                    }
+                                                } else {
+                                                    $msg = "Manual Redemption: Error on inserting manual redemption";
+                                                    echo json_encode($msg);
+                                                    exit;
+                                                }
+                                            } else {
+
+                                                $fmteffdate = $otopup->getDate();
+                                                $vsiteID = $mzSiteID;
+                                                $vterminalID = $mzTerminalID;
+                                                $vreportedAmt = ereg_replace(",", "", $mzFromAmount);
+                                                $vactualAmt = $mzFromAmount;
+                                                $vtransactionDate = $otopup->getDate();
+                                                $vreqByAID = $aid;
+                                                $vprocByAID = $aid;
+                                                $vdateEffective = $otopup->getDate();
+                                                $vstatus = 0;
+                                                $vtransactionID = 0;
+                                                $vremarks = $remarksub;
+                                                $vticket = $ticketub;
+                                                $cmbServerID = $mzFromServiceID;
+
+
+                                                $vtransStatus = "";
+                                                $transsummaryid = $otopup->getLastSummaryID($vterminalID);
+                                                $transsummaryid = $transsummaryid['summaryID'];
+
+                                                $lastmrid = $otopup->insertmanualredemptionub($vsiteID, $vterminalID, $vreportedAmt, $vactualAmt, $vtransactionDate, $vreqByAID, $vprocByAID, $vremarks, $vdateEffective, $vstatus, $vtransactionID, $transsummaryid, $vticket, $cmbServerID, $vtransStatus, $loyaltycardnumber, $mid, $usermode, $mzTransferID, $mzFromServiceID);
+
+                                                if ($lastmrid > 0) {
+
+                                                    $url = $_ServiceAPI[$mzFromServiceID - 1];
+                                                    $capiusername = $_HABbrandID;
+                                                    $capipassword = $_HABapiKey;
+                                                    $capiplayername = $_CAPIPlayerName;
+                                                    $capiserverID = '';
+                                                    $tracking1 = $trans_req_log_last_id;
+                                                    $tracking2 = "MR" . "$lastmrid";
+                                                    $tracking3 = $vterminalID;
+                                                    $withdraw = array();
+                                                    //get siteclassificationID
+                                                    $siteClass = $otopup->getSiteClassByTerminal($vterminalID);
+
+                                                    $locatorname = null;
+                                                    //withdraw hab casino
+                                                    $withdraw = $CasinoGamingCAPI->Withdraw($servicegrpname, $mzFromServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $mzFromAmount, $tracking1, $tracking2, $tracking3, $tracking4 = '', $methodname = '', $usermode, $locatorname, $UBServicePassword);
+
+
+                                                    //check if redemption was successful, and insert information on manualredemptions and audittrail
+                                                    if ($withdraw['IsSucceed'] == true) {
+                                                        //fetch the information when calling the RTG Withdraw Method
+                                                        foreach ($withdraw as $results) {
+                                                            $riserror = $results['withdrawmethodResult']['Message'];
+                                                            $rwamount = abs($results['withdrawmethodResult']['Amount']);
+                                                            $rremarks = $results['withdrawmethodResult']['Message'];
+                                                            $rtransactionID = $results['withdrawmethodResult']['TransactionId'];
+                                                            $reffdate = $otopup->getDate();
+                                                        }
+
+
+                                                        //check if there was no error on withdrawal
+                                                        if ($riserror == "Withdrawal Success") {
+
+                                                            $fmteffdate = $otopup->getDate();
+                                                            $vstatus = 1;
+                                                            $vtransactionID = $rtransactionID;
+                                                            $vtransStatus = $rremarks;
+
+                                                            $issucess = $otopup->updateManualRedemptionub($vstatus, $vactualAmt, $vtransactionID, $fmteffdate, $vtransStatus, $lastmrid);
+
+                                                            if ($issucess > 0) {
+                                                                //get new balance after redemption
+                                                                $balance = $CasinoGamingCAPI->getBalance($servicegrpname, $mzFromServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, null, $UBServicePassword);
+
+                                                                $TransferStatus = 101;
+
+                                                                $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
+                                                                if ($updateMzTransactionTransfer) {
+                                                                    $updateTerminalSessionsCredentials = $otopup->updateTerminalSessionsCredentials(1, $mzFromServiceID, $UBServiceLogin, $UBServicePassword, $UBHashedServicePassword, $balance, $mzTerminalID);
+
+                                                                    if ($updateTerminalSessionsCredentials) {
+                                                                        $updateTerminalSessionsCredentials = $otopup->updateMember($mzFromServiceID, $mid);
+
+                                                                        //update member services
+                                                                        if ($otopupmembership->open()) {
+                                                                            $otopupmembership->updateMemberServices($balance, $mid, $tsServiceID, $issucess);
+                                                                        }
+                                                                        $otopupmembership->close();
+                                                                        //insert into audit trail
+                                                                        $vtransdetails = "transaction id " . $vtransactionID . ",amount " . $vreportedAmt;
+                                                                        $vauditfuncID = 7;
+                                                                        $otopup->logtoaudit($new_sessionid, $aid, $vtransdetails, $vtransactionDate, $vipaddress, $vauditfuncID);
+                                                                        $msg = "Redeemed: " . $tsAmount . "; Remaining Balance: " . $balance;
+                                                                        echo json_encode($msg);
+                                                                        exit;
+                                                                    } else {
+                                                                        $msg = "Failed to update terminalsessions table.";
+                                                                        echo json_encode($msg);
+                                                                        exit;
+                                                                    }
+                                                                } else {
+                                                                    $msg = "Failed to update mztransactiontransfer table.";
+                                                                    echo json_encode($msg);
+                                                                    exit;
+                                                                }
+
+
+                                                                //update member services
+                                                                if ($otopupmembership->open()) {
+                                                                    $otopupmembership->updateMemberServices($vactualAmt, $mid, $mzFromServiceID, $issucess);
+                                                                }
+                                                                $otopupmembership->close();
+                                                            }
+                                                        } else {
+                                                            if ($riserror == "") {
+                                                                $status = 2;
+                                                                $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                                $msg = $rremarks;
+                                                                echo json_encode($msg);
+                                                                exit;
+                                                            } else {
+                                                                $status = 2;
+                                                                $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                                $msg = $riserror; //error message when calling the withdrawal result
+                                                                echo json_encode($msg);
+                                                                exit;
+                                                            }
+                                                        }
+                                                    } else {
+
+                                                        $url = $_ServiceAPI[$mzFromServiceID - 1];
+                                                        $capiusername = $_HABbrandID;
+                                                        $capipassword = $_HABapiKey;
+                                                        $capiplayername = $_CAPIPlayerName;
+                                                        $capiserverID = '';
+                                                        $tracking1 = $trans_req_log_last_id;
+
+                                                        $transinfo = array();
+
+                                                        $transinfo = $CasinoGamingCAPI->TransSearchInfo($servicegrpname, $mzFromServiceID, $url, $login, $capiusername, $capipassword, $capiplayername, $capiserverID, $tracking1, $tracking2 = '', $tracking3 = '', $tracking4 = '', $usermode);
+
+
+                                                        //check if redemption was successfull, and insert information on manualredemptions and audittrail
+                                                        if ($transinfo['IsSucceed'] == true) {
+                                                            //fetch the information when calling the RTG Withdraw Method
+                                                            foreach ($transinfo as $results) {
+                                                                $riserror = $results['querytransmethodResult']['Success'];
+                                                                $reffdate = $results['querytransmethodResult']['DtAdded'];
+                                                                $rwamount = $results['querytransmethodResult']['Amount'];
+                                                                $rremarks = "Withdrawal Successful";
+                                                                $rtransactionID = $results['querytransmethodResult']['TransactionId'];
+                                                                $rwbalafter = $results['querytransmethodResult']['BalanceAfter'];
+                                                            }
+
+
+                                                            $vsiteID = $mzSiteID;
+                                                            $vterminalID = $mzTerminalID;
+                                                            $vreportedAmt = ereg_replace(",", "", 0);
+                                                            $vactualAmt = 0;
+                                                            $vtransactionDate = $otopup->getDate();
+                                                            $vreqByAID = $aid;
+                                                            $vprocByAID = $aid;
+                                                            $vdateEffective = $otopup->getDate();
+                                                            $vstatus = 1;
+                                                            $vtransactionID = $rtransactionID;
+                                                            $vremarks = $remarksub;
+                                                            $vticket = $ticketub;
+                                                            $cmbServerID = $mzFromServiceID;
+
+                                                            //check if there was no error on withdrawal
+                                                            if ($riserror) {
+
+                                                                $TransferStatus = 101;
+
+                                                                $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
+                                                                if ($updateMzTransactionTransfer) {
+                                                                    $updateTerminalSessionsCredentials = $otopup->updateTerminalSessionsCredentials(1, $mzFromServiceID, $UBServiceLogin, $UBServicePassword, $UBHashedServicePassword, $vactualAmt, $mzTerminalID);
+
+                                                                    if ($updateTerminalSessionsCredentials) {
+                                                                        $updateTerminalSessionsCredentials = $otopup->updateMember($mzFromServiceID, $mid);
+
+                                                                        //insert into audit trail
+                                                                        $vtransdetails = "transaction id " . $vtransactionID . ",amount " . $vreportedAmt;
+                                                                        $vauditfuncID = 7;
+                                                                        $otopup->logtoaudit($new_sessionid, $aid, $vtransdetails, $vtransactionDate, $vipaddress, $vauditfuncID);
+                                                                        $msg = "Succesful Habanero Casino Fulfillment";
+                                                                        echo json_encode($msg);
+                                                                        exit;
+                                                                    } else {
+                                                                        $msg = "Failed to update terminalsessions table.";
+                                                                        echo json_encode($msg);
+                                                                        exit;
+                                                                    }
+                                                                } else {
+                                                                    $msg = "Failed to update mztransactiontransfer table.";
+                                                                    echo json_encode($msg);
+                                                                    exit;
+                                                                }
+
+                                                                //update member services
+                                                                if ($otopupmembership->open()) {
+                                                                    $otopupmembership->updateMemberServices($vactualAmt, $mid, $mzFromServiceID, $issucess);
+                                                                }
+                                                                $otopupmembership->close();
+                                                            } else {
+                                                                if ($riserror == "") {
+                                                                    $status = 2;
+                                                                    $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                                    $msg = $rremarks;
+                                                                    echo json_encode($msg);
+                                                                    exit;
+                                                                } else {
+                                                                    $status = 2;
+                                                                    $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                                    $msg = $riserror; //error message when calling the withdrawal result
+                                                                    echo json_encode($msg);
+                                                                    exit;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                } else {
+
+                                                    $msg = "Manual Redemption: Error on inserting manual redemption";
+                                                    echo json_encode($msg);
+                                                    exit;
+                                                }
+                                            }
+
+                                            break;
+
+                                        default :
+                                            $msg = "Error: Invalid Casino Provider";
+                                            echo json_encode($msg);
+                                            exit;
+                                            break;
+                                    }
+                                }
+                            }
+                        } elseif ($MzTransferStatus == 3) {
+
+                            if ($mzToServiceID <> $ubserviceID) {
+                                $updateActiveServiceStatusRollback = $otopup->updateActiveServiceStatusRollback($ActiveServiceStatus, $loyaltycardnumber);
+                                if ($updateActiveServiceStatusRollback) {
+                                    $msg = "Invalid casino to fulfill.";
+                                    echo json_encode($msg);
+                                    exit;
+                                } else {
+                                    $msg = "Failed to update terminalsessions table.";
+                                    echo json_encode($msg);
+                                    exit;
+                                }
+                            } else {
+                                if ($mzToStatus <> 0) {
+                                    $msg = "An unexpected transaction was encountered. Kindly ask IR/CS to review player transactions.";
+                                    echo json_encode($msg);
+                                    exit;
+                                }
+                                if ($mzToStatus == 0) {
+
+                                    if ($otopupmembership->open()) {
+
+                                        $getPlayerCredentialsByUB = $otopupmembership->getPlayerCredentialsByUB($mid, $mzToServiceID);
+                                    }
+
+                                    $otopupmembership->close();
+
+                                    $UBServiceLogin = $getPlayerCredentialsByUB['ServiceUsername'];
+                                    $UBServicePassword = $getPlayerCredentialsByUB['ServicePassword'];
+                                    $UBHashedServicePassword = $getPlayerCredentialsByUB['HashedServicePassword'];
+                                    $usermode = $getPlayerCredentialsByUB['Usermode'];
+
+                                    $getservicename = $otopup->getCasinoName($mzToServiceID);
+                                    $servicegrpname = $otopup->getServiceGrpName($mzToServiceID);
+                                    $serviceName = $getservicename[0]['ServiceName'];
+
+                                    $trans_req_log_last_id = $otopup->getMaxTransreqlogid($loyaltycardnumber, $mzToServiceID);
+
+                                    switch (true) {
+                                        case strstr($serviceName, "RTG - Sapphire V17 UB"): //if provider is RTG, then
+
+                                            $url = $_ServiceAPI[$mzToServiceID - 1];
+                                            $capiusername = $_CAPIUsername;
+                                            $capipassword = $_CAPIPassword;
+                                            $capiplayername = $_CAPIPlayerName;
+                                            $capiserverID = '';
+                                            $tracking1 = $mzTransferID . $mzToTransactionType;
+
+                                            $transinfo = array();
+
+                                            $transinfo = $CasinoGamingCAPI->TransSearchInfo($servicegrpname, $mzToServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $tracking1, $tracking2 = '', $tracking3 = '', $tracking4 = '', $usermode);
+
+                                            break;
+
+                                        case strstr($serviceName, "Habanero UB"): //if provider is Habanero, then
+
+                                            $url = $_ServiceAPI[$mzToServiceID - 1];
+                                            $capiusername = $_HABbrandID;
+                                            $capipassword = $_HABapiKey;
+                                            $capiplayername = $_CAPIPlayerName;
+                                            $capiserverID = '';
+                                            $tracking1 = $mzTransferID . $mzToTransactionType;
+
+                                            $transinfo = array();
+
+                                            $transinfo = $CasinoGamingCAPI->TransSearchInfo($servicegrpname, $mzToServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $tracking1, $tracking2 = '', $tracking3 = '', $tracking4 = '', $usermode);
+                                            break;
+
+                                        default :
+                                            $msg = "Error: Invalid Casino Provider";
+                                            echo json_encode($msg);
+                                            exit;
+                                            break;
+                                    }
+
+                                    switch (true) {
+
+                                        case strstr($serviceName, "RTG - Sapphire V17 UB"): //if provider is RTG, then
+                                            //check if redemption was successfull, and insert information on manualredemptions and audittrail
+                                            if ($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"] == "TRANSACTIONSTATUS_APPROVED") {
+                                                //fetch the information when calling the RTG Withdraw Method
+                                                foreach ($transinfo as $results) {
+                                                    $riserror = $results['TrackingInfoTransactionSearchResult']['errorMsg'];
+                                                    $reffdate = $results['TrackingInfoTransactionSearchResult']['effDate']; //uses ISO8601 date format
+                                                    $rwamount = $results['TrackingInfoTransactionSearchResult']['amount'];
+                                                    $rremarks = $results['TrackingInfoTransactionSearchResult']['transactionStatus'];
+                                                    $rtransactionID = $results['TrackingInfoTransactionSearchResult']['transactionID'];
+                                                }
+
+                                                $fmteffdate = $otopup->getDate();
+                                                $vsiteID = $mzSiteID;
+                                                $vterminalID = $mzTerminalID;
+                                                $vreportedAmt = ereg_replace(",", "", 0);
+                                                $vactualAmt = 0;
+                                                $vtransactionDate = $otopup->getDate();
+                                                $vreqByAID = $aid;
+                                                $vprocByAID = $aid;
+                                                $vdateEffective = $otopup->getDate();
+                                                $vstatus = 1;
+                                                $vtransactionID = $rtransactionID;
+                                                $vremarks = $remarksub;
+                                                $vticket = $ticketub;
+                                                $cmbServerID = $mzToServiceID;
+
+                                                $vtransStatus = $rremarks;
+                                                $transsummaryid = $otopup->getLastSummaryID($vterminalID);
+                                                $transsummaryid = $transsummaryid['summaryID'];
+
+                                                $lastmrid = $otopup->insertmanualredemptionub($vsiteID, $vterminalID, $vreportedAmt, $vactualAmt, $vtransactionDate, $vreqByAID, $vprocByAID, $vremarks, $vdateEffective, $vstatus, $vtransactionID, $transsummaryid, $vticket, $cmbServerID, $vtransStatus, $loyaltycardnumber, $mid, $usermode, $mzTransferID, $mzToServiceID);
+
+                                                if ($lastmrid > 0) {
+                                                    //check if there was no error on withdrawal
+                                                    if ($rtransactionID > -1) {
+
+                                                        $issucess = $otopup->updateManualRedemptionub($vstatus, $vactualAmt, $vtransactionID, $fmteffdate, $vtransStatus, $lastmrid);
+
+                                                        if ($issucess > 0) {
+
+                                                            $TransferStatus = 101;
+
+                                                            $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
+                                                            if ($updateMzTransactionTransfer) {
+                                                                $updateTerminalSessionsCredentials = $otopup->updateTerminalSessionsCredentials(1, $mzToServiceID, $UBServiceLogin, $UBServicePassword, $UBHashedServicePassword, $vactualAmt, $mzTerminalID);
+
+                                                                if ($updateTerminalSessionsCredentials) {
+                                                                    $updateTerminalSessionsCredentials = $otopup->updateMember($mzToServiceID, $mid);
+
+                                                                    //insert into audit trail
+                                                                    $vtransdetails = "transaction id " . $vtransactionID . ",amount " . $vreportedAmt;
+                                                                    $vauditfuncID = 7;
+                                                                    $otopup->logtoaudit($new_sessionid, $aid, $vtransdetails, $vtransactionDate, $vipaddress, $vauditfuncID);
+                                                                    $msg = "Succesful RTG Casino Fulfillment";
+                                                                    echo json_encode($msg);
+                                                                    exit;
+                                                                } else {
+                                                                    $msg = "Failed to update terminalsessions table.";
+                                                                    echo json_encode($msg);
+                                                                    exit;
+                                                                }
+                                                            } else {
+                                                                $msg = "Failed to update mztransactiontransfer table.";
+                                                                echo json_encode($msg);
+                                                                exit;
+                                                            }
+
+                                                            //update member services
+                                                            if ($otopupmembership->open()) {
+                                                                $otopupmembership->updateMemberServices($vactualAmt, $mid, $mzToServiceID, $issucess);
+                                                            }
+                                                            $otopupmembership->close();
+                                                        }
+                                                    } else {
+
+                                                        if ($riserror == "") {
+                                                            $status = 2;
+                                                            $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                            $msg = $rremarks;
+                                                            echo json_encode($msg);
+                                                            exit;
+                                                        } else {
+                                                            $status = 2;
+                                                            $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                            $msg = $riserror; //error message when calling the withdrawal result
+                                                            echo json_encode($msg);
+                                                            exit;
+                                                        }
+                                                    }
+                                                } else {
+                                                    $msg = "Manual Redemption: Error on inserting manual redemption";
+                                                    echo json_encode($msg);
+                                                    exit;
+                                                }
+                                            } else {
+
+                                                if ($otopupmembership->open()) {
+
+                                                    $getPlayerCredentialsByUB = $otopupmembership->getPlayerCredentialsByUB($mid, $mzFromServiceID);
+                                                }
+
+                                                $otopupmembership->close();
+
+                                                $UBServiceLogin = $getPlayerCredentialsByUB['ServiceUsername'];
+                                                $UBServicePassword = $getPlayerCredentialsByUB['ServicePassword'];
+                                                $UBHashedServicePassword = $getPlayerCredentialsByUB['HashedServicePassword'];
+                                                $usermode = $getPlayerCredentialsByUB['Usermode'];
+
+                                                $getservicename = $otopup->getCasinoName($mzFromServiceID);
+                                                $servicegrpname = $otopup->getServiceGrpName($mzFromServiceID);
+                                                $serviceName = $getservicename[0]['ServiceName'];
+
+                                                $fmteffdate = $otopup->getDate();
+                                                $vsiteID = $mzSiteID;
+                                                $vterminalID = $mzTerminalID;
+                                                $vreportedAmt = ereg_replace(",", "", $mzFromAmount);
+                                                $vactualAmt = $mzFromAmount;
+                                                $vtransactionDate = $otopup->getDate();
+                                                $vreqByAID = $aid;
+                                                $vprocByAID = $aid;
+                                                $vdateEffective = $otopup->getDate();
+                                                $vstatus = 1;
+                                                $vtransactionID = 0;
+                                                $vremarks = $remarksub;
+                                                $vticket = $ticketub;
+                                                $cmbServerID = $mzFromServiceID;
+
+
+                                                $vtransStatus = "";
+                                                $transsummaryid = $otopup->getLastSummaryID($vterminalID);
+                                                $transsummaryid = $transsummaryid['summaryID'];
+
+                                                $lastmrid = $otopup->insertmanualredemptionub($vsiteID, $vterminalID, $vreportedAmt, $vactualAmt, $vtransactionDate, $vreqByAID, $vprocByAID, $vremarks, $vdateEffective, $vstatus, $vtransactionID, $transsummaryid, $vticket, $cmbServerID, $vtransStatus, $loyaltycardnumber, $mid, $usermode, $mzTransferID, 1);
+
+                                                if ($lastmrid > 0) {
+
+                                                    $TransferStatus = 101;
+
+                                                    $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
+                                                    if ($updateMzTransactionTransfer) {
+                                                        $updateTerminalSessionsCredentials = $otopup->updateTerminalSessionsCredentials(1, $mzFromServiceID, $UBServiceLogin, $UBServicePassword, $UBHashedServicePassword, $vactualAmt, $mzTerminalID);
+
+                                                        if ($updateTerminalSessionsCredentials) {
+                                                            $updateTerminalSessionsCredentials = $otopup->updateMember($mzFromServiceID, $mid);
+
+                                                            //insert into audit trail
+                                                            $vtransdetails = "transaction id " . $vtransactionID . ",amount " . $vreportedAmt;
+                                                            $vauditfuncID = 7;
+                                                            $otopup->logtoaudit($new_sessionid, $aid, $vtransdetails, $vtransactionDate, $vipaddress, $vauditfuncID);
+                                                            $msg = "Successful RTG Casino Fulfillment";
+                                                            echo json_encode($msg);
+                                                            exit;
+                                                        } else {
+                                                            $msg = "Failed to update terminalsessions table.";
+                                                            echo json_encode($msg);
+                                                            exit;
+                                                        }
+                                                    } else {
+                                                        $msg = "Failed to update mztransactiontransfer table.";
+                                                        echo json_encode($msg);
+                                                        exit;
+                                                    }
+
+                                                    //update member services
+                                                    if ($otopupmembership->open()) {
+                                                        $otopupmembership->updateMemberServices($vactualAmt, $mid, $mzFromServiceID, $issucess);
+                                                    }
+                                                    $otopupmembership->close();
+                                                } else {
+                                                    $msg = "Manual Redemption: Error on inserting manual redemption";
+                                                    echo json_encode($msg);
+                                                    exit;
+                                                }
+                                            }
+                                            break;
+
+                                        case strstr($serviceName, "Habanero UB"): //if provider is HAB, then
+                                            //check if redemption was successfull, and insert information on manualredemptions and audittrail
+                                            if ($transinfo['IsSucceed'] == true) {
+                                                //fetch the information when calling the RTG Withdraw Method
+                                                foreach ($transinfo as $results) {
+                                                    $riserror = $results['querytransmethodResult']['Success'];
+                                                    $reffdate = $results['querytransmethodResult']['DtAdded'];
+                                                    $rwamount = $results['querytransmethodResult']['Amount'];
+                                                    $rremarks = "Withdrawal Successful";
+                                                    $rtransactionID = $results['querytransmethodResult']['TransactionId'];
+                                                    $rwbalafter = $results['querytransmethodResult']['BalanceAfter'];
+                                                }
+
+                                                $fmteffdate = $otopup->getDate();
+                                                $vsiteID = $mzSiteID;
+                                                $vterminalID = $mzTerminalID;
+                                                $vreportedAmt = ereg_replace(",", "", 0);
+                                                $vactualAmt = 0;
+                                                $vtransactionDate = $otopup->getDate();
+                                                $vreqByAID = $aid;
+                                                $vprocByAID = $aid;
+                                                $vdateEffective = $otopup->getDate();
+                                                $vstatus = 0;
+                                                $vtransactionID = 0;
+                                                $vremarks = $remarksub;
+                                                $vticket = $ticketub;
+                                                $cmbServerID = $mzToServiceID;
+
+                                                $vtransStatus = $rremarks;
+                                                $transsummaryid = $otopup->getLastSummaryID($vterminalID);
+                                                $transsummaryid = $transsummaryid['summaryID'];
+
+                                                $lastmrid = $otopup->insertmanualredemptionub($vsiteID, $vterminalID, $vreportedAmt, $vactualAmt, $vtransactionDate, $vreqByAID, $vprocByAID, $vremarks, $vdateEffective, $vstatus, $vtransactionID, $transsummaryid, $vticket, $cmbServerID, $vtransStatus, $loyaltycardnumber, $mid, $usermode, $mzTransferID, $mzToServiceID);
+
+                                                if ($lastmrid > 0) {
+
+                                                    //check if there was no error on withdrawal
+                                                    if ($riserror) {
+
+                                                        $fmteffdate = $otopup->getDate();
+                                                        $vstatus = 1;
+                                                        $vtransactionID = $rtransactionID;
+                                                        $vtransStatus = $rremarks;
+
+                                                        $issucess = $otopup->updateManualRedemptionub($vstatus, $vactualAmt, $vtransactionID, $fmteffdate, $vtransStatus, $lastmrid);
+
+                                                        if ($issucess > 0) {
+                                                            $TransferStatus = 101;
+
+                                                            $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
+                                                            if ($updateMzTransactionTransfer) {
+                                                                $updateTerminalSessionsCredentials = $otopup->updateTerminalSessionsCredentials(1, $mzToServiceID, $UBServiceLogin, $UBServicePassword, $UBHashedServicePassword, $vactualAmt, $mzTerminalID);
+
+                                                                if ($updateTerminalSessionsCredentials) {
+                                                                    $updateTerminalSessionsCredentials = $otopup->updateMember($mzToServiceID, $mid);
+
+                                                                    //insert into audit trail
+                                                                    $vtransdetails = "transaction id " . $vtransactionID . ",amount " . $vreportedAmt;
+                                                                    $vauditfuncID = 7;
+                                                                    $otopup->logtoaudit($new_sessionid, $aid, $vtransdetails, $vtransactionDate, $vipaddress, $vauditfuncID);
+                                                                    $msg = "Succesful Habanero Casino Fulfillment";
+                                                                    echo json_encode($msg);
+                                                                    exit;
+                                                                } else {
+                                                                    $msg = "Failed to update terminalsessions table.";
+                                                                    echo json_encode($msg);
+                                                                    exit;
+                                                                }
+                                                            } else {
+                                                                $msg = "Failed to update mztransactiontransfer table.";
+                                                                echo json_encode($msg);
+                                                                exit;
+                                                            }
+
+                                                            //update member services
+                                                            if ($otopupmembership->open()) {
+                                                                $otopupmembership->updateMemberServices($vactualAmt, $mid, $mzToServiceID, $issucess);
+                                                            }
+                                                            $otopupmembership->close();
+                                                        }
+                                                    } else {
+
+                                                        if ($riserror == "") {
+                                                            $status = 2;
+                                                            $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                            $msg = $rremarks;
+                                                            echo json_encode($msg);
+                                                            exit;
+                                                        } else {
+                                                            $status = 2;
+                                                            $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                            $msg = $riserror; //error message when calling the withdrawal result
+                                                            echo json_encode($msg);
+                                                            exit;
+                                                        }
+                                                    }
+                                                } else {
+                                                    $msg = "Manual Redemption: Error on inserting manual redemption";
+                                                    echo json_encode($msg);
+                                                    exit;
+                                                }
+                                            } else {
+
+                                                if ($otopupmembership->open()) {
+
+                                                    $getPlayerCredentialsByUB = $otopupmembership->getPlayerCredentialsByUB($mid, $mzFromServiceID);
+                                                }
+
+                                                $otopupmembership->close();
+
+                                                $UBServiceLogin = $getPlayerCredentialsByUB['ServiceUsername'];
+                                                $UBServicePassword = $getPlayerCredentialsByUB['ServicePassword'];
+                                                $UBHashedServicePassword = $getPlayerCredentialsByUB['HashedServicePassword'];
+                                                $usermode = $getPlayerCredentialsByUB['Usermode'];
+
+                                                $getservicename = $otopup->getCasinoName($mzFromServiceID);
+                                                $servicegrpname = $otopup->getServiceGrpName($mzFromServiceID);
+                                                $serviceName = $getservicename[0]['ServiceName'];
+
+
+                                                $fmteffdate = $otopup->getDate();
+                                                $vsiteID = $mzSiteID;
+                                                $vterminalID = $mzTerminalID;
+                                                $vreportedAmt = ereg_replace(",", "", $mzFromAmount);
+                                                $vactualAmt = $mzFromAmount;
+                                                $vtransactionDate = $otopup->getDate();
+                                                $vreqByAID = $aid;
+                                                $vprocByAID = $aid;
+                                                $vdateEffective = $otopup->getDate();
+                                                $vstatus = 1;
+                                                $vtransactionID = 0;
+                                                $vremarks = $remarksub;
+                                                $vticket = $ticketub;
+                                                $cmbServerID = $mzFromServiceID;
+
+                                                $vtransStatus = "";
+                                                $transsummaryid = $otopup->getLastSummaryID($vterminalID);
+                                                $transsummaryid = $transsummaryid['summaryID'];
+
+                                                $lastmrid = $otopup->insertmanualredemptionub($vsiteID, $vterminalID, $vreportedAmt, $vactualAmt, $vtransactionDate, $vreqByAID, $vprocByAID, $vremarks, $vdateEffective, $vstatus, $vtransactionID, $transsummaryid, $vticket, $cmbServerID, $vtransStatus, $loyaltycardnumber, $mid, $usermode, $mzTransferID, 1);
+
+                                                if ($lastmrid > 0) {
+
+                                                    $TransferStatus = 101;
+
+                                                    $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
+                                                    if ($updateMzTransactionTransfer) {
+                                                        $updateTerminalSessionsCredentials = $otopup->updateTerminalSessionsCredentials(1, $mzFromServiceID, $UBServiceLogin, $UBServicePassword, $UBHashedServicePassword, $vactualAmt, $mzTerminalID);
+
+                                                        if ($updateTerminalSessionsCredentials) {
+                                                            $updateTerminalSessionsCredentials = $otopup->updateMember($mzFromServiceID, $mid);
+
+                                                            //insert into audit trail
+                                                            $vtransdetails = "transaction id " . $vtransactionID . ",amount " . $vreportedAmt;
+                                                            $vauditfuncID = 7;
+                                                            $otopup->logtoaudit($new_sessionid, $aid, $vtransdetails, $vtransactionDate, $vipaddress, $vauditfuncID);
+                                                            $msg = "Successful Habanero Casino Fulfillment";
+                                                            echo json_encode($msg);
+                                                            exit;
+                                                        } else {
+                                                            $msg = "Failed to update terminalsessions table.";
+                                                            echo json_encode($msg);
+                                                            exit;
+                                                        }
+                                                    } else {
+                                                        $msg = "Failed to update mztransactiontransfer table.";
+                                                        echo json_encode($msg);
+                                                        exit;
+                                                    }
+
+                                                    //update member services
+                                                    if ($otopupmembership->open()) {
+                                                        $otopupmembership->updateMemberServices($vactualAmt, $mid, $mzFromServiceID, $issucess);
+                                                    }
+                                                    $otopupmembership->close();
+                                                } else {
+                                                    $msg = "Manual Redemption: Error on inserting manual redemption";
+                                                    echo json_encode($msg);
+                                                    exit;
+                                                }
+                                            }
+
+                                            break;
+
+                                        default :
+                                            $msg = "Error: Invalid Casino Provider";
+                                            echo json_encode($msg);
+                                            exit;
+                                            break;
+                                    }
+                                }
+                            }
+                        } elseif ($MzTransferStatus == 6) {
+
+                            if ($mzToServiceID <> $ubserviceID) {
+                                $updateActiveServiceStatusRollback = $otopup->updateActiveServiceStatusRollback($ActiveServiceStatus, $loyaltycardnumber);
+                                if ($updateActiveServiceStatusRollback) {
+                                    $msg = "Invalid casino to fulfill.";
+                                    echo json_encode($msg);
+                                    exit;
+                                } else {
+                                    $msg = "Failed to update terminalsessions table.";
+                                    echo json_encode($msg);
+                                    exit;
+                                }
+                            } else {
+
+                                if ($otopupmembership->open()) {
+
+                                    $getPlayerCredentialsByUB = $otopupmembership->getPlayerCredentialsByUB($mid, $mzToServiceID);
+                                }
+
+                                $otopupmembership->close();
+
+                                $UBServiceLogin = $getPlayerCredentialsByUB['ServiceUsername'];
+                                $UBServicePassword = $getPlayerCredentialsByUB['ServicePassword'];
+                                $UBHashedServicePassword = $getPlayerCredentialsByUB['HashedServicePassword'];
+                                $usermode = $getPlayerCredentialsByUB['Usermode'];
+
+                                $getservicename = $otopup->getCasinoName($mzToServiceID);
+                                $servicegrpname = $otopup->getServiceGrpName($mzToServiceID);
+                                $serviceName = $getservicename[0]['ServiceName'];
+
+                                $trans_req_log_last_id = $otopup->getMaxTransreqlogid($loyaltycardnumber, $mzToServiceID);
+
+                                switch (true) {
+                                    case strstr($serviceName, "RTG - Sapphire V17 UB"): //if provider is RTG, then
+
+                                        $url = $_ServiceAPI[$mzToServiceID - 1];
+                                        $capiusername = $_CAPIUsername;
+                                        $capipassword = $_CAPIPassword;
+                                        $capiplayername = $_CAPIPlayerName;
+                                        $capiserverID = '';
+                                        $tracking1 = $mzTransferID . $mzToTransactionType;
+
+                                        $transinfo = array();
+
+                                        $transinfo = $CasinoGamingCAPI->TransSearchInfo($servicegrpname, $mzToServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $tracking1, $tracking2 = '', $tracking3 = '', $tracking4 = '', $usermode);
+
+                                        break;
+
+                                    case strstr($serviceName, "Habanero UB"): //if provider is Habanero, then
+
+                                        $url = $_ServiceAPI[$mzToServiceID - 1];
+                                        $capiusername = $_HABbrandID;
+                                        $capipassword = $_HABapiKey;
+                                        $capiplayername = $_CAPIPlayerName;
+                                        $capiserverID = '';
+                                        $tracking1 = $mzTransferID . $mzToTransactionType;
+
+                                        $transinfo = array();
+
+                                        $transinfo = $CasinoGamingCAPI->TransSearchInfo($servicegrpname, $mzToServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $tracking1, $tracking2 = '', $tracking3 = '', $tracking4 = '', $usermode);
+                                        break;
+
+                                    default :
+                                        $msg = "Error: Invalid Casino Provider";
+                                        echo json_encode($msg);
+                                        exit;
+                                        break;
+                                }
+
+                                switch (true) {
+
+                                    case strstr($serviceName, "RTG - Sapphire V17 UB"): //if provider is RTG, then
+                                        //check if redemption was successfull, and insert information on manualredemptions and audittrail
+                                        if ($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"] == "TRANSACTIONSTATUS_APPROVED") {
+                                            //fetch the information when calling the RTG Withdraw Method
+                                            foreach ($transinfo as $results) {
+                                                $riserror = $results['TrackingInfoTransactionSearchResult']['errorMsg'];
+                                                $reffdate = $results['TrackingInfoTransactionSearchResult']['effDate']; //uses ISO8601 date format
+                                                $rwamount = $results['TrackingInfoTransactionSearchResult']['amount'];
+                                                $rremarks = $results['TrackingInfoTransactionSearchResult']['transactionStatus'];
+                                                $rtransactionID = $results['TrackingInfoTransactionSearchResult']['transactionID'];
+                                            }
+
+                                            $fmteffdate = $otopup->getDate();
+                                            $vsiteID = $mzSiteID;
+                                            $vterminalID = $mzTerminalID;
+                                            $vreportedAmt = $mzFromAmount;
+                                            $vactualAmt = $rwamount;
+                                            $vtransactionDate = $otopup->getDate();
+                                            $vreqByAID = $aid;
+                                            $vprocByAID = $aid;
+                                            $vdateEffective = $otopup->getDate();
+                                            $vstatus = 0;
+                                            $vtransactionID = $rtransactionID;
+                                            $vremarks = $remarksub;
+                                            $vticket = $ticketub;
+                                            $cmbServerID = $mzToServiceID;
+
+                                            $vtransStatus = $rremarks;
+                                            $transsummaryid = $otopup->getLastSummaryID($vterminalID);
+                                            $transsummaryid = $transsummaryid['summaryID'];
+
+                                            $lastmrid = $otopup->insertmanualredemptionub($vsiteID, $vterminalID, $vreportedAmt, $vactualAmt, $vtransactionDate, $vreqByAID, $vprocByAID, $vremarks, $vdateEffective, $vstatus, $vtransactionID, $transsummaryid, $vticket, $cmbServerID, $vtransStatus, $loyaltycardnumber, $mid, $usermode, $mzTransferID, $mzToServiceID);
+
+                                            if ($lastmrid > 0) {
+
+                                                $url = $_ServiceAPI[$mzToServiceID - 1];
+                                                $capiusername = $_CAPIUsername;
+                                                $capipassword = $_CAPIPassword;
+                                                $capiplayername = $_CAPIPlayerName;
+                                                $capiserverID = '';
+                                                $tracking1 = $trans_req_log_last_id;
+                                                $tracking2 = "MR" . "$lastmrid";
+                                                $tracking3 = $mzToServiceID;
+                                                $withdraw = array();
+
+                                                $locatorname = null;
+                                                //withdraw rtg casino
+                                                $withdraw = $CasinoGamingCAPI->Withdraw($servicegrpname, $mzToServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $mzToAmount, $tracking1, $tracking2, $tracking3, $tracking4 = '', $methodname = '', $usermode, $locatorname);
+
+
+                                                if ($withdraw["TransactionInfo"]['WithdrawGenericResult']['transactionStatus'] == 'TRANSACTIONSTATUS_APPROVED') {
+                                                    //fetch the information when calling the RTG Withdraw Method
+                                                    foreach ($withdraw as $results) {
+                                                        $riserror = $results['WithdrawGenericResult']['errorMsg'];
+                                                        $reffdate = $results['WithdrawGenericResult']['effDate']; //uses ISO8601 date format
+                                                        $rwamount = $results['WithdrawGenericResult']['amount'];
+                                                        $rremarks = $results['WithdrawGenericResult']['transactionStatus'];
+                                                        $rtransactionID = $results['WithdrawGenericResult']['transactionID'];
+                                                    }
+                                                    //check if there was no error on withdrawal
+                                                    if ($riserror == "OK") {
+
+                                                        $fmteffdate = $otopup->getDate();
+                                                        $vstatus = 1;
+                                                        $vtransactionID = $rtransactionID;
+                                                        $vtransStatus = $rremarks;
+
+                                                        $issucess = $otopup->updateManualRedemptionub($vstatus, $vactualAmt, $vtransactionID, $fmteffdate, $vtransStatus, $lastmrid);
+
+                                                        if ($issucess > 0) {
+
+                                                            //get new balance after redemption
+                                                            $balance = $CasinoGamingCAPI->getBalance($servicegrpname, $mzToServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, null);
+
+                                                            $TransferStatus = 101;
+
+                                                            $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
+                                                            if ($updateMzTransactionTransfer) {
+                                                                $updateTerminalSessionsCredentials = $otopup->updateTerminalSessionsCredentials(1, $mzToServiceID, $UBServiceLogin, $UBServicePassword, $UBHashedServicePassword, $balance, $mzTerminalID);
+
+                                                                if ($updateTerminalSessionsCredentials) {
+                                                                    $updateTerminalSessionsCredentials = $otopup->updateMember($mzToServiceID, $mid);
+
+                                                                    //insert into audit trail
+                                                                    $vtransdetails = "transaction id " . $vtransactionID . ",amount " . $balance;
+                                                                    $vauditfuncID = 7;
+                                                                    $otopup->logtoaudit($new_sessionid, $aid, $vtransdetails, $vtransactionDate, $vipaddress, $vauditfuncID);
+                                                                    $msg = "Successful RTG Casino Fulfillment";
+                                                                    echo json_encode($msg);
+                                                                    exit;
+                                                                } else {
+                                                                    $msg = "Failed to update terminalsessions table.";
+                                                                    echo json_encode($msg);
+                                                                    exit;
+                                                                }
+                                                            } else {
+                                                                $msg = "Failed to update mztransactiontransfer table.";
+                                                                echo json_encode($msg);
+                                                                exit;
+                                                            }
+
+                                                            //update member services
+                                                            if ($otopupmembership->open()) {
+                                                                $otopupmembership->updateMemberServices($vactualAmt, $mid, $mzToServiceID, $issucess);
+                                                            }
+                                                            $otopupmembership->close();
+                                                        }
+                                                    } else {
+                                                        if ($riserror == "") {
+                                                            $status = 2;
+                                                            $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                            $msg = $rremarks;
+                                                            echo json_encode($msg);
+                                                            exit;
+                                                        } else {
+                                                            $status = 2;
+                                                            $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                            $msg = $riserror; //error message when calling the withdrawal result
+                                                            echo json_encode($msg);
+                                                            exit;
+                                                        }
+                                                    }
+                                                } else {
+                                                    //TRANSACRION INFO
+                                                    $transinfo = array();
+
+                                                    $transinfo = $CasinoGamingCAPI->TransSearchInfo($servicegrpname, $mzToServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $tracking1, $tracking2 = '', $tracking3 = '', $tracking4 = '', $usermode);
+
+                                                    if ($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"] == "TRANSACTIONSTATUS_APPROVED") {
+                                                        //fetch the information when calling the RTG Withdraw Method
+                                                        foreach ($transinfo as $results) {
+                                                            $riserror = $results['TrackingInfoTransactionSearchResult']['errorMsg'];
+                                                            $reffdate = $results['TrackingInfoTransactionSearchResult']['effDate']; //uses ISO8601 date format
+                                                            $rwamount = $results['TrackingInfoTransactionSearchResult']['amount'];
+                                                            $rremarks = $results['TrackingInfoTransactionSearchResult']['transactionStatus'];
+                                                            $rtransactionID = $results['TrackingInfoTransactionSearchResult']['transactionID'];
+                                                        }
+
+                                                        $fmteffdate = $otopup->getDate();
+                                                        $vsiteID = $mzSiteID;
+                                                        $vterminalID = $mzTerminalID;
+                                                        $vreportedAmt = ereg_replace(",", "", $rwamount);
+                                                        $vactualAmt = $rwamount;
+                                                        $vtransactionDate = $otopup->getDate();
+                                                        $vreqByAID = $aid;
+                                                        $vprocByAID = $aid;
+                                                        $vdateEffective = $otopup->getDate();
+                                                        $vstatus = 1;
+                                                        $vtransactionID = $rtransactionID;
+                                                        $vremarks = $remarksub;
+                                                        $vticket = $ticketub;
+                                                        $cmbServerID = $mzToServiceID;
+
+                                                        $vtransStatus = $rremarks;
+                                                        $transsummaryid = $otopup->getLastSummaryID($vterminalID);
+                                                        $transsummaryid = $transsummaryid['summaryID'];
+
+                                                        if ($rtransactionID > -1) {
+
+
+                                                            $issucess = $otopup->updateManualRedemptionub($vstatus, $vactualAmt, $vtransactionID, $fmteffdate, $vtransStatus, $lastmrid);
+
+                                                            if ($issucess > 0) {
+
+                                                                //get new balance after redemption
+                                                                $balance = $CasinoGamingCAPI->getBalance($servicegrpname, $mzToServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, null);
+
+
+                                                                $TransferStatus = 101;
+
+                                                                $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
+                                                                if ($updateMzTransactionTransfer) {
+                                                                    $updateTerminalSessionsCredentials = $otopup->updateTerminalSessionsCredentials(1, $mzToServiceID, $UBServiceLogin, $UBServicePassword, $UBHashedServicePassword, $balance, $mzTerminalID);
+
+                                                                    if ($updateTerminalSessionsCredentials) {
+                                                                        $updateTerminalSessionsCredentials = $otopup->updateMember($mzToServiceID, $mid);
+
+                                                                        //insert into audit trail
+                                                                        $vtransdetails = "transaction id " . $vtransactionID . ",amount " . $vreportedAmt;
+                                                                        $vauditfuncID = 7;
+                                                                        $otopup->logtoaudit($new_sessionid, $aid, $vtransdetails, $vtransactionDate, $vipaddress, $vauditfuncID);
+                                                                        $msg = "Succesful RTG Casino Fulfillment";
+                                                                        echo json_encode($msg);
+                                                                        exit;
+                                                                    } else {
+                                                                        $msg = "Failed to update terminalsessions table.";
+                                                                        echo json_encode($msg);
+                                                                        exit;
+                                                                    }
+                                                                } else {
+                                                                    $msg = "Failed to update mztransactiontransfer table.";
+                                                                    echo json_encode($msg);
+                                                                    exit;
+                                                                }
+
+                                                                //update member services
+                                                                if ($otopupmembership->open()) {
+                                                                    $otopupmembership->updateMemberServices($vactualAmt, $mid, $mzToServiceID, $issucess);
+                                                                }
+                                                                $otopupmembership->close();
+                                                            }
+                                                        } else {
+
+                                                            if ($riserror == "") {
+                                                                $status = 2;
+                                                                $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                                $msg = $rremarks;
+                                                                echo json_encode($msg);
+                                                                exit;
+                                                            } else {
+                                                                $status = 2;
+                                                                $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                                $msg = $riserror; //error message when calling the withdrawal result
+                                                                echo json_encode($msg);
+                                                                exit;
+                                                            }
+                                                        }
+                                                    } else {
+                                                        
+                                                    }
+                                                }
+                                            } else {
+                                                $msg = "Manual Redemption: Error on inserting manual redemption";
+                                                echo json_encode($msg);
+                                                exit;
+                                            }
+                                        } else {
+
+                                            $fmteffdate = $otopup->getDate();
+                                            $vsiteID = $mzSiteID;
+                                            $vterminalID = $mzTerminalID;
+                                            $vreportedAmt = ereg_replace(",", "", 0);
+                                            $vactualAmt = 0;
+                                            $vtransactionDate = $otopup->getDate();
+                                            $vreqByAID = $aid;
+                                            $vprocByAID = $aid;
+                                            $vdateEffective = $otopup->getDate();
+                                            $vstatus = 1;
+                                            $vtransactionID = 0;
+                                            $vremarks = $remarksub;
+                                            $vticket = $ticketub;
+                                            $cmbServerID = $mzToServiceID;
+
+
+                                            $vtransStatus = "";
+                                            $transsummaryid = $otopup->getLastSummaryID($vterminalID);
+                                            $transsummaryid = $transsummaryid['summaryID'];
+
+                                            $lastmrid = $otopup->insertmanualredemptionub($vsiteID, $vterminalID, $vreportedAmt, $vactualAmt, $vtransactionDate, $vreqByAID, $vprocByAID, $vremarks, $vdateEffective, $vstatus, $vtransactionID, $transsummaryid, $vticket, $cmbServerID, $vtransStatus, $loyaltycardnumber, $mid, $usermode, $mzTransferID, $mzToServiceID);
+
+                                            if ($lastmrid > 0) {
+
+                                                $TransferStatus = 101;
+
+                                                $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
+                                                if ($updateMzTransactionTransfer) {
+                                                    $updateTerminalSessionsCredentials = $otopup->updateTerminalSessionsCredentials(1, $mzToServiceID, $UBServiceLogin, $UBServicePassword, $UBHashedServicePassword, $vactualAmt, $mzTerminalID);
+
+                                                    if ($updateTerminalSessionsCredentials) {
+                                                        $updateTerminalSessionsCredentials = $otopup->updateMember($mzToServiceID, $mid);
+
+                                                        //insert into audit trail
+                                                        $vtransdetails = "transaction id " . $vtransactionID . ",amount " . $vreportedAmt;
+                                                        $vauditfuncID = 7;
+                                                        $otopup->logtoaudit($new_sessionid, $aid, $vtransdetails, $vtransactionDate, $vipaddress, $vauditfuncID);
+                                                        $msg = "Successful RTG Casino Fulfillment";
+                                                        echo json_encode($msg);
+                                                        exit;
+                                                    } else {
+                                                        $msg = "Failed to update terminalsessions table.";
+                                                        echo json_encode($msg);
+                                                        exit;
+                                                    }
+                                                } else {
+                                                    $msg = "Failed to update mztransactiontransfer table.";
+                                                    echo json_encode($msg);
+                                                    exit;
+                                                }
+
+                                                //update member services
+                                                if ($otopupmembership->open()) {
+                                                    $otopupmembership->updateMemberServices($vactualAmt, $mid, $mzToServiceID, $issucess);
+                                                }
+                                                $otopupmembership->close();
+                                            } else {
+                                                $msg = "Manual Redemption: Error on inserting manual redemption";
+                                                echo json_encode($msg);
+                                                exit;
+                                            }
+                                        }
+                                        break;
+
+                                    case strstr($serviceName, "Habanero UB"): //if provider is HAB, then
+                                        //check if redemption was successfull, and insert information on manualredemptions and audittrail
+                                        if ($transinfo["TransactionInfo"]["querytransmethodResult"]["Success"] == true) {
+                                            //fetch the information when calling the RTG Withdraw Method
+                                            foreach ($transinfo as $results) {
+                                                $riserror = $results['querytransmethodResult']['Success'];
+                                                $reffdate = $results['querytransmethodResult']['DtAdded'];
+                                                $rwamount = $results['querytransmethodResult']['Amount'];
+                                                $rremarks = "Withdrawal Successful";
+                                                $rtransactionID = $results['querytransmethodResult']['TransactionId'];
+                                                $rwbalafter = $results['querytransmethodResult']['BalanceAfter'];
+                                            }
+
+                                            $fmteffdate = $otopup->getDate();
+                                            $vsiteID = $mzSiteID;
+                                            $vterminalID = $mzTerminalID;
+                                            $vreportedAmt = $mzFromAmount;
+                                            $vactualAmt = $rwamount;
+                                            $vtransactionDate = $otopup->getDate();
+                                            $vreqByAID = $aid;
+                                            $vprocByAID = $aid;
+                                            $vdateEffective = $otopup->getDate();
+                                            $vstatus = 0;
+                                            $vtransactionID = 0;
+                                            $vremarks = $remarksub;
+                                            $vticket = $ticketub;
+                                            $cmbServerID = $mzToServiceID;
+
+
+                                            $vtransStatus = "";
+                                            $transsummaryid = $otopup->getLastSummaryID($vterminalID);
+                                            $transsummaryid = $transsummaryid['summaryID'];
+
+                                            $lastmrid = $otopup->insertmanualredemptionub($vsiteID, $vterminalID, $vreportedAmt, $vactualAmt, $vtransactionDate, $vreqByAID, $vprocByAID, $vremarks, $vdateEffective, $vstatus, $vtransactionID, $transsummaryid, $vticket, $cmbServerID, $vtransStatus, $loyaltycardnumber, $mid, $usermode, $mzTransferID, $mzToServiceID);
+
+                                            if ($lastmrid > 0) {
+
+                                                $url = $_ServiceAPI[$mzToServiceID - 1];
+                                                $capiusername = $_HABbrandID;
+                                                $capipassword = $_HABapiKey;
+                                                $capiplayername = $_CAPIPlayerName;
+                                                $capiserverID = '';
+                                                $tracking1 = $trans_req_log_last_id;
+                                                $tracking2 = "MR" . "$lastmrid";
+                                                $tracking3 = $vterminalID;
+                                                $withdraw = array();
+                                                //get siteclassificationID
+                                                $siteClass = $otopup->getSiteClassByTerminal($vterminalID);
+
+                                                $locatorname = null;
+                                                //withdraw hab casino
+                                                $withdraw = $CasinoGamingCAPI->Withdraw($servicegrpname, $mzToServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $mzFromAmount, $tracking1, $tracking2, $tracking3, $tracking4 = '', $methodname = '', $usermode, $locatorname, $UBServicePassword);
+
+
+                                                //check if redemption was successful, and insert information on manualredemptions and audittrail
+                                                if ($withdraw['IsSucceed'] == true) {
+                                                    //fetch the information when calling the RTG Withdraw Method
+                                                    foreach ($withdraw as $results) {
+                                                        $riserror = $results['withdrawmethodResult']['Message'];
+                                                        $rwamount = abs($results['withdrawmethodResult']['Amount']);
+                                                        $rremarks = $results['withdrawmethodResult']['Message'];
+                                                        $rtransactionID = $results['withdrawmethodResult']['TransactionId'];
+                                                        $reffdate = $otopup->getDate();
+                                                    }
+
+
+                                                    //check if there was no error on withdrawal
+                                                    if ($riserror == "Withdrawal Success") {
+
+                                                        $fmteffdate = $otopup->getDate();
+                                                        $vstatus = 1;
+                                                        $vtransactionID = $rtransactionID;
+                                                        $vtransStatus = $rremarks;
+
+                                                        $issucess = $otopup->updateManualRedemptionub($vstatus, $vactualAmt, $vtransactionID, $fmteffdate, $vtransStatus, $lastmrid);
+
+                                                        if ($issucess > 0) {
+                                                            //get new balance after redemption
+                                                            $balance = $CasinoGamingCAPI->getBalance($servicegrpname, $mzToServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, null, $UBServicePassword);
+
+                                                            $TransferStatus = 101;
+
+                                                            $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
+                                                            if ($updateMzTransactionTransfer) {
+                                                                $updateTerminalSessionsCredentials = $otopup->updateTerminalSessionsCredentials(1, $mzToServiceID, $UBServiceLogin, $UBServicePassword, $UBHashedServicePassword, $balance, $mzTerminalID);
+
+                                                                if ($updateTerminalSessionsCredentials) {
+                                                                    $updateTerminalSessionsCredentials = $otopup->updateMember($mzToServiceID, $mid);
+
+                                                                    //update member services
+                                                                    if ($otopupmembership->open()) {
+                                                                        $otopupmembership->updateMemberServices($balance, $mid, $tsServiceID, $issucess);
+                                                                    }
+                                                                    $otopupmembership->close();
+                                                                    //insert into audit trail
+                                                                    $vtransdetails = "transaction id " . $vtransactionID . ",amount " . $vreportedAmt;
+                                                                    $vauditfuncID = 7;
+                                                                    $otopup->logtoaudit($new_sessionid, $aid, $vtransdetails, $vtransactionDate, $vipaddress, $vauditfuncID);
+                                                                    $msg = "Redeemed: " . $tsAmount . "; Remaining Balance: " . $balance;
+                                                                    echo json_encode($msg);
+                                                                    exit;
+                                                                } else {
+                                                                    $msg = "Failed to update terminalsessions table.";
+                                                                    echo json_encode($msg);
+                                                                    exit;
+                                                                }
+                                                            } else {
+                                                                $msg = "Failed to update mztransactiontransfer table.";
+                                                                echo json_encode($msg);
+                                                                exit;
+                                                            }
+
+
+                                                            //update member services
+                                                            if ($otopupmembership->open()) {
+                                                                $otopupmembership->updateMemberServices($vactualAmt, $mid, $mzToServiceID, $issucess);
+                                                            }
+                                                            $otopupmembership->close();
+                                                        }
+                                                    } else {
+                                                        if ($riserror == "") {
+                                                            $status = 2;
+                                                            $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                            $msg = $rremarks;
+                                                            echo json_encode($msg);
+                                                            exit;
+                                                        } else {
+                                                            $status = 2;
+                                                            $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                            $msg = $riserror; //error message when calling the withdrawal result
+                                                            echo json_encode($msg);
+                                                            exit;
+                                                        }
+                                                    }
+                                                } else {
+                                                    //TRANSACRION INFO
+                                                    $transinfo = array();
+
+                                                    $transinfo = $CasinoGamingCAPI->TransSearchInfo($servicegrpname, $mzToServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $tracking1, $tracking2 = '', $tracking3 = '', $tracking4 = '', $usermode, $UBServicePassword);
+
+                                                    if ($transinfo['IsSucceed'] == true) {
+                                                        //fetch the information when calling the Habanero Withdraw Method
+                                                        foreach ($transinfo as $results) {
+                                                            $riserror = $results['querytransmethodResult']['Success'];
+                                                            $reffdate = $results['querytransmethodResult']['DtAdded'];
+                                                            $rwamount = $results['querytransmethodResult']['Amount'];
+                                                            $rremarks = "Withdrawal Successful";
+                                                            $rtransactionID = $results['querytransmethodResult']['TransactionId'];
+                                                            $rwbalafter = $results['querytransmethodResult']['BalanceAfter'];
+                                                        }
+
+                                                        $fmteffdate = $otopup->getDate();
+                                                        $vsiteID = $mzSiteID;
+                                                        $vterminalID = $mzTerminalID;
+                                                        $vreportedAmt = ereg_replace(",", "", $rwamount);
+                                                        $vactualAmt = $rwamount;
+                                                        $vtransactionDate = $otopup->getDate();
+                                                        $vreqByAID = $aid;
+                                                        $vprocByAID = $aid;
+                                                        $vdateEffective = $otopup->getDate();
+                                                        $vstatus = 1;
+                                                        $vtransactionID = $rtransactionID;
+                                                        $vremarks = $remarksub;
+                                                        $vticket = $ticketub;
+                                                        $cmbServerID = $mzToServiceID;
+
+                                                        $vtransStatus = $rremarks;
+                                                        $transsummaryid = $otopup->getLastSummaryID($vterminalID);
+                                                        $transsummaryid = $transsummaryid['summaryID'];
+
+                                                        if ($rtransactionID > -1) {
+
+                                                            $issucess = $otopup->updateManualRedemptionub($vstatus, $vactualAmt, $vtransactionID, $fmteffdate, $vtransStatus, $lastmrid);
+
+                                                            if ($issucess > 0) {
+
+                                                                //get new balance after redemption
+                                                                $balance = $CasinoGamingCAPI->getBalance($servicegrpname, $mzToServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, null);
+
+
+                                                                $TransferStatus = 101;
+
+                                                                $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
+
+                                                                if ($updateMzTransactionTransfer) {
+
+                                                                    $updateTerminalSessionsCredentials = $otopup->updateTerminalSessionsCredentials(1, $mzToServiceID, $UBServiceLogin, $UBServicePassword, $UBHashedServicePassword, $balance, $mzTerminalID);
+
+                                                                    if ($updateTerminalSessionsCredentials) {
+                                                                        $updateTerminalSessionsCredentials = $otopup->updateMember($mzToServiceID, $mid);
+
+                                                                        //insert into audit trail
+                                                                        $vtransdetails = "transaction id " . $vtransactionID . ",amount " . $vreportedAmt;
+                                                                        $vauditfuncID = 7;
+                                                                        $otopup->logtoaudit($new_sessionid, $aid, $vtransdetails, $vtransactionDate, $vipaddress, $vauditfuncID);
+                                                                        $msg = "Succesful RTG Casino Fulfillment";
+                                                                        echo json_encode($msg);
+                                                                        exit;
+                                                                    } else {
+                                                                        $msg = "Failed to update terminalsessions table.";
+                                                                        echo json_encode($msg);
+                                                                        exit;
+                                                                    }
+                                                                } else {
+                                                                    $msg = "Failed to update mztransactiontransfer table.";
+                                                                    echo json_encode($msg);
+                                                                    exit;
+                                                                }
+
+                                                                //update member services
+                                                                if ($otopupmembership->open()) {
+                                                                    $otopupmembership->updateMemberServices($vactualAmt, $mid, $mzToServiceID, $issucess);
+                                                                }
+                                                                $otopupmembership->close();
+                                                            }
+                                                        } else {
+
+                                                            if ($riserror == "") {
+                                                                $status = 2;
+                                                                $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                                $msg = $rremarks;
+                                                                echo json_encode($msg);
+                                                                exit;
+                                                            } else {
+                                                                $status = 2;
+                                                                $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                                $msg = $riserror; //error message when calling the withdrawal result
+                                                                echo json_encode($msg);
+                                                                exit;
+                                                            }
+                                                        }
+                                                    } else {
+                                                        $msg = "Manual Redemption: Failed to fulfill casino.";
+                                                        echo json_encode($msg);
+                                                        exit;
+                                                    }
+                                                }
+                                            } else {
+
+                                                $msg = "Manual Redemption: Error on inserting manual redemption";
+                                                echo json_encode($msg);
+                                                exit;
+                                            }
+                                        } else {
+
+                                            $fmteffdate = $otopup->getDate();
+                                            $vsiteID = $mzSiteID;
+                                            $vterminalID = $mzTerminalID;
+                                            $vreportedAmt = ereg_replace(",", "", 0);
+                                            $vactualAmt = 0;
+                                            $vtransactionDate = $otopup->getDate();
+                                            $vreqByAID = $aid;
+                                            $vprocByAID = $aid;
+                                            $vdateEffective = $otopup->getDate();
+                                            $vstatus = 1;
+                                            $vtransactionID = 0;
+                                            $vremarks = $remarksub;
+                                            $vticket = $ticketub;
+                                            $cmbServerID = $mzToServiceID;
+
+                                            $transsummaryid = $otopup->getLastSummaryID($vterminalID);
+                                            $transsummaryid = $transsummaryid['summaryID'];
+
+                                            $lastmrid = $otopup->insertmanualredemptionub($vsiteID, $vterminalID, $vreportedAmt, $vactualAmt, $vtransactionDate, $vreqByAID, $vprocByAID, $vremarks, $vdateEffective, $vstatus, $vtransactionID, $transsummaryid, $vticket, $cmbServerID, $vtransStatus, $loyaltycardnumber, $mid, $usermode, $mzTransferID, $mzToServiceID);
+
+                                            if ($lastmrid > 0) {
+
+                                                //get new balance after redemption
+                                                $balance = $CasinoGamingCAPI->getBalance($servicegrpname, $mzToServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, null);
+
+
+                                                $TransferStatus = 101;
+
+                                                $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
+                                                if ($updateMzTransactionTransfer) {
+                                                    $updateTerminalSessionsCredentials = $otopup->updateTerminalSessionsCredentials(1, $mzToServiceID, $UBServiceLogin, $UBServicePassword, $UBHashedServicePassword, $balance, $mzTerminalID);
+
+                                                    if ($updateTerminalSessionsCredentials) {
+                                                        $updateTerminalSessionsCredentials = $otopup->updateMember($mzToServiceID, $mid);
+
+                                                        //insert into audit trail
+                                                        $vtransdetails = "transaction id " . $vtransactionID . ",amount " . $vreportedAmt;
+                                                        $vauditfuncID = 7;
+                                                        $otopup->logtoaudit($new_sessionid, $aid, $vtransdetails, $vtransactionDate, $vipaddress, $vauditfuncID);
+                                                        $msg = "Succesful Habanero Casino Fulfillment";
+                                                        echo json_encode($msg);
+                                                        exit;
+                                                    } else {
+                                                        $msg = "Failed to update terminalsessions table.";
+                                                        echo json_encode($msg);
+                                                        exit;
+                                                    }
+                                                } else {
+                                                    $msg = "Failed to update mztransactiontransfer table.";
+                                                    echo json_encode($msg);
+                                                    exit;
+                                                }
+
+                                                //update member services
+                                                if ($otopupmembership->open()) {
+                                                    $otopupmembership->updateMemberServices($vactualAmt, $mid, $mzToServiceID, $issucess);
+                                                }
+                                                $otopupmembership->close();
+                                            } else {
+                                                $msg = "Manual Redemption: Error on inserting manual redemption";
+                                                echo json_encode($msg);
+                                                exit;
+                                            }
+                                        }
+
+                                        break;
+
+                                    default :
+                                        $msg = "Error: Invalid Casino Provider";
+                                        echo json_encode($msg);
+                                        exit;
+                                        break;
+                                }
+                            }
+                        } else {
+                            
+                        }
+                    }
+                } else {
+                    $msg = "Error: Invalid Casino Service";
+                    echo json_encode($msg);
+                    exit;
+                }
+            } else {
+                $msg = "Manual redemption of player balance is currently not allowed. Please try again later.";
+                echo json_encode($msg);
+                exit;
+            }
+        }
+    }
+}
+
+break;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+////END TRANSWALLET
+
+
+
+
+
+
             //User Based Redemption using Loyalty Card
             case "Withdraw":
                 $ubserviceID = $_POST['txtserviceid'];
@@ -431,337 +4125,424 @@ if($connected)
                 $amountToRedeem = $vserviceBalance;
                 //ADDED CCT 07/13/2018 END
                 
-                if(isset($siteID) && $siteID != "-1")
-                {
-                    $login = $otopup->getServiceUserName($ubserviceID, $mid);
-                    $ubterminalID = null;
-                    $server = $otopup->getCasinoName($ubserviceID);
-                    
-                    foreach ($server as $value2) 
+                //ADDED CCT 01/14/2019 BEGIN
+                // Check if with active session on selected provider
+                $isWithActiveSession = true;
+                $resActiveSession = null;
+                $resActiveSession = $otopup->checkUBactivesession($mid, $ubserviceID);
+                if ($resActiveSession != null)
+                {   // With Active Session, check if activeservicestatus = 1 OR 8
+                    if (($resActiveSession['ActiveServiceStatus'] == 1) || ($resActiveSession['ActiveServiceStatus'] == 8))
                     {
-                        $servername = $value2['ServiceName'];
-                        $usermode = $value2['UserMode'];
-                    }
-
-                    $servicegrp = $otopup->getServiceGrpName($ubserviceID);
-                    $servername = $servicegrp;
-
-                    //check if card is ewallet
-                    $isEwallet = $otopup->checkIsEwallet($mid);
-
-                    if ($isEwallet == 1) 
-                        $ramount = ereg_replace(",", "", $amountToRedeem); //format number replace (,)
-                    else 
-                        $ramount = ereg_replace(",", "", $vserviceBalance); //format number replace (,)
-
-                    $_maxRedeem = ereg_replace(",", "", $_maxRedeem); //format number replace (,)
-                    
-                    if($ramount > $_maxRedeem)
-                    {  
-                        $balance = $ramount - $_maxRedeem;
-                        $ramount = $_maxRedeem;
+                        $resActiveSessionCount = $otopup->countUBactivesession($mid, $ubserviceID);
+                        if ($resActiveSessionCount['CountServices'] > 0)
+                        {
+                            $msg = "UB Card has more than 1 active session.";
+                        }
+                        else
+                        {    
+                            if ($resActiveSession['ActiveServiceStatus'] == 1)
+                            {
+                                $issucess = $otopup->updateactiveservicestatus($mid, 8, 0);
+                                if($issucess > 0)
+                                {
+                                    $isWithActiveSession = false; // override
+                                }    
+                                else
+                                {
+                                    $msg = "Error updating service status.";
+                                }
+                            }
+                            else
+                            {
+                                $isWithActiveSession = false; // override
+                            }
+                        }    
                     }
                     else
                     {
-                        $balance = 0;
+                        $msg = "Manual Redemption of player balance on this provider is currently not allowed.  Please try again later.";
                     }
-
-                    $vreportedAmt = $ramount;
-                    $vactualAmt = 0;
-                    $vtransactionDate = $otopup->getDate();
-                    $vreqByAID = $aid;
-                    $vprocByAID = $aid;
-                    $vdateEffective = $vdate;
-                    $vstatus = 0;
-                    $vtransactionID = 0;
-                    $vtransStatus = '';
-                    $transsummaryid = null;
-                    $url = $_ServiceAPI[$ubserviceID-1];                    
-                    $capiplayername = '';
-                    $capiserverID = '';
-                    $locatorname = '';                                                    
-                    $lastmrid = $otopup->insertmanualredemptionub($siteID, $ubterminalID, $vreportedAmt, $vactualAmt, $vtransactionDate, 
-                            $vreqByAID, $vprocByAID, $remarksub, $vdateEffective, $vstatus, $vtransactionID, $transsummaryid,$ticketub, 
-                            $ubserviceID, $vtransStatus, $loyaltycardnumber, $mid, $usermode);
-
-                    if($lastmrid > 0)
-                    {
-                        $tracking1 = "MR" . $lastmrid;                                            
-                        
-                        switch (true)
-                        {
-                            case strstr($servername, "RTG"): //if provider is RTG, then
-                                
-                                $capiusername = '';
-                                $capipassword = '';
-                                $tracking2 = $siteID;
-                                $tracking3 = '';
-                                $withdraw = array();
-                                $tracking4 = '';
-                                $methodname = '';
-                                
-                                if ($isEwallet == 1) 
-                                {
-                                    if ($amountToRedeem != "") 
-                                    {
-                                        if ($amountToRedeem <= $vserviceBalance) 
-                                        {
-                                            $withdraw = $CasinoGamingCAPI->Withdraw($servername, $ubserviceID, $url, $login, $capiusername, 
-                                                    $capipassword, $capiplayername, $capiserverID, $ramount, $tracking1, $tracking2, $tracking3, 
-                                                    $tracking4, $methodname, $usermode, $locatorname);   
-                                        }     
-                                        else 
-                                        {
-                                            $msg = "Amount to redeem should be less than or equal to Casino balance.";
-                                        }   
-                                    }
-                                    else 
-                                    {
-                                        $msg = "Invalid amount to withdraw.";
-                                    }   
-                                }
-                                else 
-                                {
-                                    $withdraw = $CasinoGamingCAPI->Withdraw($servername, $ubserviceID, $url, $login, $capiusername, 
-                                            $capipassword, $capiplayername, $capiserverID, $ramount, $tracking1, $tracking2, $tracking3, 
-                                            $tracking4,  $methodname,  $usermode, $locatorname);   
-                                }
-                                //check if redemption was successfull, and update information on manualredemptions and insert in audittrail
-                                if($withdraw['IsSucceed'] == true )
-                                {
-                                    //fetch the information when calling the RTG Withdraw Method
-                                    foreach($withdraw as $results)
-                                    {
-                                        $riserror = $results['WithdrawGenericResult']['errorMsg'];
-                                        $reffdate = $results['WithdrawGenericResult']['effDate']; //uses ISO8601 date format
-                                        $rwamount = $results['WithdrawGenericResult']['amount'];
-                                        $rremarks = $results['WithdrawGenericResult']['transactionStatus'];
-                                        $rtransactionID = $results['WithdrawGenericResult']['transactionID'];
-                                    }
-                                    $fmteffdate = str_replace("T", " ", $reffdate);
-                                    $vreportedAmt = $ramount;
-                                    $vactualAmt = $rwamount;
-                                    $vtransactionDate = $otopup->getDate();
-                                    $vstatus = 1;
-                                    $vtransactionID = $rtransactionID;
-
-                                    //check if there was no error on withdrawal
-                                    if($riserror == "OK")
-                                    {
-                                        $vtransStatus = $rremarks;
-                                        $issucess = $otopup->updateManualRedemptionub($vstatus, $vactualAmt, $vtransactionID, 
-                                                $fmteffdate, $vtransStatus, $lastmrid);
-                                        if($issucess > 0)
-                                        {
-                                            //get new balance after redemption
-                                            $balance = $CasinoGamingCAPI->getBalance($servername, $ubserviceID, $url, $login, 
-                                                    $capiusername, $capipassword, $capiplayername, $capiserverID);
-
-                                            $ramount = number_format($ramount, 2, ".", ",");
-                                            $balance = number_format($balance, 2, ".", ",");
-
-                                            //update member services
-                                            if($otopupmembership->open())
-                                            {
-                                                $otopupmembership->updateMemberServices($balance, $mid, $ubserviceID, $issucess);
-                                            }
-                                            $otopupmembership->close();
-                                            //insert into audit trail
-                                            $vtransdetails = "transaction id ".$vtransactionID.",amount ".$vreportedAmt;
-                                            $vauditfuncID = 7;
-                                            $otopup->logtoaudit($new_sessionid, $aid, $vtransdetails, $vtransactionDate, $vipaddress, $vauditfuncID);
-                                            $msg = "Redeemed: ".$ramount."; Remaining Balance: ".$balance;
-                                        }
-                                        else
-                                        {
-                                            $msg = "Manual Redemption: Error on inserting manual redemption";
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if($riserror == "")
-                                        {
-                                            $msg = $rremarks;
-                                        }
-                                        else
-                                        {
-                                            $status = 2;
-                                            $otopup->updateManualRedemptionFailedub($status, $lastmrid);
-                                            $msg = $riserror; //error message when calling the withdrawal result
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    $status = 2;
-                                    $otopup->updateManualRedemptionFailedub($status, $lastmrid);
-                                    $msg = "Manual Redemption: ".$withdraw['ErrorMessage']; //error message when initially calling the RTG API
-                                }
-                                break;
-                                
-                            case strstr($servername, "HAB"): //if provider is Habanero, then
-                                
-                                $capiusername = $_HABbrandID;
-                                $capipassword = $_HABapiKey;
-                                $tracking2 = '';
-                                $tracking3 = '';
-                                $withdraw = array();
-
-                                $serviceUBResult = $otopup->getUBInfo($mid, $ubserviceID);
-                                
-                                if ($isEwallet == 1) 
-                                {
-                                    if ($amountToRedeem != "") 
-                                    {
-                                        if ($amountToRedeem <= $vserviceBalance) 
-                                        {
-                                            $withdraw = $CasinoGamingCAPI->Withdraw($servername, $ubserviceID, $url, $login, $capiusername, 
-                                                    $capipassword, $capiplayername, $capiserverID, $ramount, $tracking1, $tracking2, $tracking3, 
-                                                    $tracking4 = '', $methodname = '', $usermode, $locatorname, $serviceUBResult['ServicePassword']);   
-                                        }     
-                                        else 
-                                        {
-                                            $msg = "Amount to redeem should be less than or equal to Casino balance.";
-                                        }   
-                                    }
-                                    else 
-                                    {
-                                        $msg = "Invalid amount to withdraw.";
-                                    }   
-                                }
-                                else 
-                                {
-                                    $withdraw = $CasinoGamingCAPI->Withdraw($servername, $ubserviceID, $url, $login, $capiusername, 
-                                            $capipassword, $capiplayername, $capiserverID, $ramount, $tracking1, $tracking2, $tracking3, 
-                                            $tracking4 = '', $methodname = '', $usermode, $locatorname, $serviceUBResult['ServicePassword']);   
-                                }
-
-                                //check if redemption was successfull
-                                if($withdraw['IsSucceed'] == true )
-                                {
-                                   $riserror = $withdraw['TransactionInfo']['withdrawmethodResult']['Message'];
-                                   $rwamount = $withdraw['TransactionInfo']['withdrawmethodResult']['Amount'];
-                                   $rtransactionID = $withdraw['TransactionInfo']['withdrawmethodResult']['TransactionId'];
+                }
+                else
+                {
+                    $isWithActiveSession = false;
+                }
                 
-                                   //check if there was no error on withdrawal
-                                   if($riserror == "Withdrawal Success")
-                                   {
-                                       // Check if Amount < 0, Withdrawal still returns Withdrawal Success even if Previous Balance before Withdrawal is already zero
-                                       if ($rwamount < 0)
-                                       {
-                                           $vstatus = 1;
-                                           $vdateEffective = $otopup->getDate();   
-                                           $vtransactionDate = $vdateEffective;
-                                           $rremarks = $riserror;
-                                            
-                                           // UPDATE MANUAL REDEMPTIONS TABLE BASED ON RETURN OF API CALL
-                                           $issucess = $otopup->updateManualRedemptionub($vstatus, $rwamount * -1, $rtransactionID, $vdateEffective, $rremarks, $lastmrid);
-                                           if($issucess > 0)
-                                           {
-                                                // get new balance after redemption
-                                                $rbalance = array();
-                                                $rbalance = $CasinoGamingCAPI->getBalance($servername, $ubserviceID, $url, $login, 
-                                                        $capiusername, $capipassword, $capiplayername, $capiserverID, $usermode="",
-                                                        $serviceUBResult['ServicePassword']);
-                                                
-                                                if($rbalance['IsSucceed'] == true)
-                                                {
-                                                    if(isset($rbalance['BalanceInfo']['Balance']))
-                                                    {
-                                                        $habbalance = $rbalance['BalanceInfo']['Balance'];
-                                                        $balance = $habbalance;
-                                                    } 
-                                                }
+                if ($isWithActiveSession == false) // No active session on selected provider, proceed with MR
+                {        
+                //ADDED CCT 01/14/2019 END
+                    if(isset($siteID) && $siteID != "-1")
+                    {
+                        $login = $otopup->getServiceUserName($ubserviceID, $mid);
+                        $ubterminalID = null;
+                        $server = $otopup->getCasinoName($ubserviceID);
+
+                        foreach ($server as $value2) 
+                        {
+                            $servername = $value2['ServiceName'];
+                            $usermode = $value2['UserMode'];
+                        }
+
+                        $servicegrp = $otopup->getServiceGrpName($ubserviceID);
+                        $servername = $servicegrp;
+
+                        //check if card is ewallet
+                        $isEwallet = $otopup->checkIsEwallet($mid);
+
+                        if ($isEwallet == 1) 
+                            $ramount = ereg_replace(",", "", $amountToRedeem); //format number replace (,)
+                        else 
+                            $ramount = ereg_replace(",", "", $vserviceBalance); //format number replace (,)
+
+                        $_maxRedeem = ereg_replace(",", "", $_maxRedeem); //format number replace (,)
+
+                        if($ramount > $_maxRedeem)
+                        {  
+                            $balance = $ramount - $_maxRedeem;
+                            $ramount = $_maxRedeem;
+                        }
+                        else
+                        {
+                            $balance = 0;
+                        }
+
+                        $vreportedAmt = $ramount;
+                        $vactualAmt = 0;
+                        $vtransactionDate = $otopup->getDate();
+                        $vreqByAID = $aid;
+                        $vprocByAID = $aid;
+                        $vdateEffective = $vdate;
+                        $vstatus = 0;
+                        $vtransactionID = 0;
+                        $vtransStatus = '';
+                        $transsummaryid = null;
+                        $url = $_ServiceAPI[$ubserviceID-1];                    
+                        $capiplayername = '';
+                        $capiserverID = '';
+                        $locatorname = '';      
+                        $lastmrid = $otopup->insertmanualredemptionub($siteID, $ubterminalID, $vreportedAmt, $vactualAmt, $vtransactionDate, 
+                                $vreqByAID, $vprocByAID, $remarksub, $vdateEffective, $vstatus, $vtransactionID, $transsummaryid,$ticketub, 
+                                $ubserviceID, $vtransStatus, $loyaltycardnumber, $mid, $usermode);
+
+                        if($lastmrid > 0)
+                        {
+                            $tracking1 = "MR" . $lastmrid;                                            
+
+                            switch (true)
+                            {
+                                case strstr($servername, "RTG"): //if provider is RTG, then
+
+                                    $capiusername = '';
+                                    $capipassword = '';
+                                    $tracking2 = $siteID;
+                                    $tracking3 = '';
+                                    $withdraw = array();
+                                    $tracking4 = '';
+                                    $methodname = '';
+
+                                    if ($isEwallet == 1) 
+                                    {
+                                        if ($amountToRedeem != "") 
+                                        {
+                                            if ($amountToRedeem <= $vserviceBalance) 
+                                            {
+                                                $withdraw = $CasinoGamingCAPI->Withdraw($servername, $ubserviceID, $url, $login, $capiusername, 
+                                                        $capipassword, $capiplayername, $capiserverID, $ramount, $tracking1, $tracking2, $tracking3, 
+                                                        $tracking4, $methodname, $usermode, $locatorname);   
+                                            }     
+                                            else 
+                                            {
+                                                $msg = "Amount to redeem should be less than or equal to Casino balance.";
+                                            }   
+                                        }
+                                        else 
+                                        {
+                                            $msg = "Invalid amount to withdraw.";
+                                        }   
+                                    }
+                                    else 
+                                    {
+                                        $withdraw = $CasinoGamingCAPI->Withdraw($servername, $ubserviceID, $url, $login, $capiusername, 
+                                                $capipassword, $capiplayername, $capiserverID, $ramount, $tracking1, $tracking2, $tracking3, 
+                                                $tracking4,  $methodname,  $usermode, $locatorname);   
+                                    }
+                                    //check if redemption was successfull, and update information on manualredemptions and insert in audittrail
+                                    if($withdraw['IsSucceed'] == true )
+                                    {
+                                        //fetch the information when calling the RTG Withdraw Method
+                                        foreach($withdraw as $results)
+                                        {
+                                            $riserror = $results['WithdrawGenericResult']['errorMsg'];
+                                            $reffdate = $results['WithdrawGenericResult']['effDate']; //uses ISO8601 date format
+                                            $rwamount = $results['WithdrawGenericResult']['amount'];
+                                            $rremarks = $results['WithdrawGenericResult']['transactionStatus'];
+                                            $rtransactionID = $results['WithdrawGenericResult']['transactionID'];
+                                        }
+                                        $fmteffdate = str_replace("T", " ", $reffdate);
+                                        $vreportedAmt = $ramount;
+                                        $vactualAmt = $rwamount;
+                                        $vtransactionDate = $otopup->getDate();
+                                        $vstatus = 1;
+                                        $vtransactionID = $rtransactionID;
+
+                                        //check if there was no error on withdrawal
+                                        if($riserror == "OK")
+                                        {
+                                            $vtransStatus = $rremarks;
+                                            $issucess = $otopup->updateManualRedemptionub($vstatus, $vactualAmt, $vtransactionID, 
+                                                    $fmteffdate, $vtransStatus, $lastmrid);
+                                            if($issucess > 0)
+                                            {
+                                                //get new balance after redemption
+                                                $balance = $CasinoGamingCAPI->getBalance($servername, $ubserviceID, $url, $login, 
+                                                        $capiusername, $capipassword, $capiplayername, $capiserverID);
+
+                                                $ramount = number_format($ramount, 2, ".", ",");
+                                                $balance = number_format($balance, 2, ".", ",");
+
                                                 //update member services
                                                 if($otopupmembership->open())
                                                 {
                                                     $otopupmembership->updateMemberServices($balance, $mid, $ubserviceID, $issucess);
                                                 }
                                                 $otopupmembership->close();
-     
+                                                
+                                                // ADDED CCT 01/11/2019 BEGIN
+                                                $issucess = $otopup->updateactiveservicestatus($mid, 1, 1);
+                                                // ADDED CCT 01/11/2019 END
+                                                
                                                 //insert into audit trail
-                                                $rwamountnonneg = $rwamount * -1;
-                                                $rwamountnonneg = number_format($rwamountnonneg,2, '.', ','); 
-                                                $vtransdetails = "Transaction ID: ".$rtransactionID.", Amount: ". $rwamountnonneg;
+                                                $vtransdetails = "transaction id ".$vtransactionID.",amount ".$vreportedAmt;
                                                 $vauditfuncID = 7;
                                                 $otopup->logtoaudit($new_sessionid, $aid, $vtransdetails, $vtransactionDate, $vipaddress, $vauditfuncID);
-                                                $msg = "Redeemed: ".$rwamountnonneg."; Remaining Balance: ".$balance;
+                                                $msg = "Redeemed: ".$ramount."; Remaining Balance: ".$balance;
                                             }
                                             else
                                             {
-                                                // UPDATE MANUAL REDEMPTIONS TABLE BASED ON RETURN OF UPDATE STATEMENT
+                                                $msg = "Manual Redemption: Error on inserting manual redemption";
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if($riserror == "")
+                                            {
+                                                $msg = $rremarks;
+                                            }
+                                            else
+                                            {
                                                 $status = 2;
                                                 $otopup->updateManualRedemptionFailedub($status, $lastmrid);
-                                                $msg = "Manual Redemption: Error on updating  manual redemption record.";
+                                                $msg = $riserror; //error message when calling the withdrawal result
                                             }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        $status = 2;
+                                        $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                        $msg = "Manual Redemption: ".$withdraw['ErrorMessage']; //error message when initially calling the RTG API
+                                    }
+                                    break;
+
+                                case strstr($servername, "HAB"): //if provider is Habanero, then
+
+                                    $capiusername = $_HABbrandID;
+                                    $capipassword = $_HABapiKey;
+                                    $tracking2 = '';
+                                    $tracking3 = '';
+                                    $withdraw = array();
+
+                                    $serviceUBResult = $otopup->getUBInfo($mid, $ubserviceID);
+
+                                    if ($isEwallet == 1) 
+                                    {
+                                        if ($amountToRedeem != "") 
+                                        {
+                                            if ($amountToRedeem <= $vserviceBalance) 
+                                            {
+                                                $withdraw = $CasinoGamingCAPI->Withdraw($servername, $ubserviceID, $url, $login, $capiusername, 
+                                                        $capipassword, $capiplayername, $capiserverID, $ramount, $tracking1, $tracking2, $tracking3, 
+                                                        $tracking4 = '', $methodname = '', $usermode, $locatorname, $serviceUBResult['ServicePassword']);   
+                                            }     
+                                            else 
+                                            {
+                                                $msg = "Amount to redeem should be less than or equal to Casino balance.";
+                                            }   
                                         }
                                         else 
                                         {
-                                            // UPDATE MANUAL REDEMPTIONS TABLE BASED ON RETURN OF API CALL
-                                            $status = 2;
-                                            $otopup->updateManualRedemptionFailedub($status, $lastmrid);
-                                            $msg = "Manual Redemption: Player Balance is already zero.";
-                                        }
-                                   }
-                                   else
-                                   {
-                                       $status = 2;
-                                       $otopup->updateManualRedemptionFailedub($status, $lastmrid);
-                                       $msg = $riserror; //error message when calling the withdrawal result                                       
-                                   }    
-                                }
-                                else
-                                {
-                                    $status = 2;
-                                    $otopup->updateManualRedemptionFailedub($status, $lastmrid);
-                                    $msg = "Manual Redemption: ".$withdraw['ErrorMessage']; //error message when initially calling the Habanero API
-                                }                            
-                                break;
-                                
-                            default :
-                                echo "Error: Invalid Casino Provider";
-                                break;
+                                            $msg = "Invalid amount to withdraw.";
+                                        }   
+                                    }
+                                    else 
+                                    {
+                                        $withdraw = $CasinoGamingCAPI->Withdraw($servername, $ubserviceID, $url, $login, $capiusername, 
+                                                $capipassword, $capiplayername, $capiserverID, $ramount, $tracking1, $tracking2, $tracking3, 
+                                                $tracking4 = '', $methodname = '', $usermode, $locatorname, $serviceUBResult['ServicePassword']);   
+                                    }
+
+                                    //check if redemption was successfull
+                                    if($withdraw['IsSucceed'] == true )
+                                    {
+                                       $riserror = $withdraw['TransactionInfo']['withdrawmethodResult']['Message'];
+                                       $rwamount = $withdraw['TransactionInfo']['withdrawmethodResult']['Amount'];
+                                       $rtransactionID = $withdraw['TransactionInfo']['withdrawmethodResult']['TransactionId'];
+
+                                       //check if there was no error on withdrawal
+                                       if($riserror == "Withdrawal Success")
+                                       {
+                                           // Check if Amount < 0, Withdrawal still returns Withdrawal Success even if Previous Balance before Withdrawal is already zero
+                                           if ($rwamount < 0)
+                                           {
+                                               $vstatus = 1;
+                                               $vdateEffective = $otopup->getDate();   
+                                               $vtransactionDate = $vdateEffective;
+                                               $rremarks = $riserror;
+
+                                               // UPDATE MANUAL REDEMPTIONS TABLE BASED ON RETURN OF API CALL
+                                               $issucess = $otopup->updateManualRedemptionub($vstatus, $rwamount * -1, $rtransactionID, $vdateEffective, $rremarks, $lastmrid);
+                                               if($issucess > 0)
+                                               {
+                                                    // get new balance after redemption
+                                                    $rbalance = array();
+                                                    $rbalance = $CasinoGamingCAPI->getBalance($servername, $ubserviceID, $url, $login, 
+                                                            $capiusername, $capipassword, $capiplayername, $capiserverID, $usermode="",
+                                                            $serviceUBResult['ServicePassword']);
+
+                                                    if($rbalance['IsSucceed'] == true)
+                                                    {
+                                                        if(isset($rbalance['BalanceInfo']['Balance']))
+                                                        {
+                                                            $habbalance = $rbalance['BalanceInfo']['Balance'];
+                                                            $balance = $habbalance;
+                                                        } 
+                                                    }
+                                                    //update member services
+                                                    if($otopupmembership->open())
+                                                    {
+                                                        $otopupmembership->updateMemberServices($balance, $mid, $ubserviceID, $issucess);
+                                                    }
+                                                    $otopupmembership->close();
+
+                                                    // ADDED CCT 01/11/2019 BEGIN
+                                                    $issucess = $otopup->updateactiveservicestatus($mid, 1, 1);
+                                                    // ADDED CCT 01/11/2019 END
+                                                    
+                                                    //insert into audit trail
+                                                    $rwamountnonneg = $rwamount * -1;
+                                                    $rwamountnonneg = number_format($rwamountnonneg,2, '.', ','); 
+                                                    $vtransdetails = "Transaction ID: ".$rtransactionID.", Amount: ". $rwamountnonneg;
+                                                    $vauditfuncID = 7;
+                                                    $otopup->logtoaudit($new_sessionid, $aid, $vtransdetails, $vtransactionDate, $vipaddress, $vauditfuncID);
+                                                    $msg = "Redeemed: ".$rwamountnonneg."; Remaining Balance: ".$balance;
+                                                }
+                                                else
+                                                {
+                                                    // UPDATE MANUAL REDEMPTIONS TABLE BASED ON RETURN OF UPDATE STATEMENT
+                                                    $status = 2;
+                                                    $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                    $msg = "Manual Redemption: Error on updating  manual redemption record.";
+                                                }
+                                            }
+                                            else 
+                                            {
+                                                // UPDATE MANUAL REDEMPTIONS TABLE BASED ON RETURN OF API CALL
+                                                $status = 2;
+                                                $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                                $msg = "Manual Redemption: Player Balance is already zero.";
+                                            }
+                                       }
+                                       else
+                                       {
+                                           $status = 2;
+                                           $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                           $msg = $riserror; //error message when calling the withdrawal result                                       
+                                       }    
+                                    }
+                                    else
+                                    {
+                                        $status = 2;
+                                        $otopup->updateManualRedemptionFailedub($status, $lastmrid);
+                                        $msg = "Manual Redemption: ".$withdraw['ErrorMessage']; //error message when initially calling the Habanero API
+                                    }                            
+                                    break;
+
+                                default :
+                                    echo "Error: Invalid Casino Provider";
+                                    break;
+                            }
+                        }    
+                        else
+                        {
+                            $msg = "Error: Failed to insert in Manual Redemptions Table";
                         }
-                    }    
+                    }
                     else
                     {
-                        $msg = "Error: Failed to insert in Manual Redemptions Table";
+                        $msg = "Please select Site ID";
                     }
+                //ADDED CCT 01/14/2019 BEGIN
                 }
-                else
-                {
-                    $msg = "Please select Site ID";
-                }
+                //ADDED CCT 01/14/2019 END
                 echo json_encode($msg);
                 $otopup->close();
                 break;
 
           //Get Casino Services provided by membership card    
-           case "GetCasino":
+            //Get Casino Services provided by membership card    
+            case "GetCasino":
+
                 $casino = $_SESSION['CasinoArray'];
-                $rmid = $_SESSION['MID'];   
+                $rmid = $_SESSION['MID'];
+
+                $_SESSION['CasinoArray2'] = $_SESSION['CasinoArray'];
+                $_SESSION['MID2'] = $_SESSION['MID'];
+
+                $addedPwuu = array(
+                    array('ServiceUsername' => null,
+                        'ServicePassword' => null,
+                        'HashedServicePassword' => null,
+                        'ServiceID' => 1,
+                        'UserMode' => 3,
+                        'isVIP' => null,
+                        'Status' => 1)
+                );
+
+                $casino = array_merge($casino, $addedPwuu);
                 $casinoarray_count = count($casino);
 
                 $casinos = array();
                 $service = array();
                 $casino2 = array();
-                
-                if($casinoarray_count != 0){
-                    for($ctr = 0; $ctr < $casinoarray_count;$ctr++) 
-                    {
-                        $casinos[$ctr] = array(
-                                            array('ServiceUsername' => $casino[$ctr]->ServiceUsername,
-                                                  'ServicePassword' => $casino[$ctr]->ServicePassword,
-                                                  'HashedServicePassword' => $casino[$ctr]->HashedServicePassword,
-                                                  'ServiceID' => $casino[$ctr]->ServiceID,
-                                                  'UserMode' => $casino[$ctr]->UserMode,
-                                                  'isVIP' => $casino[$ctr]->isVIP,
-                                                  'Status' => $casino[$ctr]->Status )
-                                        );
 
-                      //loop through array output to get casino array from membership card
-                      foreach ($casinos[$ctr] as $value) 
-                      {
+                if ($casinoarray_count != 0) {
+                    for ($ctr = 0; $ctr < $casinoarray_count; $ctr++) {
+                        if (is_array($casino[$ctr])) {
+                            $casinos[$ctr] = array(
+                                array('ServiceUsername' => $casino[$ctr]['ServiceUsername'],
+                                    'ServicePassword' => $casino[$ctr]['ServicePassword'],
+                                    'HashedServicePassword' => $casino[$ctr]['HashedServicePassword'],
+                                    'ServiceID' => $casino[$ctr]['ServiceID'],
+                                    'UserMode' => $casino[$ctr]['UserMode'],
+                                    'isVIP' => $casino[$ctr]['isVIP'],
+                                    'Status' => $casino[$ctr]['Status'],)
+                            );
+                        } else {
+                            $casinos[$ctr] = array(
+                                array('ServiceUsername' => $casino[$ctr]->ServiceUsername,
+                                    'ServicePassword' => $casino[$ctr]->ServicePassword,
+                                    'HashedServicePassword' => $casino[$ctr]->HashedServicePassword,
+                                    'ServiceID' => $casino[$ctr]->ServiceID,
+                                    'UserMode' => $casino[$ctr]->UserMode,
+                                    'isVIP' => $casino[$ctr]->isVIP,
+                                    'Status' => $casino[$ctr]->Status)
+                            );
+                        }
+
+
+                        //loop through array output to get casino array from membership card
+                        foreach ($casinos[$ctr] as $value) {
                             $rserviceuname = $value['ServiceUsername'];
                             $rservicepassword = $value['ServicePassword'];
                             $rserviceid = $value['ServiceID'];
@@ -773,106 +4554,120 @@ if($connected)
                             $servicename = $otopup->getCasinoName($rserviceid);
                             $servicegrp = $otopup->getServiceGrpName($rserviceid);
                             $servicestat = $otopup->getServiceStatus($rserviceid);
-                            
-                            if($servicestat == 1)
-                            {
+
+                            if ($servicestat == 1) {
                                 //loop htrough services to get if has pedning balance
-                                foreach ($servicename as $service2) 
-                                {
+                                foreach ($servicename as $service2) {
                                     $serviceName = $service2['ServiceName'];
                                     $serviceStatus = $service2['Status'];
                                     $servicegrp = $servicegrp;
 
-                                    switch (true)
-                                    {
+                                    switch (true) {
+                                        // ADDED CCT 11/29/2017 BEGIN
                                         case strstr($serviceName, "Habanero"): //if provider is Habanero, then
-                                          //call get balance method of Habanero
-                                          $url = $_ServiceAPI[$rserviceid-1];
-                                          $capiusername = $_HABbrandID;
-                                          $capipassword = $_HABapiKey;
-                                          $capiplayername = '';
-                                          $capiserverID = '';
-                                          $balance = $CasinoGamingCAPI->getBalance($servicegrp, $rserviceid, $url, $rserviceuname, $capiusername, 
-                                                  $capipassword, $capiplayername, $capiserverID, $rusermode, $rservicepassword); 
-                                          break;                                        
+                                            //call get balance method of Habanero
+                                            $url = $_ServiceAPI[$rserviceid - 1];
+                                            $capiusername = $_HABbrandID;
+                                            $capipassword = $_HABapiKey;
+                                            $capiplayername = '';
+                                            $capiserverID = '';
+                                            $balance = $CasinoGamingCAPI->getBalance($servicegrp, $rserviceid, $url, $rserviceuname, $capiusername, $capipassword, $capiplayername, $capiserverID, $rusermode, $rservicepassword);
+                                            break;
+                                        // ADDED CCT 11/29/2017 END
                                         case strstr($serviceName, "RTG"): //if provider is RTG, then
-                                         //call get balance method of RTG
-                                          $url = $_ServiceAPI[$rserviceid-1];
-                                          $capiusername = $_CAPIUsername;
-                                          $capipassword = $_CAPIPassword;
-                                          $capiplayername = $_CAPIPlayerName;
-                                          $capiserverID = '';
-                                          $balance = $CasinoGamingCAPI->getBalance($servicegrp, $rserviceid, $url, 
-                                                              $rserviceuname, $capiusername, $capipassword, 
-                                                              $capiplayername, $capiserverID, $rusermode); 
-                                          break;
+                                            //call get balance method of RTG
+                                            $url = $_ServiceAPI[$rserviceid - 1];
+                                            $capiusername = $_CAPIUsername;
+                                            $capipassword = $_CAPIPassword;
+                                            $capiplayername = $_CAPIPlayerName;
+                                            $capiserverID = '';
+                                            $balance = $CasinoGamingCAPI->getBalance($servicegrp, $rserviceid, $url, $rserviceuname, $capiusername, $capipassword, $capiplayername, $capiserverID, $rusermode);
+                                            break;
+
+                                        case strstr($serviceName, "PWW"): //if provider is PWW, then
+                   
+                                            $getTransactionSummaryID = $otopup->getTransactionSummaryID($rmid);
+
+                                            if ($getTransactionSummaryID['TransactionSummaryID']) {
+
+                                                $getMZTransactionTransferDetails = $otopup->getMZTransactionTransferDetails($getTransactionSummaryID['TransactionSummaryID']);
+                                                if (!empty($getMZTransactionTransferDetails)) {
+                                                    if ($getMZTransactionTransferDetails['TransferStatus'] == 8 || $getMZTransactionTransferDetails['TransferStatus'] == 90 || $getMZTransactionTransferDetails['TransferStatus'] == 93) {
+
+
+                                                        $balance = $getMZTransactionTransferDetails['FromAmount'];
+                                                    } else {
+                                                        $balance = 0;
+                                                    }
+                                                } else {
+                                                    $balance = 0;
+                                                }
+                                            } else {
+                                                $balance = 0;
+                                            }
+                                            break;
+
                                         default :
-                                          echo "Error: Invalid Casino Provider";
-                                          break;
+                                            echo "Error: Invalid Casino Provider";
+                                            break;
                                     }
 
                                     $terminalid = $otopup->viewTerminalID($rserviceuname);
-                                    switch ($serviceStatus)
-                                    {
-                                      case 1: $serviceStatus = "Active";
-                                          break;
-                                      case 0: $serviceStatus = "InActive";
-                                    }  
+                                    switch ($serviceStatus) {
+                                        case 1: $serviceStatus = "Active";
+                                            break;
+                                        case 0: $serviceStatus = "InActive";
+                                    }
 
-                                    if (is_double($balance) || is_numeric($balance)) 
-                                    {
-                                      $balance = number_format($balance, 2, '.', '');
+                                    if (is_double($balance) || is_numeric($balance)) {
+                                        $balance = number_format($balance, 2, '.', '');
                                     }
                                     $casino2 = array(
-                                              "UserName"  => "$rserviceuname",
-                                              "Password"  => $rservicepassword,
-                                              "HashedPassword" => "$hashedpassword",    
-                                              "ServiceName"  => $serviceName,
-                                              "ServiceID"  => $rserviceid,
-                                              "TerminalID"  => $terminalid['TerminalID'],    
-                                              "UserMode" => "$rusermode",
-                                              "IsVIP" => "$risvip",
-                                              "MemberID" => "$rmid",
-                                              "Status" => "$rstatus",
-                                              "Balance" => $balance
-                                                );
+                                        "UserName" => "$rserviceuname",
+                                        "Password" => $rservicepassword,
+                                        "HashedPassword" => "$hashedpassword",
+                                        "ServiceName" => $serviceName,
+                                        "ServiceID" => $rserviceid,
+                                        "TerminalID" => $terminalid['TerminalID'],
+                                        "UserMode" => "$rusermode",
+                                        "IsVIP" => "$risvip",
+                                        "MemberID" => "$rmid",
+                                        "Status" => "$rstatus",
+                                        "Balance" => $balance
+                                    );
                                     $_SESSION['ServicePassword'] = $rservicepassword;
                                     $_SESSION['ServiceUserName'] = $rserviceuname;
                                 }
                             }
-                       }
-                       
-                       if(!empty($casino2))
-                       {
-                           array_push($service, $casino2);
-                       }
-                    }  
+                        }
+
+                        if (!empty($casino2)) {
+                            array_push($service, $casino2);
+                        }
+                    }
                 }
                 $cntservice = 0;
-                
-                foreach ($service as $value) 
-                {
-                    if(isset($value["UserName"]))
-                    {
+
+                foreach ($service as $value) {
+                    if (isset($value["UserName"])) {
                         $cntservice++;
                     }
                 }
-                
-               if(count($service) > 0 && $cntservice > 0)
-               {
-                  echo json_encode($service);
-               } 
-               else 
-               {
-                  $msg = "No User Based.";
-                  echo json_encode($msg);
-               }
 
-               unset($casino, $_SESSION['CasinoArray']);
-               unset($service, $casino2, $_SESSION['MID']);
-               $otopup->close();
-           break;
-          
+                if (count($service) > 0 && $cntservice > 0) {
+                    echo json_encode($service);
+                } else {
+                    $msg = "No User Based.";
+                    echo json_encode($msg);
+                }
+
+                unset($casino, $_SESSION['CasinoArray']);
+                unset($service, $casino2, $_SESSION['MID']);
+                $otopup->close();
+                break;
+
+
+
            case "PostManualTopUp":
                 //check if all variables are set; all are required fields
                if(isset ($_POST['txtamount']) && isset ($_POST['txtminbal']) && isset ($_POST['txtmaxbal']) && isset ($_POST['optpick']))
