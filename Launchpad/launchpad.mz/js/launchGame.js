@@ -6,9 +6,17 @@ $.launchGame = function(currServiceID, login, terminalPass, isVIP, HBPath, termi
         try {
             var shell = new ActiveXObject("WScript.Shell");
             var cred = " /u " + login + " /p " + terminalPass + " /v " + isVIP + " /t " + terminalCode;
-            var path = '"' + HBPath + '"' + cred;
-            shell.Run(path);
+            var custom = " /custom " + TabID;
+            var path = '"' + HBPath + '"' + cred + custom;
+            try {
+                window.external.ScreenBlocker(false);
+                shell.Run(path);
+            } catch (e) {
+                window.external.ScreenBlocker(false);
+                $.prompt("Ooops! Kindly retry.");
+            }
         } catch (e) {
+            window.external.ScreenBlocker(false);
             $.prompt("Game client not found");
         }
 
@@ -19,9 +27,19 @@ $.launchGame = function(currServiceID, login, terminalPass, isVIP, HBPath, termi
             var shell = new ActiveXObject("WScript.Shell");
             var cred = " -l " + login + " -p " + terminalPass;
             var path = '"' + HBPath + '"' + cred;
-            shell.Run(path);
+
+            try {
+                window.external.ScreenBlocker(false);
+                shell.Run(path);
+            } catch (e) {
+                window.external.ScreenBlocker(false);
+                $.prompt("Ooops! Kindly retry.");
+            }
+
         } catch (e) {
+            window.external.ScreenBlocker(false);
             $.prompt("Game client not found");
+
         }
 
     }
@@ -29,6 +47,3 @@ $.launchGame = function(currServiceID, login, terminalPass, isVIP, HBPath, termi
     jQuery.fancybox.close();
 
 };
-
-
-

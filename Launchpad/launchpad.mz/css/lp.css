@@ -16,44 +16,49 @@ body
 
 .banner 
 {
-    background: url(../images/banner-ad.gif) no-repeat; overflow: hidden; background-size: 100%;
-    width: 100%; height: 150px;
+    background: url(../images/egames-logo) no-repeat center; overflow: hidden;
+    width : 100%;
     top: 0;
-    position: fixed;    
+    height: 38px;
+    margin: 0 auto;
+    margin-top: 40px;
+}
+
+a:hover img{
+  -ms-transform: scale(1.1); /* IE 9 */
+  -webkit-transform: scale(1.1); /* Safari 3-8 */
+  transform: scale(1.1); 
 }
 
 .games-logo-container 
 {
-    width: 100%;    
+    width: 100%;
     margin: 0;
     position: absolute;
     top: 50%;
     -ms-transform: translateY(-50%);
     transform: translateY(-50%);
+
 }
 
 .footer-logos 
 {
     width: 100%;
-    height: 80px;
-    background: url(../images/footer-logos.png) no-repeat; overflow: hidden; background-size: 100%;
-    bottom: 45px; 
+    height: 76px;
+    background: url(../images/footer-logos.png) no-repeat, url(../images/footer-bg.png) no-repeat; 
+    background-position: center, left;
+    bottom: 0px; 
     position: fixed;
  }
 
 .sysversion 
-/* CCT added for system version on the bottom */
 {
     width: 100%;    
-    height: 20px;
+    height: 10px;
     bottom: 10px;    
     position: fixed;
     color : yellow !important;
 }
-/* CCT ADDED END latest launchpad design */
-
-/*a:hover img{border:1px solid #000000;background: url(../images/magic-macau-hover.png) no-repeat;}
-a img{border:1px solid #480F00;}*/
 
 .clearer{clear:both;}
 
