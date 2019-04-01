@@ -1,0 +1,772 @@
+
+html, body { width: 100%; height: 100%; padding: 0; margin: 0; text-align: center; }
+body
+{
+    background-color:#0e0209; 
+    background: url(../images/lp-bg.jpg) no-repeat; 
+    overflow: hidden; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+#virtual-ecity-logo-container{text-align: center;}
+#bars-container{width: 612px; margin: auto; padding-top: 8px;}
+    
+.disabled{display:none;}
+.clearer{clear:both;}
+
+#link-endsession{width: 230px; height:40px;  background: url(../images/end_session_hover.png) no-repeat;}
+#link-non-platinum{width: 360px; height:340px; list-style-type:none; background: url(../images/magic-macau-hover.png) no-repeat;}
+#link-platinum-nonactive{width: 360px; height:340px; list-style-type:none; background: url(../images/magic-macau-hover.png) no-repeat;}
+#link-platinum-active{width: 360px; height:340px; list-style-type:none; background: url(../images/magic-macau-hover.png) no-repeat;}
+#link-mm{width: 360px; height:340px; list-style-type:none; background: url(../images/magic-macau-hover.png) no-repeat;}
+#link-vv{width: 360px; height:340px; list-style-type:none; background: url(../images/viva-lasvegas-hover.png) no-repeat;}
+#link-ss{width: 360px; height:340px; list-style-type:none; background: url(../images/swinging-singapore-hover.png) no-repeat;}
+#link-start{width: 142px; height:37px; list-style-type:none; background: url(../images/refresh_large_hover.png) no-repeat;}
+
+.link-container a, .link-container a:link, .link-container a:visited 
+{
+    display:block;
+}
+
+.link-container img 
+{
+    width:100%; height:100%; border:none;
+}
+
+/*.link-container a:hover img 
+{
+    visibility:hidden;
+}*/
+
+#fancybox-overlay{overflow: hidden;}
+#fancybox-content{font-family: Calibri, 'Verdana', Ariel, sans-serif;}
+.textCenter{text-align: center}
+
+#overlay 
+{
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width:100%;
+    height:100%;
+    text-align:center;
+    z-index: 1000;
+    background: url(../images/overlay.png) repeat;
+}
+
+#overlay div.overlay-child 
+{
+     opacity: 100;filter:Alpha(Opacity=100);
+     width:960px;
+     margin: 55px auto;
+     padding:15px;
+     text-align:center;
+     color:#FFFFFF;
+}
+
+#link-overlay-refresh{width: 142px; height:37px;  background: url(../images/refresh_large_hover.png) no-repeat;}
+
+div#blackwrapper 
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+    height:200%;
+    width: 100%;
+    background-color: #000;
+    background: url(../images/lp-bg.jpg) no-repeat; overflow: hidden; background-size: 100%;
+    z-index: 500;
+    display: none;
+}
+
+#blocker
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+    height:200%;
+    width: 100%;
+    background-color: #000;
+    z-index: 700;
+    filter: alpha(opacity=70);
+    display: none;
+}
+
+#cont
+{
+    position:fixed;
+    float:left;
+    background-color: white;
+    border:5px solid black;
+    text-align: center;
+    z-index: 200;
+}
+
+#header
+{
+    display:none;
+}
+
+#cont1
+{
+    padding-top:1px;    
+    position:relative;
+    width:462px;
+    height:50px;
+}
+
+#hdncont1
+{
+    padding-top:1px;    
+    position:relative;
+    width:462px;
+    height:50px;
+}
+
+#pinfield
+{    
+    padding:2px;
+    width:240px;
+    height:25px;
+    padding-top: 5px;
+    text-align: center;
+    font-size:30px;
+    font-weight: bold;
+    color:white;
+}
+
+input[type=text],input[type=password]
+{
+    background-color:#404040;
+    color:white;
+}
+
+#ubfield
+{    
+    padding:2px;
+    width:300px;
+    height:50px;
+    padding-top: 5px;
+    text-align: center;
+    font-size:30px;
+    font-weight: bold;
+    color:white;
+    background-color:#404040;
+}
+
+#newPinField
+{    
+    padding:2px;
+    width:200px;
+    height:50px;
+    padding-top: 5px;
+    text-align: center;
+    font-size:30px;
+    font-weight: bold;
+    color:white;
+    background-color:#404040;
+}
+
+#rnewPinField
+{    
+    padding:2px;
+    width:200px;
+    height:50px;
+    padding-top: 5px;
+    text-align: center;
+    font-size:30px;
+    font-weight: bold;
+    color:white;
+    background-color:#404040;
+}
+
+div#buttcont
+{
+    border:1px solid black;
+    background:white;
+    position:relative;
+    text-align: center;
+    width:450px;
+    height:150px;
+}
+
+div#buttcont2
+{
+    border:1px solid black;
+    background:white;
+    position:relative;
+    text-align: center;
+    width:450px;
+    height:150px;
+    z-index:500;
+}
+
+table
+{
+    width: 10%;
+    border-collapse:collapse;
+    font-family: sans-serif;
+}
+
+a:hover
+{
+    cursor: pointer;
+}
+
+button
+{
+    margin:2px; 
+    width:50px;
+    font-weight: bold;
+    font-size: 13px;
+    border:1px solid black;
+    text-align: center;
+    z-index:200;
+}
+
+button.clr,button.dne,button.back,button.shift
+{
+    background-color:gray;
+}
+
+.clr,.shift
+{
+    text-align: center;
+    font-weight: normal;
+    font-size:8px;
+}
+
+.clr:hover,.shift:hover
+{
+    color:black;
+    font-weight: bold;       
+}
+
+button:hover
+{
+    color: #06c;
+}
+
+p
+{
+    color: black;
+    font-size: 20px;
+    z-index: 300;
+ }
+
+p,input,a,span,table
+{
+    font-family: sans-serif;
+}
+
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 01 27, 15, 9:58:38 AM
+    Author     : jefloresca
+*/
+
+/*Strip the ul of padding and list styling*/
+ul 
+{
+    list-style-type:none;
+    margin:0;
+    padding:0;
+    position: relative;
+    float:right;
+}
+
+/*Create a horizontal list with spacing*/
+li 
+{
+    display:inline-block;
+    float: right;
+    margin-right: 1px;
+}
+
+/*Style for menu links*/
+li a 
+{
+    display:block;
+    min-width:140px;
+    height: 50px;
+    text-align: center;
+    line-height: 50px;
+    font-family: sans-serif;
+    color: #fff;
+    background: #2f3036;
+    text-decoration: none;
+}
+
+/*Hover state for top level links*/
+li:hover a 
+{
+    background: #19c589;
+}
+
+/*Style for dropdown links*/
+li:hover ul a 
+{
+    background: #f3f3f3;
+    color: #2f3036;
+    height: 40px;
+    line-height: 40px;
+}
+
+/*Hover state for dropdown links*/
+li:hover ul a:hover 
+{
+    background: #19c589;
+    color: #fff;
+}
+
+/*Hide dropdown links until they are needed*/
+li ul 
+{
+    display: none;
+}
+
+/*Make dropdown links vertical*/
+li ul li 
+{
+    display: block;
+    float: none;
+}
+
+/*Prevent text wrapping*/
+li ul li a 
+{
+    width: auto;
+    min-width: 100px;
+    padding: 0 20px;
+}
+
+/*Display the dropdown on hover*/
+ul li a:hover + .hidden, .hidden:hover 
+{
+    display: block;
+}
+
+/*Responsive Styles*/
+
+/* @media screen and (max-width : 760px) */
+@media screen and (max-width : 100%)
+{
+    /*Make dropdown links appear inline*/
+    ul 
+    {
+        position: static;
+        display: none;
+    }
+    /*Create vertical spacing*/
+    li 
+    {
+        margin-bottom: 1px;
+    }
+    /*Make all menu links full width*/
+    ul li, li a 
+    {
+        width: 100%;
+    }
+    /*Display 'show menu' link*/
+    .show-menu 
+    {
+        display:block;
+    }
+}
+
+div#blackOut
+{
+    position: fixed;
+    top: 0;
+    left: 0;
+    height:100%;
+    width: 100%;
+    background-color: #000;
+    background: url(../images/lp-bg.jpg) no-repeat; 
+    overflow: hidden; 
+    background-size: 100%;
+    z-index: 300;
+    display:none;
+}
+
+div#whiteBox 
+{
+    position:fixed;
+    top: 50%;
+    left: 50%;
+    background-color:white;
+    background: rgba(0, 0, 0, .8);
+    background:transparent;
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#B3181818,endColorstr=#B3181818); 
+    zoom: 1;
+    border:2px solid black;
+    z-index: 400;
+    padding:10px;
+    display:none;  
+}
+
+div#loadingBox
+{
+    position:fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 400;
+    padding:10px;
+    display:none;  
+}
+
+#prompt
+{
+    position: absolute;
+    z-index: 600;
+    padding:10px;
+    background-color: white;
+    border:1px solid black;
+    text-align: center;
+    font-weight: bold;
+    display:none;  
+    font-family: sans-serif;
+}
+
+#kew
+{
+    width:300px;
+    height:50px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+#kewID
+{
+    position:relative;
+    width:512px;
+    height:600px;
+    overflow: auto;
+    overflow-x:hidden;
+}
+
+#formUI
+{
+    position:relative;
+    width:512px;
+    height:600px;
+
+}
+
+#kewCont
+{ 
+    margin-top: 15px;
+    margin: 0 auto;
+    width:512px;
+    text-align: left;
+}
+
+#eSafetcheader
+{
+    font-size: 20px;
+}
+
+#eSafetcheader2
+{
+    font-size: 16px;
+    font-weight: bold;
+}
+
+#eSafetcbody
+{
+    width: 490px;
+}
+
+/**
+CSS FOR FORM FIELDS
+*/
+
+#formCont
+{
+    position:relative;
+    margin-top: 15px;
+    margin: 0 auto;
+    width:auto;
+}
+
+#label 
+{
+    display: inline-block; 
+    width: 100px;
+    text-align: left;
+    padding: 15px;
+}
+
+#labelInfo
+{
+    font-size: 30px;
+    margin-top: 10px;
+    width:auto;
+    text-align: center;
+}
+
+#formSubmit
+{
+    padding: 10px;
+    width: 100px;
+}
+
+.width250{width:250px;}
+.pad10{padding:2px;}
+
+h1
+{
+    padding: 10px;
+    font-size: 50px;
+}
+
+#formSubmit
+{
+    float: right;
+    position:relative;
+    right:15px;
+}
+
+div#infoBut
+{
+    position:relative;
+    margin-left:-20px;
+    z-index:100;
+}
+
+a.boxclose
+{
+    float:right;
+    margin-top:-10px;
+    margin-right:-10px;
+    cursor:pointer;
+    /*color: #fff;
+    border: 1px solid #AEAEAE;
+    background: #605F61;*/
+    color: #000;
+    border: 1px solid #fff;
+    background: #fff;
+    font-size: 25px;
+    font-weight: bold;
+    display: inline-block;
+    line-height: 3px;
+    padding: 5px 5px; 
+    text-decoration: none;
+}
+
+.boxclose:before 
+{
+    content: "x";
+}   
+
+#formCardNumber,#formPassword,#formNewPIN,#formRePIN
+{
+   text-align: center;
+   font-size: 20px;
+   font-weight: bold;
+}
+
+#content
+{
+    margin-top:10px;
+    height:768px;
+    display: none;
+}
+
+#contentt
+{
+    margin-top:150px;
+    height:490px;
+    display: none;
+}
+
+#instantPlay
+{
+    margin-top:10px;
+    height:400px;
+    display: none;
+}
+
+#left
+{
+    margin:auto;
+    width:462px;
+    height:400px;
+    background-color: white;
+    background: rgba(0, 0, 0, .8);
+    background:transparent;
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#B3181818,endColorstr=#B3181818);     
+    zoom: 1;
+}
+
+#right
+{
+   width:512px;
+   height:600px;
+}
+
+p
+{
+    color:black;
+}
+/*
+#eWalletbut
+{
+    bottom:0;
+    width:100%;
+    height:100px;   
+ }
+*/
+#Login
+{
+    width:250px;
+    height:30px;
+    font-weight: bold;
+    font-size:20px;
+}
+/*
+#casinowrap
+{
+    margin:5px;
+}
+*/
+
+/*#casino
+{
+    width:250px;
+    height:30px;
+    font-weight: bold;
+    font-size:20px;
+}
+*/
+hr 
+{
+    padding: 0;
+    border: none;
+    border-top: medium double #333;
+    color: #333;
+    text-align: center;
+}
+
+hr:after 
+{
+    display: inline-block;
+    position: relative; 
+    top: -0.7em;  
+    font-size: 1.5em;
+    padding: 0 0.25em;
+    background: white;
+}
+
+#agree
+{
+    float:right;
+    margin-right:10px;
+    font-weight: bold;
+    font-family: sans-serif;
+ }
+/*
+tr.second
+{
+  position:absolute;
+  margin-left: 15px;
+}
+
+tr.third
+{
+  position:absolute;
+  margin-top:15px;
+}
+*/
+tr.fourth
+{
+  position:absolute;
+  margin-left: 25px;
+}
+/*
+#under21logo
+{
+    margin-top:-170px;
+}
+*/
+#changePinModule
+{
+    margin-top: 50px;
+    width: 100%;
+}
+
+#changePINUB,#changeUserPIN,#changeNPIN,#changeRNPIN
+{
+    padding:2px;
+    width:240px;
+    height:25px;
+    padding-top: 5px;
+    text-align: center;
+    font-size:30px;
+    font-weight: bold;
+    color:white;
+    background-color:#404040;
+}
+
+#confirmchangePIN,#confirmchangePIN2
+{
+    position:relative;
+    width:250px;
+    height:30px;
+    font-weight: bold;
+    font-size:20px;
+}
+
+#padbut
+{
+    font-weight:bold;
+    font-size:12px;
+}
+
+#portalLabel
+{
+    font-style: italic;
+    font-size: 12px;
+    padding:0px;
+    margin-top:-10px;
+    margin-left:125px;
+    font-family: sans-serif;
+}
+
+#tdpad 
+{
+    padding: 5px;
+}
+
+.btnplatinum
+{
+    position:relative;
+    font-weight: bold;
+    font-size:20px;
+    margin-top: 10px;
+}
+
+.btnnonplatinum
+{
+    position:relative;
+    font-weight: bold;
+    font-size:20px;
+}
+
+#lobby2 
+{
+    /* display: block; */
+    width:850px;
+    display: none;
+}
+
+#copyright1 {color:#FFFFFF; font-family: Arial;font-size: 11px; text-align: center;}
+#copyright2 {color:#FFFFFF; font-family: Arial;font-size: 11px; text-align: center;}
+#system-version{color:#EEEEEE; font-family: Arial;font-size: 14px; text-align: center; font-style: italic;}
