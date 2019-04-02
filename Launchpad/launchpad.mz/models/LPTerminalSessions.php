@@ -53,7 +53,7 @@ class LPTerminalSessions extends LPModel {
     }
 
     public function checkIfTerminalSessionLobby($terminalCode, $serviceID) {
-        $query = "SELECT COUNT(ts.TerminalID) as Counter, tss.*, ts.*, a.*, t.* "
+        $query = "SELECT COUNT(ts.TerminalID) as Counter, tss.ServiceID as TsServiceID, tss.*, ts.*, a.*, t.* "
                 . "FROM terminalsessions tss "
                 . "INNER JOIN terminals ts ON tss.TerminalID = ts.TerminalID "
                 . "INNER JOIN ref_services a ON tss.ServiceID = a.ServiceID "
