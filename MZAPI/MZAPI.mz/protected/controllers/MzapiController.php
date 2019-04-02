@@ -237,7 +237,7 @@ class MzapiController extends Controller {
                                     }
 
                                     if ($ServiceGroupCurrentProvider == "HAB") {
-                                        $HabaneroApiWrapper = new HabaneroAPIWrapper(Yii::app()->params->cashierapi[$ActiveServiceID - 1], Yii::app()->params['HB_APIkey'], Yii::app()->params['HB_BrandID']);
+                                        $HabaneroApiWrapper = new HabaneroAPIWrapper(Yii::app()->params->gameapi[$ActiveServiceID - 1], Yii::app()->params['HB_APIkey'], Yii::app()->params['HB_BrandID']);
                                         $GetPendingGames = $HabaneroApiWrapper->GetPendingGamesHabanero($UBServiceLogin, $UBServicePassword);
 
                                         if ($GetPendingGames['TransactionInfo'][0]['GameName'] != null || $GetPendingGames['TransactionInfo'][0]['GameName'] != '') {
