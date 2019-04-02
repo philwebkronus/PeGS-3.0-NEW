@@ -16,7 +16,7 @@ body
 
 .banner 
 {
-    background: url(../images/egames-logo) no-repeat center; overflow: hidden;
+    background: url(../images/egames-logo.png) no-repeat center; overflow: hidden;
     width : 100%;
     top: 0;
     height: 38px;
