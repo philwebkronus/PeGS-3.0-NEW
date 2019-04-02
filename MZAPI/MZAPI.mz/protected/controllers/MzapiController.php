@@ -701,7 +701,7 @@ For Failed Re-Deposit Testing
                                                                                                                     if ($updateTerminalSession) {
                                                                                                                         //update members
                                                                                                                         $updateMember = $membersModel->updateMembers($ActiveServiceID, $MID);
-                                                                                                                        $errCode = 0;
+                                                                                                                        $errCode = 1000;
                                                                                                                         $transMsg = 'Successful Re-Deposit';
 
                                                                                                                         $appLogger->log($appLogger->logdate, "[response]", $transMsg);
