@@ -51,7 +51,7 @@ Class MzapiWrapper {
         $message = "[$methodname] Input: $data";
         $logger->mzapirequestlog($message, "Request");
 
-        $result = $this->curlApi(LPConfig::app()->params['uriTransferWalltet'], $postdata, $methodname);
+        $result = $this->curlApi(LPConfig::app()->params['uriTransferWallet'], $postdata, $methodname);
 
         $decode = json_decode($result[1], true);
         return $decode['TransferWallet'];
