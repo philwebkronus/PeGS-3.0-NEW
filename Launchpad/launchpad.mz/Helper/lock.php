@@ -111,7 +111,7 @@ if (!empty($function)) {
             $count = LPTerminalSessions::model()->checkIfTerminalSessionLobby($terminalCode, $serviceID);
 
             $result['Count'] = (int) $count['Counter'];
-            if ($serviceID == 28 || $serviceID == 29) {
+            if ($count['TsServiceID'] == 28 || $count['TsServiceID'] == 29) {
                 $result['ServiceUsername'] = $count['UBServiceLogin'];
                 $result['HashedServicePassword'] = $count['UBHashedServicePassword'];
                 $result['ServicePassword'] = $count['UBServicePassword'];
@@ -121,19 +121,19 @@ if (!empty($function)) {
                 $result['ServicePassword'] = $count['ServicePassword'];
             }
 
-            if ($serviceID == 28 || $serviceID == 22) {
+            if ($count['TsServiceID'] == 28 || $count['TsServiceID'] == 22) {
                 $result['HabaneroPath'] = LPConfig::app()->params["topaz_path"];
             } else {
                 $result['HabaneroPath'] = LPConfig::app()->params["habanero_path"];
             }
-
-
+            
             /*
              * For Habanero Integration
              * Added John Aaron Vida
              * 12/21/2017
              */
             $result['isVIP'] = $count['isVIP'];
+            $result['ServiceID'] = $count['TsServiceID'];
             break;
 
 
