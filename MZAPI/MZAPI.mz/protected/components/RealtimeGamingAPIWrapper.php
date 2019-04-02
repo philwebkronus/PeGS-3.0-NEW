@@ -349,7 +349,7 @@ class RealtimeGamingAPIWrapper {
 
         if ($PID != NULL) {
 
-            $url2 = Yii::app()->params->playerapi[$serviceID - 1];
+            $url2 = Yii::app()->params->gameapi[$serviceID - 1];
             $certpath = Yii::app()->params->rtg_certkey_dir . $serviceID . '/cert.pem';
             $keypath = Yii::app()->params->rtg_certkey_dir . $serviceID . '/key.pem';
             $rtgplayer = new RealtimeGamingCasinoGamesAPI($url2, $certpath, $keypath, '');
@@ -376,7 +376,7 @@ class RealtimeGamingAPIWrapper {
     public function getPendingGamesHabanero($Username, $serviceID) {
         Yii::import('application.components.CasinoAPI.HabaneroPlayerAPI');
 
-        $URI = Yii::app()->params->playerapi[$serviceid - 1];
+        $URI = Yii::app()->params->gameapi[$serviceid - 1];
         $brandID = Yii::app()->params['HB_BrandID'];
         $APIkey = Yii::app()->params['HB_APIkey'];
         $currencyCode = Yii::app()->param['HB_CurrencyCode'];
