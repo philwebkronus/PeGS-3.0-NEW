@@ -13,6 +13,7 @@ class MI_Model {
     protected $_db3 = 'db3';
     protected $_db4 = 'db4';
     protected $_db5 = 'db5';
+    protected $_db6 = 'db6';
 
     /**
      * @var PDOStatement
@@ -22,6 +23,7 @@ class MI_Model {
     public $sth3 = null;
     public $sth4 = null;
     public $sth5 = null;
+    public $sth6 = null;
 
     /**
      * @var PDO
@@ -31,6 +33,7 @@ class MI_Model {
     public $dbh3;
     public $dbh4;
     public $dbh5;
+    public $dbh6;
 
     /**
      * @var int Number of field 
@@ -479,6 +482,60 @@ class MI_Model {
     }
 
     /**
+     * Description: execute query
+     * @param string $sql
+     * @param array $param
+     * @return PDOStatement 
+     */
+    public function exec6($sql, $param = null) {
+        $config = Mirage::app()->getConfig();
+        MI_Database::connect6($config[$this->_db6]);
+
+        $handler = MI_Database::$dbh6;
+        $this->dbh6 = MI_Database::$dbh6;
+
+        $sth = $handler->prepare($sql);
+
+        $error = $this->dbh6->errorInfo();
+        if (!$sth) {
+            if (isset($error['2'])) {
+                MI_Logger::sysLog($error['2'], E_ERROR);
+            }
+            Mirage::app()->error500();
+        }
+        if (self::$_set_query_cachable) {
+            $time_start = microtime(true);
+        }
+
+        if (is_array($param)) {
+            $result = $sth->execute($param);
+            if (self::$_set_query_cachable) {
+                $time_end = microtime(true);
+                $time_executed = $time_end - $time_start;
+            }
+        } else {
+            $result = $sth->execute();
+            if (self::$_set_query_cachable) {
+                $time_end = microtime(true);
+                $time_executed = $time_end - $time_start;
+            }
+        }
+        $this->sth6 = $sth;
+
+        if (!$result) {
+            if (isset($error['2'])) {
+                MI_Logger::sysLog($error['2'], E_ERROR);
+            }
+            Mirage::app()->error500();
+        }
+        if (self::$_set_query_cachable) {
+            self::$_cache_query[] = array('statement' => $sql, 'parameter' => $param, 'time_executed' => $time_executed . ' sec.');
+        }
+//            return $result;
+        return $sth;
+    }
+
+    /**
      * Description: debug the PDO
      * @return string 
      */
@@ -500,6 +557,10 @@ class MI_Model {
 
     public static function debug5() {
         return debug(MI_Database::$dbh5->errorInfo());
+    }
+
+    public static function debug6() {
+        return debug(MI_Database::$dbh6->errorInfo());
     }
 
     /**
@@ -526,6 +587,10 @@ class MI_Model {
         return $this->sth5->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function findAll6() {
+        return $this->sth6->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     /**
      *
      * @return int
@@ -550,6 +615,10 @@ class MI_Model {
         return $this->sth5->rowCount();
     }
 
+    public function rowCount6() {
+        return $this->sth6->rowCount();
+    }
+
     /**
      * Description: fetch
      * @return array 
@@ -572,6 +641,10 @@ class MI_Model {
 
     public function find5() {
         return $this->sth5->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function find6() {
+        return $this->sth6->fetch(PDO::FETCH_ASSOC);
     }
 
     public function beginTransaction() {
@@ -619,6 +692,15 @@ class MI_Model {
         return $this->dbh5->beginTransaction();
     }
 
+    public function beginTransaction6() {
+        if (!isset($this->dbh6)) {
+            $config = Mirage::app()->getConfig();
+            MI_Database::connect6($config[$this->_db6]);
+            $this->dbh6 = MI_Database::$dbh6;
+        }
+        return $this->dbh6->beginTransaction();
+    }
+
     /**
      * Description: Close connection
      */
@@ -646,6 +728,10 @@ class MI_Model {
 
     public function close5() {
         MI_Database::close5();
+    }
+
+    public function close6() {
+        MI_Database::close6();
     }
 
 }
