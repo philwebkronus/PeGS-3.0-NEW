@@ -151,10 +151,9 @@ class LPTerminalServices extends LPModel {
 
     public function getCurrentCasino($terminalCode) {
 
-        $query = "SELECT ServiceID  FROM terminalservices ts
+        $query = "SELECT GROUP_CONCAT(ServiceID SEPARATOR ', ') as ServiceID FROM terminalservices ts
                 INNER JOIN terminals t ON t.TerminalID = ts.TerminalID 
-                WHERE t.TerminalCode IN ('" . $terminalCode . "') AND ts.Status = 1 
-                GROUP BY ts.ServiceID; ";
+                WHERE t.TerminalCode IN ('" . $terminalCode . "') AND ts.Status = 1";
 
         $rqst = $this->_pdoconn->prepare($query);
         //$rqst->bindParam(':terminalCode',$terminalCode);
