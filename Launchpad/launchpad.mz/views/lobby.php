@@ -320,31 +320,43 @@
                                         }},
                                     success: function(data)
                                     {
-                                        var array = data.split(", ");
+                                        var array = data.split(", ")
 
-                                        for (i = 0; i < array.length; i++) {
-                                            if (array[i] === '22' || array[i] === '28') {
-                                                mmserviceid = array[i];
 
-                                                $("#tdvv2").show();
-                                                $("#tdmm2").show();
-                                                $("#tdss2").show();
-                                                $("#tdvv2").css("display", "block");
-                                                $("#tdss2").css("display", "block");
-                                                $("#tdmm2").css("display", "block");
+                                        if (array.length > 1) {
+                                            for (i = 0; i < array.length; i++) {
+
+                                                if (array[i] === '22' || array[i] === '25') {
+                                                    alert("Error : Invalid casino mapping.");
+                                                    window.external.ScreenBlocker(true);
+                                                }
+
+                                                if (array[i] === '28') {
+                                                    mmserviceid = array[i];
+
+                                                    $("#tdvv2").show();
+                                                    $("#tdmm2").show();
+                                                    $("#tdss2").show();
+                                                    $("#tdvv2").css("display", "block");
+                                                    $("#tdss2").css("display", "block");
+                                                    $("#tdmm2").css("display", "block");
+                                                }
+
+                                                if (array[i] === '29') {
+                                                    vvserviceid = array[i];
+
+                                                    $("#tdvv").show();
+                                                    $("#tdmm").show();
+                                                    $("#tdss").show();
+                                                    $("#tdvv").css("display", "block");
+                                                    $("#tdss").css("display", "block");
+                                                    $("#tdmm").css("display", "block");
+
+                                                }
                                             }
-
-                                            if (array[i] === '25' || array[i] === '29') {
-                                                vvserviceid = array[i];
-
-                                                $("#tdvv").show();
-                                                $("#tdmm").show();
-                                                $("#tdss").show();
-                                                $("#tdvv").css("display", "block");
-                                                $("#tdss").css("display", "block");
-                                                $("#tdmm").css("display", "block");
-
-                                            }
+                                        } else {
+                                            alert("Error : Only one casino was mapped on this terminal.");
+                                            window.external.ScreenBlocker(true);
                                         }
 
                                     },
