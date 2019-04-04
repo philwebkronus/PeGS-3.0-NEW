@@ -139,107 +139,138 @@ $(document).ready(function() {
 
         showLightbox(function() {
 
-            $.post("../Helper/lock.php",
+            var err = false;
+
+            $.post("../Helper/connector.php",
                     {
-                        data: 'countSession',
-                        terminalCode: terminalCode,
-                    }, function(data) {
+                        fn: 'getServiceID',
+                        TerminalCode: terminalCode,
+                    }, function(dataID) {
 
-                var json = $.parseJSON(data);
+                var array = dataID.split(", ");
 
-                if (json.Count != undefined) {
-                    if (json.Count != 0) {
-                        if (json.Count == 1) {
+                if (array.length > 1) {
+                    for (i = 0; i < array.length; i++) {
+                        if (array[i] === '22' || array[i] === '25') {
+                            err = true;
+                            alert("Error : Invalid casino mapping.");
+                            jQuery.fancybox.close();
+                            window.external.ScreenBlocker(true);
+                        }
+                    }
+                } else {
+                    err = true;
+                    alert("Error : Only one casino was mapped on this terminal.");
+                    window.external.ScreenBlocker(true);
+                    jQuery.fancybox.close();
+                }
 
-                            $.post("../Helper/lock.php",
-                                    {
-                                        data: 'transferWallet',
-                                        terminalCode: terminalCode,
-                                        ServiceID: ServiceID,
-                                        UserMode: 3,
-                                    }, function(datatw) {
 
-                                var jsonTW = $.parseJSON(datatw);
-                                if (jsonTW.ErrorCode == 0) {
+                if (err == false) {
+
+                    $.post("../Helper/lock.php",
+                            {
+                                data: 'countSession',
+                                terminalCode: terminalCode,
+                            }, function(data) {
+
+                        var json = $.parseJSON(data);
+
+                        if (json.Count != undefined) {
+                            if (json.Count != 0) {
+                                if (json.Count == 1) {
+
                                     $.post("../Helper/lock.php",
                                             {
-                                                data: 'checkIfTerminalSessionLobby',
+                                                data: 'transferWallet',
                                                 terminalCode: terminalCode,
                                                 ServiceID: ServiceID,
-                                            }, function() {
-                                    })
-                                            .done(function(dataDetails) {
+                                                UserMode: 3,
+                                            }, function(datatw) {
 
-                                                var jsonDetails = $.parseJSON(dataDetails);
+                                        var jsonTW = $.parseJSON(datatw);
+                                        if (jsonTW.ErrorCode == 0) {
+                                            $.post("../Helper/lock.php",
+                                                    {
+                                                        data: 'checkIfTerminalSessionLobby',
+                                                        terminalCode: terminalCode,
+                                                        ServiceID: ServiceID,
+                                                    }, function() {
+                                            })
+                                                    .done(function(dataDetails) {
 
-                                                if (jsonDetails.Count != undefined) {
-                                                    if (jsonDetails.Count != 0) {
-                                                        if (jsonDetails.Count == 1) {
+                                                        var jsonDetails = $.parseJSON(dataDetails);
 
-                                                            ServiceUsername = jsonDetails.ServiceUsername;
-                                                            ServicePassword = jsonDetails.ServicePassword;
-                                                            isVIP = jsonDetails.isVIP;
-                                                            ServicePassword = ServicePassword.replace(/\"/g, "");
-                                                            HabaneroPath = jsonDetails.HabaneroPath;
-                                                            TsServiceID = jsonDetails.ServiceID;
+                                                        if (jsonDetails.Count != undefined) {
+                                                            if (jsonDetails.Count != 0) {
+                                                                if (jsonDetails.Count == 1) {
 
-                                                            $.launchGame(TsServiceID, ServiceUsername, ServicePassword, isVIP, HabaneroPath, terminalCode);
+                                                                    ServiceUsername = jsonDetails.ServiceUsername;
+                                                                    ServicePassword = jsonDetails.ServicePassword;
+                                                                    isVIP = jsonDetails.isVIP;
+                                                                    ServicePassword = ServicePassword.replace(/\"/g, "");
+                                                                    HabaneroPath = jsonDetails.HabaneroPath;
+                                                                    TsServiceID = jsonDetails.ServiceID;
 
-                                                        } else {
+                                                                    $.launchGame(TsServiceID, ServiceUsername, ServicePassword, isVIP, HabaneroPath, terminalCode);
+
+                                                                } else {
+                                                                    window.external.ScreenBlocker(false);
+                                                                    jQuery.fancybox.close();
+                                                                    $.prompt("[ERROR 009] Terminal has more than One (1) active session.");
+                                                                }
+                                                            } else {
+                                                                window.external.ScreenBlocker(false);
+                                                                jQuery.fancybox.close();
+                                                                $.prompt("[ERROR 008] Terminal has no valid session");
+                                                            }
+                                                        }
+                                                        else {
                                                             window.external.ScreenBlocker(false);
                                                             jQuery.fancybox.close();
-                                                            $.prompt("[ERROR 009] Terminal has more than One (1) active session.");
+                                                            $.prompt("[ERROR 007] An error was encountered. Please try again.");
                                                         }
-                                                    } else {
-                                                        window.external.ScreenBlocker(false);
-                                                        jQuery.fancybox.close();
-                                                        $.prompt("[ERROR 008] Terminal has no valid session");
-                                                    }
-                                                }
-                                                else {
-                                                    window.external.ScreenBlocker(false);
-                                                    jQuery.fancybox.close();
-                                                    $.prompt("[ERROR 007] An error was encountered. Please try again.");
-                                                }
-                                            })
-                                            .fail(function() {
-                                                $.prompt("[ERROR 006] An error was encountered. Please try again.");
-                                            });
-                                }
-                                else {
+                                                    })
+                                                    .fail(function() {
+                                                        $.prompt("[ERROR 006] An error was encountered. Please try again.");
+                                                    });
+                                        }
+                                        else {
+                                            window.external.ScreenBlocker(false);
+                                            jQuery.fancybox.close();
+
+                                            if (jsonTW.ErrorCode == 1000) {
+                                                $.prompt("[ERROR #" + jsonTW.ErrorCode + "] An error was encountered transferring to this casino. Please try the other casino.");
+                                            }
+                                            else if (jsonTW.ErrorCode == 2 || jsonTW.ErrorCode == 8 || jsonTW.ErrorCode == 25 || jsonTW.ErrorCode == 40 || jsonTW.ErrorCode == 41 || jsonTW.ErrorCode == 42 || jsonTW.ErrorCode == 45) {
+                                                $.prompt(JSON.stringify(jsonTW.ReturnMessage).replace(/\"/g, ""));
+                                            }
+                                            else {
+                                                $.prompt("[ERROR #" + jsonTW.ErrorCode + "] An error was encountered. Please try again.");
+                                            }
+                                        }
+
+                                    });
+
+                                } else {
                                     window.external.ScreenBlocker(false);
                                     jQuery.fancybox.close();
-
-                                    if (jsonTW.ErrorCode == 1000) {
-                                        $.prompt("[ERROR #" + jsonTW.ErrorCode + "] An error was encountered transferring to this casino. Please try the other casino.");
-                                    }
-                                    else if (jsonTW.ErrorCode == 2 || jsonTW.ErrorCode == 8 || jsonTW.ErrorCode == 25 || jsonTW.ErrorCode == 40 || jsonTW.ErrorCode == 41 || jsonTW.ErrorCode == 42 || jsonTW.ErrorCode == 45) {
-                                        $.prompt(JSON.stringify(jsonTW.ReturnMessage).replace(/\"/g, ""));
-                                    }
-                                    else {
-                                        $.prompt("[ERROR #" + jsonTW.ErrorCode + "] An error was encountered. Please try again.");
-                                    }
+                                    $.prompt("[ERROR 003] Terminal has more than One (1) active session.");
                                 }
-
-                            });
-
-                        } else {
+                            } else {
+                                window.external.ScreenBlocker(false);
+                                jQuery.fancybox.close();
+                                $.prompt("[ERROR 002] Terminal has no valid session");
+                            }
+                        }
+                        else {
                             window.external.ScreenBlocker(false);
                             jQuery.fancybox.close();
-                            $.prompt("[ERROR 003] Terminal has more than One (1) active session.");
+                            $.prompt("[ERROR 001] Error was encountered. Kindly retry.");
                         }
-                    } else {
-                        window.external.ScreenBlocker(false);
-                        jQuery.fancybox.close();
-                        $.prompt("[ERROR 002] Terminal has no valid session");
-                    }
-                }
-                else {
-                    window.external.ScreenBlocker(false);
-                    jQuery.fancybox.close();
-                    $.prompt("[ERROR 001] Error was encountered. Kindly retry.");
-                }
 
+                    });
+                }
             });
         });
     };
@@ -352,5 +383,3 @@ $(document).ready(function() {
 
 
 });
-
-
