@@ -1048,22 +1048,45 @@ class MzapiController extends Controller {
         CLoggerModified::log($message, CLoggerModified::RESPONSE);
     }
 
+   
+    
     private function _getBalance($ServiceID, $UBServiceLogin, $UBServicePassword, $ServiceGroup) {
 
-
+        $appLogger = new AppLogger();
         Yii::import('application.components.CasinoController');
         $RTGApiWrapper = new RealtimeGamingAPIWrapper();
         $HabaneroApiWrapper = new HabaneroAPIWrapper(Yii::app()->params->cashierapi[$ServiceID - 1], Yii::app()->params['HB_APIkey'], Yii::app()->params['HB_BrandID']);
 
         if ($ServiceGroup == "RTG" || $ServiceGroup == "RTG2") {
             $GetBalance = $RTGApiWrapper->GetBalance($ServiceID, $UBServiceLogin);
-            $Balance = $GetBalance['balance'];
+            if (!empty($GetBalance)) {
+                $Balance = $GetBalance['balance'];
+            } else {
+                $errCode = 51;
+                $transMsg = '[ERROR #051] Can\'t get balance RTG.';
+
+                $appLogger->log($appLogger->logdate, "[response]", $transMsg);
+                $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
+                $this->_sendResponse(200, $data);
+                exit;
+            }
         }
 
         if ($ServiceGroup == "HAB") {
             $HabaneroApiWrapper = new HabaneroAPIWrapper(Yii::app()->params->cashierapi[$ServiceID - 1], Yii::app()->params['HB_APIkey'], Yii::app()->params['HB_BrandID']);
             $GetBalance = $HabaneroApiWrapper->GetBalance($UBServiceLogin, $UBServicePassword);
-            $Balance = $GetBalance['TransactionInfo']['RealBalance'];
+
+            if (!empty($GetBalance)) {
+                $Balance = $GetBalance['TransactionInfo']['RealBalance'];
+            } else {
+                $errCode = 51;
+                $transMsg = '[ERROR #051] Can\'t get balance Habanero.';
+
+                $appLogger->log($appLogger->logdate, "[response]", $transMsg);
+                $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
+                $this->_sendResponse(200, $data);
+                exit;
+            }
         }
 
         return $Balance;
@@ -1071,6 +1094,7 @@ class MzapiController extends Controller {
 
     private function _deposit($MzTransactionTransferID, $ActiveServiceID, $UBServiceLogin, $UBServicePassword, $CurrentProviderBalance, $TerminalID, $TerminalCode, $ServiceGroup, $transtype) {
 
+        $appLogger = new AppLogger();
         Yii::import('application.components.CasinoController');
         $RTGApiWrapper = new RealtimeGamingAPIWrapper();
         $HabaneroApiWrapper = new HabaneroAPIWrapper(Yii::app()->params->cashierapi[$ActiveServiceID - 1], Yii::app()->params['HB_APIkey'], Yii::app()->params['HB_BrandID']);
@@ -1131,23 +1155,32 @@ class MzapiController extends Controller {
                 }
             }
         }
+        if (empty($apiresult)) {
+            $errCode = 52;
+            $transMsg = '[ERROR #052] Error in Deposit';
 
-        if ($apiresult == 'TRANSACTIONSTATUS_APPROVED' || $apiresult == 'true' || $apiresult == 'approved' || $apiresult == "Deposit Success") {
-            $array['DepositedAmount'] = $amount;
-            $array['TransactionReferenceID'] = $transrefid;
-            $array['Status'] = $apiresult;
-            $array['IsSuccess'] = true;
-
-            $result = $array;
+            $appLogger->log($appLogger->logdate, "[response]", $transMsg);
+            $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
+            $this->_sendResponse(200, $data);
+            exit;
         } else {
-            $array['DepositedAmount'] = $amount;
-            $array['TransactionReferenceID'] = $transrefid;
-            $array['Status'] = $apiresult;
-            $array['IsSuccess'] = false;
 
-            $result = $array;
+            if ($apiresult == 'TRANSACTIONSTATUS_APPROVED' || $apiresult == 'true' || $apiresult == 'approved' || $apiresult == "Deposit Success") {
+                $array['DepositedAmount'] = $amount;
+                $array['TransactionReferenceID'] = $transrefid;
+                $array['Status'] = $apiresult;
+                $array['IsSuccess'] = true;
+
+                $result = $array;
+            } else {
+                $array['DepositedAmount'] = $amount;
+                $array['TransactionReferenceID'] = $transrefid;
+                $array['Status'] = $apiresult;
+                $array['IsSuccess'] = false;
+
+                $result = $array;
+            }
         }
-
         return $result;
     }
 
@@ -1212,26 +1245,36 @@ class MzapiController extends Controller {
                 }
             }
         }
+        if (empty($apiresult)) {
+            $errCode = 53;
+            $transMsg = '[ERROR #053] Error in Withdrawal';
 
-        if ($apiresult == 'TRANSACTIONSTATUS_APPROVED' || $apiresult == 'true' || $apiresult == 'approved' || $apiresult == "Withdrawal Success") {
-            $array['WithdrawnAmount'] = $amount;
-            $array['TransactionReferenceID'] = $transrefid;
-            $array['Status'] = $apiresult;
-            $array['IsSuccess'] = true;
-
-            $result = $array;
+            $appLogger->log($appLogger->logdate, "[response]", $transMsg);
+            $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
+            $this->_sendResponse(200, $data);
+            exit;
         } else {
-            $array['WithdrawnAmount'] = $amount;
-            $array['TransactionReferenceID'] = $transrefid;
-            $array['Status'] = $apiresult;
-            $array['IsSuccess'] = false;
+            if ($apiresult == 'TRANSACTIONSTATUS_APPROVED' || $apiresult == 'true' || $apiresult == 'approved' || $apiresult == "Withdrawal Success") {
+                $array['WithdrawnAmount'] = $amount;
+                $array['TransactionReferenceID'] = $transrefid;
+                $array['Status'] = $apiresult;
+                $array['IsSuccess'] = true;
 
-            $result = $array;
+                $result = $array;
+            } else {
+                $array['WithdrawnAmount'] = $amount;
+                $array['TransactionReferenceID'] = $transrefid;
+                $array['Status'] = $apiresult;
+                $array['IsSuccess'] = false;
+
+                $result = $array;
+            }
         }
-
         return $result;
     }
-
+    
+    
+    
     private function _readJsonRequest() {
 
 //read the post input (use this technique if you have no post variable name):
