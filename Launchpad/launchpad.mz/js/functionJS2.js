@@ -242,6 +242,9 @@ $(document).ready(function() {
                                             if (jsonTW.ErrorCode == 1000) {
                                                 $.prompt("[ERROR #" + jsonTW.ErrorCode + "] An error was encountered transferring to this casino. Please try the other casino.");
                                             }
+                                            else if (jsonTW.ErrorCode == 51 || jsonTW.ErrorCode == 52 || jsonTW.ErrorCode == 53) {
+                                                $.prompt("[ERROR #" + jsonTW.ErrorCode + "] An error was encountered transferring to this casino. Please call customer service.");
+                                            }                                            
                                             else if (jsonTW.ErrorCode == 2 || jsonTW.ErrorCode == 8 || jsonTW.ErrorCode == 25 || jsonTW.ErrorCode == 40 || jsonTW.ErrorCode == 41 || jsonTW.ErrorCode == 42 || jsonTW.ErrorCode == 45) {
                                                 $.prompt(JSON.stringify(jsonTW.ReturnMessage).replace(/\"/g, ""));
                                             }
