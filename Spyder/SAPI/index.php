@@ -45,11 +45,12 @@ if (!( isset( $_GET[ "TerminalName" ])&&
         $message = null;
 		$oldmsg = null;
         if ( $commandId == "0" ) {//UNLOCK will go to lobby reqts: cardnumber
-			$oldmsg =  "unlock|" . $username . "|" . $password . "|" . $casinoId;
+	    //$oldmsg =  "unlock|" . $username . "|" . $password . "|" . $casinoId;
+	    $oldmsg =  "unlock|" . $username . "|" . $password . "|" . $casinoId;
             $info['Command'] = "UNLOCK";
             $message = json_encode($info);
         } else if ( $commandId == "1" || $commandId == "9" ) {//LOCK
-			$oldmsg = "lock|||";
+	    $oldmsg = "lock|||";
             $info['Command'] = "LOCK";
             $message = json_encode($info);
         } else if ( $commandId == "2" ) {
