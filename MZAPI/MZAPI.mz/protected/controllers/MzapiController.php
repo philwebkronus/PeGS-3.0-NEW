@@ -264,7 +264,7 @@ class MzapiController extends Controller {
                                     //if activeservicestatus == 9
                                     if ($ActiveServiceStatus == 9) {
                                         $errCode = 41;
-                                        $transMsg = '[ERROR #041] There is already a pending launchpad transfer transaction for this account. Please contact customer service';
+                                        $transMsg = '[ERROR #041.2] There is already a pending launchpad transfer transaction for this account. Please contact customer service';
 
                                         $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                         $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
@@ -377,19 +377,9 @@ class MzapiController extends Controller {
 
                                                         $transtype = 'MZW';
 
-//exit;
                                                         //CALL WITHDRAW API TO CURRENT PROVIDER
                                                         $WithdrawToCurrentProvider = $this->_withdraw($MzTransactionTransferID, $ActiveServiceID, $UBServiceLogin, $UBServicePassword, $CurrentProviderBalance, $TerminalID, $TerminalCode, $ServiceGroupCurrentProvider, $transtype);
-//exit;
 
-/*
-For failed withdrawal testing
-
-            $WithdrawToCurrentProvider['WithdrawnAmount'] = 0;
-            $WithdrawToCurrentProvider['TransactionReferenceID'] = -1;
-            $WithdrawToCurrentProvider['Status'] = "TRANSACTIONSTATUS_DENIED";
-            $WithdrawToCurrentProvider['IsSuccess'] = false;
-*/
 
                                                         if (!empty($WithdrawToCurrentProvider) && $WithdrawToCurrentProvider['IsSuccess'] == true) {
 
@@ -411,12 +401,6 @@ For failed withdrawal testing
 
                                                                     //get balance to current provider
                                                                     $BalancetoCurrentProvider = $this->_getBalance($ActiveServiceID, $UBServiceLogin, $UBServicePassword, $ServiceGroupCurrentProvider);
-/*
-Testing for TrasnsferStatus 90
-
-$BalancetoCurrentProvider = 300;
-*/
-
 
                                                                     //if balance is == 0
                                                                     if (is_numeric($BalancetoCurrentProvider)) {
@@ -435,22 +419,11 @@ $BalancetoCurrentProvider = 300;
                                                                             if ($updateMzTransactionTransfer) {
 
                                                                                 $transtype = 'MZD';
-//exit;
 
                                                                                 //DEPOSIT TO NEW PROVIDER
                                                                                 $DepositToNewProvider = $this->_deposit($MzTransactionTransferID, $NewServiceID, $NewUBServiceLogin, $NewUBServicePassword, $CurrentProviderBalance, $TerminalID, $TerminalCode, $ServiceGroupNewProvider, $transtype);
 
-//exit;
 
-
-/*
-For Failed Deposit Testing
-
-            $DepositToNewProvider['DepositedAmount'] = 0;
-            $DepositToNewProvider['TransactionReferenceID'] = "-1";
-            $DepositToNewProvider['Status'] = "TRANSACTIONSTATUS_DENIED";
-            $DepositToNewProvider['IsSuccess'] = false;
-*/
 
                                                                                 if (!empty($DepositToNewProvider) && $DepositToNewProvider['IsSuccess'] == true) {
 
@@ -468,12 +441,6 @@ For Failed Deposit Testing
 
                                                                                         //Get Balance to new provider
                                                                                         $BalancetoNewProvider = $this->_getBalance($NewServiceID, $NewUBServiceLogin, $NewUBServicePassword, $ServiceGroupNewProvider);
-
-/*
-Testing for TrasnsferStatus 91
-
-$BalancetoCurrentProvider = 300;
-*/
 
 
                                                                                         if (is_numeric($BalancetoNewProvider)) {
@@ -531,7 +498,8 @@ $BalancetoCurrentProvider = 300;
                                                                                                 }
                                                                                             }
                                                                                         } else {
-                                                                                          //Get Balance to new provider
+
+                                                                                            //Get Balance to new provider
                                                                                             $BalancetoNewProvider = $this->_getBalance($NewServiceID, $NewUBServiceLogin, $NewUBServicePassword, $ServiceGroupNewProvider);
 
 
@@ -643,30 +611,15 @@ $BalancetoCurrentProvider = 300;
                                                                                             //get balance to current provider
                                                                                             $BalancetoCurrentProvider = $this->_getBalance($ActiveServiceID, $UBServiceLogin, $UBServicePassword, $ServiceGroupCurrentProvider);
 
-/*
-Testing for TrasnsferStatus 93
-
-$BalancetoCurrentProvider = 300;
-*/
-
 
                                                                                             if (is_numeric($BalancetoCurrentProvider)) {
                                                                                                 if ($BalancetoCurrentProvider == 0) {
 
                                                                                                     $transtype = 'MZRD';
 
-//exit;
                                                                                                     //CALL API RE-DEPOSIT
                                                                                                     $DepositToNewProvider = $this->_deposit($MzTransactionTransferID, $ActiveServiceID, $UBServiceLogin, $UBServicePassword, $WithdrawToCurrentProvider['WithdrawnAmount'], $TerminalID, $TerminalCode, $ServiceGroupCurrentProvider, $transtype);
-//exit;
-/*
-For Failed Re-Deposit Testing
 
-            $DepositToNewProvider['DepositedAmount'] = 0;
-            $DepositToNewProvider['TransactionReferenceID'] = "-1";
-            $DepositToNewProvider['Status'] = "TRANSACTIONSTATUS_DENIED";
-            $DepositToNewProvider['IsSuccess'] = false;
-*/
                                                                                                     if (!empty($DepositToNewProvider) && $DepositToNewProvider['IsSuccess'] == true) {
 
                                                                                                         $ToServiceTransID = $DepositToNewProvider['TransactionReferenceID'];
@@ -675,7 +628,7 @@ For Failed Re-Deposit Testing
                                                                                                         $ToStatus = 1;
                                                                                                         $TransferStatus = 7;
                                                                                                         $identifier = 1;
-                                                                                                        $TransferID = $MzTransactionTransferID;
+
 
                                                                                                         //update mztransactiontransfer 
                                                                                                         $updateMzTransactionTransfer = $mzTransactionTransferModel->updateToMzTransactionTransfer($ToServiceTransID, $ToAmount, null, $ToServiceStatus, $ToStatus, $TransferStatus, $TransferID, $TransactionSummaryID, $identifier);
@@ -686,9 +639,6 @@ For Failed Re-Deposit Testing
 
                                                                                                             //get balance to current provider
                                                                                                             $BalancetoCurrentProvider = $this->_getBalance($ActiveServiceID, $UBServiceLogin, $UBServicePassword, $ServiceGroupCurrentProvider);
-
-//$BalancetoCurrentProvider = 1300;
-
                                                                                                             if (is_numeric($BalancetoCurrentProvider)) {
 
                                                                                                                 if ($BalancetoCurrentProvider == $WithdrawToCurrentProvider['WithdrawnAmount']) {
@@ -979,7 +929,7 @@ For Failed Re-Deposit Testing
                                             }
                                         } else {
                                             $errCode = 8;
-                                            $transMsg = '[ERROR #008] Transferring between casinos is currently unavailable. Please try again later';
+                                            $transMsg = '[ERROR #008.2] Transferring between casinos is currently unavailable. Please try again later';
 
                                             $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                             $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
@@ -1032,14 +982,38 @@ For Failed Re-Deposit Testing
                         exit;
                     }
                 } else {
-                    //NO TRANSFER RETURN OKAY
-                    $errCode = 0;
-                    $transMsg = 'Successful';
 
-                    $appLogger->log($appLogger->logdate, "[response]", $transMsg);
-                    $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
-                    $this->_sendResponse(200, $data);
-                    exit;
+                    //check terminal sessions activeservicestatus
+                    $checkActiveServiceStatus = $terminalSessionsModel->checkActiveServiceStatus($TerminalCode);
+                    $ActiveServiceStatus = $checkActiveServiceStatus['ActiveServiceStatus'];
+
+                    //if activeservicestatus == 9
+                    if ($ActiveServiceStatus == 9) {
+                        $errCode = 41;
+                        $transMsg = '[ERROR #041.1] There is already a pending launchpad transfer transaction for this account. Please contact customer service';
+
+                        $appLogger->log($appLogger->logdate, "[response]", $transMsg);
+                        $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
+                        $this->_sendResponse(200, $data);
+                        exit;
+                    } elseif ($ActiveServiceStatus <> 1) {
+                        $errCode = 8;
+                        $transMsg = '[ERROR #008.1] Transferring between casinos is currently unavailable. Please try again later';
+
+                        $appLogger->log($appLogger->logdate, "[response]", $transMsg);
+                        $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
+                        $this->_sendResponse(200, $data);
+                        exit;
+                    } else {
+                        //NO TRANSFER RETURN OKAY
+                        $errCode = 0;
+                        $transMsg = 'Successful';
+
+                        $appLogger->log($appLogger->logdate, "[response]", $transMsg);
+                        $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
+                        $this->_sendResponse(200, $data);
+                        exit;
+                    }
                 }
             } else {
                 //NO SESSION
@@ -1431,4 +1405,3 @@ For Failed Re-Deposit Testing
     }
 
 }
-
