@@ -240,9 +240,11 @@ class MzapiController extends Controller {
                                         $HabaneroApiWrapper = new HabaneroAPIWrapper(Yii::app()->params->gameapi[$ActiveServiceID - 1], Yii::app()->params['HB_APIkey'], Yii::app()->params['HB_BrandID']);
                                         $GetPendingGames = $HabaneroApiWrapper->GetPendingGamesHabanero($UBServiceLogin, $UBServicePassword);
 
-                                        if ($GetPendingGames['TransactionInfo'][0]['GameName'] != null || $GetPendingGames['TransactionInfo'][0]['GameName'] != '') {
-                                            $PendingGame['IsSucceed'] = true;
-                                            $PendingGame['PendingGames']['GetPendingGamesByPIDResult']['Gamename'] = $pendingGames['TransactionInfo'][0]['GameName'];
+                                        if ($GetPendingGames['ErrorCode'] == 0) {
+                                            if ($GetPendingGames['TransactionInfo'][0]['GameName'] != null || $GetPendingGames['TransactionInfo'][0]['GameName'] != '') {
+                                                $PendingGame['IsSucceed'] = true;
+                                                $PendingGame['PendingGames']['GetPendingGamesByPIDResult']['Gamename'] = $pendingGames['TransactionInfo'][0]['GameName'];
+                                            }
                                         }
                                     }
 
