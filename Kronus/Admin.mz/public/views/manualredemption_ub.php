@@ -577,7 +577,11 @@ if (isset($_SESSION['acctype'])) {
                                                         document.getElementById('fade3').style.display = 'block';
                                                         document.getElementById('txtmid').value = this.MemberID;
                                                         document.getElementById('txtusermode').value = 1;
-
+                                                        
+                                                        if (this.MZTransfer) {
+                                                            document.getElementById('cmbsiteiddata').style.display = "none";
+                                                        }
+                                                        
                                                         if (this.ServiceName !== 'PWW') {
                                                             tblRow +=
                                                                     "<tbody>"
@@ -624,7 +628,11 @@ if (isset($_SESSION['acctype'])) {
                                                     document.getElementById('fade3').style.display = 'block';
                                                     document.getElementById('txtmid').value = this.MemberID;
                                                     document.getElementById('txtusermode').value = 1;
-
+                                                    
+                                                    if (this.MZTransfer) {
+                                                        document.getElementById('cmbsiteiddata').style.display = "none";
+                                                    }
+                                                    
                                                     if (this.ServiceName !== 'PWW') {
                                                         tblRow +=
                                                                 "<tbody>"
