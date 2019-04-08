@@ -304,11 +304,12 @@ class TerminalSessionsModel extends MI_Model
     }
 
     public function updateActiveServiceIDByTerminalID($terminal_id, $service_id, $status) {
-        $sql = 'UPDATE terminalsessions SET ActiveServiceStatus =  :active_service_status, ActiveLastTransdateUpd = NOW(6) WHERE TerminalID = :terminal_id AND ServiceID = :service_id';
+        $sql = 'UPDATE terminalsessions SET ActiveServiceStatus =  :active_service_status, OldActiveServiceStatus = :old_active_service_status,  ActiveLastTransdateUpd = NOW(6) WHERE TerminalID = :terminal_id AND ServiceID = :service_id';
         
         $param = array(
             ':service_id' => $service_id,
             ':active_service_status' => $status,
+            ':old_active_service_status' => $status,
             ':terminal_id' => $terminal_id);
         return $this->exec($sql, $param);
     }
