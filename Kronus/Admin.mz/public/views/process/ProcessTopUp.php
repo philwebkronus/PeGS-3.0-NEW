@@ -1826,6 +1826,16 @@ if (isset($usermode)) {
 
                         $otopupmembership->close();
 
+                        $ramount = ereg_replace(",", "", $tsAmount); //format number replace (,)
+
+                        $_maxRedeem = ereg_replace(",", "", $_maxRedeem); //format number replace (,)
+                        if ($ramount > $_maxRedeem) {
+                            $balance = $ramount - $_maxRedeem;
+                            $ramount = $_maxRedeem;
+                        } else {
+                            $balance = 0;
+                        }
+
                         $UBServiceLogin = $getPlayerCredentialsByUB['ServiceUsername'];
                         $UBServicePassword = $getPlayerCredentialsByUB['ServicePassword'];
                         $UBHashedServicePassword = $getPlayerCredentialsByUB['HashedServicePassword'];
@@ -1838,7 +1848,7 @@ if (isset($usermode)) {
                         $vsiteID = $tsSiteID;
                         $vterminalID = $tsTerminalID;
                         $vreportedAmt = ereg_replace(",", "", $tsAmount);
-                        $vactualAmt = $tsAmount;
+                        $vactualAmt = $ramount;
                         $vtransactionDate = $otopup->getDate();
                         $vreqByAID = $aid;
                         $vprocByAID = $aid;
@@ -1882,7 +1892,7 @@ if (isset($usermode)) {
 
                                     $locatorname = null;
                                     //withdraw rtg casino
-                                    $withdraw = $CasinoGamingCAPI->Withdraw($servicegrpname, $tsServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $tsAmount, $tracking1, $tracking2, $tracking3, $tracking4 = '', $methodname = '', $usermode, $locatorname);
+                                    $withdraw = $CasinoGamingCAPI->Withdraw($servicegrpname, $tsServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $vactualAmt, $tracking1, $tracking2, $tracking3, $tracking4 = '', $methodname = '', $usermode, $locatorname);
 
                                     break;
 
@@ -1908,7 +1918,7 @@ if (isset($usermode)) {
 
                                     $locatorname = null;
                                     //withdraw hab casino
-                                    $withdraw = $CasinoGamingCAPI->Withdraw($servicegrpname, $tsServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $tsAmount, $tracking1, $tracking2, $tracking3, $tracking4 = '', $methodname = '', $usermode, $locatorname, $UBServicePassword);
+                                    $withdraw = $CasinoGamingCAPI->Withdraw($servicegrpname, $tsServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $vactualAmt, $tracking1, $tracking2, $tracking3, $tracking4 = '', $methodname = '', $usermode, $locatorname, $UBServicePassword);
 
                                     break;
 
@@ -1936,7 +1946,7 @@ if (isset($usermode)) {
                                         $vsiteID = $tsSiteID;
                                         $vterminalID = $tsServiceID;
                                         $vreportedAmt = $tsAmount;
-                                        $vactualAmt = $tsAmount;
+                                        $vactualAmt = $ramount;
                                         $vtransactionDate = $otopup->getDate();
                                         $vreqByAID = $aid;
                                         $vprocByAID = $aid;
@@ -1972,7 +1982,7 @@ if (isset($usermode)) {
                                                         $vtransdetails = "transaction id " . $vtransactionID . ",amount " . $vreportedAmt;
                                                         $vauditfuncID = 7;
                                                         $otopup->logtoaudit($new_sessionid, $aid, $vtransdetails, $vtransactionDate, $vipaddress, $vauditfuncID);
-                                                        $msg = "Redeemed: " . $tsAmount . "; Remaining Balance: " . $balance;
+                                                        $msg = "Redeemed: " . $ramount . "; Remaining Balance: " . $balance;
                                                         echo json_encode($msg);
                                                         exit;
                                                     } else {
@@ -2039,7 +2049,7 @@ if (isset($usermode)) {
                                         $vsiteID = $tsSiteID;
                                         $vterminalID = $tsTerminalID;
                                         $vreportedAmt = $tsAmount;
-                                        $vactualAmt = $tsAmount;
+                                        $vactualAmt = $ramount;
                                         $vtransactionDate = $otopup->getDate();
                                         $vreqByAID = $aid;
                                         $vprocByAID = $aid;
@@ -2081,7 +2091,7 @@ if (isset($usermode)) {
                                                         $vtransdetails = "transaction id " . $vtransactionID . ",amount " . $vreportedAmt;
                                                         $vauditfuncID = 7;
                                                         $otopup->logtoaudit($new_sessionid, $aid, $vtransdetails, $vtransactionDate, $vipaddress, $vauditfuncID);
-                                                        $msg = "Redeemed: " . $tsAmount . "; Remaining Balance: " . $balance;
+                                                        $msg = "Redeemed: " . $ramount . "; Remaining Balance: " . $balance;
                                                         echo json_encode($msg);
                                                         exit;
                                                     } else {
