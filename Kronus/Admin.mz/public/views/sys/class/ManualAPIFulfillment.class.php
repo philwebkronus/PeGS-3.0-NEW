@@ -27,10 +27,11 @@ class ManualAPIFulfillment extends DBHandler
         $this->begintrans();
         try 
         {
-            $stmt = "UPDATE terminalsessions SET ActiveServiceStatus = ?, ActiveLastTransDateUpd = now(6) WHERE TerminalID = ?";
+            $stmt = "UPDATE terminalsessions SET ActiveServiceStatus = ?, OldActiveServiceStatus = ?, ActiveLastTransDateUpd = now(6) WHERE TerminalID = ?";
             $this->prepare($stmt);
             $this->bindparameter(1, $servicestatus);
-            $this->bindparameter(2, $terminalid);
+            $this->bindparameter(2, $servicestatus);
+            $this->bindparameter(3, $terminalid);
 
             if($this->execute())
             {
@@ -547,7 +548,7 @@ class ManualAPIFulfillment extends DBHandler
                     //EDITED CCT 12/12/2018 BEGIN
                     //$stmt3 = "UPDATE terminalsessions SET TransactionSummaryID = ? WHERE TerminalID = ?";
                     $stmt3 = "UPDATE terminalsessions SET TransactionSummaryID = ?,  ActiveServiceID = ServiceID, "
-                            . " ActiveServiceStatus = 1, ActiveLastTransDateUpd = now(6) WHERE TerminalID = ?";
+                            . " ActiveServiceStatus = 1, ActiveLastTransDateUpd = now(6), OldActiveServiceStatus = 1 WHERE TerminalID = ?";
                     //EDITED CCT 12/12/2018 END
                     $this->prepare($stmt3);
                     $this->bindparameter(1, $trans_summary_max_id);
@@ -638,8 +639,8 @@ class ManualAPIFulfillment extends DBHandler
                     //$stmt = "UPDATE terminalsessions SET ServiceID = ?,  LastBalance = ?, LastTransactionDate = now_usec() 
                     //            WHERE TerminalID = ?";
                     $stmt = "UPDATE terminalsessions SET ServiceID = ?,  LastBalance = ?, LastTransactionDate = now_usec(), "
-                            . "ActiveServiceID = ? , ActiveServiceStatus = 1, ActiveLastTransDateUpd = now(6) "
-                            . "WHERE TerminalID = ?";
+                            . "ActiveServiceID = ? , ActiveServiceStatus = 1, ActiveLastTransDateUpd = now(6), "
+                            . "OldActiveServiceStatus = 1 WHERE TerminalID = ?";
                     
                     $this->prepare($stmt);
                     $this->bindparameter(1, $service_id);
