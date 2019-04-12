@@ -7370,7 +7370,7 @@ public function updateTerminalSessionsCredentials($activeServiceStatus, $service
         try {
             $sql = "UPDATE npos.terminalsessions SET ActiveServiceStatus = ? , ActiveServiceID = ?, ServiceID = ?,
                      UBServiceLogin = ? , UBServicePassword = ?, UBHashedServicePassword = ?, LastBalance = ?,
-                     LastTransactionDate = NOW(6) , ActiveLastTransdateUpd = NOW(6) WHERE TerminalID = ?";
+                     LastTransactionDate = NOW(6) , ActiveLastTransdateUpd = NOW(6), OldActiveServiceStatus = ActiveServiceStatus WHERE TerminalID = ?";
 
             $this->prepare($sql);
             $this->bindparameter(1, $activeServiceStatus);
@@ -7407,7 +7407,7 @@ public function updateTerminalSessionsCredentials($activeServiceStatus, $service
     public function updateMember($ServiceID, $MID) {
         $this->begintrans();
         try {
-            $sql = "UPDATE membership.members SET Option1 = ? WHERE MID = ?";
+            $sql = "UPDATE membership.members SET OptionID1 = ? WHERE MID = ?";
             $this->prepare($sql);
             $this->bindparameter(1, $ServiceID);
             $this->bindparameter(2, $MID);
