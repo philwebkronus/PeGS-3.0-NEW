@@ -1186,6 +1186,7 @@ class MzapiController extends Controller {
 
     private function _withdraw($MzTransactionTransferID, $ActiveServiceID, $UBServiceLogin, $UBServicePassword, $CurrentProviderBalance, $TerminalID, $TerminalCode, $ServiceGroup, $transtype) {
 
+        $appLogger = new AppLogger();
         Yii::import('application.components.CasinoController');
         $RTGApiWrapper = new RealtimeGamingAPIWrapper();
         $HabaneroApiWrapper = new HabaneroAPIWrapper(Yii::app()->params->cashierapi[$ActiveServiceID - 1], Yii::app()->params['HB_APIkey'], Yii::app()->params['HB_BrandID']);
