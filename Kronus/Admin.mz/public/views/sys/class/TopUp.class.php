@@ -7438,5 +7438,15 @@ public function updateTerminalSessionsCredentials($activeServiceStatus, $service
         return $record["SiteID"];
     }
 
+    public function getOldActiveServiceID($TerminalID) {
+        $query = "SELECT OldActiveServiceStatus FROM terminalsessions WHERE TerminalID = :terminalid";
+        $this->prepare($query);
+        $this->bindParam(":terminalid", $TerminalID);
+        $this->execute();
+        $record = $this->fetchData();
+        return $record["OldActiveServiceStatus"];
+    }
+
+
  }
 ?>
