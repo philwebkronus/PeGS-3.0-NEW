@@ -433,7 +433,8 @@ if (isset($_SESSION['acctype'])) {
                             if (data.TransCode == 1) {
                                 alert(data.TransMsg);
                             }
-                            else {
+
+ 			    else {
                                 $('#loading').hide();
                                 $('#light3').hide();
                                 $('#fade3').hide();
@@ -441,23 +442,12 @@ if (isset($_SESSION['acctype'])) {
                                 document.getElementById('txtterminalid').value = terminalid;
                                 document.getElementById('txtserviceid').value = id;
                                 document.getElementById('txtamount2').value = bal;
-                                if (isewallet == 1) { //if serviceID is 20, add button
-                                    $("#txtamtwithdraw").val('');
-                                    document.getElementById('loading').style.display = 'none';
-                                    document.getElementById('light1').style.display = 'none';
-                                    document.getElementById('lightamt').style.display = 'block';
-                                    document.getElementById('fade3').style.display = 'block';
-                                }
-                                else {
-                                    document.getElementById('loading').style.display = 'none';
-                                    document.getElementById('light1').style.display = 'none';
-                                    document.getElementById('lightub').style.display = 'block';
-                                    document.getElementById('fadeub').style.display = 'block';
-                                }
-                                //                        if(data.TransRequestLogID > 0){
-                                //                            $('#cmbsiteiddata').hide();
-                                //                            return false;
-                                //                        }
+                                
+                                document.getElementById('loading').style.display = 'none';
+                                document.getElementById('light1').style.display = 'none';
+                                document.getElementById('lightub').style.display = 'block';
+                                document.getElementById('fadeub').style.display = 'block';
+
                             }
                         }
                     });
