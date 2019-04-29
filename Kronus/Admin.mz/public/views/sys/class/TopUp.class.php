@@ -7305,7 +7305,7 @@ class TopUp extends DBHandler
     public function updateActiveServiceStatusRollback($activeservicestatus, $loyaltycardnumber) {
         $this->begintrans();
         try {
-            $sql = "UPDATE terminalsessions SET ActiveServiceStatus = ? WHERE LoyaltyCardNumber = ?";
+            $sql = "UPDATE terminalsessions SET ActiveServiceStatus = ? , OldActiveServiceStatus = ActiveServiceStatus WHERE LoyaltyCardNumber = ?";
             $this->prepare($sql);
             $this->bindparameter(1, $activeservicestatus);
             $this->bindparameter(2, $loyaltycardnumber);
@@ -7429,7 +7429,7 @@ public function updateTerminalSessionsCredentials($activeServiceStatus, $service
         }
     }
 
-    public final function getSiteIDByTerminalID($TerminalID) {
+    public function getSiteIDByTerminalID($TerminalID) {
         $query = "SELECT SiteID FROM terminals WHERE TerminalID = :terminalid";
         $this->prepare($query);
         $this->bindParam(":terminalid", $TerminalID);
@@ -7446,7 +7446,87 @@ public function updateTerminalSessionsCredentials($activeServiceStatus, $service
         $record = $this->fetchData();
         return $record["OldActiveServiceStatus"];
     }
+    public function updateActiveServiceStatusByTerminalID($ActiveServiceStatus, $TerminalID) {
+        $this->begintrans();
+        try {
+            $sql = "UPDATE npos.terminalsessions SET ActiveServiceStatus = ? , OldActiveServiceStatus = ? WHERE TerminalID = ?";
+            $this->prepare($sql);
+            $this->bindparameter(1, $ActiveServiceStatus);
+            $this->bindparameter(2, 1);
+            $this->bindparameter(3, $TerminalID);
+            if ($this->execute()) {
+                try {
+                    $this->committrans();
+                    return true;
+                } catch (PDOException $e) {
+                    $this->rollbacktrans();
+                    return false;
+                }
+            } else {
+                $this->rollbacktrans();
+                return false;
+            }
+        } catch (PDOException $e) {
+            $this->rollbacktrans();
+            return false;
+        }
+    }
 
+  function insertreversal($zsiteID, $zterminalID, $zreportedAmt, $zactualAmt, $ztransactionDate, $zreqByAID, $zprocByAID, $zremarks, $zdateeff, $zstatus, $ztransactionID, $zsummaryID, $zticketID, $zCmbServerID, $ztransStatus, $loyaltycardnumber, $mid, $usermode, $transferID = "", $fromServiceID = "") {
+        $this->begintrans();
+        $this->prepare("INSERT INTO reversalcasinobal (SiteID, TerminalID, ReportedAmount, 
+            ActualAmount, TransactionDate, RequestedByAID, ProcessedByAID, Remarks, 
+            DateEffective, Status, TransactionID, LastTransactionSummaryID, TicketID, ServiceID,
+            TransactionStatus, LoyaltyCardNumber, MID, UserMode) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $this->bindparameter(1, $zsiteID);
+        $this->bindparameter(2, $zterminalID);
+        $this->bindparameter(3, $zreportedAmt);
+        $this->bindparameter(4, $zactualAmt);
+        $this->bindparameter(5, $ztransactionDate);
+        $this->bindparameter(6, $zreqByAID);
+        $this->bindparameter(7, $zprocByAID);
+        $this->bindparameter(8, $zremarks);
+        $this->bindparameter(9, $zdateeff);
+        $this->bindparameter(10, $zstatus);
+        $this->bindparameter(11, $ztransactionID);
+        $this->bindparameter(12, $zsummaryID);
+        $this->bindparameter(13, $zticketID);
+        $this->bindparameter(14, $zCmbServerID);
+        $this->bindparameter(15, $ztransStatus);
+        $this->bindparameter(16, $loyaltycardnumber);
+        $this->bindparameter(17, $mid);
+        $this->bindparameter(18, $usermode);
+        if ($this->execute()) {
+            $lastid = $this->insertedid();
+            $this->committrans();
+            return $lastid;
+        } else {
+            $this->rollbacktrans();
+            return 0;
+        }
+    }
 
+    function updateReversalSuccess($status, $actualamount, $transid, $dateff, $transstatus, $manid) {
+        $this->prepare("UPDATE reversalcasinobal SET Status = ?, ActualAmount = ?, 
+                        TransactionID = ?, DateEffective = ?, TransactionStatus = ? 
+                        WHERE ReversalCasinoID = ?");
+        $this->bindparameter(1, $status);
+        $this->bindparameter(2, $actualamount);
+        $this->bindparameter(3, $transid);
+        $this->bindparameter(4, $dateff);
+        $this->bindparameter(5, $transstatus);
+        $this->bindparameter(6, $manid);
+        $this->execute();
+        return $manid;
+    }
+
+    function updateReversalFailed($status, $manid) {
+        $this->prepare("UPDATE reversalcasinobal SET Status = ? WHERE ReversalCasinoID = ?");
+        $this->bindparameter(1, $status);
+        $this->bindparameter(2, $manid);
+        $this->execute();
+        return $this->rowCount();
+    }
  }
 ?>
