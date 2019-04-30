@@ -71,7 +71,7 @@ class CommonUBStartSessionWithdrawAll {
                 $alias = $refServicesModel->getAliasById($service_id);
                 $message = 'Error: Only one active session for ' . $alias . ' casino is allowed for this card.';
             } else {
-                $message = 'Error: Please inform customer service for manual redemption.';
+                $message = 'Error: Please inform customer service for reversal of casino balance.';
             }
 
             logger($message . ' TerminalID=' . $terminal_id . ' ServiceID=' . $service_id);
@@ -287,7 +287,7 @@ class CommonUBStartSessionWithdrawAll {
                 CasinoApi::throwError($message);
             }
 
-            $updateActiveServiceID = $terminalSessionsModel->updateActiveServiceIDByTerminalID($terminal_id, $service_id, 1);
+            $updateActiveServiceID = $terminalSessionsModel->updateActiveServiceIDByTerminalID($terminal_id, $service_id, 1, 1);
 
             if (!$updateActiveServiceID) {
                 $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
@@ -318,4 +318,3 @@ class CommonUBStartSessionWithdrawAll {
     }
 
 }
-
