@@ -71,6 +71,7 @@ class MzapiController extends Controller {
         $terminalServices = new TerminalServices();
         $memberServicesModel = new MemberServicesModel();
         $terminalsModel = new TerminalsModel();
+        $LPErrorLogsModel = new LpErrorLogsModel();
 
         $TerminalCode = trim(htmlentities($request['TerminalCode']));
         $NewServiceID = trim(htmlentities($request['ServiceID']));
@@ -114,6 +115,7 @@ class MzapiController extends Controller {
 
                             $appLogger->log($appLogger->logdate, "[response]", $transMsg);
 
+                            $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                             $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                             $this->_sendResponse(200, $data);
                         }
@@ -129,6 +131,7 @@ class MzapiController extends Controller {
                                 $errCode = 48;
                                 $transMsg = '[ERROR #048] Failed to get terminalservices detials';
 
+                                $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                 $appLogger->log($appLogger->logdate, "[response]", $transMsg);
 
                                 $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
@@ -146,6 +149,7 @@ class MzapiController extends Controller {
                                 $errCode = 47;
                                 $transMsg = '[ERROR #047] Failed to get memberservices details';
 
+                                $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                 $appLogger->log($appLogger->logdate, "[response]", $transMsg);
 
                                 $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
@@ -161,6 +165,7 @@ class MzapiController extends Controller {
                             $errCode = 46;
                             $transMsg = '[ERROR #046] Failed to get Service details';
 
+                            $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                             $appLogger->log($appLogger->logdate, "[response]", $transMsg);
 
                             $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
@@ -178,7 +183,7 @@ class MzapiController extends Controller {
                                 $ServiceGroupCurrentProvider = $getServiceGrpNameByIdCurrentProvider['ServiceGroupName'];
 
                                 //Get Balance to Current Provider
-                                $CurrentProviderBalance = $this->_getBalance($ActiveServiceID, $UBServiceLogin, $UBServicePassword, $ServiceGroupCurrentProvider);
+                                $CurrentProviderBalance = $this->_getBalance($ActiveServiceID, $UBServiceLogin, $UBServicePassword, $ServiceGroupCurrentProvider, $MID, $CardNumber, $TerminalID);
 
                                 if (is_numeric($CurrentProviderBalance)) {
 
@@ -186,6 +191,7 @@ class MzapiController extends Controller {
                                         $errCode = 45;
                                         $transMsg = '[ERROR #045] Transfer amount has exceeded the maximum deposit amount.';
 
+                                        $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                         $appLogger->log($appLogger->logdate, "[response]", $transMsg);
 
                                         $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
@@ -196,6 +202,7 @@ class MzapiController extends Controller {
                                     $errCode = 44;
                                     $transMsg = '[ERROR #044] Failed to get balance from current provider';
 
+                                    $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                     $appLogger->log($appLogger->logdate, "[response]", $transMsg);
 
                                     $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
@@ -206,6 +213,7 @@ class MzapiController extends Controller {
                                 $errCode = 43;
                                 $transMsg = '[ERROR #043] Failed to get service group name';
 
+                                $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                 $appLogger->log($appLogger->logdate, "[response]", $transMsg);
 
                                 $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
@@ -215,7 +223,7 @@ class MzapiController extends Controller {
                         }
 
                         //Get Current Balance
-                        $NewProviderBalance = $this->_getBalance($NewServiceID, $NewUBServiceLogin, $NewUBServicePassword, $ServiceGroupNewProvider);
+                        $NewProviderBalance = $this->_getBalance($NewServiceID, $NewUBServiceLogin, $NewUBServicePassword, $ServiceGroupNewProvider, $MID, $CardNumber, $TerminalID);
 
                         if (is_numeric($NewProviderBalance)) {
 
@@ -234,6 +242,10 @@ class MzapiController extends Controller {
                                     if ($ServiceGroupCurrentProvider == "RTG" || $ServiceGroupCurrentProvider == "RTG2") {
                                         $GetPendingGames = $RTGApiWrapper->getPendingGamesRTG($UBServiceLogin, $ActiveServiceID);
                                         $PendingGame = $GetPendingGames;
+
+                                        $requestBody = array("UBServiceLogin" => $NewUBServiceLogin, "ServiceID" => $ActiveServiceID);
+                                        $request = json_encode($requestBody);
+                                        $response = json_encode($GetPendingGames);
                                     }
 
                                     if ($ServiceGroupCurrentProvider == "HAB") {
@@ -246,6 +258,10 @@ class MzapiController extends Controller {
                                                 $PendingGame['PendingGames']['GetPendingGamesByPIDResult']['Gamename'] = $pendingGames['TransactionInfo'][0]['GameName'];
                                             }
                                         }
+
+                                        $requestBody = array("ActiveServiceID" => $ActiveServiceID, "UBServiceLogin" => $UBServiceLogin, "UBServicePassword" => $UBServicePassword);
+                                        $request = json_encode($requestBody);
+                                        $response = json_encode($GetPendingGames);
                                     }
 
                                     //Check if has Pending Games
@@ -253,6 +269,7 @@ class MzapiController extends Controller {
                                         $errCode = 42;
                                         $transMsg = '[ERROR #042] There was a pending game bet';
 
+                                        $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, $request, $response);
                                         $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                         $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                                         $this->_sendResponse(200, $data);
@@ -268,6 +285,7 @@ class MzapiController extends Controller {
                                         $errCode = 41;
                                         $transMsg = '[ERROR #041.2] There is already a pending launchpad transfer transaction for this account. Please contact customer service';
 
+                                        $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                         $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                         $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                                         $this->_sendResponse(200, $data);
@@ -276,7 +294,7 @@ class MzapiController extends Controller {
 
 
                                     //Get Balance to Current Provider
-                                    $CurrentProviderBalance = $this->_getBalance($ActiveServiceID, $UBServiceLogin, $UBServicePassword, $ServiceGroupCurrentProvider);
+                                    $CurrentProviderBalance = $this->_getBalance($ActiveServiceID, $UBServiceLogin, $UBServicePassword, $ServiceGroupCurrentProvider, $MID, $CardNumber, $TerminalID);
 
                                     $hundredKchecking = Yii::app()->params['hundredKchecking'];
 
@@ -285,6 +303,18 @@ class MzapiController extends Controller {
                                             $errCode = 40;
                                             $transMsg = '[ERROR #040] You are not allowed to transfer amount greater than 100K to this casino';
 
+                                            $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
+                                            $appLogger->log($appLogger->logdate, "[response]", $transMsg);
+                                            $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
+                                            $this->_sendResponse(200, $data);
+                                            exit;
+                                        }
+
+                                        if ($ServiceGroupCurrentProvider == 'RTG' || $ServiceGroupCurrentProvider == 'RTG2' && $CurrentProviderBalance >= 999999) {
+                                            $errCode = 40;
+                                            $transMsg = '[ERROR #040.1] You are not allowed to transfer amount greater than or equal to 1 Million from this casino';
+
+                                            $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                             $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                             $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                                             $this->_sendResponse(200, $data);
@@ -342,6 +372,7 @@ class MzapiController extends Controller {
                                                             $errCode = 39;
                                                             $transMsg = '[ERROR #039] Failed to update terminalsessions';
 
+                                                            $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                                             $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                                             $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                                                             $this->_sendResponse(200, $data);
@@ -351,6 +382,7 @@ class MzapiController extends Controller {
                                                         $errCode = 38;
                                                         $transMsg = '[ERROR #038] Failed to insert mztransactiontransfer';
 
+                                                        $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                                         $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                                         $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                                                         $this->_sendResponse(200, $data);
@@ -380,7 +412,7 @@ class MzapiController extends Controller {
                                                         $transtype = 'MZW';
 
                                                         //CALL WITHDRAW API TO CURRENT PROVIDER
-                                                        $WithdrawToCurrentProvider = $this->_withdraw($MzTransactionTransferID, $ActiveServiceID, $UBServiceLogin, $UBServicePassword, $CurrentProviderBalance, $TerminalID, $TerminalCode, $ServiceGroupCurrentProvider, $transtype);
+                                                        $WithdrawToCurrentProvider = $this->_withdraw($MzTransactionTransferID, $ActiveServiceID, $UBServiceLogin, $UBServicePassword, $CurrentProviderBalance, $TerminalID, $TerminalCode, $ServiceGroupCurrentProvider, $transtype, $MID, $CardNumber);
 
 
                                                         if (!empty($WithdrawToCurrentProvider) && $WithdrawToCurrentProvider['IsSuccess'] == true) {
@@ -402,7 +434,7 @@ class MzapiController extends Controller {
                                                                 if ($updateMzTransactionTransfer) {
 
                                                                     //get balance to current provider
-                                                                    $BalancetoCurrentProvider = $this->_getBalance($ActiveServiceID, $UBServiceLogin, $UBServicePassword, $ServiceGroupCurrentProvider);
+                                                                    $BalancetoCurrentProvider = $this->_getBalance($ActiveServiceID, $UBServiceLogin, $UBServicePassword, $ServiceGroupCurrentProvider, $MID, $CardNumber, $TerminalID);
 
                                                                     //if balance is == 0
                                                                     if (is_numeric($BalancetoCurrentProvider)) {
@@ -423,7 +455,7 @@ class MzapiController extends Controller {
                                                                                 $transtype = 'MZD';
 
                                                                                 //DEPOSIT TO NEW PROVIDER
-                                                                                $DepositToNewProvider = $this->_deposit($MzTransactionTransferID, $NewServiceID, $NewUBServiceLogin, $NewUBServicePassword, $CurrentProviderBalance, $TerminalID, $TerminalCode, $ServiceGroupNewProvider, $transtype);
+                                                                                $DepositToNewProvider = $this->_deposit($MzTransactionTransferID, $NewServiceID, $NewUBServiceLogin, $NewUBServicePassword, $CurrentProviderBalance, $TerminalID, $TerminalCode, $ServiceGroupNewProvider, $transtype, $MID, $CardNumber);
 
 
 
@@ -442,7 +474,7 @@ class MzapiController extends Controller {
                                                                                     if ($updateMzTransactionTransfer) {
 
                                                                                         //Get Balance to new provider
-                                                                                        $BalancetoNewProvider = $this->_getBalance($NewServiceID, $NewUBServiceLogin, $NewUBServicePassword, $ServiceGroupNewProvider);
+                                                                                        $BalancetoNewProvider = $this->_getBalance($NewServiceID, $NewUBServiceLogin, $NewUBServicePassword, $ServiceGroupNewProvider, $MID, $CardNumber, $TerminalID);
 
 
                                                                                         if (is_numeric($BalancetoNewProvider)) {
@@ -460,7 +492,7 @@ class MzapiController extends Controller {
                                                                                                     $updateMember = $membersModel->updateMembers($NewServiceID, $MID);
 
                                                                                                     $errCode = 0;
-                                                                                                    $transMsg = 'Successful';
+                                                                                                    $transMsg = 'Successful Wallet Transfer';
 
                                                                                                     $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                                                                                     $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
@@ -470,6 +502,7 @@ class MzapiController extends Controller {
                                                                                                     $errCode = 37;
                                                                                                     $transMsg = '[ERROR #037] Failed to update terminalsessions';
 
+                                                                                                    $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                                                                                     $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                                                                                     $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                                                                                                     $this->_sendResponse(200, $data);
@@ -493,6 +526,7 @@ class MzapiController extends Controller {
                                                                                                     $errCode = 35;
                                                                                                     $transMsg = '[ERROR #035] Failed to update mztransactiontransfer';
 
+                                                                                                    $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                                                                                     $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                                                                                     $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                                                                                                     $this->_sendResponse(200, $data);
@@ -502,7 +536,7 @@ class MzapiController extends Controller {
                                                                                         } else {
 
                                                                                             //Get Balance to new provider
-                                                                                            $BalancetoNewProvider = $this->_getBalance($NewServiceID, $NewUBServiceLogin, $NewUBServicePassword, $ServiceGroupNewProvider);
+                                                                                            $BalancetoNewProvider = $this->_getBalance($NewServiceID, $NewUBServiceLogin, $NewUBServicePassword, $ServiceGroupNewProvider, $MID, $CardNumber, $TerminalID);
 
 
                                                                                             if (is_numeric($BalancetoNewProvider)) {
@@ -520,7 +554,7 @@ class MzapiController extends Controller {
                                                                                                         $updateMember = $membersModel->updateMembers($NewServiceID, $MID);
 
                                                                                                         $errCode = 0;
-                                                                                                        $transMsg = 'Successful';
+                                                                                                        $transMsg = 'Successful Wallet Transfer';
 
                                                                                                         $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                                                                                         $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
@@ -530,6 +564,7 @@ class MzapiController extends Controller {
                                                                                                         $errCode = 37;
                                                                                                         $transMsg = '[ERROR #037] Failed to update terminalsessions';
 
+                                                                                                        $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                                                                                         $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                                                                                         $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                                                                                                         $this->_sendResponse(200, $data);
@@ -545,6 +580,7 @@ class MzapiController extends Controller {
                                                                                                         $errCode = 36;
                                                                                                         $transMsg = '[ERROR #036] Transferred balance does not match the previous balance.';
 
+                                                                                                        $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                                                                                         $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                                                                                         $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                                                                                                         $this->_sendResponse(200, $data);
@@ -553,6 +589,7 @@ class MzapiController extends Controller {
                                                                                                         $errCode = 35;
                                                                                                         $transMsg = '[ERROR #035] Failed to update mztransactiontransfer';
 
+                                                                                                        $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                                                                                         $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                                                                                         $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                                                                                                         $this->_sendResponse(200, $data);
@@ -563,6 +600,7 @@ class MzapiController extends Controller {
                                                                                                 $errCode = 34;
                                                                                                 $transMsg = '[ERROR #034] Failed to get balance from new provider';
 
+                                                                                                $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                                                                                 $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                                                                                 $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                                                                                                 $this->_sendResponse(200, $data);
@@ -573,6 +611,7 @@ class MzapiController extends Controller {
                                                                                         $errCode = 33;
                                                                                         $transMsg = '[ERROR #033] Failed to update mztransactiontransfer';
 
+                                                                                        $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                                                                         $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                                                                         $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                                                                                         $this->_sendResponse(200, $data);
@@ -611,7 +650,7 @@ class MzapiController extends Controller {
                                                                                             $TransferID = $MzTransactionTransferID;
 
                                                                                             //get balance to current provider
-                                                                                            $BalancetoCurrentProvider = $this->_getBalance($ActiveServiceID, $UBServiceLogin, $UBServicePassword, $ServiceGroupCurrentProvider);
+                                                                                            $BalancetoCurrentProvider = $this->_getBalance($ActiveServiceID, $UBServiceLogin, $UBServicePassword, $ServiceGroupCurrentProvider, $MID, $CardNumber, $TerminalID);
 
 
                                                                                             if (is_numeric($BalancetoCurrentProvider)) {
@@ -620,7 +659,7 @@ class MzapiController extends Controller {
                                                                                                     $transtype = 'MZRD';
 
                                                                                                     //CALL API RE-DEPOSIT
-                                                                                                    $DepositToNewProvider = $this->_deposit($MzTransactionTransferID, $ActiveServiceID, $UBServiceLogin, $UBServicePassword, $WithdrawToCurrentProvider['WithdrawnAmount'], $TerminalID, $TerminalCode, $ServiceGroupCurrentProvider, $transtype);
+                                                                                                    $DepositToNewProvider = $this->_deposit($MzTransactionTransferID, $ActiveServiceID, $UBServiceLogin, $UBServicePassword, $WithdrawToCurrentProvider['WithdrawnAmount'], $TerminalID, $TerminalCode, $ServiceGroupCurrentProvider, $transtype, $MID, $CardNumber);
 
                                                                                                     if (!empty($DepositToNewProvider) && $DepositToNewProvider['IsSuccess'] == true) {
 
@@ -640,7 +679,7 @@ class MzapiController extends Controller {
                                                                                                         if ($updateMzTransactionTransfer) {
 
                                                                                                             //get balance to current provider
-                                                                                                            $BalancetoCurrentProvider = $this->_getBalance($ActiveServiceID, $UBServiceLogin, $UBServicePassword, $ServiceGroupCurrentProvider);
+                                                                                                            $BalancetoCurrentProvider = $this->_getBalance($ActiveServiceID, $UBServiceLogin, $UBServicePassword, $ServiceGroupCurrentProvider, $MID, $CardNumber, $TerminalID);
                                                                                                             if (is_numeric($BalancetoCurrentProvider)) {
 
                                                                                                                 if ($BalancetoCurrentProvider == $WithdrawToCurrentProvider['WithdrawnAmount']) {
@@ -664,6 +703,7 @@ class MzapiController extends Controller {
                                                                                                                         $errCode = 32;
                                                                                                                         $transMsg = '[ERROR #032] Failed to update terminalsessions';
 
+                                                                                                                        $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                                                                                                         $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                                                                                                         $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                                                                                                                         $this->_sendResponse(200, $data);
@@ -680,6 +720,7 @@ class MzapiController extends Controller {
                                                                                                                         $errCode = 31;
                                                                                                                         $transMsg = '[ERROR #031] Re-Deposit amount is not equal to withdrawn amount';
 
+                                                                                                                        $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                                                                                                         $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                                                                                                         $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                                                                                                                         $this->_sendResponse(200, $data);
@@ -687,7 +728,7 @@ class MzapiController extends Controller {
                                                                                                                     } else {
                                                                                                                         $errCode = 30;
                                                                                                                         $transMsg = '[ERROR #030] Failed to update mztransactiontransfer';
-
+                                                                                                                        $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                                                                                                         $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                                                                                                         $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                                                                                                                         $this->_sendResponse(200, $data);
@@ -698,6 +739,7 @@ class MzapiController extends Controller {
                                                                                                                 $errCode = 29;
                                                                                                                 $transMsg = '[ERROR #029] Failed to get balance from current provide';
 
+                                                                                                                $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                                                                                                 $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                                                                                                 $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                                                                                                                 $this->_sendResponse(200, $data);
@@ -707,6 +749,7 @@ class MzapiController extends Controller {
                                                                                                             $errCode = 28;
                                                                                                             $transMsg = '[ERROR #028] Failed to update mztransactiontransfer';
 
+                                                                                                            $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                                                                                             $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                                                                                             $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                                                                                                             $this->_sendResponse(200, $data);
@@ -729,6 +772,7 @@ class MzapiController extends Controller {
                                                                                                             $errCode = 27;
                                                                                                             $transMsg = '[ERROR #027] Failed Re-Deposit';
 
+                                                                                                            $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                                                                                             $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                                                                                             $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                                                                                                             $this->_sendResponse(200, $data);
@@ -737,6 +781,7 @@ class MzapiController extends Controller {
                                                                                                             $errCode = 26;
                                                                                                             $transMsg = '[ERROR #026] Failed to update mztransactiontransfer';
 
+                                                                                                            $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                                                                                             $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                                                                                             $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                                                                                                             $this->_sendResponse(200, $data);
@@ -755,6 +800,7 @@ class MzapiController extends Controller {
                                                                                                         $errCode = 25;
                                                                                                         $transMsg = '[ERROR #025] Unable to perform re-deposit transaction. Balance of casino is not zero.';
 
+                                                                                                        $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                                                                                         $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                                                                                         $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                                                                                                         $this->_sendResponse(200, $data);
@@ -763,6 +809,7 @@ class MzapiController extends Controller {
                                                                                                         $errCode = 24;
                                                                                                         $transMsg = '[ERROR #024] Failed to update mztransactiontransfer';
 
+                                                                                                        $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                                                                                         $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                                                                                         $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                                                                                                         $this->_sendResponse(200, $data);
@@ -772,7 +819,7 @@ class MzapiController extends Controller {
                                                                                             } else {
                                                                                                 $errCode = 23;
                                                                                                 $transMsg = '[ERROR #023] Failed to get balance from current provider';
-
+                                                                                                $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                                                                                 $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                                                                                 $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                                                                                                 $this->_sendResponse(200, $data);
@@ -782,6 +829,7 @@ class MzapiController extends Controller {
                                                                                             $errCode = 22;
                                                                                             $transMsg = '[ERROR #022] Failed to insert mztransactiontransfer';
 
+                                                                                            $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                                                                             $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                                                                             $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                                                                                             $this->_sendResponse(200, $data);
@@ -791,6 +839,7 @@ class MzapiController extends Controller {
                                                                                         $errCode = 21;
                                                                                         $transMsg = '[ERROR #021] Failed to update mztransactiontransfer';
 
+                                                                                        $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                                                                         $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                                                                         $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                                                                                         $this->_sendResponse(200, $data);
@@ -799,6 +848,7 @@ class MzapiController extends Controller {
                                                                                     $errCode = 20;
                                                                                     $transMsg = '[ERROR #020] Failed to deposit to new provider';
 
+                                                                                    $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                                                                     $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                                                                     $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                                                                                     $this->_sendResponse(200, $data);
@@ -808,6 +858,7 @@ class MzapiController extends Controller {
                                                                                 $errCode = 19;
                                                                                 $transMsg = '[ERROR #019] Failed to update mztransactiontransfer';
 
+                                                                                $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                                                                 $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                                                                 $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                                                                                 $this->_sendResponse(200, $data);
@@ -824,6 +875,7 @@ class MzapiController extends Controller {
                                                                                 $errCode = 18;
                                                                                 $transMsg = '[ERROR #018] Previous provider balance is not zero';
 
+                                                                                $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                                                                 $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                                                                 $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                                                                                 $this->_sendResponse(200, $data);
@@ -832,6 +884,7 @@ class MzapiController extends Controller {
                                                                                 $errCode = 17;
                                                                                 $transMsg = '[ERROR #017] Failed to update mztransactiontransfer';
 
+                                                                                $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                                                                 $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                                                                 $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                                                                                 $this->_sendResponse(200, $data);
@@ -842,6 +895,7 @@ class MzapiController extends Controller {
                                                                         $errCode = 16;
                                                                         $transMsg = '[ERROR #016] Failed to get balance from current provider';
 
+                                                                        $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                                                         $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                                                         $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                                                                         $this->_sendResponse(200, $data);
@@ -851,6 +905,7 @@ class MzapiController extends Controller {
                                                                     $errCode = 15;
                                                                     $transMsg = '[ERROR #015] Failed to update mztransactiontransfer';
 
+                                                                    $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                                                     $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                                                     $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                                                                     $this->_sendResponse(200, $data);
@@ -860,6 +915,7 @@ class MzapiController extends Controller {
                                                                 $errCode = 14;
                                                                 $transMsg = '[ERROR #014] Failed to get TrasnferID';
 
+                                                                $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                                                 $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                                                 $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                                                                 $this->_sendResponse(200, $data);
@@ -895,6 +951,7 @@ class MzapiController extends Controller {
                                                                     $errCode = 12;
                                                                     $transMsg = '[ERROR #012] Failed to update terminalsessions';
 
+                                                                    $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                                                     $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                                                     $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                                                                     $this->_sendResponse(200, $data);
@@ -904,6 +961,7 @@ class MzapiController extends Controller {
                                                                 $errCode = 11;
                                                                 $transMsg = '[ERROR #011] Failed to update mztransactiontransfer';
 
+                                                                $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                                                 $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                                                 $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                                                                 $this->_sendResponse(200, $data);
@@ -914,6 +972,7 @@ class MzapiController extends Controller {
                                                         $errCode = 10;
                                                         $transMsg = '[ERROR #010] Failed to insert mztransactiontransfer';
 
+                                                        $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                                         $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                                         $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                                                         $this->_sendResponse(200, $data);
@@ -924,6 +983,7 @@ class MzapiController extends Controller {
                                                 $errCode = 9;
                                                 $transMsg = '[ERROR #009] Failed to update ActiveServiceStatus to ' . $ActiveServiceStatus;
 
+                                                $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                                 $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                                 $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                                                 $this->_sendResponse(200, $data);
@@ -933,6 +993,7 @@ class MzapiController extends Controller {
                                             $errCode = 8;
                                             $transMsg = '[ERROR #008.2] Transferring between casinos is currently unavailable. Please try again later';
 
+                                            $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                             $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                             $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                                             $this->_sendResponse(200, $data);
@@ -942,6 +1003,7 @@ class MzapiController extends Controller {
                                         $errCode = 7;
                                         $transMsg = '[ERROR #007] Failed to get balance from current provider';
 
+                                        $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                         $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                         $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                                         $this->_sendResponse(200, $data);
@@ -951,6 +1013,7 @@ class MzapiController extends Controller {
                                     $errCode = 6;
                                     $transMsg = '[ERROR #006] Failed to get service group name';
 
+                                    $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                     $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                     $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                                     $this->_sendResponse(200, $data);
@@ -960,6 +1023,7 @@ class MzapiController extends Controller {
                                 $errCode = 5;
                                 $transMsg = '[ERROR #005] New casino balance is not equal to zero';
 
+                                $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                 $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                                 $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                                 $this->_sendResponse(200, $data);
@@ -969,6 +1033,7 @@ class MzapiController extends Controller {
                             $errCode = 4;
                             $transMsg = '[ERROR #004] Failed to get balance from new provider';
 
+                            $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                             $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                             $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                             $this->_sendResponse(200, $data);
@@ -978,6 +1043,7 @@ class MzapiController extends Controller {
                         $errCode = 3;
                         $transMsg = '[ERROR #003] Failed to get terminal sessions details';
 
+                        $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], null, null, null, $transMsg, null, null);
                         $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                         $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                         $this->_sendResponse(200, $data);
@@ -989,11 +1055,11 @@ class MzapiController extends Controller {
                     $checkActiveServiceStatus = $terminalSessionsModel->checkActiveServiceStatus($TerminalCode);
                     $ActiveServiceStatus = $checkActiveServiceStatus['ActiveServiceStatus'];
 
-                    //if activeservicestatus == 9
                     if ($ActiveServiceStatus == 9) {
                         $errCode = 41;
                         $transMsg = '[ERROR #041.1] There is already a pending launchpad transfer transaction for this account. Please contact customer service';
 
+                        $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], null, null, null, $transMsg, null, null);
                         $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                         $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                         $this->_sendResponse(200, $data);
@@ -1002,6 +1068,7 @@ class MzapiController extends Controller {
                         $errCode = 8;
                         $transMsg = '[ERROR #008.1] Transferring between casinos is currently unavailable. Please try again later';
 
+                        $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], null, null, null, $transMsg, null, null);
                         $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                         $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                         $this->_sendResponse(200, $data);
@@ -1009,7 +1076,7 @@ class MzapiController extends Controller {
                     } else {
                         //NO TRANSFER RETURN OKAY
                         $errCode = 0;
-                        $transMsg = 'Successful';
+                        $transMsg = 'Successful No Wallet Transfer';
 
                         $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                         $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
@@ -1022,6 +1089,7 @@ class MzapiController extends Controller {
                 $errCode = 2;
                 $transMsg = '[ERROR #002] Player has no existing session';
 
+                $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], null, null, null, $transMsg, null, null);
                 $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                 $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                 $this->_sendResponse(200, $data);
@@ -1039,6 +1107,7 @@ class MzapiController extends Controller {
                 $transMsg = '[ERROR #001] TerminalCode must not be blank';
             }
 
+            $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], null, null, null, $transMsg, null, null);
             $appLogger->log($appLogger->logdate, "[response]", $transMsg);
             $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
             $this->_sendResponse(200, $data);
@@ -1048,23 +1117,29 @@ class MzapiController extends Controller {
         CLoggerModified::log($message, CLoggerModified::RESPONSE);
     }
 
-   
-    
-    private function _getBalance($ServiceID, $UBServiceLogin, $UBServicePassword, $ServiceGroup) {
+    private function _getBalance($ServiceID, $UBServiceLogin, $UBServicePassword, $ServiceGroup, $MID, $CardNumber, $TerminalID) {
 
         $appLogger = new AppLogger();
+        $LPErrorLogsModel = new LpErrorLogsModel();
         Yii::import('application.components.CasinoController');
         $RTGApiWrapper = new RealtimeGamingAPIWrapper();
         $HabaneroApiWrapper = new HabaneroAPIWrapper(Yii::app()->params->cashierapi[$ServiceID - 1], Yii::app()->params['HB_APIkey'], Yii::app()->params['HB_BrandID']);
 
         if ($ServiceGroup == "RTG" || $ServiceGroup == "RTG2") {
             $GetBalance = $RTGApiWrapper->GetBalance($ServiceID, $UBServiceLogin);
+
+
+            $requestBody = array("ServiceID" => $ServiceID, "UBServiceLogin" => $UBServiceLogin);
+            $request = json_encode($requestBody);
+            $response = json_encode($GetBalance);
+
             if (!empty($GetBalance)) {
                 $Balance = $GetBalance['balance'];
             } else {
                 $errCode = 51;
                 $transMsg = '[ERROR #051] Can\'t get balance RTG.';
 
+                $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, $request, $response);
                 $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                 $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                 $this->_sendResponse(200, $data);
@@ -1076,12 +1151,30 @@ class MzapiController extends Controller {
             $HabaneroApiWrapper = new HabaneroAPIWrapper(Yii::app()->params->cashierapi[$ServiceID - 1], Yii::app()->params['HB_APIkey'], Yii::app()->params['HB_BrandID']);
             $GetBalance = $HabaneroApiWrapper->GetBalance($UBServiceLogin, $UBServicePassword);
 
+            $requestBody = array("ServiceID" => $ServiceID, "UBServiceLogin" => $UBServiceLogin, "UBServicePassword" => $UBServicePassword);
+            $request = json_encode($requestBody);
+            $response = json_encode($GetBalance);
+
+
             if (!empty($GetBalance)) {
-                $Balance = $GetBalance['TransactionInfo']['RealBalance'];
+                if ($GetBalance['IsSucceed'] == false) {
+                    $errCode = 51;
+                    $transMsg = '[ERROR #051] Can\'t get balance Habanero.';
+
+                    $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, $request, $response);
+
+                    $appLogger->log($appLogger->logdate, "[response]", $transMsg);
+                    $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
+                    $this->_sendResponse(200, $data);
+                    exit;
+                } else {
+                    $Balance = $GetBalance['TransactionInfo']['RealBalance'];
+                }
             } else {
                 $errCode = 51;
                 $transMsg = '[ERROR #051] Can\'t get balance Habanero.';
 
+                $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, $request, $response);
                 $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                 $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                 $this->_sendResponse(200, $data);
@@ -1092,9 +1185,10 @@ class MzapiController extends Controller {
         return $Balance;
     }
 
-    private function _deposit($MzTransactionTransferID, $ActiveServiceID, $UBServiceLogin, $UBServicePassword, $CurrentProviderBalance, $TerminalID, $TerminalCode, $ServiceGroup, $transtype) {
+    private function _deposit($MzTransactionTransferID, $ActiveServiceID, $UBServiceLogin, $UBServicePassword, $CurrentProviderBalance, $TerminalID, $TerminalCode, $ServiceGroup, $transtype, $MID, $CardNumber) {
 
         $appLogger = new AppLogger();
+        $LPErrorLogsModel = new LpErrorLogsModel();
         Yii::import('application.components.CasinoController');
         $RTGApiWrapper = new RealtimeGamingAPIWrapper();
         $HabaneroApiWrapper = new HabaneroAPIWrapper(Yii::app()->params->cashierapi[$ActiveServiceID - 1], Yii::app()->params['HB_APIkey'], Yii::app()->params['HB_BrandID']);
@@ -1106,10 +1200,18 @@ class MzapiController extends Controller {
 
         if ($ServiceGroup == 'RTG' || $ServiceGroup == 'RTG2') {
             $DepositToNewProvider = $RTGApiWrapper->Deposit($ActiveServiceID, $UBServiceLogin, $UBServicePassword, 1, $CurrentProviderBalance, $tracking1, $tracking2, $tracking3, $tracking4, null);
+
+            $requestBody = array("ActiveServiceID" => $ActiveServiceID, "UBServiceLogin" => $UBServiceLogin, "UBServicePassword" => $UBServicePassword, "CasinoID" => 1, "CurrentProviderBalance" => $CurrentProviderBalance, 'Tracking1' => $tracking1, 'Tracking2' => $tracking12, 'Tracking3' => $tracking3, 'Tracking4' => $tracking4, "LocatorName" => null);
+            $request = json_encode($requestBody);
+            $response = json_encode($DepositToNewProvider);
         }
 
         if ($ServiceGroup == 'HAB') {
             $DepositToNewProvider = $HabaneroApiWrapper->Deposit($UBServiceLogin, $UBServicePassword, $CurrentProviderBalance, $tracking1);
+
+            $requestBody = array("ActiveServiceID" => $ActiveServiceID, "UBServiceLogin" => $UBServiceLogin, "UBServicePassword" => $UBServicePassword, "CurrentProviderBalance" => $CurrentProviderBalance, 'Tracking1' => $tracking1);
+            $request = json_encode($requestBody);
+            $response = json_encode($DepositToNewProvider);
         }
 
         if (is_null($DepositToNewProvider)) {
@@ -1159,6 +1261,7 @@ class MzapiController extends Controller {
             $errCode = 52;
             $transMsg = '[ERROR #052] Error in Deposit';
 
+            $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, $request, $response);
             $appLogger->log($appLogger->logdate, "[response]", $transMsg);
             $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
             $this->_sendResponse(200, $data);
@@ -1178,15 +1281,18 @@ class MzapiController extends Controller {
                 $array['Status'] = $apiresult;
                 $array['IsSuccess'] = false;
 
+                $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, $request, $response);
+
                 $result = $array;
             }
         }
         return $result;
     }
 
-    private function _withdraw($MzTransactionTransferID, $ActiveServiceID, $UBServiceLogin, $UBServicePassword, $CurrentProviderBalance, $TerminalID, $TerminalCode, $ServiceGroup, $transtype) {
+    private function _withdraw($MzTransactionTransferID, $ActiveServiceID, $UBServiceLogin, $UBServicePassword, $CurrentProviderBalance, $TerminalID, $TerminalCode, $ServiceGroup, $transtype, $MID, $CardNumber) {
 
         $appLogger = new AppLogger();
+        $LPErrorLogsModel = new LpErrorLogsModel();
         Yii::import('application.components.CasinoController');
         $RTGApiWrapper = new RealtimeGamingAPIWrapper();
         $HabaneroApiWrapper = new HabaneroAPIWrapper(Yii::app()->params->cashierapi[$ActiveServiceID - 1], Yii::app()->params['HB_APIkey'], Yii::app()->params['HB_BrandID']);
@@ -1198,10 +1304,18 @@ class MzapiController extends Controller {
 
         if ($ServiceGroup == 'RTG' || $ServiceGroup == 'RTG2') {
             $WithdrawToCurrentProvider = $RTGApiWrapper->Withdraw($ActiveServiceID, $UBServiceLogin, $UBServicePassword, 1, $CurrentProviderBalance, $tracking1, $tracking2, $tracking3, $tracking4);
+
+            $requestBody = array("ActiveServiceID" => $ActiveServiceID, "UBServiceLogin" => $UBServiceLogin, "UBServicePassword" => $UBServicePassword, "CurrentProviderBalance" => $CurrentProviderBalance, 'Tracking1' => $tracking1, 'Tracking2' => $tracking12, 'Tracking3' => $tracking3, 'Tracking4' => $tracking4);
+            $request = json_encode($requestBody);
+            $response = json_encode($WithdrawToCurrentProvider);
         }
 
         if ($ServiceGroup == 'HAB') {
             $WithdrawToCurrentProvider = $HabaneroApiWrapper->Withdraw($UBServiceLogin, $UBServicePassword, $CurrentProviderBalance, $tracking1);
+
+            $requestBody = array("ActiveServiceID" => $ActiveServiceID, "UBServiceLogin" => $UBServiceLogin, "UBServicePassword" => $UBServicePassword, "CurrentProviderBalance" => $CurrentProviderBalance, 'Tracking1' => $tracking1);
+            $request = json_encode($requestBody);
+            $response = json_encode($WithdrawToCurrentProvider);
         }
 
         if (is_null($WithdrawToCurrentProvider)) {
@@ -1250,6 +1364,7 @@ class MzapiController extends Controller {
             $errCode = 53;
             $transMsg = '[ERROR #053] Error in Withdrawal';
 
+            $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, $request, $response);
             $appLogger->log($appLogger->logdate, "[response]", $transMsg);
             $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
             $this->_sendResponse(200, $data);
@@ -1268,14 +1383,14 @@ class MzapiController extends Controller {
                 $array['Status'] = $apiresult;
                 $array['IsSuccess'] = false;
 
+                $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, $request, $response);
+
                 $result = $array;
             }
         }
         return $result;
     }
-    
-    
-    
+
     private function _readJsonRequest() {
 
 //read the post input (use this technique if you have no post variable name):
