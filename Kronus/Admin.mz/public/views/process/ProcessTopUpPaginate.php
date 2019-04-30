@@ -9,6 +9,55 @@ include 'BaseProcess.php';
 
 class ProcessTopUpPaginate extends BaseProcess 
 {
+    // ADDED CCT 04/30/2019 BEGIN
+    public function reversalCasinoBal() 
+    {
+        $this->render('topup/topup_reversal_casino_balance');
+    }
+    
+    //pagination: Reversal of Casino Balance Details
+    public function getReversalCasinoBal() 
+    {
+        include_once __DIR__.'/../sys/class/TopUp.class.php';
+        $topup = new TopUp($this->getConnection());
+        $topup->open(); 
+        $startdate = date('Y-m-d');
+        if(isset($_GET['startdate']))
+            $startdate = $_GET['startdate'];
+
+        $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startdate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff; 
+        if(isset($_GET['enddate']))
+            $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($_GET['enddate'])) .BaseProcess::$gaddeddate));
+                
+        $startdate .= " ".BaseProcess::$cutoff;
+        $total_row = $topup->getReversalCasinoTotal($startdate, $enddate);
+        $params = $this->getJqgrid($total_row, 'st.SiteCode'); //get jqgrid pagination parameters
+        // get manual redemption history details
+        $rows = $topup->getReversalCasinoBalance($params['sort'], $params['dir'], $params['start'], $params['limit'],$startdate,$enddate);
+        $jqgrid = $params['jqgrid'];
+        foreach($rows as $row) 
+        {
+            $jqgrid->rows[] = array('id'=>$row['ReversalCasinoID'],'cell'=>array(
+                substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
+                $row['SiteName'], 
+                $row['POSAccountNo'],
+                $row['TerminalCode'] != NULL ? substr($row['TerminalCode'], strlen($row['SiteCode'])) : "N/A",
+                number_format($row['ActualAmount'],2),
+                $row['Name'],
+                $row['TransDate'],
+                $row['TicketID'],
+                $row['Remarks'],
+                $this->redemptionstatus($row['Status']),
+                $row["ServiceName"]
+            ));
+        }        
+        echo json_encode($jqgrid);
+        $topup->close();
+        unset($startdate, $enddate, $total_row, $params, $rows, $jqgrid);
+        exit;
+    }    
+    // ADDED CCT 04/30/2019 END
+
     // ADDED CCT 02/12/2018 BEGIN
     public function grossHoldBalancePAGCOROverview() 
     {
@@ -1516,7 +1565,10 @@ class ProcessTopUpPaginate extends BaseProcess
                 $row['SiteName'], 
                 $row['POSAccountNo'],
                 $row['TerminalCode'] != NULL ? substr($row['TerminalCode'], strlen($row['SiteCode'])) : "N/A",
-                number_format($row['ReportedAmount'],2),
+                // EDITED CCT 04/30/2019 BEGIN
+                //number_format($row['ReportedAmount'],2),
+                number_format($row['ActualAmount'],2),
+                // EDITED CCT 04/30/2019 END
                 $row['Name'],
                 $row['TransDate'],
                 $row['TicketID'],

@@ -12,6 +12,107 @@ include_once 'BaseProcess.php';
 
 class ProcessTopUpGenerateReports extends BaseProcess
 {
+    // ADDED CCT 04/30/2019 BEGIN
+    //Reversal Casino Balance History Report (PDF)
+    public function reversalCasinoBalPdf() 
+    {
+        $topreport = new TopUpReportQuery($this->getConnection());
+        $topreport->open();
+
+        $vstartdate = date("Y-m-d");
+        if(isset($_POST['startdate']))
+            $vstartdate = $_POST['startdate'];
+        
+        $venddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($vstartdate)))." ".BaseProcess::$cutoff;
+        if(isset($_POST['enddate']))
+            $venddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($_POST['enddate'])))." ".BaseProcess::$cutoff;
+        
+        $vstartdate .= " ".BaseProcess::$cutoff;
+
+        $rows = $topreport->reversalCasinoBal($vstartdate, $venddate);
+        $pdf = CTCPDF::c_getInstance();
+        $pdf->c_commonReportFormat();
+        $pdf->c_setHeader('Reversal of Casino Balance History');
+        $pdf->html.='<di style="text-align:center;">As of ' . date('l') . ', ' .
+              date('F d, Y') . ' ' . date('h:i:s A') .'</div>';
+        $pdf->SetFontSize(5);
+        $pdf->c_tableHeader2(array(
+                array('value'=>'Site / PEGS Code'),
+                array('value'=>'Site / PEGS Name'),
+                array('value'=>'POS Account'),
+                array('value'=>'Terminal Code'),
+                array('value'=>'Actual Amount'),
+                array('value'=>'Requested By'),
+                array('value'=>'Transaction Date'),
+                array('value'=>'Ticket ID'),
+                array('value'=>'Remarks'),
+                array('value'=>'Status'),
+                array('value'=>'Service Name'),
+             ));
+        foreach($rows as $row) 
+        {
+            $pdf->c_tableRow2(array(
+                array('value'=>substr($row['SiteCode'], strlen(BaseProcess::$sitecode))),
+                array('value'=>$row['SiteName']),
+                array('value'=>$row['POSAccountNo']),
+                array('value'=>substr($row['TerminalCode'], strlen($row['SiteCode']))),
+                array('value'=>number_format($row['ActualAmount'],2),'align'=>'right'),
+                array('value'=>$row['Name']),
+                array('value'=>$row['TransDate']),
+                array('value'=>$row['TicketID']),
+                array('value'=> strtolower($row['Remarks'])), //lowers string for proper rendering on PDF
+                array('value'=>$this->redemptionstatus($row['Status'])),
+                array('value'=> $row["ServiceName"]),
+             ));
+        }
+        $pdf->c_tableEnd();
+        $pdf->c_generatePDF('reversalcasinobal.pdf');
+        $topreport->close();
+    }
+    
+    //Reversal of Casino Balance History Report (Excel)
+    public function reversalCasinoBalExcel() 
+    {
+        $_SESSION['report_header'] = array('Site / PEGS Code','Site / PEGS Name', 'POS Account','Terminal Code','Actual Amount',
+            'Requested By','Transaction Date','Ticket ID','Remarks','Status', 'Service Name');
+        $topreport = new TopUpReportQuery($this->getConnection());
+        $topreport->open();
+
+        $vstartdate = date("Y-m-d");
+        if(isset($_POST['startdate']))
+            $vstartdate = $_POST['startdate'];
+        
+        $venddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($vstartdate)))." ".BaseProcess::$cutoff;
+        if(isset($_POST['enddate']))
+            $venddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($_POST['enddate'])))." ".BaseProcess::$cutoff;
+        
+        $vstartdate .= " ".BaseProcess::$cutoff;
+
+        $rows = $topreport->reversalCasinoBal($vstartdate, $venddate);
+        $new_rows = array();
+        foreach($rows as $row) 
+        {
+            $new_rows[] = array(
+                    substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
+                    $row['SiteName'],
+                    $row['POSAccountNo'],
+                    substr($row['TerminalCode'], strlen($row['SiteCode'])),
+                    number_format($row['ActualAmount'],2),
+                    $row['Name'],
+                    $row['TransDate'],
+                    $row['TicketID'],
+                    $row['Remarks'],
+                    $this->redemptionstatus($row['Status']),
+                    $row["ServiceName"]
+                );
+        }
+        $_SESSION['report_values'] = $new_rows;
+        $_GET['fn'] = 'reversalcasinobal';
+        include 'ProcessTopUpExcel.php';        
+        $topreport->close();
+    }    
+    // ADDED CCT 04/30/2019 END
+    
     // CCT ADDED 02/19/2018 BEGIN
     //for gross hold monitoring per cut off (Excel)
     public function grossHoldCutoffExcelPAGCOR() 
@@ -746,7 +847,10 @@ class ProcessTopUpGenerateReports extends BaseProcess
                 array('value'=>'Site / PEGS Name'),
                 array('value'=>'POS Account'),
                 array('value'=>'Terminal Code'),
-                array('value'=>'Reported Amount'),
+                // EDITED CCT 04/30/2019 BEGIN
+                //array('value'=>'Reported Amount'),
+                array('value'=>'Actual Amount'),
+                // EDITED CCT 04/30/2019 END
                 array('value'=>'Requested By'),
                 array('value'=>'Transaction Date'),
                 array('value'=>'Ticket ID'),
@@ -761,7 +865,10 @@ class ProcessTopUpGenerateReports extends BaseProcess
                 array('value'=>$row['SiteName']),
                 array('value'=>$row['POSAccountNo']),
                 array('value'=>substr($row['TerminalCode'], strlen($row['SiteCode']))),
-                array('value'=>number_format($row['ReportedAmount'],2),'align'=>'right'),
+                // EDITED CCT 04/30/2019 BEGIN
+                //array('value'=>number_format($row['ReportedAmount'],2),'align'=>'right'),
+                array('value'=>number_format($row['ActualAmount'],2),'align'=>'right'),
+                // EDITED CCT 04/30/2019 END
                 array('value'=>$row['Name']),
                 array('value'=>$row['TransDate']),
                 array('value'=>$row['TicketID']),
@@ -778,7 +885,7 @@ class ProcessTopUpGenerateReports extends BaseProcess
     //Manual Redemption History Report (Excel)
     public function manualRedemptionExcel() 
     {
-        $_SESSION['report_header'] = array('Site / PEGS Code','Site / PEGS Name', 'POS Account','Terminal Code','Reported Amount',
+        $_SESSION['report_header'] = array('Site / PEGS Code','Site / PEGS Name', 'POS Account','Terminal Code','Actual Amount',
             'Requested By','Transaction Date','Ticket ID','Remarks','Status', 'Service Name');
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
@@ -802,7 +909,10 @@ class ProcessTopUpGenerateReports extends BaseProcess
                     $row['SiteName'],
                     $row['POSAccountNo'],
                     substr($row['TerminalCode'], strlen($row['SiteCode'])),
-                    number_format($row['ReportedAmount'],2),
+                    // EDITED CCT 04/30/2019 BEGIN
+                    //number_format($row['ReportedAmount'],2),
+                    number_format($row['ActualAmount'],2),
+                    // EDITED CCT 04/30/2019 END
                     $row['Name'],
                     $row['TransDate'],
                     $row['TicketID'],
@@ -2277,6 +2387,14 @@ if(!isset($_GET['action']))
 
 switch($_GET['action']) 
 {
+    // ADDED CCT 04/30/2019 BEGIN
+    case 'reversalcasinobalpdf':
+        $reports->reversalCasinoBalPdf();
+        break;
+    case 'reversalcasinobalexcel':
+        $reports->reversalCasinoBalExcel();
+        break;
+    // ADDED CCT 04/30/2019 END
     case 'confirmationpdf':
         $reports->confirmationPdf();
         break;

@@ -15,6 +15,47 @@ class TopUp extends DBHandler
     {
         parent::__construct($sconectionstring);
     }
+
+    // ADDED CCT 04/30/2019 BEGIN  
+    public function getReversalCasinoTotal($startdate,$enddate) 
+    {
+        $total_row = 0;
+        $query = "SELECT count(rcb.ReversalCasinoID) AS totalrow 
+                    FROM reversalcasinobal rcb
+                        INNER JOIN sites st ON rcb.SiteID = st.SiteID 
+                        LEFT JOIN terminals tm ON rcb.TerminalID = tm.TerminalID
+                        INNER JOIN accounts at ON rcb.ProcessedByAID = at.AID 
+                        LEFT JOIN ref_services rs ON rcb.ServiceID = rs.ServiceID 
+                    WHERE rcb.TransactionDate >= '$startdate' AND rcb.TransactionDate < '$enddate'";
+        $this->prepare($query);
+        $this->execute();
+            
+        $rows = $this->fetchAllData(); 
+        if(isset($rows[0]['totalrow'])) 
+        {
+            $total_row = $rows[0]['totalrow'];
+        }
+        unset($query, $rows);
+        return $total_row;
+    }
+    
+    public function getReversalCasinoBalance($sort, $dir, $start, $limit,$startdate,$enddate) 
+    {
+        $query = "SELECT rcb.ReversalCasinoID, rcb.ReportedAmount, rcb.ActualAmount, rcb.Remarks,
+                   rcb.Status, rcb.TransactionDate as TransDate, rcb.TicketID, rcb.TransactionID,
+                   st.SiteName, st.SiteCode, tm.TerminalCode, st.POSAccountNo, at.Name, rs.ServiceName
+                FROM reversalcasinobal rcb 
+                    INNER JOIN sites st ON rcb.SiteID = st.SiteID 
+                    LEFT JOIN terminals tm ON rcb.TerminalID = tm.TerminalID
+                    INNER JOIN accountdetails at ON rcb.ProcessedByAID = at.AID 
+                    LEFT JOIN ref_services rs ON rcb.ServiceID = rs.ServiceID
+                WHERE rcb.TransactionDate >= '$startdate' AND rcb.TransactionDate < '$enddate' 
+                ORDER BY $sort $dir LIMIT $start,$limit";
+        $this->prepare($query);
+        $this->execute();
+        return $this->fetchAllData();      
+    }    
+    // ADDED CCT 04/30/2019 END
     
     // ADDED CCT 01/14/2019 BEGIN
     // Check if UB Card has active terminal session with respective service provider

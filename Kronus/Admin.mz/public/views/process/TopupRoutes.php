@@ -4,6 +4,14 @@
 if(!isset($_GET['action'])) 
     die('Page not found');
 switch($_GET['action']) {
+    // ADDED CCT 04/30/2019 BEGIN
+    case 'tureversalcasinobal':
+        $process->reversalCasinoBal();
+        break;
+    case 'getreversalcasinobal':
+        $process->getReversalCasinoBal();
+        break;    
+    // ADDED CCT 04/30/2019 END
     case 'grossholdbalanceoverview':
         $process->grossHoldBalanceOverview();
         break;
@@ -164,4 +172,3 @@ switch($_GET['action']) {
     default :
         die('Page not found');
 }
-

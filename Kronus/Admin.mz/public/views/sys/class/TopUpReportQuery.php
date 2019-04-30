@@ -10,6 +10,25 @@ include_once "AppendArray.class.php";
 
 class TopUpReportQuery extends DBHandler
 {
+    // ADDED CCT 04/30/2019 BEGIN
+    public function reversalCasinoBal($startdate,$enddate) 
+    {
+        $query = "SELECT rcb.ReversalCasinoID, rcb.ReportedAmount, rcb.ActualAmount,
+                    rcb.Remarks, rcb.Status, rcb.TransactionDate TransDate, rcb. TicketID,
+                    rcb.TransactionID, st.SiteName, st.SiteCode, tm.TerminalCode,
+                    at.Name, st.POSAccountNo, rs.ServiceName
+            FROM reversalcasinobal rcb INNER JOIN sites st ON rcb.SiteID = st.SiteID 
+                LEFT JOIN terminals tm ON rcb.TerminalID = tm.TerminalID
+                INNER JOIN accountdetails at ON rcb.ProcessedByAID = at.AID
+                LEFT JOIN ref_services rs ON rcb.ServiceID = rs.ServiceID
+            WHERE rcb.TransactionDate >= '$startdate' AND rcb.TransactionDate < '$enddate'  
+            ORDER BY rcb.ReversalCasinoID ASC";
+        $this->prepare($query);
+        $this->execute();
+        return $this->fetchAllData();         
+    }   
+    // ADDED CCT 04/30/2019 END
+    
     // CCT ADDED 02/19/2018 BEGIN
     /*
     * Get old gross hold balance if queried date is not today

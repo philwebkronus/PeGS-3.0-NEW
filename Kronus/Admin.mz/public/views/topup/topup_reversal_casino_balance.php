@@ -1,5 +1,5 @@
 <?php 
-$pagetitle = "Manual Redemption History"; 
+$pagetitle = "Reversal of Casino Balance History"; 
 include "header.php";
 $vaccesspages = array('5');
     $vctr = 0;
@@ -34,8 +34,7 @@ $vaccesspages = array('5');
         <input type="button" value="Search" id="btnsearch"/>
         <br /><br />
         <div align="center" id="pagination">
-            <table id="manualredemp">
-            </table>
+            <table id="reversalcasino"></table>
             <div id="pager2"></div>
         </div>
         <div id="senchaexport1" style="background-color: #6A6A6A; padding-bottom: 60px; width: 1200px;">
@@ -47,19 +46,23 @@ $vaccesspages = array('5');
 </div>
 <script type="text/javascript" src="jscripts/topup_date_validation.js" ></script>
 <script type="text/javascript">
-    jQuery(document).ready(function(){
-        jQuery('#btnpdf').click(function(){
-            jQuery('#frmexport').attr('action','process/ProcessTopUpGenerateReports.php?action=manualredemppdf');
+    jQuery(document).ready(function()
+    {
+        jQuery('#btnpdf').click(function()
+        {
+            jQuery('#frmexport').attr('action','process/ProcessTopUpGenerateReports.php?action=reversalcasinobalpdf');
             jQuery('#frmexport').submit();                 
         });
         
-        jQuery('#btnexcel').click(function(){
-            jQuery('#frmexport').attr('action','process/ProcessTopUpGenerateReports.php?action=manualredempexcel');
+        jQuery('#btnexcel').click(function()
+        {
+            jQuery('#frmexport').attr('action','process/ProcessTopUpGenerateReports.php?action=reversalcasinobalexcel');
             jQuery('#frmexport').submit();
         });
         
-        jQuery("#manualredemp").jqGrid({
-            url : 'process/ProcessTopUpPaginate.php?action=getmanualredemption',
+        jQuery("#reversalcasino").jqGrid(
+        {
+            url : 'process/ProcessTopUpPaginate.php?action=getreversalcasinobal',
             datatype: "json",
             colNames:['Site / PEGS Code','Site / PEGS Name','POS Account', 'Terminal Code', 'Actual Amount', 'Processed By', 'Transaction Date','Ticket ID', 'Remarks','Status', 'Service Name'],
             rowNum:10,
@@ -69,16 +72,13 @@ $vaccesspages = array('5');
             pager: '#pager2',
             viewrecords: true,
             sortorder: "asc",
-            caption: "Manual Redemption History",
+            caption: "Reversal of Casino Balance History",
             colModel:[
                 {name:'SiteCode', index:'SiteCode',align:'center', width: 100},
                 {name:'SiteName', index:'SiteName',align:'center', width: 100},
                 {name:'POSAccountNo',index:'POSAccountNo',align:'center', width: 120},
                 {name:'Terminal',index:'TerminalName',align:'left', width: 70},
-                // EDITED CCT 04/30/2019 BEGIN
-                //{name:'ReportedAmount',index:'ReportedAmount',align:'right', width: 120},
                 {name:'ActualAmount',index:'ActualAmount',align:'right', width: 120},
-                // EDITED CCT 04/30/2019 END
                 {name:'RequestedBy',index:'Name',align:'left', width: 150},
                 {name:'TransDate',index:'TransDate',align:'left', width: 220},
                 {name:'TicketID',index:'TicketID',align:'left', width: 100},
@@ -89,13 +89,16 @@ $vaccesspages = array('5');
             resizable:true
         });
         
-        jQuery('#btnsearch').click(function() {
-            if(!validateDateTopup()) {
+        jQuery('#btnsearch').click(function() 
+        {
+            if(!validateDateTopup()) 
+            {
               return false;
             }                
+            
             var startdate = jQuery('#startdate').val();
             //var enddate = jQuery('#enddate').val();
-            jQuery("#manualredemp").jqGrid('setGridParam',{url:"process/ProcessTopUpPaginate.php?action=getmanualredemption&startdate="+startdate,page:1}).trigger("reloadGrid");             
+            jQuery("#reversalcasino").jqGrid('setGridParam',{url:"process/ProcessTopUpPaginate.php?action=getreversalcasinobal&startdate="+startdate,page:1}).trigger("reloadGrid");             
         });  
     });
 </script>
