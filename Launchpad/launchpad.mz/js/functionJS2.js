@@ -248,6 +248,9 @@ $(document).ready(function() {
                                             else if (jsonTW.ErrorCode == 2 || jsonTW.ErrorCode == 8 || jsonTW.ErrorCode == 25 || jsonTW.ErrorCode == 40 || jsonTW.ErrorCode == 41 || jsonTW.ErrorCode == 42 || jsonTW.ErrorCode == 45) {
                                                 $.prompt(JSON.stringify(jsonTW.ReturnMessage).replace(/\"/g, ""));
                                             }
+                                            else if (jsonTW.ErrorCode == 5) {
+                                                $.prompt("[ERROR #" + jsonTW.ErrorCode + "] Unable to transfer to new casino. Please call customer service.");
+                                            }
                                             else {
                                                 $.prompt("[ERROR #" + jsonTW.ErrorCode + "] An error was encountered. Please try again.");
                                             }
