@@ -1475,7 +1475,10 @@ if ($connected && $connected2 && $connected3)
                                     $results = $vview['TerminalCode'] != null ? substr($vview['TerminalCode'], strlen($vview['SiteCode'])) : "N/A";
                                     $responce->rows[$i]['id'] = $vview['ManualRedemptionsID'];
                                     $responce->rows[$i]['cell'] = array($sitecode, $results, $vview['ServiceName'],
-                                        number_format($vview['ReportedAmount'], 2), $vview['TransactionDate'], $vstatus);
+                                        // EDITED CCT 04/30/2019 BEGIN
+                                        //number_format($vview['ReportedAmount'], 2), $vview['TransactionDate'], $vstatus);
+                                        number_format($vview['ActualAmount'], 2), $vview['TransactionDate'], $vstatus);
+                                        // EDITED CCT 04/30/2019 END
                                     $i++;
                                 }
                             } 

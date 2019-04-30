@@ -358,13 +358,16 @@ class ApplicationSupport extends DBHandler
           //validate if combo boxes of transaction status and transaction type are selected ALL 
           if($ztransstatus == 'All')
           {
-              $stmt = "SELECT mr.ManualRedemptionsID, s.SiteCode, tm.TerminalCode, rf.ServiceName, mr.TransactionID, mr.TransactionDate, mr.ReportedAmount, mr.Status 
-                    FROM manualredemptions mr
+              // EDITED CCT 04/30/2019 BEGIN
+              // $stmt = "SELECT mr.ManualRedemptionsID, s.SiteCode, tm.TerminalCode, rf.ServiceName, mr.TransactionID, mr.TransactionDate, mr.ReportedAmount, mr.Status 
+              $stmt = "SELECT mr.ManualRedemptionsID, s.SiteCode, tm.TerminalCode, rf.ServiceName, mr.TransactionID, mr.TransactionDate, mr.ActualAmount, mr.Status 
+              FROM manualredemptions mr
                     INNER JOIN sites s ON mr.SiteID = s.SiteID
                     LEFT JOIN terminals tm ON mr.TerminalID = tm.TerminalID
                     LEFT JOIN ref_services rf ON mr.ServiceID = rf.ServiceID
                     WHERE mr.LoyaltyCardNumber = ? AND mr.TransactionDate >=? 
                     AND mr.TransactionDate < ? ORDER BY mr.TransactionDate LIMIT ".$zStart.", ".$zLimit."";
+              // EDITED CCT 04/30/2019 END
               $this->prepare($stmt);
               $this->bindparameter(1,$cardnumber);
               $this->bindparameter(2,$zFrom);
@@ -373,13 +376,16 @@ class ApplicationSupport extends DBHandler
           //then if Transaction Status was selected any of its choices (Success, Failed) AND Transaction Type was selected all
           elseif($ztransstatus <> 'All')
           {
-              $stmt = "SELECT mr.ManualRedemptionsID, s.SiteCode, tm.TerminalCode, rf.ServiceName, mr.TransactionID, mr.TransactionDate, mr.ReportedAmount, mr.Status 
+              // EDITED CCT 04/30/2019 BEGIN
+              // $stmt = "SELECT mr.ManualRedemptionsID, s.SiteCode, tm.TerminalCode, rf.ServiceName, mr.TransactionID, mr.TransactionDate, mr.ReportedAmount, mr.Status 
+              $stmt = "SELECT mr.ManualRedemptionsID, s.SiteCode, tm.TerminalCode, rf.ServiceName, mr.TransactionID, mr.TransactionDate, mr.ActualAmount, mr.Status 
                     FROM manualredemptions mr
                     INNER JOIN sites s ON mr.SiteID = s.SiteID
                     LEFT JOIN terminals tm ON mr.TerminalID = tm.TerminalID
                     LEFT JOIN ref_services rf ON mr.ServiceID = rf.ServiceID
                     WHERE mr.LoyaltyCardNumber = ? AND mr.Status = ? AND mr.TransactionDate >=? 
                     AND mr.TransactionDate < ? ORDER BY mr.TransactionDate LIMIT ".$zStart.", ".$zLimit."";
+              // EDITED CCT 04/30/2019 END
               $this->prepare($stmt);
               $this->bindparameter(1,$cardnumber);
               $this->bindparameter(2,$ztransstatus);

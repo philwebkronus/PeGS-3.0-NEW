@@ -438,7 +438,10 @@ $flag = false;
                                     {name:'SiteCode',index:'SiteCode', align: 'center', width:150},
                                     {name:'TerminalCode',index:'TerminalCode',align: 'center', width:120},
                                     {name:'ServiceName',index:'ServiceName',align: 'center', width:120},
-                                    {name:'ReportedAmount',index:'ReportedAmount', align: 'right', width:100},
+                                    // EDITED CCT 04/30/2019 BEGIN
+                                    //{name:'ReportedAmount',index:'ReportedAmount', align: 'right', width:100},
+                                    {name:'ActualAmount',index:'ActualAmount', align: 'right', width:100},
+                                    // EDITED CCT 04/30/2019 END
                                     {name:'TransactionDate',index:'TransactionDate', align: 'right', width:210},
                                     {name:'Status',index:'Status', align: 'center', width:150}
                                     ],
