@@ -68,17 +68,17 @@ class CommonUBRedeemWithdrawAll {
             }
         }
 
-	// MZ Cehcking 
-	 $ActiveServiceStatus = (int) $terminalSessionsModel->getActiveServiceStatusByTerminalID($terminal_id);
+
+        $ActiveServiceStatus = (int) $terminalSessionsModel->getActiveServiceStatusByTerminalID($terminal_id);
 
         if ($ActiveServiceStatus > 1) {
-           $message = 'End Session is currently not allowed at the moment. Please try again later.';
+            $message = 'End Session is currently not allowed at the moment. Please try again later.';
             logger($message . ' TerminalID=' . $terminal_id . ' ServiceID=' . $service_id);
             CasinoApi::throwError($message);
         }
 
         if ($ActiveServiceStatus == 1) {
-            $updateActiveServiceID = $terminalSessionsModel->updateActiveServiceIDByTerminalID($terminal_id, $service_id, 0);
+            $updateActiveServiceID = $terminalSessionsModel->updateActiveServiceIDByTerminalID($terminal_id, $service_id, 0, 1);
 
             if (!$updateActiveServiceID) {
                 $message = 'Error: Failed to update records in terminal sessions tables.';
@@ -87,25 +87,21 @@ class CommonUBRedeemWithdrawAll {
             }
         }
 
-
-
-
-        //call SAPI, lock launchpad terminal
-        if ($terminalType == 2) {
-            $casinoApi->callSpyderAPI($commandId = 9, $terminal_id, $casinoUsername, $login_pwd, $service_id);
-        } else {
-            $casinoApi->callSpyderAPI($commandId = 1, $terminal_id, $casinoUsername, $login_pwd, $service_id);
-        }
-
         $is_terminal_active = $terminalSessionsModel->isSessionActive($terminal_id);
 
         if ($is_terminal_active === false) {
+
+            $updateActiveServiceID = $terminalSessionsModel->updateActiveServiceIDByTerminalID($terminal_id, $service_id, 1, 1);
+
             $message = 'Error: Can\'t get status.';
             logger($message . ' TerminalID=' . $terminal_id . ' ServiceID=' . $service_id);
             CasinoApiUB::throwError($message);
         }
 
         if ($is_terminal_active < 1) {
+
+            $updateActiveServiceID = $terminalSessionsModel->updateActiveServiceIDByTerminalID($terminal_id, $service_id, 1, 1);
+
             $message = 'Error: Terminal has no active session.';
             logger($message . ' TerminalID=' . $terminal_id . ' ServiceID=' . $service_id);
             CasinoApiUB::throwError($message);
@@ -116,7 +112,7 @@ class CommonUBRedeemWithdrawAll {
         } else {
             $terminal_name = $terminalsModel->getTerminalName($terminal_id);
         }
-        
+
         $pendingGames = '';
         //check if there was a pending game bet for RTG
         if (strpos($service_name, 'RTG') !== false) {
@@ -132,10 +128,13 @@ class CommonUBRedeemWithdrawAll {
                 $pendingGames['IsSucceed'] = true;
                 $pendingGames['PendingGames']['GetPendingGamesByPIDResult']['Gamename'] = $pendingGames['TransactionInfo'][0]['GameName'];
             }
-        } 
+        }
 
         //Display message
         if (!empty($pendingGames) && is_array($pendingGames) && $pendingGames['IsSucceed'] == true) {
+
+            $updateActiveServiceID = $terminalSessionsModel->updateActiveServiceIDByTerminalID($terminal_id, $service_id, 1, 1);
+
             $message = "Redemption canceled-Pending bet encountered. Please Ask the player to complete the game.";
             logger($message . $pendingGames['PendingGames']['GetPendingGamesByPIDResult']['Gamename'] . '.' . ' TerminalID=' . $terminal_id . ' ServiceID=' . $service_id);
             $message = "Info: There was a pending game bet. ";
@@ -145,13 +144,14 @@ class CommonUBRedeemWithdrawAll {
         }
 
 
-        //logout player
-//        if (strpos($service_name, 'RTG') !== false) {
-//            $PID = $casinoApiHandler->GetPIDLogin($casinoUsername);
-//            //$casinoApi->LogoutPlayer($terminal_id, $service_id,$PID); 
-//            $systemusername = Mirage::app()->param['pcwssysusername'];
-//            $pcwsAPI->Lock($systemusername, $casinoUsername, $service_id);
-//        }
+        //call SAPI, lock launchpad terminal
+        if ($terminalType == 2) {
+            $casinoApi->callSpyderAPI($commandId = 9, $terminal_id, $casinoUsername, $login_pwd, $service_id);
+        } else {
+            $casinoApi->callSpyderAPI($commandId = 1, $terminal_id, $casinoUsername, $login_pwd, $service_id);
+        }
+
+
         //logout player
         if (strpos($service_name, 'RTG') !== false) {
             $PID = $casinoApiHandler->GetPIDLogin($casinoUsername);
@@ -171,11 +171,16 @@ class CommonUBRedeemWithdrawAll {
             $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
             $egmSessionsModel->deleteEgmSessionById($terminal_id);
             if ($service_id != 19 && $service_id != 20) {
+
+                $updateActiveServiceID = $terminalSessionsModel->updateActiveServiceIDByTerminalID($terminal_id, $service_id, 1, 1);
+
                 $message = 'Redeem Session Failed. Please check if the terminal
                         has a valid start session.';
                 logger($message . ' TerminalID=' . $terminal_id . ' ServiceID=' . $service_id);
                 CasinoApiUB::throwError($message);
             } else {
+                $updateActiveServiceID = $terminalSessionsModel->updateActiveServiceIDByTerminalID($terminal_id, $service_id, 1, 1);
+
                 $udate = CasinoApiUB::udate('YmdHisu');
                 $amount = 0;
                 $isredeemed = 1;
@@ -198,15 +203,18 @@ class CommonUBRedeemWithdrawAll {
             }
         }
 
+
+
         /* ADDED JAV 03202019 */
         $checkPendingMzTransactions = $pendingMzTransactionsModel->checkPendingMzTransactions($mid, $service_id);
 
         if ($checkPendingMzTransactions > 0) {
+            $updateActiveServiceID = $terminalSessionsModel->updateActiveServiceIDByTerminalID($terminal_id, $service_id, 1, 1);
+
             $message = 'There was a pending transfer transaction for this user / terminal.';
             logger($message . ' TerminalID=' . $terminal_id . ' ServiceID=' . $service_id);
             CasinoApiUB::throwError($message);
         }
-
 
         $udate = CasinoApiUB::udate('YmdHisu');
 
@@ -218,6 +226,9 @@ class CommonUBRedeemWithdrawAll {
         $trans_req_log_last_id = $transReqLogsModel->insert($udate, $amount, 'W', $paymentType, $terminal_id, $site_id, $service_id, $loyalty_card, $mid, $userMode, $trackingid, $voucher_code, $transaction_id, $casinoUsername);
 
         if (!$trans_req_log_last_id) {
+
+            $updateActiveServiceID = $terminalSessionsModel->updateActiveServiceIDByTerminalID($terminal_id, $service_id, 1, 1);
+
             $pendingTerminalTransactionCountModel->updatePendingTerminalCount($terminal_id);
             $message = 'There was a pending transaction for this user / terminal.';
             logger($message . ' TerminalID=' . $terminal_id . ' ServiceID=' . $service_id);
@@ -225,6 +236,9 @@ class CommonUBRedeemWithdrawAll {
         }
 
         if (toMoney($amount) != toMoney(toInt($redeemable_amount))) {
+
+            $updateActiveServiceID = $terminalSessionsModel->updateActiveServiceIDByTerminalID($terminal_id, $service_id, 1, 1);
+
             $transReqLogsModel->update($trans_req_log_last_id, false, 2, null, $terminal_id);
             $message = 'Error: Redeemable amount is not equal.';
             logger($message . ' TerminalID=' . $terminal_id . ' ServiceID=' . $service_id);
@@ -238,10 +252,13 @@ class CommonUBRedeemWithdrawAll {
             $tracking1 = $trans_req_log_last_id;
             $tracking2 = 'W';
             $tracking3 = $terminal_id;
-            $tracking4 = str_replace("ICSA-","",str_replace("VIP","",$terminal_name));
+            $tracking4 = str_replace("ICSA-", "", str_replace("VIP", "", $terminal_name));
             $event_id = Mirage::app()->param['mgcapi_event_id'][2]; //Event ID for Withdraw
             // check if casino's reply is busy, added 05/17/12
             if (!(bool) $casinoApiHandler->IsAPIServerOK()) {
+
+                $updateActiveServiceID = $terminalSessionsModel->updateActiveServiceIDByTerminalID($terminal_id, $service_id, 1, 1);
+
                 $transReqLogsModel->update($trans_req_log_last_id, 'false', 2, null, $terminal_id);
                 $message = 'Can\'t connect to casino';
                 logger($message . ' TerminalID=' . $terminal_id . ' ServiceID=' . $service_id);
@@ -259,6 +276,9 @@ class CommonUBRedeemWithdrawAll {
 
                 // check again if Casino Server is busy
                 if (!(bool) $casinoApiHandler->IsAPIServerOK()) {
+
+                    $updateActiveServiceID = $terminalSessionsModel->updateActiveServiceIDByTerminalID($terminal_id, $service_id, 1, 1);
+
                     $transReqLogsModel->update($trans_req_log_last_id, 'false', 2, null, $terminal_id);
                     $message = 'Can\'t connect to casino';
                     logger($message . ' TerminalID=' . $terminal_id . ' ServiceID=' . $service_id);
@@ -272,6 +292,9 @@ class CommonUBRedeemWithdrawAll {
 
                 //check if TransactionSearchInfo API is not successful
                 if (isset($transSearchInfo['IsSucceed']) && $transSearchInfo['IsSucceed'] == false) {
+
+                    $updateActiveServiceID = $terminalSessionsModel->updateActiveServiceIDByTerminalID($terminal_id, $service_id, 1, 1);
+
                     $transReqLogsModel->update($trans_req_log_last_id, 'false', 2, null, $terminal_id);
                     $message = 'Error: Request denied. Please try again.';
                     logger($message . ' TerminalID=' . $terminal_id . ' ServiceID=' . $service_id . ' ErrorMessage=' . $transSearchInfo['ErrorMessage']);
@@ -298,6 +321,9 @@ class CommonUBRedeemWithdrawAll {
             } else {
                 //check if TransactionSearchInfo API is not successful
                 if (isset($resultwithdraw['IsSucceed']) && $resultwithdraw['IsSucceed'] == false) {
+
+                    $updateActiveServiceID = $terminalSessionsModel->updateActiveServiceIDByTerminalID($terminal_id, $service_id, 1, 1);
+
                     $transReqLogsModel->update($trans_req_log_last_id, $apiresult, 2, null, $terminal_id);
                     $message = 'Error: Request denied. Please try again.';
                     logger($message . ' TerminalID=' . $terminal_id . ' ServiceID=' . $service_id . ' ErrorMessage=' . $resultwithdraw['ErrorMessage']);
@@ -347,6 +373,9 @@ class CommonUBRedeemWithdrawAll {
                     }
 
                     if ($updstatusdelegm == false) {
+
+                        $updateActiveServiceID = $terminalSessionsModel->updateActiveServiceIDByTerminalID($terminal_id, $service_id, 1, 1);
+
                         $message = 'Error: Failed to delete EGM Session.';
                         logger($message . ' TerminalID=' . $terminal_id . ' ServiceID=' . $service_id);
                         CasinoApi::throwError($message);
@@ -354,17 +383,23 @@ class CommonUBRedeemWithdrawAll {
                 }
 
                 if (!$isredeemed) {
+
+                    $updateActiveServiceID = $terminalSessionsModel->updateActiveServiceIDByTerminalID($terminal_id, $service_id, 1, 1);
+
                     $message = 'Error: Failed update records in transaction tables';
                     logger($message . ' TerminalID=' . $terminal_id . ' ServiceID=' . $service_id);
                     CasinoApiUB::throwError($message);
                 }
 
-                $updateActiveServiceID = $terminalSessionsModel->updateActiveServiceIDByTerminalID($terminal_id, $service_id, 1);
+                $updateActiveServiceID = $terminalSessionsModel->updateActiveServiceIDByTerminalID($terminal_id, $service_id, 1, 1);
 
                 return array('message' => 'You have successfully redeemed the amount of PhP ' . toMoney($amount),
                     'trans_summary_id' => $trans_summary_id, 'udate' => $udate, 'amount' => $amount, 'terminal_login' => $terminal_name,
                     'trans_ref_id' => $transrefid, 'terminal_name' => $terminal_name, 'trans_details_id' => $isredeemed);
             } else {
+
+                $updateActiveServiceID = $terminalSessionsModel->updateActiveServiceIDByTerminalID($terminal_id, $service_id, 1, 1);
+
                 $transReqLogsModel->update($trans_req_log_last_id, $apiresult, 2, null, $terminal_id);
                 $message = 'Error: Request denied. Please try again.';
                 logger($message . ' TerminalID=' . $terminal_id . ' ServiceID=' . $service_id);
@@ -376,6 +411,8 @@ class CommonUBRedeemWithdrawAll {
 
             $isredeemed = $commonTransactionsModel->redeemTransaction($amount, $trans_summary_id, $udate, $site_id, $terminal_id, 'W', $paymentType, $service_id, $acct_id, 1, $loyalty_card, $mid);
 
+
+            $updateActiveServiceID = $terminalSessionsModel->updateActiveServiceIDByTerminalID($terminal_id, $service_id, 1, 1);
 
             $transReqLogsModel->updateTransReqLogDueZeroBal($terminal_id, $site_id, 'W', $trans_req_log_last_id);
 
@@ -412,12 +449,11 @@ class CommonUBRedeemWithdrawAll {
              * 
              */
 
-            $updateActiveServiceID = $terminalSessionsModel->updateActiveServiceIDByTerminalID($terminal_id, $service_id, 1);
 
             return array('message' => 'Info: Session has been ended.',
                 'trans_summary_id' => $trans_summary_id, 'udate' => $udate, 'amount' => $amount, 'terminal_login' => $terminal_name,
                 'terminal_name' => $terminal_name, 'trans_details_id' => $isredeemed);
         }
     }
-}
 
+}
