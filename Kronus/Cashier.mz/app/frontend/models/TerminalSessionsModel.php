@@ -37,13 +37,15 @@ class TerminalSessionsModel extends MI_Model
     
     public function updateTerminalSessionById($terminal_id,$service_id,$terminal_balance) 
     {
-        $sql = 'UPDATE terminalsessions SET ServiceID = :service_id, LastBalance = :terminal_balance, ' . 
+        //$sql = 'UPDATE terminalsessions SET ServiceID = :service_id, LastBalance = :terminal_balance, ' .
+         //       'LastTransactionDate = now(6) WHERE TerminalID = :terminal_id';
+        $sql = 'UPDATE terminalsessions SET LastBalance = :terminal_balance, ' .
                 'LastTransactionDate = now(6) WHERE TerminalID = :terminal_id';
         $param = array(
-            ':service_id'=>$service_id,
-            ':terminal_balance'=>$terminal_balance,
-            ':terminal_id'=>$terminal_id);
-        return $this->exec($sql,$param);
+            //':service_id' => $service_id,
+            ':terminal_balance' => $terminal_balance,
+            ':terminal_id' => $terminal_id);
+        return $this->exec($sql, $param);
     }
     
     public function isSessionActive($terminal_id) 
@@ -303,13 +305,12 @@ class TerminalSessionsModel extends MI_Model
         return $result['LastBalance'];
     }
 
-    public function updateActiveServiceIDByTerminalID($terminal_id, $service_id, $status) {
-        $sql = 'UPDATE terminalsessions SET ActiveServiceStatus =  :active_service_status, OldActiveServiceStatus = :old_active_service_status,  ActiveLastTransdateUpd = NOW(6) WHERE TerminalID = :terminal_id AND ServiceID = :service_id';
-        
+    public function updateActiveServiceIDByTerminalID($terminal_id, $service_id, $ActiveStatus, $OldActive) {
+        $sql = 'UPDATE terminalsessions SET ActiveServiceStatus =  :active_service_status, OldActiveServiceStatus = :old_active_service_status,  ActiveLastTransdateUpd = NOW(6) WHERE TerminalID = :terminal_id';
+
         $param = array(
-            ':service_id' => $service_id,
-            ':active_service_status' => $status,
-            ':old_active_service_status' => $status,
+            ':active_service_status' => $ActiveStatus,
+            ':old_active_service_status' => $OldActive,
             ':terminal_id' => $terminal_id);
         return $this->exec($sql, $param);
     }
