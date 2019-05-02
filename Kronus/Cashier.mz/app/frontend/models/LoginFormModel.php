@@ -621,81 +621,72 @@ class LoginFormModel extends MI_Model{
          
     }
     
-    public function isForgotPassowrd() {
-        Mirage::loadModels(array('AccountsModel','AuditTrailModel'));
+   public function isForgotPassowrd() {
+        Mirage::loadModels(array('AccountsModel', 'AuditTrailModel'));
         $accountsModel = new AccountsModel();
         $result = $accountsModel->checkemail($this->email); //check if email exist
 
-        if(!isset($result['UserName'])) {
+        if (!isset($result['UserName'])) {
             $this->setAttributeErrorMessage('message', 'Email Address does not exists');
             $this->close();
             return false;
         }
-        if($result['Status'] == 1 || $result['Status'] == 6){
+        if ($result['Status'] == 1 || $result['Status'] == 6) {
             $auditTrailModel = new AuditTrailModel();
 
             $vusername = $result['UserName'];
             $this->username = $result['UserName'];
-            $isemailexist = $result['count'];   
+            $isemailexist = $result['count'];
             $aid = $accountsModel->getaid($this->username); //get account ID
             $time = Date("m-d-y h:i:s");
-            $newhashedpass = sha1("temppassword".$time);
- //           $accountsModel->temppassword($newhashedpass, $this->username, $this->password);
- //          $accountsModel->temppassword($newhashedpass, $aid, $this->username, $this->email);
-             $accountsModel->temppassword($newhashedpass, $aid);
-            $ipaddress = gethostbyaddr($_SERVER['REMOTE_ADDR']);
-            $date = $this->getDate();
-            $sessionid = session_id();
+            $newhashedpass = sha1("temppassword" . $time);
 
-            $subject = 'Forgot Password';
-            $body = $this->_getChangePassEmailContent(
-                    $time,
-                    Mirage::app()->createUrl('updatepassword',array(
-                        'aid'=>$aid,
-                        'username'=>urlencode($this->username),
-                        'password'=>urlencode($newhashedpass)
-                        )
-                    ), 
-                    $this->username,
-                    $newhashedpass,
-                    $subject);
+            $changePassword = $accountsModel->temppassword($newhashedpass, $aid);
 
-            $to = preg_replace("/[0-9]+$/", '', $this->email);
+            if ($changePassword) {
 
-    //        if($this->testMailer('poskronusadmin@philweb.com.ph', 'poskronusadmin',$to, $subject, $body)) {
-    //            $_SESSION['notification'] = 'Your password has been sent to you through your email';
-    //            return true;
-    //        } else {
-    //            $this->setAttributeErrorMessage('message', 'Message sending failed');
-    //            return false;
-    //        }
+                $ipaddress = gethostbyaddr($_SERVER['REMOTE_ADDR']);
+                $date = $this->getDate();
+                $sessionid = session_id();
 
-            $headers="From: poskronusadmin@philweb.com.ph\r\nContent-type:text/html";
-            $sentEmail = mail($to,$subject, $body, "From: poskronusadmin@philweb.com.ph\r\nContent-type:text/html");
-             if (isset($aid)){
-            $auditTrailModel->logToAudit($sessionid, $aid, $vusername, $date, $ipaddress, 63);
-                    }
+                $subject = 'Forgot Password';
+                $body = $this->_getChangePassEmailContent(
+                        $time, Mirage::app()->createUrl('updatepassword', array(
+                            'aid' => $aid,
+                            'username' => urlencode($this->username),
+                            'password' => urlencode($newhashedpass)
+                                )
+                        ), $this->username, $newhashedpass, $subject);
 
-             // Check if message is sent or not
-             if($sentEmail == 1){
-                 $_SESSION['notification'] = 'Your password has been sent to you through your email';
-                 return true;
-             }
-             else{
-                 $msg = "Message sending failed";
-                 $this->setAttributeErrorMessage('message', 'Message sending failed');
-                 return false;
-             }
-        }
-        else{
+                $to = preg_replace("/[0-9]+$/", '', $this->email);
+
+                $headers = "From: poskronusadmin@philweb.com.ph\r\nContent-type:text/html";
+                $sentEmail = mail($to, $subject, $body, "From: poskronusadmin@philweb.com.ph\r\nContent-type:text/html");
+                if (isset($aid)) {
+                    $auditTrailModel->logToAudit($sessionid, $aid, $vusername, $date, $ipaddress, 63);
+                }
+
+                // Check if message is sent or not
+                if ($sentEmail == 1) {
+                    $_SESSION['notification'] = 'Your password has been sent to you through your email';
+                    return true;
+                } else {
+                    $msg = "Message sending failed";
+                    $this->setAttributeErrorMessage('message', 'Message sending failed');
+                    return false;
+                }
+            } else {
+                $this->setAttributeErrorMessage('message', 'An error has encountered. Please try again.');
+                $this->close();
+                return false;
+            }
+        } else {
             $this->setAttributeErrorMessage('message', 'Account is inactive or terminated');
             $this->close();
             return false;
         }
     }
-    
-    
-    
+
     public function isChangePassword() {
         $ipaddress = gethostbyaddr($_SERVER['REMOTE_ADDR']);
         $date = $this->getDate();
@@ -705,64 +696,52 @@ class LoginFormModel extends MI_Model{
         $accountsModel = new AccountsModel();
         $auditTrailModel = new AuditTrailModel();
         $result = $accountsModel->checkusernameandemail($this->username, $this->email);
-        if(!$result['count']) {
-                $this->setAttributeErrorMessage('message', 'Email and username did not match');
+        if (!$result['count']) {
+            $this->setAttributeErrorMessage('message', 'Email and username did not match');
             $this->close();
             return false;
         }
-        if($result['Status'] == 1 || $result['Status'] == 6){
+        if ($result['Status'] == 1 || $result['Status'] == 6) {
             $aid = $accountsModel->getaid($this->username);
             $time = Date("m-d-y h:i:s");
-            $newhashedpass = sha1("temppassword".$time);
- //           $accountsModel->temppassword($newhashedpass, $this->username, $this->password);
-//            $accountsModel->temppassword($newhashedpass, $aid, $this->username, $this->password);
-             $accountsModel->temppassword($newhashedpass, $aid);
-            $subject = 'Change Password';
-            $body = $this->_getChangePassEmailContent(
-                    $time,
-                    Mirage::app()->createUrl('updatepassword',array(
-                        'aid'=>$aid,
-                        'username'=>urlencode($this->username),
-                        'password'=>urlencode($newhashedpass)
-                        )
-                    ), 
+            $newhashedpass = sha1("temppassword" . $time);
 
-                    $this->username,
-                    $newhashedpass,
-                    $subject);
+            $changePassword = $accountsModel->temppassword($newhashedpass, $aid);
+            if ($changePassword) {
+                $subject = 'Change Password';
+                $body = $this->_getChangePassEmailContent(
+                        $time, Mirage::app()->createUrl('updatepassword', array(
+                            'aid' => $aid,
+                            'username' => urlencode($this->username), 'password' => urlencode($newhashedpass)
+                                )
+                        ), $this->username, $newhashedpass, $subject);
 
-            $to = preg_replace("/[0-9]+$/", '', $this->email);
+                $to = preg_replace("/[0-9]+$/", '', $this->email);
 
-    //        if($this->testMailer('poskronusadmin@philweb.com.ph', 'poskronusadmin',$to, $subject, $body)) {
-    //            $_SESSION['notification'] = 'Your password has been sent to you through your email';
-    //            return true;
-    //        } else {
-    //            $this->setAttributeErrorMessage('message', 'Message sending failed');
-    //            return false;
-    //        }
-
-            $headers="From: poskronusadmin@philweb.com.ph\r\nContent-type:text/html";
-            $sentEmail = mail($to,$subject, $body, "From: poskronusadmin@philweb.com.ph\r\nContent-type:text/html");
-           if (isset($aid)){
-            $auditTrailModel->logToAudit($sessionid, $aid, $vusername, $date, $ipaddress, 64);
-                    }
-             // Check if message is sent or not
-             if($sentEmail == 1){
-                 $_SESSION['notification'] = 'Your password has been sent to you through your email';
-                 return true;
-             }
-             else{
-                 $msg = "Message sending failed";
-                 $this->setAttributeErrorMessage('message', 'Message sending failed');
-                 return false;
-             }
-        }
-        else{
+                $headers = "From: poskronusadmin@philweb.com.ph\r\nContent-type:text/html";
+                $sentEmail = mail($to, $subject, $body, "From: poskronusadmin@philweb.com.ph\r\nContent-type:text/html");
+                if (isset($aid)) {
+                    $auditTrailModel->logToAudit($sessionid, $aid, $vusername, $date, $ipaddress, 64);
+                }
+                // Check if message is sent or not
+                if ($sentEmail == 1) {
+                    $_SESSION['notification'] = 'Your password has been sent to you through your email';
+                    return true;
+                } else {
+                    $msg = "Message sending failed";
+                    $this->setAttributeErrorMessage('message', 'Message sending failed');
+                    return false;
+                }
+            } else {
+                $this->setAttributeErrorMessage('message', 'An error has encountered. Please try again.');
+                $this->close();
+                return false;
+            }
+        } else {
             $this->setAttributeErrorMessage('message', 'Account is inactive or terminated');
             $this->close();
             return false;
         }
-        
     }
     
     public function updatePassword() {
