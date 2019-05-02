@@ -89,6 +89,18 @@ class MzapiController extends Controller {
                 $checkActiveWallet = $terminalSessionsModel->checkActiveWallet($TerminalCode);
                 $ActiveServiceID = $checkActiveWallet['serviceid'];
 
+                if ($NewUsermode <> 3) {
+                    $errCode = 54;
+                    $transMsg = '[ERROR #054] Transferring of wallet is only applicable to user-based casino.';
+
+                    $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], null, null, null, $transMsg, null, null);
+                    $appLogger->log($appLogger->logdate, "[response]", $transMsg);
+
+                    $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
+                    $this->_sendResponse(200, $data);
+                    exit;
+                }
+
                 if ($NewServiceID <> $ActiveServiceID) {
 
                     //Get Terminal Session Details 
@@ -118,25 +130,7 @@ class MzapiController extends Controller {
                             $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                             $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                             $this->_sendResponse(200, $data);
-                        }
-
-                        //Get New Provider Account Details
-                        if ($NewUsermode == 0) {
-                            $getTerminalServicesDetails = $terminalServices->getTerminalDetails($TerminalID, $NewServiceID);
-                            if (!empty($getTerminalServicesDetails)) {
-                                $NewUBServiceLogin = $getTerminalServicesDetails['ServiceUsername'];
-                                $NewUBServicePassword = $getTerminalServicesDetails['ServicePassword'];
-                                $NewUBHashedPassword = $getTerminalServicesDetails['HashedServicePassword'];
-                            } else {
-                                $errCode = 48;
-                                $transMsg = '[ERROR #048] Failed to get terminalservices detials';
-
-                                $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
-                                $appLogger->log($appLogger->logdate, "[response]", $transMsg);
-
-                                $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
-                                $this->_sendResponse(200, $data);
-                            }
+                            exit;
                         }
 
                         if ($NewUsermode == 3) {
@@ -154,8 +148,11 @@ class MzapiController extends Controller {
 
                                 $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                                 $this->_sendResponse(200, $data);
+                                exit;
                             }
                         }
+
+
                         //Check Service Group of New Provider
                         $getServiceGrpNameByIdNewProvider = $refServicesModel->getServiceGrpNameById($NewServiceID);
 
@@ -163,13 +160,14 @@ class MzapiController extends Controller {
                             $ServiceGroupNewProvider = $getServiceGrpNameByIdNewProvider['ServiceGroupName'];
                         } else {
                             $errCode = 46;
-                            $transMsg = '[ERROR #046] Failed to get Service details';
+                            $transMsg = '[ERROR #046] Failed to get casino details';
 
                             $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                             $appLogger->log($appLogger->logdate, "[response]", $transMsg);
 
                             $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                             $this->_sendResponse(200, $data);
+                            exit;
                         }
 
                         $checkingMaximumDeposit = Yii::app()->params['isMaximumDepositOn'];
@@ -1136,8 +1134,8 @@ class MzapiController extends Controller {
             if (!empty($GetBalance)) {
                 $Balance = $GetBalance['balance'];
             } else {
-                $errCode = 51;
-                $transMsg = '[ERROR #051] Can\'t get balance RTG.';
+                $errCode = 50;
+                $transMsg = '[ERROR #050] Can\'t get balance RTG.';
 
                 $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, $request, $response);
                 $appLogger->log($appLogger->logdate, "[response]", $transMsg);
