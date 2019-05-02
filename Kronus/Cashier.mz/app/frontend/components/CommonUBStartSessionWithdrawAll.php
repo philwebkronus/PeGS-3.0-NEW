@@ -22,7 +22,7 @@ class CommonUBStartSessionWithdrawAll {
     public function start($terminal_id, $site_id, $trans_type, $paymentType, $service_id, $bcf, $initial_deposit, $acctid, $loyalty_card = '', $voucher_code = '', $trackingid = '', $casinoUsername = '', $casinoPassword = '', $casinoHashedPassword = '', $casinoServiceID = '', $mid = '', $userMode = '', $traceNumber = '', $referenceNumber = '', $locatorname = '', $CPV = '', $isVIP) {
         Mirage::loadComponents(array('CasinoApiUB', 'PCWSAPI.class'));
         Mirage::loadModels(array('TerminalsModel', 'EgmSessionsModel', 'SiteBalanceModel', 'CommonTransactionsModel',
-            'PendingTerminalTransactionCountModel', 'BankTransactionLogsModel', 'RefServicesModel', 'MembersModel'));
+            'PendingTerminalTransactionCountModel', 'BankTransactionLogsModel', 'RefServicesModel', 'MembersModel', 'MembersServicesModel'));
 
         $casinoApi = new CasinoApiUB();
         $terminalsModel = new TerminalsModel();
@@ -33,6 +33,7 @@ class CommonUBStartSessionWithdrawAll {
         $bankTransactionLogs = new BankTransactionLogsModel();
         $refServicesModel = new RefServicesModel();
         $membersModel = new MembersModel();
+        $membersServicesModel = new MembersServicesModel();
 
         if ($terminalsModel->isPartnerAlreadyStarted($terminal_id)) {
             $message = 'Error: ' . $terminalsModel->terminal_code . ' terminal already started';
@@ -64,6 +65,14 @@ class CommonUBStartSessionWithdrawAll {
         }
 
 
+        $countSession = $terminalSessionsModel->checkCardSession($loyalty_card);
+
+        if ($countSession > 0) {
+            $message = 'Error: Only one active session is allowed for this card.';
+            logger($message . ' TerminalID=' . $terminal_id . ' ServiceID=' . $service_id);
+            CasinoApi::throwError($message);
+        }
+
         if ($terminal_balance != 0) {
             $is_card_has_session = $terminalSessionsModel->checkSession($loyalty_card, $service_id);
 
@@ -71,11 +80,26 @@ class CommonUBStartSessionWithdrawAll {
                 $alias = $refServicesModel->getAliasById($service_id);
                 $message = 'Error: Only one active session for ' . $alias . ' casino is allowed for this card.';
             } else {
-                $message = 'Error: Please inform customer service for reversal of casino balance.';
-            }
+                CasinoApi::throwError('TEST');
+                $memberservices = $membersServicesModel->getMemberServicesAccounts($mid);
 
-            logger($message . ' TerminalID=' . $terminal_id . ' ServiceID=' . $service_id);
-            CasinoApi::throwError($message);
+                foreach ($memberservices as $services) {
+                    if ($services['ServiceID'] <> $service_id) {
+                        list($term_bal, $s_name, $tSessionsModel, $trlModel, $redeem_amount,
+                                $casHandler, $mgacc) = $casinoApi->getBalanceUB($terminal_id, $site_id, 'D', $casinoServiceID, $acct_id = '', $services['ServiceUsername'], $services['ServicePassword']);
+
+                        if ($term_bal > 0) {
+                            $message = 'Error: Please inform customer service for reversal of casino balance.';
+                            logger($message . ' TerminalID=' . $terminal_id . ' ServiceID=' . $services['ServiceID']);
+                            CasinoApi::throwError($message);
+                        }
+                    }
+                }
+
+                $message = 'Error: Please inform customer service for manual redemption';
+                logger($message . ' TerminalID=' . $terminal_id . ' ServiceID=' . $service_id);
+                CasinoApi::throwError($message);
+            }
         }
 
         if (($bcf - $initial_deposit) < 0) {
@@ -305,7 +329,15 @@ class CommonUBStartSessionWithdrawAll {
                 'udate' => $udate, 'terminal_name' => $terminal_name, 'trans_ref_id' => $transrefid, 'trans_summary_id' => $trans_summary_id["trans_summary_max_id"],
                 'trans_details_id' => $trans_summary_id["transdetails_max_id"]);
         } else {
-            
+
+            if (!$updateActiveServiceID) {
+                $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
+                $egmSessionsModel->deleteEgmSessionById($terminal_id);
+                $message = 'Error: Failed to update records in terminal sessions tables.';
+                logger($message . ' TerminalID=' . $terminal_id . ' ServiceID=' . $service_id);
+                CasinoApi::throwError($message);
+            }
+
             $membersModel->updateMemberOptionID1ByMID($service_id, $mid);
 
             $transReqLogsModel->update($trans_req_log_last_id, $apiresult, 2, null, $terminal_id);
