@@ -185,7 +185,7 @@ $(document).ready(function() {
                                                 data: 'transferWallet',
                                                 terminalCode: terminalCode,
                                                 ServiceID: ServiceID,
-                                                UserMode: 3,
+                                                UserMode: userMode,
                                             }, function(datatw) {
 
                                         var jsonTW = $.parseJSON(datatw);
@@ -217,22 +217,22 @@ $(document).ready(function() {
                                                                 } else {
                                                                     window.external.ScreenBlocker(false);
                                                                     jQuery.fancybox.close();
-                                                                    $.prompt("[ERROR 009] Terminal has more than One (1) active session.");
+                                                                    $.prompt("[ERROR 007] Terminal has more than One (1) active session.");
                                                                 }
                                                             } else {
                                                                 window.external.ScreenBlocker(false);
                                                                 jQuery.fancybox.close();
-                                                                $.prompt("[ERROR 008] Terminal has no valid session");
+                                                                $.prompt("[ERROR 006] Terminal has no valid session");
                                                             }
                                                         }
                                                         else {
                                                             window.external.ScreenBlocker(false);
                                                             jQuery.fancybox.close();
-                                                            $.prompt("[ERROR 007] An error was encountered. Please try again.");
+                                                            $.prompt("[ERROR 005] An error was encountered. Please try again.");
                                                         }
                                                     })
                                                     .fail(function() {
-                                                        $.prompt("[ERROR 006] An error was encountered. Please try again.");
+                                                        $.prompt("[ERROR 004] An error was encountered. Please try again.");
                                                     });
                                         }
                                         else {
@@ -242,10 +242,10 @@ $(document).ready(function() {
                                             if (jsonTW.ErrorCode == 1000) {
                                                 $.prompt("[ERROR #" + jsonTW.ErrorCode + "] An error was encountered transferring to this casino. Please try the other casino.");
                                             }
-                                            else if (jsonTW.ErrorCode == 51 || jsonTW.ErrorCode == 52 || jsonTW.ErrorCode == 53) {
+                                            else if (jsonTW.ErrorCode == 50 || jsonTW.ErrorCode == 51 || jsonTW.ErrorCode == 52 || jsonTW.ErrorCode == 53) {
                                                 $.prompt("[ERROR #" + jsonTW.ErrorCode + "] An error was encountered transferring to this casino. Please call customer service.");
-                                            }                                            
-                                            else if (jsonTW.ErrorCode == 2 || jsonTW.ErrorCode == 8 || jsonTW.ErrorCode == 25 || jsonTW.ErrorCode == 40 || jsonTW.ErrorCode == 41 || jsonTW.ErrorCode == 42 || jsonTW.ErrorCode == 45) {
+                                            }
+                                            else if (jsonTW.ErrorCode == 2 || jsonTW.ErrorCode == 8 || jsonTW.ErrorCode == 25 || jsonTW.ErrorCode == 40 || jsonTW.ErrorCode == 41 || jsonTW.ErrorCode == 42 || jsonTW.ErrorCode == 45 || jsonTW.ErrorCode == 54) {
                                                 $.prompt(JSON.stringify(jsonTW.ReturnMessage).replace(/\"/g, ""));
                                             }
                                             else if (jsonTW.ErrorCode == 5) {
