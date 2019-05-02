@@ -292,29 +292,25 @@ class AccountsModel extends MI_Model{
         $this->exec($sql, $param);
         return $this->find();
     }  
-     public function temppassword($temppass, $zaid){
+     public function temppassword($temppass, $zaid) {
         $currpassword = $this->getcurrentpassword($zaid);
-       try {
-           $this->dbh->beginTransaction();
-           $smt = $this->dbh->prepare('INSERT INTO accountsrecentpasswords (AID, Password, DateCreated)  VALUES (?, ?, NOW(6))');
-           $smt->bindValue(1, $zaid);
-           $smt->bindValue(2, $currpassword);
-           
-           if(!$smt->execute()) {
-               logger("Failed to insert accountsrecentpasswords: ".$smt->execute());
-               $this->dbh->rollBack();
-               return false;
-           }  
-           
-           $smt = $this->dbh->prepare('UPDATE accounts SET ForChangePassword = 0 , Password = ? WHERE AID = ?');
-           $smt->bindValue(1, $temppass);
-           $smt->bindValue(2, $zaid);
 
-           if(!$smt->execute()) {
-               logger("Failed to update accounts: ".$smt->execute());
-               $this->dbh->rollBack();
-               return false;
-           }
+        try {
+            $this->dbh->beginTransaction();
+            $smt = $this->dbh->prepare('INSERT INTO accountsrecentpasswords (AID, Password, DateCreated)  VALUES (?, ?, NOW(6))');
+            $smt->bindValue(1, $zaid);
+            $smt->bindValue(2, $currpassword);
+            $smt->execute();
+
+            $smt = $this->dbh->prepare('UPDATE accounts SET ForChangePassword = 0 , Password = ? WHERE AID = ?');
+            $smt->bindValue(1, $temppass);
+            $smt->bindValue(2, $zaid);
+
+            if (!$smt1->execute()) {
+                logger("Failed to update accounts: " . $smt->execute());
+                $this->dbh->rollBack();
+                return false;
+            }
 
             //count if recent passwords of user
             $countRecent = $this->countRecentPasswordsByAID($zaid);
@@ -329,19 +325,19 @@ class AccountsModel extends MI_Model{
                     $this->dbh->commit();
                     return true;
                 } else {
-                    logger("Failed to delete accountsrecentpasswords: ".$smt->execute());
+                    logger("Failed to delete accountsrecentpasswords: " . $smt->execute());
                     $this->dbh->rollBack();
                     return false;
                 }
             }
-           
-           $this->dbh->commit();
-           return true;
-       } catch(PDOException $e) {
-           logger("Error in inserting last password: ".$e);
-           $this->dbh->rollBack();
-       }
-       return false;
+
+            $this->dbh->commit();
+            return true;
+        } catch (PDOException $e) {
+            logger("Error in inserting last password: " . $e);
+            $this->dbh->rollBack();
+        }
+        return false;
     }
     
     public function checkCashierSiteClassification($zusername ) {
