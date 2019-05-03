@@ -152,7 +152,6 @@ class MzapiController extends Controller {
                             }
                         }
 
-
                         //Check Service Group of New Provider
                         $getServiceGrpNameByIdNewProvider = $refServicesModel->getServiceGrpNameById($NewServiceID);
 
@@ -1120,20 +1119,32 @@ class MzapiController extends Controller {
         $appLogger = new AppLogger();
         $LPErrorLogsModel = new LpErrorLogsModel();
         Yii::import('application.components.CasinoController');
-        $RTGApiWrapper = new RealtimeGamingAPIWrapper();
-        $HabaneroApiWrapper = new HabaneroAPIWrapper(Yii::app()->params->cashierapi[$ServiceID - 1], Yii::app()->params['HB_APIkey'], Yii::app()->params['HB_BrandID']);
 
         if ($ServiceGroup == "RTG" || $ServiceGroup == "RTG2") {
-            $GetBalance = $RTGApiWrapper->GetBalance($ServiceID, $UBServiceLogin);
+            try {
+                $RTGApiWrapper = new RealtimeGamingAPIWrapper();
 
+                $GetBalance = $RTGApiWrapper->GetBalance($ServiceID, $UBServiceLogin);
 
-            $requestBody = array("ServiceID" => $ServiceID, "UBServiceLogin" => $UBServiceLogin);
-            $request = json_encode($requestBody);
-            $response = json_encode($GetBalance);
+                $requestBody = array("ServiceID" => $ServiceID, "UBServiceLogin" => $UBServiceLogin);
+                $request = json_encode($requestBody);
+                $response = json_encode($GetBalance);
 
-            if (!empty($GetBalance)) {
-                $Balance = $GetBalance['balance'];
-            } else {
+                if (!empty($GetBalance) && $GetBalance <> 'Cant connect to casino') {
+                    $Balance = $GetBalance['balance'];
+                } else {
+                    $errCode = 50;
+                    $transMsg = '[ERROR #050] Can\'t get balance RTG.';
+
+                    $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, $request, $response);
+                    $appLogger->log($appLogger->logdate, "[response]", $transMsg);
+                    $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
+                    $this->_sendResponse(200, $data);
+                    exit;
+                }
+
+                return $Balance;
+            } catch (Exception $ex) {
                 $errCode = 50;
                 $transMsg = '[ERROR #050] Can\'t get balance RTG.';
 
@@ -1146,29 +1157,42 @@ class MzapiController extends Controller {
         }
 
         if ($ServiceGroup == "HAB") {
-            $HabaneroApiWrapper = new HabaneroAPIWrapper(Yii::app()->params->cashierapi[$ServiceID - 1], Yii::app()->params['HB_APIkey'], Yii::app()->params['HB_BrandID']);
-            $GetBalance = $HabaneroApiWrapper->GetBalance($UBServiceLogin, $UBServicePassword);
+            try {
+                $HabaneroApiWrapper = new HabaneroAPIWrapper(Yii::app()->params->cashierapi[$ServiceID - 1], Yii::app()->params['HB_APIkey'], Yii::app()->params['HB_BrandID']);
+                $GetBalance = $HabaneroApiWrapper->GetBalance($UBServiceLogin, $UBServicePassword);
 
-            $requestBody = array("ServiceID" => $ServiceID, "UBServiceLogin" => $UBServiceLogin, "UBServicePassword" => $UBServicePassword);
-            $request = json_encode($requestBody);
-            $response = json_encode($GetBalance);
+                $requestBody = array("ServiceID" => $ServiceID, "UBServiceLogin" => $UBServiceLogin, "UBServicePassword" => $UBServicePassword);
+                $request = json_encode($requestBody);
+                $response = json_encode($GetBalance);
 
 
-            if (!empty($GetBalance)) {
-                if ($GetBalance['IsSucceed'] == false) {
+                if (!empty($GetBalance)) {
+                    if ($GetBalance['IsSucceed'] == false) {
+                        $errCode = 51;
+                        $transMsg = '[ERROR #051] Can\'t get balance Habanero.';
+
+                        $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, $request, $response);
+
+                        $appLogger->log($appLogger->logdate, "[response]", $transMsg);
+                        $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
+                        $this->_sendResponse(200, $data);
+                        exit;
+                    } else {
+                        $Balance = $GetBalance['TransactionInfo']['RealBalance'];
+                    }
+                } else {
                     $errCode = 51;
                     $transMsg = '[ERROR #051] Can\'t get balance Habanero.';
 
                     $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, $request, $response);
-
                     $appLogger->log($appLogger->logdate, "[response]", $transMsg);
                     $data = CommonController::retMsgTransferWallet($transMsg, $errCode);
                     $this->_sendResponse(200, $data);
                     exit;
-                } else {
-                    $Balance = $GetBalance['TransactionInfo']['RealBalance'];
                 }
-            } else {
+
+                return $Balance;
+            } catch (Exception $ex) {
                 $errCode = 51;
                 $transMsg = '[ERROR #051] Can\'t get balance Habanero.';
 
@@ -1179,8 +1203,6 @@ class MzapiController extends Controller {
                 exit;
             }
         }
-
-        return $Balance;
     }
 
     private function _deposit($MzTransactionTransferID, $ActiveServiceID, $UBServiceLogin, $UBServicePassword, $CurrentProviderBalance, $TerminalID, $TerminalCode, $ServiceGroup, $transtype, $MID, $CardNumber) {
@@ -1255,7 +1277,7 @@ class MzapiController extends Controller {
                 }
             }
         }
-        if (empty($apiresult)) {
+        if (empty($apiresult) || $apiresult == 'Cant connect to casino') {
             $errCode = 52;
             $transMsg = '[ERROR #052] Error in Deposit';
 
@@ -1358,7 +1380,7 @@ class MzapiController extends Controller {
                 }
             }
         }
-        if (empty($apiresult)) {
+        if (empty($apiresult) || $apiresult == 'Cant connect to casino') {
             $errCode = 53;
             $transMsg = '[ERROR #053] Error in Withdrawal';
 
