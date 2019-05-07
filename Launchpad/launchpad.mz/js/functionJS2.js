@@ -232,6 +232,8 @@ $(document).ready(function() {
                                                         }
                                                     })
                                                     .fail(function() {
+                                                        window.external.ScreenBlocker(false);
+                                                        jQuery.fancybox.close();
                                                         $.prompt("[ERROR 004] An error was encountered. Please try again.");
                                                     });
                                         }
