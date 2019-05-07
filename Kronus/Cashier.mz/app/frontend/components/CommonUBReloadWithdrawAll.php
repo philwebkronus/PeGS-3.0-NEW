@@ -165,7 +165,7 @@ class CommonUBReloadWithdrawAll {
                 $transReqLogsModel->update($trans_req_log_last_id, 'false', 2, null, $terminal_id);
                 $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
                 $egmSessionsModel->deleteEgmSessionById($terminal_id);
-                $message = 'Error: Failed to update records in terminal sessions tables.';
+                $message = 'Error: Failed to update record in transaction table.';
                 logger($message . ' TerminalID=' . $terminal_id . ' ServiceID=' . $service_id);
                 CasinoApi::throwError($message);
             }
