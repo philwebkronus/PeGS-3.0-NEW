@@ -293,7 +293,6 @@
                                      "border-radius": "50px",*/
                                 });
 
-                        /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
                         $("#games-holder").css("display", "block");
                         $("#games").css(
                                 {
@@ -320,7 +319,8 @@
                                         }},
                                     success: function(data)
                                     {
-                                        var array = data.split(", ")
+                                        var array = data.split(", ");
+
 
 
                                         if (array.length > 1) {
@@ -358,7 +358,6 @@
                                             alert("Error : Only one casino was mapped on this terminal.");
                                             window.external.ScreenBlocker(true);
                                         }
-
                                     },
                                     error: function(XMLHttpRequest, textStatus, errorThrown) {
                                         alert("Status: " + textStatus);
@@ -740,22 +739,21 @@
                             });
                         } catch (e)
                         {
-//                            alert('There is a problem in activex');
-//                            window.open("index.php", '_self');
+                            alert('There is a problem in activex');
+                            window.open("index.php", '_self');
                         }
                     } catch (e)
                     {
-//                        alert("Access Denied! Unauthorized browser.");
-//                        //window.close();
-//                        window.open("index.php", '_self');
+                        alert("Access Denied! Unauthorized browser.");
+                        window.open("index.php", '_self');
 
                     }
                 });
             }
             catch (e)
             {
-//                alert('There is a problem in activex');
-//                window.open("index.php", '_self');
+                alert('There is a problem in activex');
+                window.open("index.php", '_self');
             }
         </script>
         <script type="text/javascript">
