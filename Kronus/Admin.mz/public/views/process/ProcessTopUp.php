@@ -1403,6 +1403,42 @@ if ($connected) {
 
                                                 if ($lastmrid > 0) {
 
+                                                    if ($vactualAmt == 0) {
+
+                                                        $TransferStatus = 100;
+
+                                                        $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
+
+                                                        if ($updateMzTransactionTransfer) {
+
+                                                            $updateTerminalSessionsCredentials = $otopup->updateTerminalSessionsCredentials(1, $mzToServiceID, $UBServiceLogin, $UBServicePassword, $UBHashedServicePassword, $vactualAmt, $mzTerminalID);
+
+                                                            if ($updateTerminalSessionsCredentials) {
+
+                                                                $fmteffdate = $otopup->getDate();
+                                                                $vstatus = 2;
+                                                                $vtransactionID = '';
+                                                                $vtransStatus = '';
+
+                                                                $issucess = $otopup->updateManualRedemptionub($vstatus, $vactualAmt, $vtransactionID, $fmteffdate, $vtransStatus, $lastmrid);
+                                                                if ($issucess) {
+                                                                    if ($otopupmembership->open() == true) {
+                                                                        $otopupmembership->updateMember($mzToServiceID, $mid);
+                                                                    }
+                                                                    $otopupmembership->close();
+
+                                                                    $msg = "Redeemed: " . $vactualAmt . "; Remaining Balance: " . $vactualAmt;
+                                                                    echo json_encode($msg);
+                                                                    exit;
+                                                                }
+                                                            } else {
+                                                                $msg = "Failed to update terminalsessions table.";
+                                                                echo json_encode($msg);
+                                                                exit;
+                                                            }
+                                                        }
+                                                    }
+
                                                     switch (true) {
                                                         case strstr($serviceName, "RTG - Sapphire V17 UB"):
                                                             $tracking1 = "MR" . "$lastmrid";
