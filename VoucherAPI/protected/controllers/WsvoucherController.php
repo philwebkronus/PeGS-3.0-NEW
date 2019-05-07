@@ -127,20 +127,13 @@ class WsvoucherController extends Controller {
 
                         $checkIfVV = trim(substr($voucherCode, 0, 3));
                         if ($checkIfVV == 'VVC') {
-			   // EDITED CCT 12/17/2018 BEGIN
-                           // if ($request['serviceid'] == 25) {
-                            if ($request['serviceid'] == 29) {
-			  //EDITED CCT 12/17/2018 END
-                                $result = $commonController->verifyCoupon($AID, $voucherCode, $source, $trackingid, self::COUPON);
-                                $transMsg = $result['TransMsg'];
-                            } else {
-                                $result['TransMsg'] = 'Congratulations! Please use this prize voucher on Habanero terminals.';
+                                $result['TransMsg'] = 'Invalid Coupon';
                                 $result['ErrorCode'] = 12;
-                            }
                         } else {
                             $result = $commonController->verifyCoupon($AID, $voucherCode, $source, $trackingid, self::COUPON);
                             $transMsg = $result['TransMsg'];
                         }
+
                         break;
                     case self::SOURCE_KAPI;
                         //todo
