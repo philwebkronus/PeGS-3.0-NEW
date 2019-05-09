@@ -202,39 +202,29 @@ $(document).ready(function() {
                                                         var jsonDetails = $.parseJSON(dataDetails);
 
                                                         if (jsonDetails.Count != undefined) {
-                                                            if (jsonDetails.Count != 0) {
-                                                                if (jsonDetails.Count == 1) {
+                                                            if (jsonDetails.Count == 1) {
 
-                                                                    ServiceUsername = jsonDetails.ServiceUsername;
-                                                                    ServicePassword = jsonDetails.ServicePassword;
-                                                                    isVIP = jsonDetails.isVIP;
-                                                                    ServicePassword = ServicePassword.replace(/\"/g, "");
-                                                                    HabaneroPath = jsonDetails.HabaneroPath;
-                                                                    TsServiceID = jsonDetails.ServiceID;
+                                                                ServiceUsername = jsonDetails.ServiceUsername;
+                                                                ServicePassword = jsonDetails.ServicePassword;
+                                                                isVIP = jsonDetails.isVIP;
+                                                                ServicePassword = ServicePassword.replace(/\"/g, "");
+                                                                HabaneroPath = jsonDetails.HabaneroPath;
+                                                                TsServiceID = jsonDetails.ServiceID;
 
-                                                                    $.launchGame(TsServiceID, ServiceUsername, ServicePassword, isVIP, HabaneroPath, terminalCode);
+                                                                $.launchGame(TsServiceID, ServiceUsername, ServicePassword, isVIP, HabaneroPath, terminalCode);
 
-                                                                } else {
-                                                                    window.external.ScreenBlocker(false);
-                                                                    jQuery.fancybox.close();
-                                                                    $.prompt("[ERROR 007] Terminal has more than One (1) active session.");
-                                                                }
-                                                            } else {
-                                                                window.external.ScreenBlocker(false);
-                                                                jQuery.fancybox.close();
-                                                                $.prompt("[ERROR 006] Terminal has no valid session");
                                                             }
                                                         }
                                                         else {
                                                             window.external.ScreenBlocker(false);
                                                             jQuery.fancybox.close();
-                                                            $.prompt("[ERROR 005] An error was encountered. Please try again.");
+                                                            $.prompt("[LP.05] An error was encountered. Please try again.");
                                                         }
                                                     })
                                                     .fail(function() {
                                                         window.external.ScreenBlocker(false);
                                                         jQuery.fancybox.close();
-                                                        $.prompt("[ERROR 004] An error was encountered. Please try again.");
+                                                        $.prompt("[LP.04] An error was encountered. Please try again.");
                                                     });
                                         }
                                         else {
@@ -242,19 +232,16 @@ $(document).ready(function() {
                                             jQuery.fancybox.close();
 
                                             if (jsonTW.ErrorCode == 1000) {
-                                                $.prompt("[ERROR #" + jsonTW.ErrorCode + "] An error was encountered transferring to this casino. Please try the other casino.");
+                                                $.prompt("[LP #" + jsonTW.ErrorCode + "] An error was encountered transferring to this casino. Please try the other casino.");
                                             }
                                             else if (jsonTW.ErrorCode == 50 || jsonTW.ErrorCode == 51 || jsonTW.ErrorCode == 52 || jsonTW.ErrorCode == 53) {
-                                                $.prompt("[ERROR #" + jsonTW.ErrorCode + "] An error was encountered transferring to this casino. Please call customer service.");
+                                                $.prompt("[LP #" + jsonTW.ErrorCode + "] An error was encountered transferring to this casino. Please call customer service.");
                                             }
-                                            else if (jsonTW.ErrorCode == 2 || jsonTW.ErrorCode == 8 || jsonTW.ErrorCode == 25 || jsonTW.ErrorCode == 40 || jsonTW.ErrorCode == 41 || jsonTW.ErrorCode == 42 || jsonTW.ErrorCode == 45 || jsonTW.ErrorCode == 54) {
+                                            else if (jsonTW.ErrorCode == 2 || jsonTW.ErrorCode == 5 || jsonTW.ErrorCode == 8 || jsonTW.ErrorCode == 25 || jsonTW.ErrorCode == 40 || jsonTW.ErrorCode == 41 || jsonTW.ErrorCode == 42 || jsonTW.ErrorCode == 45 || jsonTW.ErrorCode == 54) {
                                                 $.prompt(JSON.stringify(jsonTW.ReturnMessage).replace(/\"/g, ""));
                                             }
-                                            else if (jsonTW.ErrorCode == 5) {
-                                                $.prompt("[ERROR #" + jsonTW.ErrorCode + "] Unable to transfer to new casino. Please call customer service.");
-                                            }
                                             else {
-                                                $.prompt("[ERROR #" + jsonTW.ErrorCode + "] An error was encountered. Please try again.");
+                                                $.prompt("[LP #" + jsonTW.ErrorCode + "] An error was encountered. Please try again.");
                                             }
                                         }
 
@@ -263,18 +250,18 @@ $(document).ready(function() {
                                 } else {
                                     window.external.ScreenBlocker(false);
                                     jQuery.fancybox.close();
-                                    $.prompt("[ERROR 003] Terminal has more than One (1) active session.");
+                                    $.prompt("[LP.03] The terminal has more than one (1) active session.");
                                 }
                             } else {
                                 window.external.ScreenBlocker(false);
                                 jQuery.fancybox.close();
-                                $.prompt("[ERROR 002] Terminal has no valid session");
+                                $.prompt("[LP.02] The terminal has no valid session.");
                             }
                         }
                         else {
                             window.external.ScreenBlocker(false);
                             jQuery.fancybox.close();
-                            $.prompt("[ERROR 001] Error was encountered. Kindly retry.");
+                            $.prompt("[LP.01] An error was encountered. Kindly retry.");
                         }
 
                     });
