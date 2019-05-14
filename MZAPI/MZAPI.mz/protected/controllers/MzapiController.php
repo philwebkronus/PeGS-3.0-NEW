@@ -280,7 +280,7 @@ class MzapiController extends Controller {
                                     //if activeservicestatus == 9
                                     if ($ActiveServiceStatus == 9) {
                                         $errCode = 41;
-                                        $transMsg = '[LP #41.2] TThere is already a pending Launchpad transfer transaction for this account. Please contact customer service.';
+                                        $transMsg = '[LP #41.2] There is already a pending Launchpad transfer transaction for this account. Please contact customer service.';
 
                                         $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                         $appLogger->log($appLogger->logdate, "[response]", $transMsg);
@@ -975,7 +975,7 @@ class MzapiController extends Controller {
                                                     }
                                                 }
                                             } else {
-                                                $errCode = 09;
+                                                $errCode = '09';
                                                 $transMsg = '[LP #09] Failed to update transaction transfer details';
 
                                                 $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
@@ -985,7 +985,7 @@ class MzapiController extends Controller {
                                                 exit;
                                             }
                                         } else {
-                                            $errCode = 08;
+                                            $errCode = '08';
                                             $transMsg = '[LP #08.2] Transferring between casinos is currently unavailable. Please try again later';
 
                                             $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
@@ -995,7 +995,7 @@ class MzapiController extends Controller {
                                             exit;
                                         }
                                     } else {
-                                        $errCode = 07;
+                                        $errCode = '07';
                                         $transMsg = '[LP #07] Failed to get balance from current provider';
 
                                         $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
@@ -1005,7 +1005,7 @@ class MzapiController extends Controller {
                                         exit;
                                     }
                                 } else {
-                                    $errCode = 06;
+                                    $errCode = '06';
                                     $transMsg = '[LP #06] Failed to get service group name';
 
                                     $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
@@ -1015,7 +1015,7 @@ class MzapiController extends Controller {
                                     exit;
                                 }
                             } else {
-                                $errCode = 05;
+                                $errCode = '05';
                                 $transMsg = '[LP #05] New casino balance is not equal to zero';
 
                                 $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
@@ -1025,7 +1025,7 @@ class MzapiController extends Controller {
                                 exit;
                             }
                         } else {
-                            $errCode = 04;
+                            $errCode = '04';
                             $transMsg = '[LP #04] Failed to get balance from new provider';
 
                             $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
@@ -1035,7 +1035,7 @@ class MzapiController extends Controller {
                             exit;
                         }
                     } else {
-                        $errCode = 03;
+                        $errCode = '03';
                         $transMsg = '[LP #03] Failed to get session details';
 
                         $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], null, null, null, $transMsg, null, null);
@@ -1060,7 +1060,7 @@ class MzapiController extends Controller {
                         $this->_sendResponse(200, $data);
                         exit;
                     } elseif ($ActiveServiceStatus <> 1) {
-                        $errCode = 8;
+                        $errCode = '08';
                         $transMsg = '[LP #08.1] Transferring between casinos is currently unavailable. Please try again later';
 
                         $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], null, null, null, $transMsg, null, null);
@@ -1081,7 +1081,7 @@ class MzapiController extends Controller {
                 }
             } else {
                 //NO SESSION
-                $errCode = 02;
+                $errCode = '02';
                 $transMsg = '[LP #02] The player has no existing session.';
 
                 $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], null, null, null, $transMsg, null, null);
@@ -1091,7 +1091,7 @@ class MzapiController extends Controller {
                 exit;
             }
         } else {
-            $errCode = 01;
+            $errCode = '01';
             if (empty($NewUsermode)) {
                 $transMsg = '[LP #01] Usermode must not be blank';
             }
@@ -1162,7 +1162,6 @@ class MzapiController extends Controller {
                 $requestBody = array("ServiceID" => $ServiceID, "UBServiceLogin" => $UBServiceLogin, "UBServicePassword" => $UBServicePassword);
                 $request = json_encode($requestBody);
                 $response = json_encode($GetBalance);
-
 
                 if (!empty($GetBalance)) {
                     if ($GetBalance['IsSucceed'] == false) {
@@ -1275,6 +1274,7 @@ class MzapiController extends Controller {
                 }
             }
         }
+
         if (empty($apiresult) || $apiresult == 'Cant connect to casino') {
             $errCode = 52;
             $transMsg = '[LP #52] Error in Deposit';
@@ -1378,6 +1378,7 @@ class MzapiController extends Controller {
                 }
             }
         }
+
         if (empty($apiresult) || $apiresult == 'Cant connect to casino') {
             $errCode = 53;
             $transMsg = '[LP #53] Error in Withdrawal';
