@@ -175,7 +175,6 @@ $(document).ready(function() {
                             }, function(data) {
 
                         var json = $.parseJSON(data);
-
                         if (json.Count != undefined) {
                             if (json.Count != 0) {
                                 if (json.Count == 1) {
@@ -189,7 +188,8 @@ $(document).ready(function() {
                                             }, function(datatw) {
 
                                         var jsonTW = $.parseJSON(datatw);
-                                        if (jsonTW.ErrorCode == 0) {
+
+                                        if (jsonTW.ErrorCode == '0') {
                                             $.post("../Helper/lock.php",
                                                     {
                                                         data: 'checkIfTerminalSessionLobby',
@@ -234,10 +234,13 @@ $(document).ready(function() {
                                             if (jsonTW.ErrorCode == 1000) {
                                                 $.prompt("[LP #" + jsonTW.ErrorCode + "] An error was encountered transferring to this casino. Please try the other casino.");
                                             }
+                                            else if (jsonTW.ErrorCode == '05') {                                            
+												$.prompt("[LP #" + jsonTW.ErrorCode + "] Unable to transfer to new casino. Please call customer service.");
+                                            }
                                             else if (jsonTW.ErrorCode == 50 || jsonTW.ErrorCode == 51 || jsonTW.ErrorCode == 52 || jsonTW.ErrorCode == 53) {
                                                 $.prompt("[LP #" + jsonTW.ErrorCode + "] An error was encountered transferring to this casino. Please call customer service.");
                                             }
-                                            else if (jsonTW.ErrorCode == 2 || jsonTW.ErrorCode == 5 || jsonTW.ErrorCode == 8 || jsonTW.ErrorCode == 25 || jsonTW.ErrorCode == 40 || jsonTW.ErrorCode == 41 || jsonTW.ErrorCode == 42 || jsonTW.ErrorCode == 45 || jsonTW.ErrorCode == 54) {
+                                            else if (jsonTW.ErrorCode == '02' || jsonTW.ErrorCode == '05' || jsonTW.ErrorCode == '08' || jsonTW.ErrorCode == 25 || jsonTW.ErrorCode == 40 || jsonTW.ErrorCode == 41 || jsonTW.ErrorCode == 42 || jsonTW.ErrorCode == 45 || jsonTW.ErrorCode == 54) {
                                                 $.prompt(JSON.stringify(jsonTW.ReturnMessage).replace(/\"/g, ""));
                                             }
                                             else {
@@ -375,6 +378,4 @@ $(document).ready(function() {
         });
 
     };
-
-
 });
