@@ -349,7 +349,8 @@ if ($connected) {
 
 
 ///TRANSWALLET
-//User Based Redemption Checking Site Existence
+
+
             case "TransferWallet":
                 $login = $_POST['terminalcode'];
                 $provider = $_POST['txtservices'];
@@ -516,7 +517,7 @@ if ($connected) {
                                                             break;
 
                                                         default :
-                                                            $msg = "Error: Invalid Casino Provider";
+                                                            $msg = "Manual Redemption Error: Invalid Casino Provider";
                                                             echo json_encode($msg);
                                                             exit;
 
@@ -551,7 +552,7 @@ if ($connected) {
                                     $getUBInfo = $otopup->getUBInfo($mid, $ubserviceID);
 
                                     if (empty($getUBInfo)) {
-                                        $msg = "Can't get player details";
+                                        $msg = "Manual Redemption Error: Can't get player details";
                                         echo json_encode($msg);
                                         exit;
                                     }
@@ -700,7 +701,7 @@ if ($connected) {
                                                             echo json_encode($msg);
                                                             exit;
                                                         } else {
-                                                            $msg = "Manual Redemption: Error on inserting manual redemption";
+                                                            $msg = "Manual Redemption: Error on inserting redemption table.";
                                                             echo json_encode($msg);
                                                             exit;
                                                         }
@@ -779,7 +780,7 @@ if ($connected) {
                                                             echo json_encode($msg);
                                                             exit;
                                                         } else {
-                                                            $msg = "Manual Redemption: Error on inserting manual redemption";
+                                                            $msg = "Manual Redemption: Error on inserting redemption table.";
                                                             echo json_encode($msg);
                                                             exit;
                                                         }
@@ -806,13 +807,13 @@ if ($connected) {
                                                 break;
 
                                             default :
-                                                $msg = "Error: Invalid Casino Provider";
+                                                $msg = "Manual Redemption Error: Invalid Casino Provider";
                                                 echo json_encode($msg);
                                                 exit;
                                                 break;
                                         }
                                     } else {
-                                        $msg = "Error: Failed to insert in Manual Redemptions Table";
+                                        $msg = "Manual Redemption: Error on inserting redemption table.";
                                         echo json_encode($msg);
                                         exit;
                                     }
@@ -852,7 +853,7 @@ if ($connected) {
                                             echo json_encode($msg);
                                             exit;
                                         } else {
-                                            $msg = "Failed to update terminalsessions table.";
+                                            $msg = "Manual Redemption Error : Failed to update sessions table.";
                                             echo json_encode($msg);
                                             exit;
                                         }
@@ -874,7 +875,7 @@ if ($connected) {
                                                 echo json_encode($msg);
                                                 exit;
                                             } else {
-                                                $msg = "Failed to update terminalsessions table.";
+                                                $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                 echo json_encode($msg);
                                                 exit;
                                             }
@@ -923,7 +924,7 @@ if ($connected) {
                                                         break;
 
                                                     default :
-                                                        $msg = "Error: Invalid Casino Provider";
+                                                        $msg = "Manual Redemption Error: Invalid Casino Provider";
                                                         echo json_encode($msg);
                                                         exit;
                                                         break;
@@ -960,7 +961,7 @@ if ($connected) {
                                                         $TransferStatus = 100;
                                                         $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
                                                         if (!$updateMzTransactionTransfer) {
-                                                            $msg = "Failed to update mztransactiontransfer table.";
+                                                            $msg = "Manual Redemption Error : Failed to update transactions transfer table.";
                                                             echo json_encode($msg);
                                                             exit;
                                                         }
@@ -973,11 +974,11 @@ if ($connected) {
                                                             }
                                                             $otopupmembership->close();
 
-                                                            $msg = "Redeemed: " . $lastbalance . "; Remaining Balance: " . $lastbalance;
+                                                            $msg = "Floating balance was successfully redeemed. \n Redeemed: " . $vactualAmt . "; Remaining Balance: " . $lastbalance;
                                                             echo json_encode($msg);
                                                             exit;
                                                         } else {
-                                                            $msg = "Failed to update terminalsessions table.";
+                                                            $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                             echo json_encode($msg);
                                                             exit;
                                                         }
@@ -987,7 +988,7 @@ if ($connected) {
                                                         exit;
                                                     }
                                                 } else {
-                                                    $msg = "Failed to insert manualredepmtion table.";
+                                                    $msg = "Manual Redemption Error : Failed to insert redemption table.";
                                                     echo json_encode($msg);
                                                     exit;
                                                 }
@@ -1044,6 +1045,11 @@ if ($connected) {
                                                     $balance = 0;
                                                 }
 
+												if ($ramount == 0) {
+													$msg = "Redeemed: " . $ramount . "; Remaining Balance: " . $balance;
+													echo json_encode($msg);
+													exit;
+												}
 
                                                 $vsiteID = $mzSiteID;
                                                 $vterminalID = $mzTerminalID;
@@ -1129,46 +1135,41 @@ if ($connected) {
                                                             $issucess = $otopup->updateManualRedemptionub($vstatus, $vactualAmt, $rtransactionID, $fmteffdate, $vtransStatus, $lastmrid);
                                                             if ($issucess > 0) {
 
-                                                                if ($balance == 0) {
-                                                                    $TransferStatus = 100;
+																if ($balance == 0) {
+																	$TransferStatus = 100;
 
-                                                                    $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
-                                                                    if (!$updateMzTransactionTransfer) {
-                                                                        $msg = "Failed to update mztransactiontransfer table.";
-                                                                        echo json_encode($msg);
-                                                                        exit;
+																	$updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
 
-                                                                        $ramount = number_format($vactualAmt, 2, ".", ",");
-                                                                        $balance = number_format($balance, 2, ".", ",");
+																	if ($updateMzTransactionTransfer) {
 
-                                                                        $updateTerminalSessionsCredentials = $otopup->updateTerminalSessionsCredentials(1, $mzFromServiceID, $UBServiceLogin, $UBServicePassword, $UBHashedServicePassword, $vactualAmt, $mzTerminalID);
+																		$updateTerminalSessionsCredentials = $otopup->updateTerminalSessionsCredentials(1, $mzFromServiceID, $UBServiceLogin, $UBServicePassword, $UBHashedServicePassword, $vactualAmt, $mzTerminalID);
 
-                                                                        if ($updateTerminalSessionsCredentials) {
-                                                                            if ($otopupmembership->open() == true) {
-                                                                                $otopupmembership->updateMember($mzFromServiceID, $mid);
-                                                                            }
-                                                                            $otopupmembership->close();
+																		if ($updateTerminalSessionsCredentials) {
+																			if ($otopupmembership->open() == true) {
+																				$otopupmembership->updateMember($mzFromServiceID, $mid);
+																			}
+																			$otopupmembership->close();
 
-                                                                            $msg = "Redeemed: " . $ramount . "; Remaining Balance: " . $balance;
-                                                                            echo json_encode($msg);
-                                                                            exit;
-                                                                        } else {
-                                                                            $msg = "Failed to update terminalsessions table.";
-                                                                            echo json_encode($msg);
-                                                                            exit;
-                                                                        }
-                                                                    } else {
-                                                                        $msg = "Redeemed: " . $ramount . "; Remaining Balance: " . $balance;
-                                                                        echo json_encode($msg);
-                                                                        exit;
-                                                                    }
-                                                                } else {
-                                                                    $msg = "Redeemed: " . $ramount . "; Remaining Balance: " . $balance;
-                                                                    echo json_encode($msg);
-                                                                    exit;
-                                                                }
+																			$msg = "Redeemed: " . $ramount . "; Remaining Balance: " . $balance;
+																			echo json_encode($msg);
+																			exit;
+																		} else {
+																			$msg = "Manual Redemption Error : Failed to update sessions table.";
+																			echo json_encode($msg);
+																			exit;
+																		}
+																	} else {
+																		$msg = "Manual Redemption Error : Failed to update transaction transfer table.";
+																		echo json_encode($msg);
+																		exit;
+																	}
+																} else {
+																	$msg = "Redeemed: " . $ramount . "; Remaining Balance: " . $balance;
+																	echo json_encode($msg);
+																	exit;
+																}
                                                             } else {
-                                                                $msg = "Failed updating manual redemption table";
+                                                                $msg = "Manual Redemption Error : Failed to update redemption table";
                                                                 echo json_encode($msg);
                                                                 exit;
                                                             }
@@ -1257,7 +1258,7 @@ if ($connected) {
                                                                         $TransferStatus = 100;
                                                                         $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
                                                                         if (!$updateMzTransactionTransfer) {
-                                                                            $msg = "Failed to update mztransactiontransfer table.";
+                                                                            $msg = "Manual Redemption Error : Failed to update transactions transfer table.";
                                                                             echo json_encode($msg);
                                                                             exit;
                                                                         }
@@ -1274,7 +1275,7 @@ if ($connected) {
                                                                             echo json_encode($msg);
                                                                             exit;
                                                                         } else {
-                                                                            $msg = "Failed to update terminalsessions table.";
+                                                                            $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                                             echo json_encode($msg);
                                                                             exit;
                                                                         }
@@ -1305,30 +1306,23 @@ if ($connected) {
 
                                                             $updateActiveServiceStatusRollback = $otopup->updateActiveServiceStatusRollback($GLOBAL_OldActiveServiceStatus, $loyaltycardnumber);
                                                             if ($updateActiveServiceStatusRollback) {
-                                                                $msg = "Failed to process manual redemption";
+                                                                $msg = "Manual Redemption Error : Failed to process manual redemption";
                                                                 echo json_encode($msg);
                                                                 exit;
                                                             } else {
-                                                                $msg = "Failed to update terminalsessions table.";
+                                                                $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                                 echo json_encode($msg);
                                                                 exit;
                                                             }
                                                         }
                                                     }
                                                 } else {
-                                                    $msg = "Manual Redemption: Error on inserting manual redemption";
+                                                    $msg = "Manual Redemption: Error on inserting redemption table.";
                                                     echo json_encode($msg);
                                                     exit;
                                                 }
 
                                                 break;
-
-
-
-
-
-
-
 
                                             case 93:
 
@@ -1432,7 +1426,7 @@ if ($connected) {
                                                                     exit;
                                                                 }
                                                             } else {
-                                                                $msg = "Failed to update terminalsessions table.";
+                                                                $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                                 echo json_encode($msg);
                                                                 exit;
                                                             }
@@ -1465,7 +1459,7 @@ if ($connected) {
                                                             break;
 
                                                         default :
-                                                            $msg = "Error: Invalid Casino Provider";
+                                                            $msg = "Manual Redemption Error: Invalid Casino Provider";
                                                             echo json_encode($msg);
                                                             exit;
                                                             break;
@@ -1509,7 +1503,7 @@ if ($connected) {
                                                                     $TransferStatus = 100;
                                                                     $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
                                                                     if (!$updateMzTransactionTransfer) {
-                                                                        $msg = "Failed to update mztransactiontransfer table.";
+                                                                        $msg = "Manual Redemption Error : Failed to update transactions transfer table.";
                                                                         echo json_encode($msg);
                                                                         exit;
                                                                     }
@@ -1527,7 +1521,7 @@ if ($connected) {
                                                                         echo json_encode($msg);
                                                                         exit;
                                                                     } else {
-                                                                        $msg = "Failed to update terminalsessions table.";
+                                                                        $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                                         echo json_encode($msg);
                                                                         exit;
                                                                     }
@@ -1537,7 +1531,7 @@ if ($connected) {
                                                                     exit;
                                                                 }
                                                             } else {
-                                                                $msg = "Failed updating manual redemption table";
+                                                                $msg = "Manual Redemption Error : Failed to update redemption table";
                                                                 echo json_encode($msg);
                                                                 exit;
                                                             }
@@ -1624,7 +1618,7 @@ if ($connected) {
                                                                         $TransferStatus = 100;
                                                                         $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
                                                                         if (!$updateMzTransactionTransfer) {
-                                                                            $msg = "Failed to update mztransactiontransfer table.";
+                                                                            $msg = "Manual Redemption Error : Failed to update transactions transfer table.";
                                                                             echo json_encode($msg);
                                                                             exit;
                                                                         }
@@ -1641,7 +1635,7 @@ if ($connected) {
                                                                             echo json_encode($msg);
                                                                             exit;
                                                                         } else {
-                                                                            $msg = "Failed to update terminalsessions table.";
+                                                                            $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                                             echo json_encode($msg);
                                                                             exit;
                                                                         }
@@ -1672,33 +1666,26 @@ if ($connected) {
 
                                                             $updateActiveServiceStatusRollback = $otopup->updateActiveServiceStatusRollback($GLOBAL_OldActiveServiceStatus, $loyaltycardnumber);
                                                             if ($updateActiveServiceStatusRollback) {
-                                                                $msg = "Failed to process manual redemption";
+                                                                $msg = "Manual Redemption Error : Failed to process manual redemption";
                                                                 echo json_encode($msg);
                                                                 exit;
                                                             } else {
-                                                                $msg = "Failed to update terminalsessions table.";
+                                                                $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                                 echo json_encode($msg);
                                                                 exit;
                                                             }
                                                         }
                                                     }
                                                 } else {
-                                                    $msg = "Manual Redemption: Error on inserting manual redemption";
+                                                    $msg = "Manual Redemption: Error on inserting redemption table.";
                                                     echo json_encode($msg);
                                                     exit;
                                                 }
 
-
-
-
-
-
-
-
                                                 break;
 
                                             default:
-                                                $msg = "Error: Invalid Active Service Status";
+                                                $msg = "Manual Redemption Error: Invalid Active Service Status";
                                                 echo json_encode($msg);
                                                 exit;
                                                 break;
@@ -1725,7 +1712,7 @@ if ($connected) {
                                             $updateActiveServiceStatusRollback = $otopup->updateActiveServiceStatusRollback($GLOBAL_OldActiveServiceStatus, $loyaltycardnumber);
 
                                             if ($updateActiveServiceStatusRollback) {
-                                                $msg = "No pending transaction to fulfill";
+                                                $msg = "No pending transaction to fulfil";
                                                 echo json_encode($msg);
                                                 exit;
                                             }
@@ -1823,7 +1810,7 @@ if ($connected) {
                                                             echo json_encode($msg);
                                                             exit;
                                                         } else {
-                                                            $msg = "Failed to update terminalsessions table.";
+                                                            $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                             echo json_encode($msg);
                                                             exit;
                                                         }
@@ -1876,7 +1863,7 @@ if ($connected) {
                                                             echo json_encode($msg);
                                                             exit;
                                                         } else {
-                                                            $msg = "Failed to update terminalsessions table.";
+                                                            $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                             echo json_encode($msg);
                                                             exit;
                                                         }
@@ -1889,7 +1876,7 @@ if ($connected) {
                                                     break;
 
                                                 default :
-                                                    $msg = "Error: Invalid Casino Provider";
+                                                    $msg = "Manual Redemption Error: Invalid Casino Provider";
                                                     echo json_encode($msg);
                                                     exit;
                                                     break;
@@ -1944,7 +1931,7 @@ if ($connected) {
                                                                     echo json_encode($msg);
                                                                     exit;
                                                                 } else {
-                                                                    $msg = "Failed to update terminalsessions table.";
+                                                                    $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                                     echo json_encode($msg);
                                                                     exit;
                                                                 }
@@ -1959,7 +1946,7 @@ if ($connected) {
                                                                 }
                                                                 $otopupmembership->close();
                                                             } else {
-                                                                $msg = "Manual Redemption: Error on inserting manual redemption";
+                                                                $msg = "Manual Redemption: Error on inserting redemption table.";
                                                                 echo json_encode($msg);
                                                                 exit;
                                                             }
@@ -2041,12 +2028,12 @@ if ($connected) {
                                                                     echo json_encode($msg);
                                                                     exit;
                                                                 } else {
-                                                                    $msg = "Failed to update terminalsessions table.";
+                                                                    $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                                     echo json_encode($msg);
                                                                     exit;
                                                                 }
                                                             } else {
-                                                                $msg = "Manual Redemption: Error on inserting manual redemption";
+                                                                $msg = "Manual Redemption: Error on inserting redemption table.";
                                                                 echo json_encode($msg);
                                                                 exit;
                                                             }
@@ -2075,7 +2062,7 @@ if ($connected) {
                                                     break;
 
                                                 default :
-                                                    $msg = "Error: Invalid Casino Provider";
+                                                    $msg = "Manual Redemption Error: Invalid Casino Provider";
                                                     echo json_encode($msg);
                                                     exit;
                                                     break;
@@ -2106,7 +2093,7 @@ if ($connected) {
                                                 echo json_encode($msg);
                                                 exit;
                                             } else {
-                                                $msg = "Failed to update terminalsessions table.";
+                                                $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                 echo json_encode($msg);
                                                 exit;
                                             }
@@ -2154,7 +2141,7 @@ if ($connected) {
                                                     $TransferStatus = 101;
                                                     $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
                                                     if (!$updateMzTransactionTransfer) {
-                                                        $msg = "Failed to update mztransactiontransfer table.";
+                                                        $msg = "Manual Redemption Error : Failed to update transactions transfer table.";
                                                         echo json_encode($msg);
                                                         exit;
                                                     }
@@ -2166,21 +2153,21 @@ if ($connected) {
                                                             $otopupmembership->updateMember($mzFromServiceID, $mid);
                                                         }
 
-                                                        $msg = "Successful " . str_replace(array('2'), '', $servicegrpname) . " Casino Fulfilment";
+                                                        $msg = "Successful " . str_replace(array('2'), '', $servicegrpname) . " Casino Fulfillment";
                                                         echo json_encode($msg);
                                                         exit;
                                                     } else {
-                                                        $msg = "Failed to update terminalsessions table.";
+                                                        $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                         echo json_encode($msg);
                                                         exit;
                                                     }
                                                 } else {
-                                                    $msg = "Successful " . str_replace(array('2'), '', $servicegrpname) . " Casino Fulfilment";
+                                                    $msg = "Successful " . str_replace(array('2'), '', $servicegrpname) . " Casino Fulfillment";
                                                     echo json_encode($msg);
                                                     exit;
                                                 }
                                             } else {
-                                                $msg = "Manual Redemption: Error on inserting manual redemption";
+                                                $msg = "Manual Redemption: Error on inserting redemption table.";
                                                 echo json_encode($msg);
                                                 exit;
                                             }
@@ -2191,11 +2178,11 @@ if ($connected) {
                                             if ($mzFromServiceID <> $ubserviceID) {
                                                 $updateActiveServiceStatusRollback = $otopup->updateActiveServiceStatusRollback($GLOBAL_OldActiveServiceStatus, $loyaltycardnumber);
                                                 if ($updateActiveServiceStatusRollback) {
-                                                    $msg = "Invalid casino to fulfill.";
+                                                    $msg = "Invalid casino to fulfil.";
                                                     echo json_encode($msg);
                                                     exit;
                                                 } else {
-                                                    $msg = "Failed to update terminalsessions table.";
+                                                    $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                     echo json_encode($msg);
                                                     exit;
                                                 }
@@ -2271,7 +2258,7 @@ if ($connected) {
                                                             $TransferStatus = 101;
                                                             $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
                                                             if (!$updateMzTransactionTransfer) {
-                                                                $msg = "Failed to update mztransactiontransfer table.";
+                                                                $msg = "Manual Redemption Error : Failed to update transactions transfer table.";
                                                                 echo json_encode($msg);
                                                                 exit;
                                                             }
@@ -2298,7 +2285,7 @@ if ($connected) {
                                                                 exit;
                                                             }
                                                         } else {
-                                                            $msg = "Failed to update terminalsessions table.";
+                                                            $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                             echo json_encode($msg);
                                                             exit;
                                                         }
@@ -2369,7 +2356,7 @@ if ($connected) {
                                                                     $TransferStatus = 101;
                                                                     $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
                                                                     if (!$updateMzTransactionTransfer) {
-                                                                        $msg = "Failed to update mztransactiontransfer table.";
+                                                                        $msg = "Manual Redemption Error : Failed to update transactions transfer table.";
                                                                         echo json_encode($msg);
                                                                         exit;
                                                                     }
@@ -2385,7 +2372,7 @@ if ($connected) {
                                                                         echo json_encode($msg);
                                                                         exit;
                                                                     } else {
-                                                                        $msg = "Failed to update terminalsessions table.";
+                                                                        $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                                         echo json_encode($msg);
                                                                         exit;
                                                                     }
@@ -2395,7 +2382,7 @@ if ($connected) {
                                                                     exit;
                                                                 }
                                                             } else {
-                                                                $msg = "Failed updating manual redemption table";
+                                                                $msg = "Manual Redemption Error : Failed to update redemption table";
                                                                 echo json_encode($msg);
                                                                 exit;
                                                             }
@@ -2481,7 +2468,7 @@ if ($connected) {
                                                                         $TransferStatus = 101;
                                                                         $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
                                                                         if (!$updateMzTransactionTransfer) {
-                                                                            $msg = "Failed to update mztransactiontransfer table.";
+                                                                            $msg = "Manual Redemption Error : Failed to update transactions transfer table.";
                                                                             echo json_encode($msg);
                                                                             exit;
                                                                         }
@@ -2498,7 +2485,7 @@ if ($connected) {
                                                                             echo json_encode($msg);
                                                                             exit;
                                                                         } else {
-                                                                            $msg = "Failed to update terminalsessions table.";
+                                                                            $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                                             echo json_encode($msg);
                                                                             exit;
                                                                         }
@@ -2527,18 +2514,18 @@ if ($connected) {
                                                         } else {
                                                             $updateActiveServiceStatusRollback = $otopup->updateActiveServiceStatusRollback($GLOBAL_OldActiveServiceStatus, $loyaltycardnumber);
                                                             if ($updateActiveServiceStatusRollback) {
-                                                                $msg = "Failed to process manual redemption";
+                                                                $msg = "Manual Redemption Error : Failed to process manual redemption";
                                                                 echo json_encode($msg);
                                                                 exit;
                                                             } else {
-                                                                $msg = "Failed to update terminalsessions table.";
+                                                                $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                                 echo json_encode($msg);
                                                                 exit;
                                                             }
                                                         }
                                                     }
                                                 } else {
-                                                    $msg = "Manual Redemption: Error on inserting manual redemption";
+                                                    $msg = "Manual Redemption: Error on inserting redemption table.";
                                                     echo json_encode($msg);
                                                     exit;
                                                 }
@@ -2644,7 +2631,7 @@ if ($connected) {
                                                         echo json_encode($msg);
                                                         exit;
                                                     } else {
-                                                        $msg = "Failed to update terminalsessions table.";
+                                                        $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                         echo json_encode($msg);
                                                         exit;
                                                     }
@@ -2723,12 +2710,12 @@ if ($connected) {
                                                                 echo json_encode($msg);
                                                                 exit;
                                                             } else {
-                                                                $msg = "Failed to update terminalsessions table.";
+                                                                $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                                 echo json_encode($msg);
                                                                 exit;
                                                             }
                                                         } else {
-                                                            $msg = "Failed updating manual redemption table";
+                                                            $msg = "Manual Redemption Error : Failed to update redemption table";
                                                             echo json_encode($msg);
                                                             exit;
                                                         }
@@ -2755,7 +2742,7 @@ if ($connected) {
                                                     exit;
                                                 }
                                             } else {
-                                                $msg = "Manual Redemption: Error on inserting manual redemption";
+                                                $msg = "Manual Redemption: Error on inserting redemption table.";
                                                 echo json_encode($msg);
                                                 exit;
                                             }
@@ -2767,7 +2754,7 @@ if ($connected) {
                                                 echo json_encode($msg);
                                                 exit;
                                             } else {
-                                                $msg = "Failed to update terminalsessions table.";
+                                                $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                 echo json_encode($msg);
                                                 exit;
                                             }
@@ -2779,25 +2766,20 @@ if ($connected) {
                                                 echo json_encode($msg);
                                                 exit;
                                             } else {
-                                                $msg = "Failed to update terminalsessions table.";
+                                                $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                 echo json_encode($msg);
                                                 exit;
                                             }
                                         } elseif ($MzTransferStatus == 0) {
 
-
-
-
-
-
                                             if ($mzFromServiceID <> $ubserviceID) {
                                                 $updateActiveServiceStatusRollback = $otopup->updateActiveServiceStatusRollback($GLOBAL_OldActiveServiceStatus, $loyaltycardnumber);
                                                 if ($updateActiveServiceStatusRollback) {
-                                                    $msg = "Invalid casino to fulfill.";
+                                                    $msg = "Invalid casino to fulfil.";
                                                     echo json_encode($msg);
                                                     exit;
                                                 } else {
-                                                    $msg = "Failed to update terminalsessions table.";
+                                                    $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                     echo json_encode($msg);
                                                     exit;
                                                 }
@@ -2809,7 +2791,7 @@ if ($connected) {
                                                         echo json_encode($msg);
                                                         exit;
                                                     } else {
-                                                        $msg = "Failed to update terminalsessions table.";
+                                                        $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                         echo json_encode($msg);
                                                         exit;
                                                     }
@@ -2865,7 +2847,7 @@ if ($connected) {
                                                             break;
 
                                                         default :
-                                                            $msg = "Error: Invalid Casino Provider";
+                                                            $msg = "Manual Redemption Error: Invalid Casino Provider";
                                                             echo json_encode($msg);
                                                             exit;
                                                             break;
@@ -2941,7 +2923,7 @@ if ($connected) {
                                                                         $TransferStatus = 101;
                                                                         $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
                                                                         if (!$updateMzTransactionTransfer) {
-                                                                            $msg = "Failed to update mztransactiontransfer table.";
+                                                                            $msg = "Manual Redemption Error : Failed to update transactions transfer table.";
                                                                             echo json_encode($msg);
                                                                             exit;
                                                                         }
@@ -2957,7 +2939,7 @@ if ($connected) {
                                                                             echo json_encode($msg);
                                                                             exit;
                                                                         } else {
-                                                                            $msg = "Failed to update terminalsessions table.";
+                                                                            $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                                             echo json_encode($msg);
                                                                             exit;
                                                                         }
@@ -2968,7 +2950,7 @@ if ($connected) {
                                                                     }
                                                                 }
                                                             } else {
-                                                                $msg = "Manual Redemption: Error on inserting manual redemption";
+                                                                $msg = "Manual Redemption: Error on inserting redemption table.";
                                                                 echo json_encode($msg);
                                                                 exit;
                                                             }
@@ -3047,7 +3029,7 @@ if ($connected) {
                                                                     $TransferStatus = 101;
                                                                     $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
                                                                     if (!$updateMzTransactionTransfer) {
-                                                                        $msg = "Failed to update mztransactiontransfer table.";
+                                                                        $msg = "Manual Redemption Error : Failed to update transactions transfer table.";
                                                                         echo json_encode($msg);
                                                                         exit;
                                                                     }
@@ -3074,7 +3056,7 @@ if ($connected) {
                                                                         exit;
                                                                     }
                                                                 } else {
-                                                                    $msg = "Failed to update terminalsessions table.";
+                                                                    $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                                     echo json_encode($msg);
                                                                     exit;
                                                                 }
@@ -3141,7 +3123,7 @@ if ($connected) {
                                                                             $TransferStatus = 101;
                                                                             $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
                                                                             if (!$updateMzTransactionTransfer) {
-                                                                                $msg = "Failed to update mztransactiontransfer table.";
+                                                                                $msg = "Manual Redemption Error : Failed to update transactions transfer table.";
                                                                                 echo json_encode($msg);
                                                                                 exit;
                                                                             }
@@ -3161,12 +3143,12 @@ if ($connected) {
                                                                                 echo json_encode($msg);
                                                                                 exit;
                                                                             } else {
-                                                                                $msg = "Failed to update terminalsessions table.";
+                                                                                $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                                                 echo json_encode($msg);
                                                                                 exit;
                                                                             }
                                                                         } else {
-                                                                            $msg = "Failed updating manual redemption table";
+                                                                            $msg = "Manual Redemption Error : Failed to update redemption table";
                                                                             echo json_encode($msg);
                                                                             exit;
                                                                         }
@@ -3257,7 +3239,7 @@ if ($connected) {
                                                                                 $TransferStatus = 101;
                                                                                 $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
                                                                                 if (!$updateMzTransactionTransfer) {
-                                                                                    $msg = "Failed to update mztransactiontransfer table.";
+                                                                                    $msg = "Manual Redemption Error : Failed to update transactions transfer table.";
                                                                                     echo json_encode($msg);
                                                                                     exit;
                                                                                 }
@@ -3274,7 +3256,7 @@ if ($connected) {
                                                                                     echo json_encode($msg);
                                                                                     exit;
                                                                                 } else {
-                                                                                    $msg = "Failed to update terminalsessions table.";
+                                                                                    $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                                                     echo json_encode($msg);
                                                                                     exit;
                                                                                 }
@@ -3303,18 +3285,18 @@ if ($connected) {
                                                                 } else {
                                                                     $updateActiveServiceStatusRollback = $otopup->updateActiveServiceStatusRollback($GLOBAL_OldActiveServiceStatus, $loyaltycardnumber);
                                                                     if ($updateActiveServiceStatusRollback) {
-                                                                        $msg = "Failed to process manual redemption";
+                                                                        $msg = "Manual Redemption Error : Failed to process manual redemption";
                                                                         echo json_encode($msg);
                                                                         exit;
                                                                     } else {
-                                                                        $msg = "Failed to update terminalsessions table.";
+                                                                        $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                                         echo json_encode($msg);
                                                                         exit;
                                                                     }
                                                                 }
                                                             }
                                                         } else {
-                                                            $msg = "Manual Redemption: Error on inserting manual redemption";
+                                                            $msg = "Manual Redemption: Error on inserting redemption table.";
                                                             echo json_encode($msg);
                                                             exit;
                                                         }
@@ -3323,19 +3305,14 @@ if ($connected) {
                                             }
                                         } elseif ($MzTransferStatus == 3) {
 
-
-
-
-
-
                                             if ($mzToServiceID <> $ubserviceID) {
                                                 $updateActiveServiceStatusRollback = $otopup->updateActiveServiceStatusRollback($GLOBAL_OldActiveServiceStatus, $loyaltycardnumber);
                                                 if ($updateActiveServiceStatusRollback) {
-                                                    $msg = "Invalid casino to fulfill.";
+                                                    $msg = "Invalid casino to fulfil.";
                                                     echo json_encode($msg);
                                                     exit;
                                                 } else {
-                                                    $msg = "Failed to update terminalsessions table.";
+                                                    $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                     echo json_encode($msg);
                                                     exit;
                                                 }
@@ -3396,7 +3373,7 @@ if ($connected) {
                                                             break;
 
                                                         default :
-                                                            $msg = "Error: Invalid Casino Provider";
+                                                            $msg = "Manual Redemption Error: Invalid Casino Provider";
                                                             echo json_encode($msg);
                                                             exit;
                                                             break;
@@ -3472,7 +3449,7 @@ if ($connected) {
                                                                     $TransferStatus = 101;
                                                                     $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
                                                                     if (!$updateMzTransactionTransfer) {
-                                                                        $msg = "Failed to update mztransactiontransfer table.";
+                                                                        $msg = "Manual Redemption Error : Failed to update transactions transfer table.";
                                                                         echo json_encode($msg);
                                                                         exit;
                                                                     }
@@ -3497,12 +3474,12 @@ if ($connected) {
                                                                         echo json_encode($msg);
                                                                         exit;
                                                                     } else {
-                                                                        $msg = "Failed to update manual redemption table.";
+                                                                        $msg = "Manual Redemption Error : Failed to update  redemption table.";
                                                                         echo json_encode($msg);
                                                                         exit;
                                                                     }
                                                                 } else {
-                                                                    $msg = "Failed to update terminalsessions table.";
+                                                                    $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                                     echo json_encode($msg);
                                                                     exit;
                                                                 }
@@ -3530,13 +3507,11 @@ if ($connected) {
                                                                     $locatorname = null;
                                                                     $withdraw = array();
 
-//withdraw rtg casino
                                                                     $withdraw = $CasinoGamingCAPI->Withdraw($servicegrpname, $mzToServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $vactualAmt, $tracking1, $tracking2, $tracking3, $tracking4 = '', $methodname = '', $usermode, $locatorname, $UBServicePassword);
 
                                                                     break;
                                                             }
 
-//check if redemption was successful, and insert information on manualredemptions and audittrail
                                                             if ($withdraw['IsSucceed'] == true) {
                                                                 switch (true) {
                                                                     case strstr($serviceName, "RTG - Sapphire V17 UB"):
@@ -3561,7 +3536,6 @@ if ($connected) {
 
 
                                                                 if ($riserror == "OK" || $riserror == "Withdrawal Success") {
-//SUCCESS WITHDRAWAL
 
                                                                     $fmteffdate = $otopup->getDate();
                                                                     $vtransStatus = $rremarks;
@@ -3574,7 +3548,7 @@ if ($connected) {
                                                                             $TransferStatus = 101;
                                                                             $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
                                                                             if (!$updateMzTransactionTransfer) {
-                                                                                $msg = "Failed to update mztransactiontransfer table.";
+                                                                                $msg = "Manual Redemption Error : Failed to update transactions transfer table.";
                                                                                 echo json_encode($msg);
                                                                                 exit;
                                                                             }
@@ -3595,13 +3569,13 @@ if ($connected) {
                                                                                 echo json_encode($msg);
                                                                                 exit;
                                                                             } else {
-                                                                                $msg = "Failed to update terminalsessions table.";
+                                                                                $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                                                 echo json_encode($msg);
                                                                                 exit;
                                                                             }
                                                                         }
                                                                     } else {
-                                                                        $msg = "Failed updating manual redemption table";
+                                                                        $msg = "Manual Redemption Error : Failed to update redemption table";
                                                                         echo json_encode($msg);
                                                                         exit;
                                                                     }
@@ -3621,7 +3595,6 @@ if ($connected) {
                                                                     }
                                                                 }
                                                             } else {
-// FAILED WITHDRAWAL
 
                                                                 switch (true) {
                                                                     case strstr($serviceName, "RTG - Sapphire V17 UB"):
@@ -3672,7 +3645,6 @@ if ($connected) {
 
                                                                         if ($issucess > 0) {
 
-
                                                                             switch (true) {
                                                                                 case strstr($serviceName, "RTG - Sapphire V17 UB"):
                                                                                     $balance = $CasinoGamingCAPI->getBalance($servicegrpname, $mzToServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $usermode);
@@ -3688,7 +3660,7 @@ if ($connected) {
                                                                                 $TransferStatus = 101;
                                                                                 $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
                                                                                 if (!$updateMzTransactionTransfer) {
-                                                                                    $msg = "Failed to update mztransactiontransfer table.";
+                                                                                    $msg = "Manual Redemption Error : Failed to update transactions transfer table.";
                                                                                     echo json_encode($msg);
                                                                                     exit;
                                                                                 }
@@ -3704,7 +3676,7 @@ if ($connected) {
                                                                                     echo json_encode($msg);
                                                                                     exit;
                                                                                 } else {
-                                                                                    $msg = "Failed to update terminalsessions table.";
+                                                                                    $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                                                     echo json_encode($msg);
                                                                                     exit;
                                                                                 }
@@ -3733,12 +3705,11 @@ if ($connected) {
                                                                 }
                                                             }
                                                         } else {
-                                                            $msg = "Manual Redemption: Error on inserting manual redemption";
+                                                            $msg = "Manual Redemption: Error on inserting redemption table.";
                                                             echo json_encode($msg);
                                                             exit;
                                                         }
                                                     } else {
-// FAILED TRANSACTION INFO
 
                                                         if ($otopupmembership->open() == true) {
 
@@ -3812,7 +3783,7 @@ if ($connected) {
                                                                 $TransferStatus = 101;
                                                                 $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
                                                                 if (!$updateMzTransactionTransfer) {
-                                                                    $msg = "Failed to update mztransactiontransfer table.";
+                                                                    $msg = "Manual Redemption Error : Failed to update transactions transfer table.";
                                                                     echo json_encode($msg);
                                                                     exit;
                                                                 }
@@ -3838,12 +3809,11 @@ if ($connected) {
                                                                         exit;
                                                                     }
                                                                 } else {
-                                                                    $msg = "Failed to update terminalsessions table.";
+                                                                    $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                                     echo json_encode($msg);
                                                                     exit;
                                                                 }
                                                             }
-
 
                                                             switch (true) {
                                                                 case strstr($serviceName, "RTG - Sapphire V17 UB"):
@@ -3888,7 +3858,7 @@ if ($connected) {
 
 
                                                                 if ($riserror == "OK" || $riserror == "Withdrawal Success") {
-//SUCCESS WITHDRAWAL
+
                                                                     $fmteffdate = $otopup->getDate();
                                                                     $vtransStatus = $rremarks;
                                                                     $vstatus = 1;
@@ -3900,7 +3870,7 @@ if ($connected) {
                                                                             $TransferStatus = 101;
                                                                             $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
                                                                             if (!$updateMzTransactionTransfer) {
-                                                                                $msg = "Failed to update mztransactiontransfer table.";
+                                                                                $msg = "Manual Redemption Error : Failed to update transactions transfer table.";
                                                                                 echo json_encode($msg);
                                                                                 exit;
                                                                             }
@@ -3921,12 +3891,12 @@ if ($connected) {
                                                                                 echo json_encode($msg);
                                                                                 exit;
                                                                             } else {
-                                                                                $msg = "Failed to update terminalsessions table.";
+                                                                                $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                                                 echo json_encode($msg);
                                                                                 exit;
                                                                             }
                                                                         } else {
-                                                                            $msg = "Failed updating manual redemption table";
+                                                                            $msg = "Manual Redemption Error : Failed to update redemption table";
                                                                             echo json_encode($msg);
                                                                             exit;
                                                                         }
@@ -3937,7 +3907,6 @@ if ($connected) {
                                                                     }
                                                                 }
                                                             } else {
-//FAILED WITHDRAWAL
 
                                                                 switch (true) {
                                                                     case strstr($serviceName, "RTG - Sapphire V17 UB"): //if provider is RTG, then
@@ -4017,7 +3986,7 @@ if ($connected) {
                                                                                 $TransferStatus = 101;
                                                                                 $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
                                                                                 if (!$updateMzTransactionTransfer) {
-                                                                                    $msg = "Failed to update mztransactiontransfer table.";
+                                                                                    $msg = "Manual Redemption Error : Failed to update transactions transfer table.";
                                                                                     echo json_encode($msg);
                                                                                     exit;
                                                                                 }
@@ -4035,7 +4004,7 @@ if ($connected) {
                                                                                     echo json_encode($msg);
                                                                                     exit;
                                                                                 } else {
-                                                                                    $msg = "Failed to update terminalsessions table.";
+                                                                                    $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                                                     echo json_encode($msg);
                                                                                     exit;
                                                                                 }
@@ -4064,18 +4033,18 @@ if ($connected) {
                                                                 } else {
                                                                     $updateActiveServiceStatusRollback = $otopup->updateActiveServiceStatusRollback($GLOBAL_OldActiveServiceStatus, $loyaltycardnumber);
                                                                     if ($updateActiveServiceStatusRollback) {
-                                                                        $msg = "Failed to process manual redemption";
+                                                                        $msg = "Manual Redemption Error : Failed to process manual redemption";
                                                                         echo json_encode($msg);
                                                                         exit;
                                                                     } else {
-                                                                        $msg = "Failed to update terminalsessions table.";
+                                                                        $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                                         echo json_encode($msg);
                                                                         exit;
                                                                     }
                                                                 }
                                                             }
                                                         } else {
-                                                            $msg = "Manual Redemption: Error on inserting manual redemption";
+                                                            $msg = "Manual Redemption: Error on inserting redemption table.";
                                                             echo json_encode($msg);
                                                             exit;
                                                         }
@@ -4088,11 +4057,11 @@ if ($connected) {
                                             if ($mzToServiceID <> $ubserviceID) {
                                                 $updateActiveServiceStatusRollback = $otopup->updateActiveServiceStatusRollback($GLOBAL_OldActiveServiceStatus, $loyaltycardnumber);
                                                 if ($updateActiveServiceStatusRollback) {
-                                                    $msg = "Invalid casino to fulfill.";
+                                                    $msg = "Invalid casino to fulfil.";
                                                     echo json_encode($msg);
                                                     exit;
                                                 } else {
-                                                    $msg = "Failed to update terminalsessions table.";
+                                                    $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                     echo json_encode($msg);
                                                     exit;
                                                 }
@@ -4214,11 +4183,10 @@ if ($connected) {
 
                                                             $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
                                                             if (!$updateMzTransactionTransfer) {
-                                                                $msg = "Failed to update mztransactiontransfer table.";
+                                                                $msg = "Manual Redemption Error : Failed to update transactions transfer table.";
                                                                 echo json_encode($msg);
                                                                 exit;
                                                             }
-
 
                                                             $updateTerminalSessionsCredentials = $otopup->updateTerminalSessionsCredentials(1, $mzToServiceID, $UBServiceLogin, $UBServicePassword, $UBHashedServicePassword, $mzToAmount, $mzTerminalID);
 
@@ -4240,12 +4208,12 @@ if ($connected) {
                                                                     echo json_encode($msg);
                                                                     exit;
                                                                 } else {
-                                                                    $msg = "Failed to update manual redemption table.";
+                                                                    $msg = "Manual Redemption Error : Failed to update  redemption table.";
                                                                     echo json_encode($msg);
                                                                     exit;
                                                                 }
                                                             } else {
-                                                                $msg = "Failed to update terminalsessions table.";
+                                                                $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                                 echo json_encode($msg);
                                                                 exit;
                                                             }
@@ -4316,7 +4284,7 @@ if ($connected) {
                                                                     $TransferStatus = 101;
                                                                     $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
                                                                     if (!$updateMzTransactionTransfer) {
-                                                                        $msg = "Failed to update mztransactiontransfer table.";
+                                                                        $msg = "Manual Redemption Error : Failed to update transactions transfer table.";
                                                                         echo json_encode($msg);
                                                                         exit;
                                                                     }
@@ -4336,7 +4304,7 @@ if ($connected) {
                                                                         echo json_encode($msg);
                                                                         exit;
                                                                     } else {
-                                                                        $msg = "Failed to update terminalsessions table.";
+                                                                        $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                                         echo json_encode($msg);
                                                                         exit;
                                                                     }
@@ -4346,7 +4314,7 @@ if ($connected) {
                                                                     exit;
                                                                 }
                                                             } else {
-                                                                $msg = "Failed updating manual redemption table";
+                                                                $msg = "Manual Redemption Error : Failed to update redemption table";
                                                                 echo json_encode($msg);
                                                                 exit;
                                                             }
@@ -4433,7 +4401,7 @@ if ($connected) {
                                                                         $TransferStatus = 101;
                                                                         $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
                                                                         if (!$updateMzTransactionTransfer) {
-                                                                            $msg = "Failed to update mztransactiontransfer table.";
+                                                                            $msg = "Manual Redemption Error : Failed to update transactions transfer table.";
                                                                             echo json_encode($msg);
                                                                             exit;
                                                                         }
@@ -4449,7 +4417,7 @@ if ($connected) {
                                                                             echo json_encode($msg);
                                                                             exit;
                                                                         } else {
-                                                                            $msg = "Failed to update terminalsessions table.";
+                                                                            $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                                             echo json_encode($msg);
                                                                             exit;
                                                                         }
@@ -4480,11 +4448,11 @@ if ($connected) {
 
                                                             $updateActiveServiceStatusRollback = $otopup->updateActiveServiceStatusRollback($GLOBAL_OldActiveServiceStatus, $loyaltycardnumber);
                                                             if ($updateActiveServiceStatusRollback) {
-                                                                $msg = "Failed to process manual redemption";
+                                                                $msg = "Manual Redemption Error : Failed to process manual redemption";
                                                                 echo json_encode($msg);
                                                                 exit;
                                                             } else {
-                                                                $msg = "Failed to update terminalsessions table.";
+                                                                $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                                 echo json_encode($msg);
                                                                 exit;
                                                             }
@@ -4564,7 +4532,7 @@ if ($connected) {
                                                             $TransferStatus = 101;
                                                             $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
                                                             if (!$updateMzTransactionTransfer) {
-                                                                $msg = "Failed to update mztransactiontransfer table.";
+                                                                $msg = "Manual Redemption Error : Failed to update transactions transfer table.";
                                                                 echo json_encode($msg);
                                                                 exit;
                                                             }
@@ -4590,7 +4558,7 @@ if ($connected) {
                                                                     exit;
                                                                 }
                                                             } else {
-                                                                $msg = "Failed to update terminalsessions table.";
+                                                                $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                                 echo json_encode($msg);
                                                                 exit;
                                                             }
@@ -4600,18 +4568,20 @@ if ($connected) {
                                                             exit;
                                                         }
                                                     } else {
-                                                        $msg = "Manual Redemption: Error on inserting manual redemption";
+                                                        $msg = "Manual Redemption: Error on inserting redemption table.";
                                                         echo json_encode($msg);
                                                         exit;
                                                     }
                                                 }
                                             } // 2nd to the last else
                                         } else {
-                                            
+                                            $msg = "Manual redemption of player balance is currently not allowed. Please try again later.";
+											echo json_encode($msg);
+											exit;
                                         }
                                     }
                                 } else {
-                                    $msg = "Error: Invalid Casino Service";
+                                    $msg = "Manual Redemption Error: Invalid Casino Service";
                                     echo json_encode($msg);
                                     exit;
                                 }
@@ -4629,21 +4599,8 @@ if ($connected) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 ////END TRANSWALLET
 /////// OVERRIDE
-
 
 
 
@@ -4965,12 +4922,12 @@ if ($connected) {
                                                             echo json_encode($msg);
                                                             exit;
                                                         } else {
-                                                            $msg = "Failed to update terminalsessions table.";
+                                                            $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                             echo json_encode($msg);
                                                             exit;
                                                         }
                                                     } else {
-                                                        $msg = "Failed updating manual redemption table";
+                                                        $msg = "Manual Redemption Error : Failed updating redemption table";
                                                         echo json_encode($msg);
                                                         exit;
                                                     }
@@ -5057,7 +5014,7 @@ if ($connected) {
                                                                 echo json_encode($msg);
                                                                 exit;
                                                             } else {
-                                                                $msg = "Failed to update terminalsessions table.";
+                                                                $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                                 echo json_encode($msg);
                                                                 exit;
                                                             }
@@ -5087,7 +5044,7 @@ if ($connected) {
                                                         echo json_encode($msg);
                                                         exit;
                                                     } else {
-                                                        $msg = "Failed to update terminalsessions table.";
+                                                        $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                         echo json_encode($msg);
                                                         exit;
                                                     }
@@ -5123,11 +5080,9 @@ if ($connected) {
 
 
 
+
 ////// END OVERRIDE
 ///// REVERSAL
-
-
-
 
 
 
@@ -5455,12 +5410,12 @@ if ($connected) {
                                                         echo json_encode($msg);
                                                         exit;
                                                     } else {
-                                                        $msg = "Failed to update terminalsessions table.";
+                                                        $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                         echo json_encode($msg);
                                                         exit;
                                                     }
                                                 } else {
-                                                    $msg = "Failed updating manual redemption table";
+                                                    $msg = "Manual Redemption Error : Failed updating redemption table";
                                                     echo json_encode($msg);
                                                     exit;
                                                 }
@@ -5547,7 +5502,7 @@ if ($connected) {
                                                             echo json_encode($msg);
                                                             exit;
                                                         } else {
-                                                            $msg = "Failed to update terminalsessions table.";
+                                                            $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                             echo json_encode($msg);
                                                             exit;
                                                         }
@@ -5573,11 +5528,11 @@ if ($connected) {
 
                                                 $updateActiveServiceStatusRollback = $otopup->updateActiveServiceStatusRollback($GLOBAL_OldActiveServiceStatus, $loyaltycardnumber);
                                                 if ($updateActiveServiceStatusRollback) {
-                                                    $msg = "Failed to process manual redemption";
+                                                    $msg = "Manual Redemption Error : Failed to process manual redemption";
                                                     echo json_encode($msg);
                                                     exit;
                                                 } else {
-                                                    $msg = "Failed to update terminalsessions table.";
+                                                    $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                     echo json_encode($msg);
                                                     exit;
                                                 }
@@ -5746,7 +5701,7 @@ if ($connected) {
                                                 echo json_encode($msg);
                                                 exit;
                                             } else {
-                                                $msg = "Failed updating manual redemption table";
+                                                $msg = "Manual Redemption Error : Failed updating redemption table";
                                                 echo json_encode($msg);
                                                 exit;
                                             }
@@ -5848,7 +5803,7 @@ if ($connected) {
                                             }
                                         } else {
 
-                                            $msg = "Failed to process manual redemption";
+                                            $msg = "Manual Redemption Error : Failed to process manual redemption";
                                             echo json_encode($msg);
                                             exit;
                                         }
@@ -5864,11 +5819,6 @@ if ($connected) {
                 }
 
                 break;
-
-
-
-
-
 
 
 
