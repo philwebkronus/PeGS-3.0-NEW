@@ -119,6 +119,7 @@ class MzTransactionTransferModel extends CFormModel {
                     TransferStatus = :TransferStatus
                     WHERE TransferID = :TransferID AND TransactionSummaryID = :TransactionSummaryID";
 
+
             $command = $this->connection->createCommand($sql);
             $command->bindValue(':TransferStatus', $TransferStatus);
             $command->bindValue(':TransferID', $TransferID);
@@ -184,13 +185,13 @@ class MzTransactionTransferModel extends CFormModel {
                         :FromAmount, 
                         :FromServiceID,
                         NOW(6),
-                        NOW(6), 
+                        null, 
                         :FromStatus,
                         :ToTransactionType,
                         :ToAmount,
                         :ToServiceID,
-                        NOW(6),
-                        NOW(6),
+                        null,
+                        null,
                         :ToStatus ,
                         :TransferStatus
                     )";
@@ -271,11 +272,10 @@ class MzTransactionTransferModel extends CFormModel {
                         :ToAmount,
                         :ToServiceID,
                         NOW(6),
-                        NOW(6),
+                        null,
                         :ToStatus,
                         :TransferStatus
                     )";
-
 
                 $param = array(
                     ':TransactionSummaryID' => $TransactionSummaryID,
@@ -306,17 +306,98 @@ class MzTransactionTransferModel extends CFormModel {
                 } catch (PDOException $e) {
                     $startTrans->rollback();
                     Utilities::log($e->getMessage());
-                    return false2;
+                    return false;
                 }
             } catch (Exception $e) {
                 $startTrans->rollback();
                 Utilities::log($e->getMessage());
-                return $e;
+                return false;
             }
+        }
+    }
+
+    public function insertZeroBalance($TransactionSummaryID, $SiteID, $TerminalID, $MID, $CardNumber, $FromTransactionType, $FromAmount, $ToAmount, $FromServiceID, $FromStatus, $ToStatus, $ToTransactionType, $ToServiceID, $TransferStatus) {
+
+        $startTrans = $this->connection->beginTransaction();
+        try {
+            $sql = "INSERT INTO mztransactiontransfer (
+                        TransactionSummaryID,
+                        SiteID, 
+                        TerminalID, 
+                        MID, 
+                        LoyaltyCardNumber, 
+                        FromTransactionType, 
+                        FromAmount,
+                        FromServiceID, 
+                        FromStartTransDate, 
+                        FromEndTransDate,
+                        FromStatus,
+                        ToTransactionType,
+                        ToAmount,
+                        ToServiceID,
+                        ToStartTransDate,
+                        ToEndTransDate,
+                        ToStatus,
+                        TransferStatus
+                    ) 
+                    VALUES (
+                        :TransactionSummaryID, 
+                        :SiteID,
+                        :TerminalID, 
+                        :MID, 
+                        :LoyaltyCardNumber, 
+                        :FromTransactionType, 
+                        :FromAmount, 
+                        :FromServiceID,
+                        NOW(6),
+                        NOW(6),
+                        :FromStatus,
+                        :ToTransactionType,
+                        :ToAmount,
+                        :ToServiceID,
+                        NOW(6),
+                        NOW(6),
+                        :ToStatus ,
+                        :TransferStatus
+                    )";
+
+            $param = array(
+                ':TransactionSummaryID' => $TransactionSummaryID,
+                ':SiteID' => $SiteID,
+                ':TerminalID' => $TerminalID,
+                ':MID' => $MID,
+                ':LoyaltyCardNumber' => $CardNumber,
+                ':FromTransactionType' => $FromTransactionType,
+                ':FromAmount' => $FromAmount,
+                ':ToAmount' => $ToAmount,
+                ':FromServiceID' => $FromServiceID,
+                ':FromStatus' => $FromStatus,
+                ':ToStatus' => $ToStatus,
+                ':ToTransactionType' => $ToTransactionType,
+                ':TransferStatus' => $TransferStatus,
+                ':ToServiceID' => $ToServiceID
+            );
+
+            $command = $this->connection->createCommand($sql);
+            $command->bindValues($param);
+            $command->execute();
+
+            $MzTransactionTransferID = $this->connection->getLastInsertID();
+            try {
+                $startTrans->commit();
+                return $MzTransactionTransferID;
+            } catch (PDOException $e) {
+                $startTrans->rollback();
+                Utilities::log($e->getMessage());
+                return false;
+            }
+        } catch (Exception $e) {
+            $startTrans->rollback();
+            Utilities::log($e->getMessage());
+            return false;
         }
     }
 
 }
 
 ?>
-
