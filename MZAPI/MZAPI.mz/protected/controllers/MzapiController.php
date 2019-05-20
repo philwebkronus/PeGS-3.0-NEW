@@ -344,7 +344,7 @@ class MzapiController extends Controller {
                                                     $identifier = 0;
 
                                                     //Insert mztransactiontransfer
-                                                    $insertMzTransactionTransfer = $mzTransactionTransferModel->insert($TransactionSummaryID, $SiteID, $TerminalID, $MID, $CardNumber, $FromTransactionType, $FromAmount, $ToAmount, $FromServiceID, $FromStatus, $ToStatus, $ToTransactionType, $ToServiceID, $TransferStatus, null, $identifier);
+                                                    $insertMzTransactionTransfer = $mzTransactionTransferModel->insertZeroBalance($TransactionSummaryID, $SiteID, $TerminalID, $MID, $CardNumber, $FromTransactionType, $FromAmount, $ToAmount, $FromServiceID, $FromStatus, $ToStatus, $ToTransactionType, $ToServiceID, $TransferStatus);
 
                                                     if ($insertMzTransactionTransfer > 0) {
 
@@ -1163,6 +1163,7 @@ class MzapiController extends Controller {
                 $request = json_encode($requestBody);
                 $response = json_encode($GetBalance);
 
+
                 if (!empty($GetBalance)) {
                     if ($GetBalance['IsSucceed'] == false) {
                         $errCode = 51;
@@ -1274,7 +1275,6 @@ class MzapiController extends Controller {
                 }
             }
         }
-
         if (empty($apiresult) || $apiresult == 'Cant connect to casino') {
             $errCode = 52;
             $transMsg = '[LP #52] Error in Deposit';
@@ -1378,7 +1378,6 @@ class MzapiController extends Controller {
                 }
             }
         }
-
         if (empty($apiresult) || $apiresult == 'Cant connect to casino') {
             $errCode = 53;
             $transMsg = '[LP #53] Error in Withdrawal';
