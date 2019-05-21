@@ -878,19 +878,24 @@ if ($connected)
                                                 //if ($usermode == 0) 
                                                 if (($usermode == 0) || ($usermode == 3))
                                                 {
-                                                    $vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl, $password, $usermode);
+						    // EDITED CCT 05/21/2019 BEGIN
+						    //$vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl, $password, $usermode);
+						    $vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl, $password, $rtgvprovider, $usermode);
+					
                                                     if ($vplayerResult == NULL) 
                                                     { // proceeed if certificate does not match
-                                                        $vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl, $password);
+                                                        //$vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl, $password);
+							$vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl, $password, $rtgvprovider);
                                                     }
                                                 }
                                                 
                                                 //if ($usermode == 2) 
                                                 else if ($usermode == 2) 
                                                 {
-                                                    $vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl, $password, $usermode);
+                                                    //$vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl, $password, $usermode);
+						    $vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl, $password, $rtgvprovider,  $usermode);
                                                 }
-
+						// EDITED CCT 05/21/2019 END	
                                                 //check if exists in RTG
                                                 if (isset($vplayerResult['AccountInfo']['password']) && $vplayerResult['AccountInfo']['password'] <> null) 
                                                 {
@@ -957,17 +962,23 @@ if ($connected)
                                             //if ($usermode == 0) 
                                             if (($usermode == 0) || ($usermode == 3))
                                             {
-                                                $vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl, $password, $usermode);
+						// EDITED CCT 05/21/2019 BEGIN
+                                                //$vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl, $password, $usermode);
+						$vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl, $password, $rtgvprovider, $usermode);
+
                                                 if ($vplayerResult == NULL) 
                                                 { // proceeed if certificate does not match
-                                                    $vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl, $password);
+                                                    //$vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl, $password);
+						    $vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl, $password,  $rtgvprovider);
                                                 }
                                             }
                                             
                                             //if ($usermode == 2) 
                                             else if ($usermode == 2) 
                                             {
-                                                $vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl, $password, $usermode);
+                                                //$vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl, $password, $usermode);
+						$vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl, $password, $rtgvprovider, $usermode);
+						// EDITED CCT 05/21/2019 END
                                             }
 
                                             //check if exists in RTG

@@ -313,7 +313,10 @@ class CasinoCAPIHandler
                     $fname, $lname, $email, $dayphone, $evephone, $addr1, $addr2, $city, 
                     $province, $zip, $ip, $mac, $userID, $downloadID, $birthdate, $clientID, 
                     $putInAffPID, $calledFromCasino, $hashedPassword, $agentID, $currentPosition, 
-                    $thirdPartyPID, $isVIP);
+		    // EDITED CCT 05/21/2019  BEGIN
+                    //$thirdPartyPID, $isVIP);
+		    $thirdPartyPID, $isVIP, $usermode);
+		   // EDITED CCT 05/21/2019 END
         }
         else if ( $this->_gamingProvider == self::HAB)
         {

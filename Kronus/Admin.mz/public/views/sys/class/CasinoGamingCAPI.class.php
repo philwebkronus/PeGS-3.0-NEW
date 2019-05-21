@@ -220,7 +220,10 @@ class CasinoGamingCAPI
                 $addr1, $addr2, $city, $country, $province, $zip, $userID,
                 $birthdate, $fax, $occupation, $sex, $alias, $casinoID, $ip,
                 $mac, $downloadID, $clientID, $putInAffPID, $calledFromCasino,
-                $hashedPassword, $agentID, $currentPosition, $thirdPartyPID,$isVIP);
+		// EDITED CCT  05/21/2019 BEGIN
+                //$hashedPassword, $agentID, $currentPosition, $thirdPartyPID,$isVIP);
+		$hashedPassword, $agentID, $currentPosition, $thirdPartyPID,$isVIP, $usermode);
+		// EDITED CCT 05/21/2019 END
                 break;    
             
             case "RTG":
