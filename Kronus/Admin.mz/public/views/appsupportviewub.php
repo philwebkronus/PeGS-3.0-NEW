@@ -433,15 +433,18 @@ $flag = false;
                                     paginate: function() {return $("#paginate").val();}
                                       },
                             datatype: "json",
-                            colNames:['Site','Terminal', 'Service Name', 'Amount', 'Transaction Date','Status'],
+			    // EDITED CCT 05/22/2019 BEGIN
+                            //colNames:['Site','Terminal', 'Service Name', 'Amount', 'Transaction Date','Status'],
+			    colNames:['Site','Terminal', 'Service Name', 'Actual Amount', 'Transaction Date','Status'],
+			    // EDITED CCT 05/22/2019 END
                             colModel:[
                                     {name:'SiteCode',index:'SiteCode', align: 'center', width:150},
                                     {name:'TerminalCode',index:'TerminalCode',align: 'center', width:120},
                                     {name:'ServiceName',index:'ServiceName',align: 'center', width:120},
-                                    // EDITED CCT 04/30/2019 BEGIN
+				    // EDITED CCT 05/22/2019 BEGIN
                                     //{name:'ReportedAmount',index:'ReportedAmount', align: 'right', width:100},
-                                    {name:'ActualAmount',index:'ActualAmount', align: 'right', width:100},
-                                    // EDITED CCT 04/30/2019 END
+				    {name:'ActualAmount',index:'ActualAmount', align: 'right', width:100},
+				    // EDITED CCT 05/22/2019 END
                                     {name:'TransactionDate',index:'TransactionDate', align: 'right', width:210},
                                     {name:'Status',index:'Status', align: 'center', width:150}
                                     ],
