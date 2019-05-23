@@ -181,10 +181,11 @@ class MzapiController extends Controller {
 
                                 //Get Balance to Current Provider
                                 $CurrentProviderBalance = $this->_getBalance($ActiveServiceID, $UBServiceLogin, $UBServicePassword, $ServiceGroupCurrentProvider, $MID, $CardNumber, $TerminalID);
+                                $maxDepositAmount = Yii::app()->params['maxDepositAmount'];
 
                                 if (is_numeric($CurrentProviderBalance)) {
 
-                                    if ($CurrentProviderBalance > 100000) {
+                                    if ($CurrentProviderBalance > $maxDepositAmount) {
                                         $errCode = 45;
                                         $transMsg = '[LP #45] Transfer amount has exceeded the maximum deposit amount.';
 
@@ -294,11 +295,12 @@ class MzapiController extends Controller {
                                     $CurrentProviderBalance = $this->_getBalance($ActiveServiceID, $UBServiceLogin, $UBServicePassword, $ServiceGroupCurrentProvider, $MID, $CardNumber, $TerminalID);
 
                                     $hundredKchecking = Yii::app()->params['hundredKchecking'];
+                                    $maxRTGdepositAmount = Yii::app()->params['maxRTGdepositAmount'];
 
                                     if ($hundredKchecking == 1) {
-                                        if ($ServiceGroupNewProvider == 'RTG' || $ServiceGroupNewProvider == 'RTG2' && $CurrentProviderBalance > 100000) {
+                                        if ($ServiceGroupNewProvider == 'RTG' || $ServiceGroupNewProvider == 'RTG2' && $CurrentProviderBalance > $maxRTGdepositAmount) {
                                             $errCode = 40;
-                                            $transMsg = '[LP #40] You are not allowed to transfer an amount greater than 100K to this casino.';
+                                            $transMsg = '[LP #40] You are not allowed to transfer an amount greater than ' . number_format($maxRTGdepositAmount) . ' to this casino.';
 
                                             $LPErrorLogsModel->insertLPlogs(Yii::app()->params['systemNode'], $TerminalID, $MID, $CardNumber, $transMsg, null, null);
                                             $appLogger->log($appLogger->logdate, "[response]", $transMsg);
