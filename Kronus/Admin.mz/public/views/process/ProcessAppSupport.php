@@ -2306,6 +2306,10 @@ if ($connected && $connected2 && $connected3)
                                 break;
                             case 101: $vtransferstatus = 'Manual Redemption (LaunchPad Casino Fulfillment)';
                                 break;                            
+                            case 102: $vtransferstatus = 'Manual Redemption (LaunchPad Casino Fulfillment, successful withdrawal)';
+                                break;                            
+                            case 103: $vtransferstatus = 'Manual Redemption (LaunchPad Casino Fulfillment, pending deposit)';
+                                break;                            
                         }   
 
                         $responce->rows[$i]['cell'] =                                 

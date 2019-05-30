@@ -237,8 +237,11 @@ if(isset($_SESSION['acctype']))
                                         //    break;
                                         // Comment Out CCT 02/06/2018 END
                                         case '1':
-                                            rtgserver = rtgserver + 1;
-                                            tblRow += "<td><input type=\"radio\" id=\"optserver1["+ctr+"]\" name=\"optserver["+ctr+"]\" value="+id+" />"+this.ServiceName+"</td>";
+                                            if (this.ServiceID != 1)
+                                            {    
+                                                rtgserver = rtgserver + 1;
+                                                tblRow += "<td><input type=\"radio\" id=\"optserver1["+ctr+"]\" name=\"optserver["+ctr+"]\" value="+id+" />"+this.ServiceName+"</td>";
+                                            }    
                                             break;
                                         case '4':
                                             rtgserver = rtgserver + 1;

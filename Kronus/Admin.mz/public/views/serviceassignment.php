@@ -264,7 +264,10 @@ if (isset($_SESSION['acctype']))
                                 //select only RTG Servers from the DB 
                                 if ($vservicegroup == "1")
                                 {
-                                    echo "<option value=\"" . $vserviceID . "\">" . $vname . "</option>";
+                                    if ($vserviceID != 1)
+                                    {
+                                        echo "<option value=\"" . $vserviceID . "\">" . $vname . "</option>";
+                                    }
                                 }
                             }
                         }
