@@ -103,6 +103,7 @@ class TopUp extends DBHandler
     // ADDED CCT 02/12/2018 BEGIN
     public function getoldGHBalancePAGCOR($sort, $dir, $startdate, $enddate, $zsiteid, $servProvider)
     {       
+        // ADDED CCT 06/11/2019 BEGIN - Added Status = 1 in ManualRedemptions
         $serviceProvider = $servProvider;
 
         switch ($zsiteid)
@@ -129,13 +130,13 @@ class TopUp extends DBHandler
                 {        
                     //Query for Manual Redemption (per site/per cut off)
                     $query4 = "SELECT SiteID, ActualAmount AS ActualAmount,TransactionDate FROM manualredemptions " . 
-                            "WHERE TransactionDate >= ? AND TransactionDate < ? "; 
+                            "WHERE TransactionDate >= ? AND TransactionDate < ? AND Status = 1"; 
                 }
                 else // Specific service provider
                 {
                     //Query for Manual Redemption (per site/per cut off)
                     $query4 = "SELECT SiteID, ActualAmount AS ActualAmount,TransactionDate FROM manualredemptions " . 
-                            "WHERE TransactionDate >= ? AND TransactionDate < ? AND ServiceID = ?"; 
+                            "WHERE TransactionDate >= ? AND TransactionDate < ? AND ServiceID = ? AND Status = 1"; 
                 }
         
                 //Query for Deposit (Cash,Coupon,Ticket),  Reload (Cash,Coupon,Ticket) and Redemption (Cashier,Genesis)
@@ -759,13 +760,13 @@ class TopUp extends DBHandler
                 {        
                     //Query for Manual Redemption (per site/per cut off)
                     $query4 = "SELECT SiteID, ActualAmount AS ActualAmount, TransactionDate FROM manualredemptions " . 
-                            "WHERE TransactionDate >= ? AND TransactionDate < ? AND SiteID = ? ";  
+                            "WHERE TransactionDate >= ? AND TransactionDate < ? AND SiteID = ? AND Status = 1";  
                 }
                 else // Specific service provider
                 {
                     //Query for Manual Redemption (per site/per cut off)
                     $query4 = "SELECT SiteID, ActualAmount AS ActualAmount, TransactionDate FROM manualredemptions " . 
-                            "WHERE TransactionDate >= ? AND TransactionDate < ? AND SiteID = ? AND ServiceID = ?";  
+                            "WHERE TransactionDate >= ? AND TransactionDate < ? AND SiteID = ? AND ServiceID = ? AND Status = 1";  
                 }
                 
                 //Query for Deposit (Cash,Coupon,Ticket),  Reload (Cash,Coupon,Ticket) and Redemption (Cashier,Genesis)
@@ -1381,6 +1382,7 @@ class TopUp extends DBHandler
                 }                 
                 break;
         }
+        // ADDED CCT 06/11/2019 END
   
         unset($query1, $query2, $query3, $query4, $query5, $query6, $query7, $query8, $query9, $query10);
         unset($rows1, $rows2, $rows3, $rows4, $rows5, $rows6, $rows7, $rows8, $rows9, $rows10);
@@ -1399,7 +1401,7 @@ class TopUp extends DBHandler
     public function grossHoldMonitoringdataPAGCOR($sort,$dir,$startdate,$enddate,$servProvider) 
     {
         $serviceProvider = $servProvider;
-        
+        // CCT 06/11/2019 BEGIN - Added Status =  1 in ManualRedemptions
         if($serviceProvider == -1) // All
         {
             $query = "SELECT s.SiteID, s.POSAccountNo, s.SiteName, IFNULL(sb.Balance, 0) AS BCF,
@@ -1407,6 +1409,7 @@ class TopUp extends DBHandler
                          FROM manualredemptions mr
                          WHERE mr.TransactionDate >= ? AND mr.TransactionDate < ? 
                              AND s.Status = 1 
+                             AND mr.Status = 1 
                              AND mr.SiteID = s.SiteID)  AS ManualRedemption,
                          CASE sd.RegionID WHEN 17 THEN 'Metro Manila' ELSE 'Provincial' END AS Location, sb.MinBalance
                     FROM sites s LEFT JOIN sitedetails sd ON s.SiteID = sd.SiteID
@@ -1423,6 +1426,7 @@ class TopUp extends DBHandler
                          FROM manualredemptions mr
                          WHERE mr.TransactionDate >= ? AND mr.TransactionDate < ? 
                              AND s.Status = 1 
+                             AND mr.Status = 1 
                              AND mr.SiteID = s.SiteID
                              AND mr.ServiceID = ?)  AS ManualRedemption,
                          CASE sd.RegionID WHEN 17 THEN 'Metro Manila' ELSE 'Provincial' END AS Location, sb.MinBalance
@@ -1433,7 +1437,7 @@ class TopUp extends DBHandler
                     GROUP By s.SiteID
                     ORDER BY s.$sort $dir";
         }
-        
+        // CCT 06/11/2019 END
         $this->prepare($query);
         $this->bindparameter(1, $startdate);
         $this->bindparameter(2, $enddate);
@@ -2319,6 +2323,7 @@ class TopUp extends DBHandler
      */
     public function getoldGHBalance($sort, $dir, $startdate,$enddate,$zsiteid)
     {       
+        // CCT 06/11/2019 BEGIN - Added Status = 1 in ManualRedemptions
        switch ($zsiteid)
        {
            case 'All':
@@ -2341,7 +2346,7 @@ class TopUp extends DBHandler
                 
                 //Query for Manual Redemption (per site/per cut off)
                 $query5 = "SELECT SiteID, ActualAmount AS ActualAmount,TransactionDate FROM manualredemptions " . 
-                        "WHERE TransactionDate >= ? AND TransactionDate < ? ";   
+                        "WHERE TransactionDate >= ? AND TransactionDate < ? AND Status = 1 ";   
 
                 //Query for Deposit (Cash,Coupon,Ticket),  Reload (Cash,Coupon,Ticket) and Redemption (Cashier,Genesis)
                 $query6 = "SELECT  tr.TransactionType AS TransType,
@@ -2935,7 +2940,7 @@ class TopUp extends DBHandler
 
                 //Query for Manual Redemption (per site/per cut off)
                 $query5 = "SELECT SiteID, ActualAmount AS ActualAmount, TransactionDate FROM manualredemptions " . 
-                        "WHERE TransactionDate >= ? AND TransactionDate < ? AND SiteID = ? ";  
+                        "WHERE TransactionDate >= ? AND TransactionDate < ? AND SiteID = ? AND Status = 1";  
                 
                 //Query for Deposit (Cash,Coupon,Ticket),  Reload (Cash,Coupon,Ticket) and Redemption (Cashier,Genesis)
                 $query6 = "SELECT tr.TransactionType AS TransType,
@@ -3525,7 +3530,7 @@ class TopUp extends DBHandler
                 }                 
                break;
        }
-  
+        // CCT 06/11/2019 END
         unset($query1,$query2,$query3,$query5, $rows1,$rows2,$rows3,$qr2,$qr3,$rows4,$rows5);
         return $qr1;
     }
@@ -4271,13 +4276,14 @@ class TopUp extends DBHandler
 // CCT BEGIN      
       public function grossHoldMonitoring($sort,$dir,$startdate,$enddate) 
       {
+          // CCT 06/11/2019 BEGIN -- Added Status = 1 in ManualRedemptions
           if(isset($_GET['siteid']) && $_GET['siteid'] != '') 
           {
             $query = "SELECT s.SiteID, s.POSAccountNo , s.SiteName, IFNULL(sb.Balance, 0) AS BCF,
                         (SELECT IFNULL(SUM(mr.ActualAmount), 0)
                         FROM manualredemptions mr
                         WHERE mr.TransactionDate >= ? AND mr.TransactionDate < ?
-                            AND mr.SiteID = s.SiteID)  AS ManualRedemption,
+                            AND mr.SiteID = s.SiteID AND mr.Status = 1)  AS ManualRedemption,
                         CASE sd.RegionID WHEN 17 THEN 'Metro Manila' ELSE 'Provincial' END AS Location, sb.MinBalance
                         FROM sites s LEFT JOIN sitedetails sd ON s.SiteID = sd.SiteID
                             LEFT JOIN  sitebalance sb ON s.SiteID = sb.SiteID
@@ -4304,7 +4310,7 @@ class TopUp extends DBHandler
                             -- ON s.SiteID = mr.SiteID
                          WHERE mr.TransactionDate >= ? AND mr.TransactionDate < ? 
                              AND s.Status = 1 -- Added
-                             AND mr.SiteID = s.SiteID)  AS ManualRedemption,
+                             AND mr.SiteID = s.SiteID AND mr.Status = 1)  AS ManualRedemption,
                          CASE sd.RegionID WHEN 17 THEN 'Metro Manila' ELSE 'Provincial' END AS Location, sb.MinBalance
                     FROM sites s LEFT JOIN sitedetails sd ON s.SiteID = sd.SiteID
                         LEFT JOIN sitebalance sb ON s.SiteID = sb.SiteID
@@ -5187,7 +5193,8 @@ class TopUp extends DBHandler
                 }
             }  
         }
-
+        // CCT 06/11/2019 END
+        
           unset($query,$query2,$query3, $sort, $dir, $rows1);   
           return $varrmerge;
       }

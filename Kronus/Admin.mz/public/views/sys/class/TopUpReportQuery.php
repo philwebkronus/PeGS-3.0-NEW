@@ -34,7 +34,8 @@ class TopUpReportQuery extends DBHandler
     * Get old gross hold balance if queried date is not today
     */
     public function getoldGHCutoffPAGCOR($startdate, $enddate, $zsiteid, $servProvider) 
-    {      
+    {   
+        // CCT 06/11/2019 BEGIN -- Added Status = 1 in ManualRedemptions
         $serviceProvider = $servProvider;
 
         switch ($zsiteid)
@@ -62,13 +63,13 @@ class TopUpReportQuery extends DBHandler
                 {      
                     $query4 = "SELECT SiteID, ActualAmount AS ActualAmount,TransactionDate 
                         FROM manualredemptions  
-                        WHERE TransactionDate >= ? AND TransactionDate < ? ";     
+                        WHERE TransactionDate >= ? AND TransactionDate < ? AND Status = 1";     
                 }
                 else // Specific service provider
                 {
                     $query4 = "SELECT SiteID, ActualAmount AS ActualAmount,TransactionDate 
                         FROM manualredemptions  
-                        WHERE TransactionDate >= ? AND TransactionDate < ? AND ServiceID = ?";     
+                        WHERE TransactionDate >= ? AND TransactionDate < ? AND ServiceID = ? AND Status = 1";     
                     
                 }
 
@@ -697,12 +698,12 @@ class TopUpReportQuery extends DBHandler
                 if($serviceProvider == -1) // All
                 {        
                     $query4 = "SELECT SiteID, ActualAmount AS ActualAmount, TransactionDate FROM manualredemptions " . 
-                            "WHERE TransactionDate >= ? AND TransactionDate < ? AND SiteID = ? ";  
+                            "WHERE TransactionDate >= ? AND TransactionDate < ? AND SiteID = ? AND Status = 1";  
                 }
                 else // Specific service provider
                 {
                     $query4 = "SELECT SiteID, ActualAmount AS ActualAmount, TransactionDate FROM manualredemptions " . 
-                            "WHERE TransactionDate >= ? AND TransactionDate < ? AND SiteID = ? AND ServiceID = ? ";  
+                            "WHERE TransactionDate >= ? AND TransactionDate < ? AND SiteID = ? AND ServiceID = ? AND Status = 1";  
                 }                
                 
                 //Query for Deposit (Cash,Coupon,Ticket),  Reload (Cash,Coupon,Ticket) and Redemption (Cashier,Genesis)
@@ -1317,7 +1318,7 @@ class TopUpReportQuery extends DBHandler
                 }                 
             break;
         }
-
+        // CCT 06/11/2019 END
         unset($query1, $query2, $query3, $query4, $query5, $query6, $query7, $query8, $query9, $query10);
         unset($rows1, $rows2, $rows3, $rows4, $rows5, $rows6, $rows7, $rows8, $rows9, $rows10);
         unset($qr2, $qr3, $qr4);
@@ -1758,7 +1759,8 @@ class TopUpReportQuery extends DBHandler
      * Get old gross hold balance if queried date is not today
      */
     public function getoldGHCutoff($startdate, $enddate, $zsiteid) 
-    {      
+    {  
+       // CCT 06/11/2019 BEGIN - Added Status = 1 in ManualRedemptions 
        switch ($zsiteid)
        {
            case 'All':
@@ -1781,7 +1783,7 @@ class TopUpReportQuery extends DBHandler
                 
                 //Query for Manual Redemption (per site/per cut off)
                 $query5 = "SELECT SiteID, ActualAmount AS ActualAmount,TransactionDate FROM manualredemptions " . 
-                        "WHERE TransactionDate >= ? AND TransactionDate < ? ";   
+                        "WHERE TransactionDate >= ? AND TransactionDate < ? AND Status = 1";   
 
                 //Query for Deposit (Cash,Coupon,Ticket),  Reload (Cash,Coupon,Ticket) and Redemption (Cashier,Genesis)
                 $query6 = "SELECT  tr.TransactionType AS TransType,
@@ -2376,7 +2378,7 @@ class TopUpReportQuery extends DBHandler
 
                 //Query for Manual Redemption (per site/per cut off)
                 $query5 = "SELECT SiteID, ActualAmount AS ActualAmount, TransactionDate FROM manualredemptions " . 
-                        "WHERE TransactionDate >= ? AND TransactionDate < ? AND SiteID = ? ";  
+                        "WHERE TransactionDate >= ? AND TransactionDate < ? AND SiteID = ? AND Status = 1";  
                 
                 //Query for Deposit (Cash,Coupon,Ticket),  Reload (Cash,Coupon,Ticket) and Redemption (Cashier,Genesis)
                 $query6 = "SELECT tr.TransactionType AS TransType,
@@ -2968,7 +2970,7 @@ class TopUpReportQuery extends DBHandler
                 }                 
                break;
        }
-  
+        // CCT 06/11/2019 END
         unset($query1,$query2,$query3,$query5, $rows1,$rows2,$rows3,$qr2, $qr3,$rows4,$rows5);
         return $qr1;
     }

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Description of RptSupervisor
  *
@@ -41,101 +40,6 @@ class RptSupervisor extends DBHandler
     
     function viewgrosshold($zdatefrom, $zdateto, $zsiteID)
     {
-        
-//Preparation for bancnet transactions
-//        $query2 = "SELECT tr.StackerSummaryID, tr.SiteID, tr.CreatedByAID, a.UserName, ad.Name,
-//
-//                                -- TOTAL DEPOSIT --
-//                                SUM(CASE tr.TransactionType
-//                                  WHEN 'D' THEN tr.Amount
-//                                  ELSE 0
-//                                END) As TotalDeposit,
-//
-//                                -- TOTAL RELOAD --
-//                                SUM(CASE tr.TransactionType
-//                                  WHEN 'R' THEN tr.Amount
-//                                  ELSE 0 -- Not Reload
-//                                END) As TotalReload,
-//
-//                                 -- TOTAL REDEMPTION --
-//                                CASE tr.TransactionType
-//                                  WHEN 'W' THEN SUM(tr.Amount)
-//                                  ELSE 0
-//                                END As TotalRedemption,
-//
-//                                -- DEPOSIT CASH --
-//                                SUM(CASE tr.TransactionType
-//                                   WHEN 'D' THEN
-//                                     CASE tr.PaymentType
-//                                       WHEN 2 THEN 0 -- Coupon
-//                                       ELSE -- Not Coupon
-//                                         CASE IFNULL(tr.StackerSummaryID, '')
-//                                           WHEN '' THEN 
-//                                                CASE (SELECT COUNT(*) as IsBancnet FROM npos.banktransactionlogs btl
-//                                                            INNER JOIN npos.transactionrequestlogs trl ON btl.TransactionRequestLogID = trl.TransactionRequestLogID
-//			WHERE trl.TransactionReferenceID = tr.TransactionReferenceID)
-//                                                WHEN 0 THEN tr.Amount -- Cash
-//                                                ELSE 0 END 
-//                                           ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
-//                                             (SELECT IFNULL(SUM(Amount), 0)
-//                                             FROM stackermanagement.stackerdetails sdtls
-//                                             WHERE sdtls.stackersummaryID = tr.StackerSummaryID
-//                                                   AND sdtls.TransactionType = 1
-//                                                   AND sdtls.PaymentType = 0)  -- Deposit, Cash
-//                                         END
-//                                    END
-//                                   ELSE 0 -- Not Deposit
-//                                END) As DepositCash,
-//
-//                                -- RELOAD CASH --
-//                                SUM(CASE tr.TransactionType
-//                                   WHEN 'R' THEN
-//                                     CASE tr.PaymentType
-//                                       WHEN 2 THEN 0 -- Coupon
-//                                       ELSE -- Not Coupon
-//                                         CASE IFNULL(tr.StackerSummaryID, '')
-//                                           WHEN '' THEN 
-//                                                CASE (SELECT COUNT(*) as IsBancnet FROM npos.banktransactionlogs btl
-//                                                            INNER JOIN npos.transactionrequestlogs trl ON btl.TransactionRequestLogID = trl.TransactionRequestLogID
-//			WHERE trl.TransactionReferenceID = tr.TransactionReferenceID)
-//                                                WHEN 0 THEN tr.Amount -- Reload, Cash
-//                                                ELSE 0 END 
-//                                           ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
-//                                              (SELECT IFNULL(SUM(Amount), 0)
-//                                --              (SELECT IFNULL(Amount, 0)
-//                                             FROM stackermanagement.stackerdetails sdtls
-//                                             WHERE sdtls.stackersummaryID = tr.StackerSummaryID
-//                                                   AND tr.TransactionDetailsID = sdtls.TransactionDetailsID
-//                                                   AND sdtls.TransactionType = 2
-//                                                   AND sdtls.PaymentType = 0)  -- Reload, Cash
-//                                         END
-//                                     END
-//                                   ELSE 0 -- Not Reload
-//                                END) As ReloadCash,
-//                                
-//                                -- REDEMPTION CASHIER --
-//                                CASE tr.TransactionType
-//                                  WHEN 'W' THEN
-//                                        CASE a.AccountTypeID
-//                                          WHEN 4 THEN SUM(tr.Amount) -- Cashier
-//                                          ELSE 0
-//                                        END -- Genesis
-//                                  ELSE 0 --  Not Redemption
-//                                END As RedemptionCashier,
-//
-//                                tr.DateCreated
-//                                FROM npos.transactiondetails tr INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
-//                                INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
-//                                INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
-//                                INNER JOIN npos.accountdetails ad ON ad.AID = tr.CreatedByAID
-//                                INNER JOIN npos.sites s ON tr.SiteID = s.SiteID
-//                                WHERE tr.SiteID IN (".$zsiteID.")
-//                                  AND tr.DateCreated >= ? AND tr.DateCreated < ?
-//                                  AND tr.Status IN(1,4) AND a.AccountTypeID NOT IN (17)
-//                                GROUP By tr.TransactionType, tr.TransactionSummaryID
-//                                ORDER BY tr.TerminalID"; 
-        
-        
         $query2 = "SELECT tr.StackerSummaryID, tr.SiteID, tr.CreatedByAID, a.UserName, ad.Name,
  
                                 -- TOTAL DEPOSIT --
@@ -477,7 +381,7 @@ class RptSupervisor extends DBHandler
      */
     function getdetails($zdatefrom, $zdateto, $zsiteID)
     {
-        
+        // CCT 06/11/2019 BEGIN - Added Status = 1 in ManualRedemptions
         $query1 = "SELECT s.SiteID, IFNULL(SUM(mr.ActualAmount), 0) AS ManualRedemption,
                                 CASE sd.RegionID WHEN 17 THEN 'Metro Manila' ELSE 'Provincial' END AS Location,
                                 sb.MinBalance
@@ -485,10 +389,11 @@ class RptSupervisor extends DBHandler
                                 LEFT JOIN  sitebalance sb ON s.SiteID = sb.SiteID
                                 LEFT JOIN  sitedetails sd ON s.SiteID = sd.SiteID
                                 LEFT JOIN manualredemptions mr FORCE INDEX(IX_manualredemptions_TransactionDate) ON s.SiteID = mr.SiteID
-                                WHERE mr.TransactionDate >= ? AND mr.TransactionDate < ?
-                                AND s.SiteID IN (".$zsiteID.")
+                                WHERE mr.TransactionDate >= ? AND mr.TransactionDate < ? 
+                                    AND mr.Status =  1 
+                                    AND s.SiteID IN (".$zsiteID.")
                                 ORDER BY s.SiteCode";
-
+        // CCT 06/11/2019 END
         $query2 = "SELECT tr.SiteID,
  
                                 -- DEPOSIT COUPON --

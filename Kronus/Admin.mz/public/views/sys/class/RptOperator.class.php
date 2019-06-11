@@ -123,26 +123,21 @@ class RptOperator extends DBHandler
             array_push($listsite,$row);
         }
         $site = implode(',', $listsite);
-        $stmt = "select tr.TransactionSummaryID,
-                        ts.DateStarted,
-                        ts.DateEnded,
-                        tr.DateCreated, 
-                        ts.LoyaltyCardNumber, 
-                        tr.TerminalID,
-                        tr.SiteID,
-                        t.TerminalCode as TerminalCode, 
-                        tr.TransactionType, 
-                        sum(tr.Amount) AS amount,
-                        a.UserName 
+        // CCT EDITED 10/22/2018 BEGIN
+        // $stmt = "select tr.TransactionSummaryID, ts.DateStarted, ts.DateEnded, tr.DateCreated, ts.LoyaltyCardNumber,  
+        //                    -- AND ts.DateStarted >= ? and ts.DateStarted < ? -- replaced by tr.DateCreated
+        $stmt = "select tr.TransactionSummaryID, ts.DateStarted, ts.DateEnded, tr.DateCreated, tr.LoyaltyCardNumber,  
+                    tr.TerminalID, tr.SiteID, t.TerminalCode as TerminalCode,  tr.TransactionType, sum(tr.Amount) AS amount, a.UserName 
                 from transactiondetails tr inner join transactionsummary ts on ts.TransactionsSummaryID = tr.TransactionSummaryID 
                     inner join terminals t on t.TerminalID = tr.TerminalID 
                     inner join accounts a on a.AID = tr.CreatedByAID 
                 where tr.SiteID IN(".$site.") 
-                    AND ts.DateStarted >= ? and ts.DateStarted < ? 
+                    AND tr.DateCreated >= ? and tr.DateCreated < ? 
                     AND tr.Status IN(1,4) 
                     and (tr.StackerSummaryID IS NULL OR trim(tr.StackerSummaryID) <> '') 
                 group by tr.TransactionType,tr.TransactionSummaryID 
                 order by t.TerminalCode,ts.DateStarted Desc ";
+        // CCT EDITED 10/22/2018 END
         $this->prepare($stmt);
         $this->bindparameter(1, $zdateFROM);
         $this->bindparameter(2, $zdateto);
@@ -1360,9 +1355,12 @@ class RptOperator extends DBHandler
                     FROM ewallettrans WHERE StartDate >= ? AND StartDate < ?
                     AND SiteID IN (".$site.") AND Status IN (1,3) GROUP BY SiteID";
         
+        // CCT 06/11/2019 BEGIN -- filter MR Status = 1
         $query3 = "SELECT SiteID, SUM(ActualAmount) AS ManualRedemption FROM manualredemptions
-                            WHERE TransactionDate >= ? AND TransactionDate < ?
-                            AND SiteID IN (".$site.") GROUP BY SiteID";   
+                            WHERE TransactionDate >= ? AND TransactionDate < ? 
+                                    AND Status = 1 
+                                    AND SiteID IN (".$site.") GROUP BY SiteID";   
+        // CCT 06/11/2019 END
         
         //Get total deposit cash and reload cash (with bancnet transaction included)
         $this->prepare($query1);
