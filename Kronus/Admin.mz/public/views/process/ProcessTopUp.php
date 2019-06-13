@@ -5,10 +5,6 @@
  * Modified By: Edson L. Perez
  */
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 include __DIR__ . "/../sys/class/TopUp.class.php";
 include __DIR__ . "/../sys/class/LoyaltyUBWrapper.class.php";
 require __DIR__ . '/../sys/core/init.php';
@@ -348,9 +344,7 @@ if ($connected) {
 
 
 
-///TRANSWALLET
-
-
+            ///TRANSWALLET
             case "TransferWallet":
                 $login = $_POST['terminalcode'];
                 $provider = $_POST['txtservices'];
@@ -1045,11 +1039,11 @@ if ($connected) {
                                                     $balance = 0;
                                                 }
 
-												if ($ramount == 0) {
-													$msg = "Redeemed: " . $ramount . "; Remaining Balance: " . $balance;
-													echo json_encode($msg);
-													exit;
-												}
+                                                if ($ramount == 0) {
+                                                    $msg = "Redeemed: " . $ramount . "; Remaining Balance: " . $balance;
+                                                    echo json_encode($msg);
+                                                    exit;
+                                                }
 
                                                 $vsiteID = $mzSiteID;
                                                 $vterminalID = $mzTerminalID;
@@ -1135,39 +1129,39 @@ if ($connected) {
                                                             $issucess = $otopup->updateManualRedemptionub($vstatus, $vactualAmt, $rtransactionID, $fmteffdate, $vtransStatus, $lastmrid);
                                                             if ($issucess > 0) {
 
-																if ($balance == 0) {
-																	$TransferStatus = 100;
+                                                                if ($balance == 0) {
+                                                                    $TransferStatus = 100;
 
-																	$updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
+                                                                    $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
 
-																	if ($updateMzTransactionTransfer) {
+                                                                    if ($updateMzTransactionTransfer) {
 
-																		$updateTerminalSessionsCredentials = $otopup->updateTerminalSessionsCredentials(1, $mzFromServiceID, $UBServiceLogin, $UBServicePassword, $UBHashedServicePassword, $vactualAmt, $mzTerminalID);
+                                                                        $updateTerminalSessionsCredentials = $otopup->updateTerminalSessionsCredentials(1, $mzFromServiceID, $UBServiceLogin, $UBServicePassword, $UBHashedServicePassword, $vactualAmt, $mzTerminalID);
 
-																		if ($updateTerminalSessionsCredentials) {
-																			if ($otopupmembership->open() == true) {
-																				$otopupmembership->updateMember($mzFromServiceID, $mid);
-																			}
-																			$otopupmembership->close();
+                                                                        if ($updateTerminalSessionsCredentials) {
+                                                                            if ($otopupmembership->open() == true) {
+                                                                                $otopupmembership->updateMember($mzFromServiceID, $mid);
+                                                                            }
+                                                                            $otopupmembership->close();
 
-																			$msg = "Redeemed: " . $ramount . "; Remaining Balance: " . $balance;
-																			echo json_encode($msg);
-																			exit;
-																		} else {
-																			$msg = "Manual Redemption Error : Failed to update sessions table.";
-																			echo json_encode($msg);
-																			exit;
-																		}
-																	} else {
-																		$msg = "Manual Redemption Error : Failed to update transaction transfer table.";
-																		echo json_encode($msg);
-																		exit;
-																	}
-																} else {
-																	$msg = "Redeemed: " . $ramount . "; Remaining Balance: " . $balance;
-																	echo json_encode($msg);
-																	exit;
-																}
+                                                                            $msg = "Redeemed: " . $ramount . "; Remaining Balance: " . $balance;
+                                                                            echo json_encode($msg);
+                                                                            exit;
+                                                                        } else {
+                                                                            $msg = "Manual Redemption Error : Failed to update sessions table.";
+                                                                            echo json_encode($msg);
+                                                                            exit;
+                                                                        }
+                                                                    } else {
+                                                                        $msg = "Manual Redemption Error : Failed to update transaction transfer table.";
+                                                                        echo json_encode($msg);
+                                                                        exit;
+                                                                    }
+                                                                } else {
+                                                                    $msg = "Redeemed: " . $ramount . "; Remaining Balance: " . $balance;
+                                                                    echo json_encode($msg);
+                                                                    exit;
+                                                                }
                                                             } else {
                                                                 $msg = "Manual Redemption Error : Failed to update redemption table";
                                                                 echo json_encode($msg);
@@ -1206,7 +1200,7 @@ if ($connected) {
                                                         }
 
 
-                                                        if ((!empty($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"]) && $transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"] == "TRANSACTIONSTATUS_APPROVED") || (!empty($transinfo["querytransmethodResult"]) && $transinfo['querytransmethodResult']['Success'] == true)) {
+                                                        if ((!empty($transinfo["TransactionInfo"]) && ($transinfo['IsSucceed'] == true)) && (((!empty($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"])) && ($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"] == "TRANSACTIONSTATUS_APPROVED")) || (!empty($transinfo["TransactionInfo"]["querytransmethodResult"]) && ($transinfo["TransactionInfo"]["querytransmethodResult"]['Success'] == true)))) {
 
                                                             switch (true) {
                                                                 case strstr($serviceName, "RTG - Sapphire V17 UB"):
@@ -1255,8 +1249,11 @@ if ($connected) {
                                                                     }
 
                                                                     if ($balance == 0) {
+
                                                                         $TransferStatus = 100;
+
                                                                         $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
+
                                                                         if (!$updateMzTransactionTransfer) {
                                                                             $msg = "Manual Redemption Error : Failed to update transactions transfer table.";
                                                                             echo json_encode($msg);
@@ -1567,7 +1564,7 @@ if ($connected) {
                                                         }
 
 
-                                                        if (!empty($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"]) && $transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"] == "TRANSACTIONSTATUS_APPROVED" || $transinfo['IsSucceed'] == true) {
+                                                        if ((!empty($transinfo["TransactionInfo"]) && ($transinfo['IsSucceed'] == true)) && (((!empty($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"])) && ($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"] == "TRANSACTIONSTATUS_APPROVED")) || (!empty($transinfo["TransactionInfo"]["querytransmethodResult"]) && ($transinfo["TransactionInfo"]["querytransmethodResult"]['Success'] == true)))) {
                                                             switch (true) {
                                                                 case strstr($serviceName, "RTG - Sapphire V17 UB"):
                                                                     foreach ($transinfo as $results) {
@@ -2117,8 +2114,8 @@ if ($connected) {
 
                                             $vsiteID = $mzSiteID;
                                             $vterminalID = $mzTerminalID;
-                                            $vreportedAmt = ereg_replace(",", "", 0);
-                                            $vactualAmt = 0;
+                                            $vreportedAmt = ereg_replace(",", "", $mzFromAmount);
+                                            $vactualAmt = $mzFromAmount;
                                             $vtransactionDate = $otopup->getDate();
                                             $vreqByAID = $aid;
                                             $vprocByAID = $aid;
@@ -2136,33 +2133,26 @@ if ($connected) {
                                             $lastmrid = $otopup->insertmanualredemptionub($vsiteID, $vterminalID, $vreportedAmt, $vactualAmt, $vtransactionDate, $vreqByAID, $vprocByAID, $vremarks, $vdateEffective, $vstatus, $vtransactionID, $transsummaryid, $vticket, $cmbServerID, $vtransStatus, $loyaltycardnumber, $mid, $usermode, $mzTransferID, $mzFromServiceID);
 
                                             if ($lastmrid > 0) {
+                                                $TransferStatus = 102;
+                                                $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
+                                                if (!$updateMzTransactionTransfer) {
+                                                    $msg = "Manual Redemption Error : Failed to update transactions transfer table.";
+                                                    echo json_encode($msg);
+                                                    exit;
+                                                }
 
-                                                if ($vactualAmt == 0) {
-                                                    $TransferStatus = 101;
-                                                    $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
-                                                    if (!$updateMzTransactionTransfer) {
-                                                        $msg = "Manual Redemption Error : Failed to update transactions transfer table.";
-                                                        echo json_encode($msg);
-                                                        exit;
+                                                $updateTerminalSessionsCredentials = $otopup->updateTerminalSessionsCredentials(1, $mzFromServiceID, $UBServiceLogin, $UBServicePassword, $UBHashedServicePassword, $vactualAmt, $mzTerminalID);
+
+                                                if ($updateTerminalSessionsCredentials) {
+                                                    if ($otopupmembership->open() == true) {
+                                                        $otopupmembership->updateMember($mzFromServiceID, $mid);
                                                     }
 
-                                                    $updateTerminalSessionsCredentials = $otopup->updateTerminalSessionsCredentials(1, $mzFromServiceID, $UBServiceLogin, $UBServicePassword, $UBHashedServicePassword, $vactualAmt, $mzTerminalID);
-
-                                                    if ($updateTerminalSessionsCredentials) {
-                                                        if ($otopupmembership->open() == true) {
-                                                            $otopupmembership->updateMember($mzFromServiceID, $mid);
-                                                        }
-
-                                                        $msg = "Successful " . str_replace(array('2'), '', $servicegrpname) . " Casino Fulfillment";
-                                                        echo json_encode($msg);
-                                                        exit;
-                                                    } else {
-                                                        $msg = "Manual Redemption Error : Failed to update sessions table.";
-                                                        echo json_encode($msg);
-                                                        exit;
-                                                    }
-                                                } else {
                                                     $msg = "Successful " . str_replace(array('2'), '', $servicegrpname) . " Casino Fulfillment";
+                                                    echo json_encode($msg);
+                                                    exit;
+                                                } else {
+                                                    $msg = "Manual Redemption Error : Failed to update sessions table.";
                                                     echo json_encode($msg);
                                                     exit;
                                                 }
@@ -2407,7 +2397,7 @@ if ($connected) {
                                                                 break;
                                                         }
 
-                                                        if ((!empty($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"]) && $transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"] == "TRANSACTIONSTATUS_APPROVED") || (!empty($transinfo["querytransmethodResult"]) && $transinfo['querytransmethodResult']['Success'] == true)) {
+                                                        if ((!empty($transinfo["TransactionInfo"]) && ($transinfo['IsSucceed'] == true)) && (((!empty($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"])) && ($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"] == "TRANSACTIONSTATUS_APPROVED")) || (!empty($transinfo["TransactionInfo"]["querytransmethodResult"]) && ($transinfo["TransactionInfo"]["querytransmethodResult"]['Success'] == true)))) {
                                                             switch (true) {
                                                                 case strstr($serviceName, "RTG - Sapphire V17 UB"):
                                                                     foreach ($transinfo as $results) {
@@ -2530,9 +2520,7 @@ if ($connected) {
                                                     exit;
                                                 }
                                             }
-                                        } elseif ($MzTransferStatus == 4 || $MzTransferStatus == 5 || $MzTransferStatus == 7 || $MzTransferStatus == 9 || $MzTransferStatus == 100 || $MzTransferStatus == 101) {
-
-
+                                        } elseif ($MzTransferStatus == 4 || $MzTransferStatus == 5 || $MzTransferStatus == 7 || $MzTransferStatus == 9 || $MzTransferStatus == 100 || $MzTransferStatus == 101 || $MzTransferStatus == 102 || $MzTransferStatus == 103) {
 
 
                                             $getTerminalSessionsDetails = $otopup->getTerminalSessionsDetails($loyaltycardnumber);
@@ -2853,7 +2841,7 @@ if ($connected) {
                                                             break;
                                                     }
 
-                                                    if ((!empty($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"]) && $transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"] == "TRANSACTIONSTATUS_APPROVED") || (!empty($transinfo["querytransmethodResult"]) && $transinfo['querytransmethodResult']['Success'] == true)) {
+                                                    if ((!empty($transinfo["TransactionInfo"]) && ($transinfo['IsSucceed'] == true)) && (((!empty($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"])) && ($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"] == "TRANSACTIONSTATUS_APPROVED")) || (!empty($transinfo["TransactionInfo"]["querytransmethodResult"]) && ($transinfo["TransactionInfo"]["querytransmethodResult"]['Success'] == true)))) {
                                                         switch (true) {
                                                             case strstr($serviceName, "RTG - Sapphire V17 UB"):
                                                                 foreach ($transinfo as $results) {
@@ -3178,7 +3166,7 @@ if ($connected) {
                                                                         break;
                                                                 }
 
-                                                                if (!empty($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"]) && $transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"] == "TRANSACTIONSTATUS_APPROVED" || $transinfo['IsSucceed'] == true) {
+                                                                if ((!empty($transinfo["TransactionInfo"]) && ($transinfo['IsSucceed'] == true)) && (((!empty($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"])) && ($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"] == "TRANSACTIONSTATUS_APPROVED")) || (!empty($transinfo["TransactionInfo"]["querytransmethodResult"]) && ($transinfo["TransactionInfo"]["querytransmethodResult"]['Success'] == true)))) {
                                                                     switch (true) {
                                                                         case strstr($serviceName, "RTG - Sapphire V17 UB"):
                                                                             foreach ($transinfo as $results) {
@@ -3305,6 +3293,9 @@ if ($connected) {
                                             }
                                         } elseif ($MzTransferStatus == 3) {
 
+
+
+
                                             if ($mzToServiceID <> $ubserviceID) {
                                                 $updateActiveServiceStatusRollback = $otopup->updateActiveServiceStatusRollback($GLOBAL_OldActiveServiceStatus, $loyaltycardnumber);
                                                 if ($updateActiveServiceStatusRollback) {
@@ -3379,7 +3370,7 @@ if ($connected) {
                                                             break;
                                                     }
 
-                                                    if (!empty($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"]) && $transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"] == "TRANSACTIONSTATUS_APPROVED" || $transinfo['IsSucceed'] == true) {
+                                                    if ((!empty($transinfo["TransactionInfo"]) && ($transinfo['IsSucceed'] == true)) && (((!empty($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"])) && ($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"] == "TRANSACTIONSTATUS_APPROVED")) || (!empty($transinfo["TransactionInfo"]["querytransmethodResult"]) && ($transinfo["TransactionInfo"]["querytransmethodResult"]['Success'] == true)))) {
 
                                                         switch (true) {
                                                             case strstr($serviceName, "RTG - Sapphire V17 UB"):
@@ -3445,21 +3436,20 @@ if ($connected) {
 
                                                             if ($vactualAmt == 0) {
 
-                                                                if ($vactualAmt == 0) {
-                                                                    $TransferStatus = 101;
-                                                                    $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
-                                                                    if (!$updateMzTransactionTransfer) {
-                                                                        $msg = "Manual Redemption Error : Failed to update transactions transfer table.";
-                                                                        echo json_encode($msg);
-                                                                        exit;
-                                                                    }
+                                                                $TransferStatus = 104;
+                                                                $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
+                                                                if (!$updateMzTransactionTransfer) {
+                                                                    $msg = "Manual Redemption Error : Failed to update transactions transfer table.";
+                                                                    echo json_encode($msg);
+                                                                    exit;
                                                                 }
+
                                                                 $updateTerminalSessionsCredentials = $otopup->updateTerminalSessionsCredentials(1, $mzToServiceID, $UBServiceLogin, $UBServicePassword, $UBHashedServicePassword, $mzToAmount, $mzTerminalID);
 
                                                                 if ($updateTerminalSessionsCredentials) {
 
                                                                     $fmteffdate = $otopup->getDate();
-                                                                    $vstatus = 2;
+                                                                    $vstatus = 1;
                                                                     $vtransactionID = '';
                                                                     $vtransStatus = '';
 
@@ -3470,7 +3460,7 @@ if ($connected) {
                                                                         }
                                                                         $otopupmembership->close();
 
-                                                                        $msg = "Redeemed: " . $vactualAmt . "; Remaining Balance: " . $vactualAmt;
+                                                                        $msg = "Redeemed: " . $vactualAmt . "; Remaining Balance: 0";
                                                                         echo json_encode($msg);
                                                                         exit;
                                                                     } else {
@@ -3545,7 +3535,7 @@ if ($connected) {
                                                                     if ($issucess > 0) {
 
                                                                         if ($balance == 0) {
-                                                                            $TransferStatus = 101;
+                                                                            $TransferStatus = 104;
                                                                             $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
                                                                             if (!$updateMzTransactionTransfer) {
                                                                                 $msg = "Manual Redemption Error : Failed to update transactions transfer table.";
@@ -3610,7 +3600,7 @@ if ($connected) {
                                                                 }
 
 
-                                                                if (!empty($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"]) && $transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"] == "TRANSACTIONSTATUS_APPROVED" || $transinfo['IsSucceed'] == true) {
+                                                                if ((!empty($transinfo["TransactionInfo"]) && ($transinfo['IsSucceed'] == true)) && (((!empty($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"])) && ($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"] == "TRANSACTIONSTATUS_APPROVED")) || (!empty($transinfo["TransactionInfo"]["querytransmethodResult"]) && ($transinfo["TransactionInfo"]["querytransmethodResult"]['Success'] == true)))) {
                                                                     switch (true) {
                                                                         case strstr($serviceName, "RTG - Sapphire V17 UB"):
                                                                             foreach ($transinfo as $results) {
@@ -3657,7 +3647,7 @@ if ($connected) {
                                                                             }
 
                                                                             if ($balance == 0) {
-                                                                                $TransferStatus = 101;
+                                                                                $TransferStatus = 104;
                                                                                 $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
                                                                                 if (!$updateMzTransactionTransfer) {
                                                                                     $msg = "Manual Redemption Error : Failed to update transactions transfer table.";
@@ -3711,9 +3701,13 @@ if ($connected) {
                                                         }
                                                     } else {
 
+                                                        $getservicename = $otopup->getCasinoName($mzFromServiceID);
+                                                        $servicegrpname = $otopup->getServiceGrpName($mzFromServiceID);
+                                                        $serviceName = $getservicename[0]['ServiceName'];
+
                                                         if ($otopupmembership->open() == true) {
 
-                                                            $getPlayerCredentialsByUB = $otopupmembership->getPlayerCredentialsByUB($mid, $mzToServiceID);
+                                                            $getPlayerCredentialsByUB = $otopupmembership->getPlayerCredentialsByUB($mid, $mzFromServiceID);
                                                         }
 
                                                         $UBServiceLogin = $getPlayerCredentialsByUB['ServiceUsername'];
@@ -3724,23 +3718,23 @@ if ($connected) {
                                                         switch (true) {
                                                             case strstr($serviceName, "RTG - Sapphire V17 UB"):
 
-                                                                $url = $_ServiceAPI[$mzToServiceID - 1];
+                                                                $url = $_ServiceAPI[$mzFromServiceID - 1];
                                                                 $capiusername = $_CAPIUsername;
                                                                 $capipassword = $_CAPIPassword;
                                                                 $capiplayername = $_CAPIPlayerName;
                                                                 $capiserverID = '';
 
-                                                                $getbalance = $CasinoGamingCAPI->getBalance($servicegrpname, $mzToServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $usermode, $UBServicePassword);
+                                                                $getbalance = $CasinoGamingCAPI->getBalance($servicegrpname, $mzFromServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $usermode, $UBServicePassword);
                                                                 break;
                                                             case strstr($serviceName, "Habanero UB"):
 
-                                                                $url = $_ServiceAPI[$mzToServiceID - 1];
+                                                                $url = $_ServiceAPI[$mzFromServiceID - 1];
                                                                 $capiusername = $_HABbrandID;
                                                                 $capipassword = $_HABapiKey;
                                                                 $capiplayername = $_CAPIPlayerName;
                                                                 $capiserverID = '';
 
-                                                                $getbalance = $CasinoGamingCAPI->getBalance($servicegrpname, $mzToServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $usermode, $UBServicePassword);
+                                                                $getbalance = $CasinoGamingCAPI->getBalance($servicegrpname, $mzFromServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $usermode, $UBServicePassword);
                                                                 break;
                                                         }
 
@@ -3757,8 +3751,8 @@ if ($connected) {
                                                         $fmteffdate = $otopup->getDate();
                                                         $vsiteID = $mzSiteID;
                                                         $vterminalID = $mzTerminalID;
-                                                        $vreportedAmt = ereg_replace(",", "", $getbalance);
-                                                        $vactualAmt = $ramount;
+                                                        $vreportedAmt = ereg_replace(",", "", $mzToAmount);
+                                                        $vactualAmt = $mzToAmount;
                                                         $vtransactionDate = $otopup->getDate();
                                                         $vreqByAID = $aid;
                                                         $vprocByAID = $aid;
@@ -3767,20 +3761,20 @@ if ($connected) {
                                                         $vtransactionID = '';
                                                         $vremarks = $remarksub;
                                                         $vticket = $ticketub;
-                                                        $cmbServerID = $mzToServiceID;
+                                                        $cmbServerID = $mzFromServiceID;
 
                                                         $vtransStatus = '';
                                                         $transsummaryid = $otopup->getLastSummaryID($vterminalID);
                                                         $transsummaryid = $transsummaryid['summaryID'];
 
-                                                        $lastmrid = $otopup->insertmanualredemptionub($vsiteID, $vterminalID, $vreportedAmt, $vactualAmt, $vtransactionDate, $vreqByAID, $vprocByAID, $vremarks, $vdateEffective, $vstatus, $vtransactionID, $transsummaryid, $vticket, $cmbServerID, $vtransStatus, $loyaltycardnumber, $mid, $usermode, $mzTransferID, $mzToServiceID);
+                                                        $lastmrid = $otopup->insertmanualredemptionub($vsiteID, $vterminalID, $vreportedAmt, $vactualAmt, $vtransactionDate, $vreqByAID, $vprocByAID, $vremarks, $vdateEffective, $vstatus, $vtransactionID, $transsummaryid, $vticket, $cmbServerID, $vtransStatus, $loyaltycardnumber, $mid, $usermode, $mzTransferID, $mzFromServiceID);
 
                                                         if ($lastmrid > 0) {
 
 
-                                                            if ($vactualAmt == 0) {
+                                                            if ($ramount == 0) {
 
-                                                                $TransferStatus = 101;
+                                                                $TransferStatus = 103;
                                                                 $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
                                                                 if (!$updateMzTransactionTransfer) {
                                                                     $msg = "Manual Redemption Error : Failed to update transactions transfer table.";
@@ -3788,23 +3782,23 @@ if ($connected) {
                                                                     exit;
                                                                 }
 
-                                                                $updateTerminalSessionsCredentials = $otopup->updateTerminalSessionsCredentials(1, $mzToServiceID, $UBServiceLogin, $UBServicePassword, $UBHashedServicePassword, $mzToAmount, $mzTerminalID);
+                                                                $updateTerminalSessionsCredentials = $otopup->updateTerminalSessionsCredentials(1, $mzFromServiceID, $UBServiceLogin, $UBServicePassword, $UBHashedServicePassword, $mzToAmount, $mzTerminalID);
 
                                                                 if ($updateTerminalSessionsCredentials) {
 
                                                                     $fmteffdate = $otopup->getDate();
-                                                                    $vstatus = 2;
+                                                                    $vstatus = 1;
                                                                     $vtransactionID = '';
                                                                     $vtransStatus = '';
 
                                                                     $issucess = $otopup->updateManualRedemptionub($vstatus, $vactualAmt, $vtransactionID, $fmteffdate, $vtransStatus, $lastmrid);
                                                                     if ($issucess) {
                                                                         if ($otopupmembership->open() == true) {
-                                                                            $otopupmembership->updateMember($mzToServiceID, $mid);
+                                                                            $otopupmembership->updateMember($mzFromServiceID, $mid);
                                                                         }
                                                                         $otopupmembership->close();
 
-                                                                        $msg = "Redeemed: " . $vactualAmt . "; Remaining Balance: " . $vactualAmt;
+                                                                        $msg = "Redeemed: " . $vactualAmt . "; Remaining Balance: 0";
                                                                         echo json_encode($msg);
                                                                         exit;
                                                                     }
@@ -3821,7 +3815,7 @@ if ($connected) {
                                                                     $tracking1 = "MR" . "$lastmrid";
                                                                     $withdraw = array();
 
-                                                                    $withdraw = $CasinoGamingCAPI->Withdraw($servicegrpname, $mzToServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $vactualAmt, $tracking1, $tracking2, $tracking3, $tracking4 = '', $methodname = '', $usermode, $locatorname);
+                                                                    $withdraw = $CasinoGamingCAPI->Withdraw($servicegrpname, $mzFromServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $vactualAmt, $tracking1, $tracking2, $tracking3, $tracking4 = '', $methodname = '', $usermode, $locatorname);
                                                                     break;
 
                                                                 case strstr($serviceName, "Habanero UB"):
@@ -3829,7 +3823,7 @@ if ($connected) {
                                                                     $tracking1 = "MR" . "$lastmrid";
                                                                     $withdraw = array();
 
-                                                                    $withdraw = $CasinoGamingCAPI->Withdraw($servicegrpname, $mzToServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $vactualAmt, $tracking1, $tracking2, $tracking3, $tracking4 = '', $methodname = '', $usermode, $locatorname, $UBServicePassword);
+                                                                    $withdraw = $CasinoGamingCAPI->Withdraw($servicegrpname, $mzFromServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $vactualAmt, $tracking1, $tracking2, $tracking3, $tracking4 = '', $methodname = '', $usermode, $locatorname, $UBServicePassword);
 
                                                                     break;
                                                             }
@@ -3867,7 +3861,7 @@ if ($connected) {
                                                                     if ($issucess > 0) {
 
                                                                         if ($balance == 0) {
-                                                                            $TransferStatus = 101;
+                                                                            $TransferStatus = 103;
                                                                             $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
                                                                             if (!$updateMzTransactionTransfer) {
                                                                                 $msg = "Manual Redemption Error : Failed to update transactions transfer table.";
@@ -3879,11 +3873,11 @@ if ($connected) {
                                                                             $balance = number_format($balance, 2, ".", ",");
 
 
-                                                                            $updateTerminalSessionsCredentials = $otopup->updateTerminalSessionsCredentials(1, $mzToServiceID, $UBServiceLogin, $UBServicePassword, $UBHashedServicePassword, $balance, $mzTerminalID);
+                                                                            $updateTerminalSessionsCredentials = $otopup->updateTerminalSessionsCredentials(1, $mzFromServiceID, $UBServiceLogin, $UBServicePassword, $UBHashedServicePassword, $balance, $mzTerminalID);
 
                                                                             if ($updateTerminalSessionsCredentials) {
                                                                                 if ($otopupmembership->open() == true) {
-                                                                                    $otopupmembership->updateMember($mzToServiceID, $mid);
+                                                                                    $otopupmembership->updateMember($mzFromServiceID, $mid);
                                                                                 }
                                                                                 $otopupmembership->close();
 
@@ -3913,7 +3907,7 @@ if ($connected) {
 
                                                                         $transinfo = array();
 
-                                                                        $transinfo = $CasinoGamingCAPI->TransSearchInfo($servicegrpname, $mzToServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $tracking1, $tracking2 = '', $tracking3 = '', $tracking4 = '', $usermode);
+                                                                        $transinfo = $CasinoGamingCAPI->TransSearchInfo($servicegrpname, $mzFromServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $tracking1, $tracking2 = '', $tracking3 = '', $tracking4 = '', $usermode);
 
                                                                         break;
 
@@ -3921,11 +3915,11 @@ if ($connected) {
 
                                                                         $transinfo = array();
 
-                                                                        $transinfo = $CasinoGamingCAPI->TransSearchInfo($servicegrpname, $mzToServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $tracking1, $tracking2 = '', $tracking3 = '', $tracking4 = '', $usermode);
+                                                                        $transinfo = $CasinoGamingCAPI->TransSearchInfo($servicegrpname, $mzFromServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $tracking1, $tracking2 = '', $tracking3 = '', $tracking4 = '', $usermode);
                                                                         break;
                                                                 }
 
-                                                                if (!empty($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"]) && $transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"] == "TRANSACTIONSTATUS_APPROVED" || $transinfo['IsSucceed'] == true) {
+                                                                if ((!empty($transinfo["TransactionInfo"]) && ($transinfo['IsSucceed'] == true)) && (((!empty($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"])) && ($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"] == "TRANSACTIONSTATUS_APPROVED")) || (!empty($transinfo["TransactionInfo"]["querytransmethodResult"]) && ($transinfo["TransactionInfo"]["querytransmethodResult"]['Success'] == true)))) {
                                                                     switch (true) {
                                                                         case strstr($serviceName, "RTG - Sapphire V17 UB"):
                                                                             foreach ($transinfo as $results) {
@@ -3962,28 +3956,28 @@ if ($connected) {
                                                                             switch (true) {
                                                                                 case strstr($serviceName, "RTG - Sapphire V17 UB"):
 
-                                                                                    $url = $_ServiceAPI[$mzToServiceID - 1];
+                                                                                    $url = $_ServiceAPI[$mzFromServiceID - 1];
                                                                                     $capiusername = $_CAPIUsername;
                                                                                     $capipassword = $_CAPIPassword;
                                                                                     $capiplayername = $_CAPIPlayerName;
                                                                                     $capiserverID = '';
 
-                                                                                    $getbalance = $CasinoGamingCAPI->getBalance($servicegrpname, $mzToServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $usermode, $UBServicePassword);
+                                                                                    $getbalance = $CasinoGamingCAPI->getBalance($servicegrpname, $mzFromServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $usermode, $UBServicePassword);
                                                                                     break;
                                                                                 case strstr($serviceName, "Habanero UB"):
 
-                                                                                    $url = $_ServiceAPI[$mzToServiceID - 1];
+                                                                                    $url = $_ServiceAPI[$mzFromServiceID - 1];
                                                                                     $capiusername = $_HABbrandID;
                                                                                     $capipassword = $_HABapiKey;
                                                                                     $capiplayername = $_CAPIPlayerName;
                                                                                     $capiserverID = '';
 
-                                                                                    $getbalance = $CasinoGamingCAPI->getBalance($servicegrpname, $mzToServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $usermode, $UBServicePassword);
+                                                                                    $getbalance = $CasinoGamingCAPI->getBalance($servicegrpname, $mzFromServiceID, $url, $UBServiceLogin, $capiusername, $capipassword, $capiplayername, $capiserverID, $usermode, $UBServicePassword);
                                                                                     break;
                                                                             }
 
                                                                             if ($balance == 0) {
-                                                                                $TransferStatus = 101;
+                                                                                $TransferStatus = 103;
                                                                                 $updateMzTransactionTransfer = $otopup->updateMzTransactionTransfer($TransferStatus, $aid, $MaxTransferID);
                                                                                 if (!$updateMzTransactionTransfer) {
                                                                                     $msg = "Manual Redemption Error : Failed to update transactions transfer table.";
@@ -3992,11 +3986,11 @@ if ($connected) {
                                                                                 }
 
 
-                                                                                $updateTerminalSessionsCredentials = $otopup->updateTerminalSessionsCredentials(1, $mzToServiceID, $UBServiceLogin, $UBServicePassword, $UBHashedServicePassword, $balance, $mzTerminalID);
+                                                                                $updateTerminalSessionsCredentials = $otopup->updateTerminalSessionsCredentials(1, $mzFromServiceID, $UBServiceLogin, $UBServicePassword, $UBHashedServicePassword, $balance, $mzTerminalID);
 
                                                                                 if ($updateTerminalSessionsCredentials) {
                                                                                     if ($otopupmembership->open() == true) {
-                                                                                        $otopupmembership->updateMember($mzToServiceID, $mid);
+                                                                                        $otopupmembership->updateMember($mzFromServiceID, $mid);
                                                                                     }
                                                                                     $otopupmembership->close();
 
@@ -4115,7 +4109,7 @@ if ($connected) {
                                                 }
 
 
-                                                if (!empty($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"]) && $transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"] == "TRANSACTIONSTATUS_APPROVED" || $transinfo['IsSucceed'] == true) {
+                                                if ((!empty($transinfo["TransactionInfo"]) && ($transinfo['IsSucceed'] == true)) && (((!empty($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"])) && ($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"] == "TRANSACTIONSTATUS_APPROVED")) || (!empty($transinfo["TransactionInfo"]["querytransmethodResult"]) && ($transinfo["TransactionInfo"]["querytransmethodResult"]['Success'] == true)))) {
 
                                                     switch (true) {
                                                         case strstr($serviceName, "RTG - Sapphire V17 UB"):
@@ -4350,7 +4344,7 @@ if ($connected) {
                                                         }
 
 
-                                                        if (!empty($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"]) && $transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"] == "TRANSACTIONSTATUS_APPROVED" || $transinfo['IsSucceed'] == true) {
+                                                        if ((!empty($transinfo["TransactionInfo"]) && ($transinfo['IsSucceed'] == true)) && (((!empty($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"])) && ($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"] == "TRANSACTIONSTATUS_APPROVED")) || (!empty($transinfo["TransactionInfo"]["querytransmethodResult"]) && ($transinfo["TransactionInfo"]["querytransmethodResult"]['Success'] == true)))) {
                                                             switch (true) {
                                                                 case strstr($serviceName, "RTG - Sapphire V17 UB"):
                                                                     foreach ($transinfo as $results) {
@@ -4576,8 +4570,8 @@ if ($connected) {
                                             } // 2nd to the last else
                                         } else {
                                             $msg = "Manual redemption of player balance is currently not allowed. Please try again later.";
-											echo json_encode($msg);
-											exit;
+                                            echo json_encode($msg);
+                                            exit;
                                         }
                                     }
                                 } else {
@@ -4599,12 +4593,7 @@ if ($connected) {
 
 
 
-////END TRANSWALLET
-/////// OVERRIDE
-
-
-
-
+            //OVERRIDE      
             case "ManualRedemptionOverride":
                 $login = $_POST['terminalcode'];
                 $provider = $_POST['txtservices'];
@@ -4922,12 +4911,12 @@ if ($connected) {
                                                             echo json_encode($msg);
                                                             exit;
                                                         } else {
-                                                            $msg = "Manual Redemption Error : Failed to update sessions table.";
+                                                            $msg = "Failed to update terminalsessions table.";
                                                             echo json_encode($msg);
                                                             exit;
                                                         }
                                                     } else {
-                                                        $msg = "Manual Redemption Error : Failed updating redemption table";
+                                                        $msg = "Failed updating manual redemption table";
                                                         echo json_encode($msg);
                                                         exit;
                                                     }
@@ -4963,8 +4952,7 @@ if ($connected) {
                                                 }
 
 
-
-                                                if (!empty($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"]) && $transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"] == "TRANSACTIONSTATUS_APPROVED" || $transinfo['IsSucceed'] == true) {
+                                                if ((!empty($transinfo["TransactionInfo"]) && ($transinfo['IsSucceed'] == true)) && (((!empty($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"])) && ($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"] == "TRANSACTIONSTATUS_APPROVED")) || (!empty($transinfo["TransactionInfo"]["querytransmethodResult"]) && ($transinfo["TransactionInfo"]["querytransmethodResult"]['Success'] == true)))) {
                                                     switch (true) {
                                                         case strstr($serviceName, "RTG - Sapphire V17 UB"):
                                                             foreach ($transinfo as $results) {
@@ -5014,7 +5002,7 @@ if ($connected) {
                                                                 echo json_encode($msg);
                                                                 exit;
                                                             } else {
-                                                                $msg = "Manual Redemption Error : Failed to update sessions table.";
+                                                                $msg = "Failed to update terminalsessions table.";
                                                                 echo json_encode($msg);
                                                                 exit;
                                                             }
@@ -5044,7 +5032,7 @@ if ($connected) {
                                                         echo json_encode($msg);
                                                         exit;
                                                     } else {
-                                                        $msg = "Manual Redemption Error : Failed to update sessions table.";
+                                                        $msg = "Failed to update terminalsessions table.";
                                                         echo json_encode($msg);
                                                         exit;
                                                     }
@@ -5072,21 +5060,8 @@ if ($connected) {
 
                 break;
 
-
-
-
-
-
-
-
-
-
-////// END OVERRIDE
-///// REVERSAL
-
-
-
-
+            ////// END OVERRIDE
+            ///// REVERSAL
             case "ManualRedemptionReversal":
                 $login = $_POST['terminalcode'];
                 $provider = $_POST['txtservices'];
@@ -5117,8 +5092,6 @@ if ($connected) {
                         $servicegrpname = $otopup->getServiceGrpName($ubserviceID);
 
                         $serviceName = $getservicename[0]['ServiceName'];
-
-
 
                         $casino = $_SESSION['CasinoArray2'];
                         $rmid = $_SESSION['MID2'];
@@ -5410,12 +5383,12 @@ if ($connected) {
                                                         echo json_encode($msg);
                                                         exit;
                                                     } else {
-                                                        $msg = "Manual Redemption Error : Failed to update sessions table.";
+                                                        $msg = "Failed to update terminalsessions table.";
                                                         echo json_encode($msg);
                                                         exit;
                                                     }
                                                 } else {
-                                                    $msg = "Manual Redemption Error : Failed updating redemption table";
+                                                    $msg = "Failed updating manual redemption table";
                                                     echo json_encode($msg);
                                                     exit;
                                                 }
@@ -5451,8 +5424,7 @@ if ($connected) {
                                             }
 
 
-
-                                            if (!empty($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"]) && $transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"] == "TRANSACTIONSTATUS_APPROVED" || $transinfo['IsSucceed'] == true) {
+                                            if ((!empty($transinfo["TransactionInfo"]) && ($transinfo['IsSucceed'] == true)) && (((!empty($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"])) && ($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"] == "TRANSACTIONSTATUS_APPROVED")) || (!empty($transinfo["TransactionInfo"]["querytransmethodResult"]) && ($transinfo["TransactionInfo"]["querytransmethodResult"]['Success'] == true)))) {
                                                 switch (true) {
                                                     case strstr($serviceName, "RTG - Sapphire V17 UB"):
                                                         foreach ($transinfo as $results) {
@@ -5502,7 +5474,7 @@ if ($connected) {
                                                             echo json_encode($msg);
                                                             exit;
                                                         } else {
-                                                            $msg = "Manual Redemption Error : Failed to update sessions table.";
+                                                            $msg = "Failed to update terminalsessions table.";
                                                             echo json_encode($msg);
                                                             exit;
                                                         }
@@ -5528,11 +5500,11 @@ if ($connected) {
 
                                                 $updateActiveServiceStatusRollback = $otopup->updateActiveServiceStatusRollback($GLOBAL_OldActiveServiceStatus, $loyaltycardnumber);
                                                 if ($updateActiveServiceStatusRollback) {
-                                                    $msg = "Manual Redemption Error : Failed to process manual redemption";
+                                                    $msg = "Failed to process manual redemption";
                                                     echo json_encode($msg);
                                                     exit;
                                                 } else {
-                                                    $msg = "Manual Redemption Error : Failed to update sessions table.";
+                                                    $msg = "Failed to update terminalsessions table.";
                                                     echo json_encode($msg);
                                                     exit;
                                                 }
@@ -5701,7 +5673,7 @@ if ($connected) {
                                                 echo json_encode($msg);
                                                 exit;
                                             } else {
-                                                $msg = "Manual Redemption Error : Failed updating redemption table";
+                                                $msg = "Failed updating manual redemption table";
                                                 echo json_encode($msg);
                                                 exit;
                                             }
@@ -5737,7 +5709,7 @@ if ($connected) {
                                                 break;
                                         }
 
-                                        if (!empty($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"]) && $transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"] == "TRANSACTIONSTATUS_APPROVED" || $transinfo['IsSucceed'] == true) {
+                                        if ((!empty($transinfo["TransactionInfo"]) && ($transinfo['IsSucceed'] == true)) && (((!empty($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"])) && ($transinfo["TransactionInfo"]["TrackingInfoTransactionSearchResult"]["transactionStatus"] == "TRANSACTIONSTATUS_APPROVED")) || (!empty($transinfo["TransactionInfo"]["querytransmethodResult"]) && ($transinfo["TransactionInfo"]["querytransmethodResult"]['Success'] == true)))) {
                                             switch (true) {
                                                 case strstr($serviceName, "RTG - Sapphire V17 UB"):
                                                     foreach ($transinfo as $results) {
@@ -5803,7 +5775,7 @@ if ($connected) {
                                             }
                                         } else {
 
-                                            $msg = "Manual Redemption Error : Failed to process manual redemption";
+                                            $msg = "Failed to process manual redemption";
                                             echo json_encode($msg);
                                             exit;
                                         }
@@ -5821,9 +5793,9 @@ if ($connected) {
                 break;
 
 
-
-
-///// END REVERSAL
+            // END REVERSAL
+            // 
+            // 
             //User Based Redemption using Loyalty Card
             case "Withdraw":
                 $ubserviceID = $_POST['txtserviceid'];
